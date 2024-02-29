@@ -1,187 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<style>
-  label,
-  h2 {
-    color: black;
-  }
-  /* Style for the form */
-  #dietaryForm {
-    display: flex;
-    flex-direction: column;
-  }
-  /* Style for form labels and checkboxes */
-  label {
-    margin-bottom: 5px;
-  }
-  input[type="checkbox"] {
-    margin-right: 5px;
-  }
-  /* Style for the error display */
-  #errorDisplay {
-    color: red;
-    display: none;
-    margin-top: 10px;
-  }
-</style>
-<body>
-  
-  <!-- Dietary Preferences Modal -->
-  <div id="dietaryPreferencesModal" class="modal">
-    <div class="mod-content">
-      <span class="close-button" onclick="closeDietaryModal()">&times;</span>
-      <h2>Dietary Preferences</h2>
-  
-      <!-- Start of the Dietary Preferences Form -->
-      <div class="container">
-        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST" onsubmit="return handleSubmit(event);">
-          <!-- Diet Type -->
-          <div>
-            <label for="vegetarian">Vegetarian</label>
-            <input type="checkbox" id="vegetarian" name="vegetarian" value="true" />
-  
-            <label for="vegan">Vegan</label>
-            <input type="checkbox" id="vegan" name="vegan" value="true" />
-  
-            <label for="omnivore">Omnivore</label>
-            <input type="checkbox" id="omnivore" name="omnivore" value="true" />
-  
-            <label for="halal">Halal</label>
-            <input type="checkbox" id="halal" name="halal" value="true" />
-  
-            <label for="kosher">Kosher</label>
-            <input type="checkbox" id="kosher" name="kosher" value="true" />
-  
-            <label for="lactoseFree">Lactose-Free</label>
-            <input type="checkbox" id="lactoseFree" name="lactoseFree" value="true" />
-          </div>
-  
-          <!-- Allergies -->
-          <div>
-            <label>Allergies:</label>
-            <label for="glutenFree">Gluten-Free</label>
-            <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
-  
-            <label for="nutAllergy">Nut Allergy</label>
-            <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
-          </div>
-  
-          <!-- Other Dietary Restrictions -->
-          <div>
-            <label for="otherRestrictions">Other Restrictions:</label>
-            <textarea id="otherRestrictions" name="otherRestrictions" rows="4" cols="50"></textarea>
-          </div>
-  
-          <input type="submit" value="Submit" />
-        </form>
-        <!-- Removed the confirmationMessage div -->
-        <!-- Add this div to display errors -->
-        <div id="errorDisplay" style="color: red; display: none;"></div>
-      </div>
-      <!-- End of the Dietary Preferences Form -->
-    </div>
-  </div>
-  
-  <script>
-    var modal = document.getElementById("dietaryPreferencesModal");
-    var btn = document.getElementById("dietaryPreferencesNav");
-  
-    function openDietaryModal() {
-      modal.style.display = "block";
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    label,
+    h2 {
+      color: black;
     }
-  
-  
-    window.onclick = function (event) {
-      if (event.target == modal) {
+    /* Style for the form */
+    #dietaryForm {
+      display: flex;
+      flex-direction: column;
+    }
+    /* Style for form labels and checkboxes */
+    label {
+      margin-bottom: 5px;
+    }
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+    /* Style for the error display */
+    #errorDisplay {
+      color: red;
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+  <body>
+    <!-- Dietary Preferences Modal -->
+    <div id="dietaryPreferencesModal" class="modal">
+      <div class="mod-content">
+        <span class="close-button" onclick="closeDietaryModal()">&times;</span>
+        <h2>Dietary Preferences</h2>
+
+        <!-- Start of the Dietary Preferences Form -->
+        <div class="container">
+          <form
+            id="dietaryForm"
+            action="/submit-dietary-preferences"
+            method="POST"
+            onsubmit="return handleSubmit(event);"
+          >
+            <!-- Diet Type -->
+            <div>
+              <input
+              type="checkbox"
+              id="vegetarian"
+              name="vegetarian"
+              value="true"
+            />
+              <label for="vegetarian">Vegetarian</label>
+            
+              <input type="checkbox" id="vegan" name="vegan" value="true" />
+              <label for="vegan">Vegan</label>
+           
+
+              <input
+              type="checkbox"
+              id="omnivore"
+              name="omnivore"
+              value="true"
+             />
+              <label for="omnivore">Omnivore</label>
+            
+           
+              <input type="checkbox" id="halal" name="halal" value="true" />
+              <label for="halal">Halal</label>
+         
+              <input type="checkbox" id="kosher" name="kosher" value="true" />s
+              <label for="kosher">Kosher</label>
+          
+              <input
+              type="checkbox"
+              id="lactoseFree"
+              name="lactoseFree"
+              value="true"
+            />
+              <label for="lactoseFree">Lactose-Free</label>
+            
+            </div>
+
+            <!-- Allergies -->
+            <div>
+              <label>Allergies:</label>
+              <input
+              type="checkbox"
+              id="glutenFree"
+              name="glutenFree"
+              value="true"
+            />
+              <label for="glutenFree">Gluten-Free</label>
+            
+
+              <input
+                type="checkbox"
+                id="nutAllergy"
+                name="nutAllergy"
+                value="true"
+              />
+              <label for="nutAllergy">Nut Allergy</label>
+             
+            </div>
+
+            <!-- Other Dietary Restrictions -->
+            <div>
+              <label for="otherRestrictions">Other Restrictions:</label>
+              <textarea
+                id="otherRestrictions"
+                name="otherRestrictions"
+                rows="4"
+                cols="50"
+              ></textarea>
+            </div>
+
+            <input type="submit" value="Submit" />
+          </form>
+          <!-- Removed the confirmationMessage div -->
+          <!-- Add this div to display errors -->
+          <div id="errorDisplay" style="color: red; display: none"></div>
+        </div>
+        <!-- End of the Dietary Preferences Form -->
+      </div>
+    </div>
+
+    <script>
+      var modal = document.getElementById("dietaryPreferencesModal");
+      var btn = document.getElementById("dietaryPreferencesNav");
+
+      function openDietaryModal() {
+        modal.style.display = "block";
+      }
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      function closeDietaryModal() {
         modal.style.display = "none";
       }
-    };
-  
-    function closeDietaryModal() {
-      modal.style.display = "none";
-    }
-  // ...other code...
+      // ...other code...
 
-  async function handleSubmit(event) {
-  event.preventDefault();
-  const errorDisplay = document.getElementById("errorDisplay");
+      async function handleSubmit(event) {
+        event.preventDefault();
+        const errorDisplay = document.getElementById("errorDisplay");
 
-  // Reset the error display
-  errorDisplay.style.display = "none";
-  errorDisplay.textContent = "";
+        // Reset the error display
+        errorDisplay.style.display = "none";
+        errorDisplay.textContent = "";
 
-  const form = document.getElementById("dietaryForm");
-  const dietaryPreferences = {
-    vegetarian: form['vegetarian'].checked,
-    vegan: form['vegan'].checked,
-    omnivore: form['omnivore'].checked,
-    halal: form['halal'].checked,
-    kosher: form['kosher'].checked,
-    lactoseFree: form['lactoseFree'].checked,
-    glutenFree: form['glutenFree'].checked,
-    nutAllergy: form['nutAllergy'].checked,
-    otherRestrictions: form['otherRestrictions'].value.trim()
-  };
+        const form = document.getElementById("dietaryForm");
+        const dietaryPreferences = {
+          vegetarian: form["vegetarian"].checked,
+          vegan: form["vegan"].checked,
+          omnivore: form["omnivore"].checked,
+          halal: form["halal"].checked,
+          kosher: form["kosher"].checked,
+          lactoseFree: form["lactoseFree"].checked,
+          glutenFree: form["glutenFree"].checked,
+          nutAllergy: form["nutAllergy"].checked,
+          otherRestrictions: form["otherRestrictions"].value.trim(),
+        };
 
-  // Check if at least one dietary choice is selected
-  const isAnyChoiceSelected = Object.values(dietaryPreferences).some(choice => choice);
-  if (!isAnyChoiceSelected) {
-    errorDisplay.textContent = "Please select at least one dietary preference.";
-    errorDisplay.style.display = "block";
-    return; // Don't proceed with the submission
-  }
+        console.log("CALL 1", dietaryPreferences);
 
-  // Proceed with submission
-  try {
-      const response = await fetch('/submit-dietary-preferences', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dietaryPreferences),
-      });
-
-      if (response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const data = await response.json();
-          if (data.success) {
-            // Show the success message using SweetAlert
-            Swal.fire({
-              icon: 'success',
-              title: 'Success!',
-              text: 'Your dietary preferences have been submitted successfully!',
-              showConfirmButton: true,
-            }).then(() => {
-              window.location.href = '/recommendations';
-            });
-          } else {
-            throw new Error(data.message || 'An error occurred.');
-          }
-        } else {
-          throw new Error('Received non-JSON response from server');
+        // Check if at least one dietary choice is selected
+        const isAnyChoiceSelected = Object.values(dietaryPreferences).some(
+          (choice) => choice
+        );
+        if (!isAnyChoiceSelected) {
+          errorDisplay.textContent =
+            "Please select at least one dietary preference.";
+          errorDisplay.style.display = "block";
+          return; // Don't proceed with the submission
         }
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
+
+        // Proceed with submission
+        try {
+          const response = await fetch("/submit-dietary-preferences", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(dietaryPreferences),
+          });
+
+          if (response.ok) {
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+              const data = await response.json();
+              if (data.success) {
+                // Show the success message using SweetAlert
+                Swal.fire({
+                  icon: "success",
+                  title: "Success!",
+                  text: "Your dietary preferences have been submitted successfully!",
+                  showConfirmButton: true,
+                }).then(() => {
+                  window.location.href = "/recommendations";
+                });
+              } else {
+                throw new Error(data.message || "An error occurred.");
+              }
+            } else {
+              throw new Error("Received non-JSON response from server");
+            }
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          errorDisplay.textContent = error.message;
+          errorDisplay.style.display = "block";
+        }
       }
-    } catch (error) {
-      console.error('Error:', error);
-      errorDisplay.textContent = error.message;
-      errorDisplay.style.display = "block";
-    }
-  }
 
-
-function displayRecommendations(recommendations) {
-  const recommendationsContainer = document.getElementById('recommendations-container');
-  if (recommendationsContainer) {
-    recommendationsContainer.innerHTML = recommendations.map(rec => `<li>${rec}</li>`).join('');
-  }
-}
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</body>
+      function displayRecommendations(recommendations) {
+        const recommendationsContainer = document.getElementById(
+          "recommendations-container"
+        );
+        if (recommendationsContainer) {
+          recommendationsContainer.innerHTML = recommendations
+            .map((rec) => `<li>${rec}</li>`)
+            .join("");
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </body>
 </html>

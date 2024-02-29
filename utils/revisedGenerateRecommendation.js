@@ -1,83 +1,11 @@
-const express = require("express");
-const router = express.Router();
-const openai = require("openai-api");
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const openaiApi = new openai(OPENAI_API_KEY);
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-const {
-  revised_generated_recommendation,
-  extractValues,
-} = require("../utils/revisedGenerateRecommendation");
+const OpenAI = require("openai");
 
-// Endpoint to display the recommendations page
-router.get("/", async (req, res) => {
-  const userId = req.session.userId;
+const openai = new OpenAI();
 
-  try {
-    const existingPreference = await prisma.dietaryPreference.findUnique({
-      where: { userId },
-    });
-
-    const gptResponse = await revised_generated_recommendation({
-      vegetarian: existingPreference.vegetarian,
-      vegan: existingPreference.vegan,
-      omnivore: existingPreference.omnivore,
-      halal: existingPreference.halal,
-      kosher: existingPreference.kosher,
-      glutenFree: existingPreference.glutenFree,
-      lactoseFree: existingPreference.lactoseFree,
-      nutAllergy: existingPreference.nutAllergy,
-      otherRestrictions: existingPreference.otherRestrictions,
-    });
-
-    // Generate recommendations based on the dietaryData
-    console.log("CALL 10: ", gptResponse);
-    res.render("recommendations", {
-      recommendations: [...gptResponse],
-    });
-  } catch (error) {
-    console.error("Error in submitting dietary preferences:", error);
-    res.render("recommendations", { recommendations: [] });
-  }
-});
-
-// Endpoint to handle generating recommendations based on dietary preferences
-router.post("/generate-recommendations", async (req, res) => {
-  try {
-    // Extract dietary preferences from the request body
-    const dietaryPreferences = req.body;
-
-    // Log the dietary preferences to verify the structure
-    console.log("Dietary Preferences Received:", dietaryPreferences);
-
-    // Generate recommendations
-    const recommendations = await generateRecommendations(dietaryPreferences);
-
-    // Log the generated recommendations to verify the output
-    console.log("Generated Recommendations:", extractValues(recommendations));
-
-    // Send the recommendations in the response
-    res.json({
-      success: true,
-      recommendations: extractValues(recommendations),
-    });
-  } catch (error) {
-    console.error("Error in /generate-recommendations:", error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
-
-// Updated utility function to generate recommendations
-const generateRecommendations = async (preferences) => {
-  // Convert dietary preferences into a string
-  const dietaryRestrictions = Object.entries(preferences)
-    .filter(([_, value]) => value)
-    .map(([key, _]) => key)
-    .join(", ");
-
-  // Include your menu items here
-  const menuDescription = `1. Afritada (Tray): Chicken stew with vegetables [Omnivore, Gluten-Free, Nut-Free]
+// Define your menu items with their dietary categorizations
+// ... (existing menuDescription)
+// Define your menu items with their dietary categorizations
+const menuDescription = `1. Afritada (Tray): Chicken stew with vegetables [Omnivore, Gluten-Free, Nut-Free]
     2. Bacon (Rice Meal): Crispy bacon strips, option with or without egg [Omnivore, Lactose-Free, Gluten-Free]
     3. Baked Cream Dory w/ Potatoes (Tray): Creamy fish and potato bake [Pescatarian, Gluten-Free, Nut-Free]
     4. Beef Caldereta (Tray): Spicy beef stew with vegetables [Omnivore, Gluten-Free, Nut-Free]
@@ -116,29 +44,84 @@ const generateRecommendations = async (preferences) => {
     37. Sautéed Veggies in Oyster Sauce (Tray): Stir-fried vegetables in oyster sauce [Vegetarian, Gluten-Free, Nut-Free]
     38. Sisig (Tray): Minced pork head and liver in a sizzling plate [Omnivore, Nut-Free]
     39. Sweet and Sour Fish Fillet (Tray): Fish fillet in sweet and sour sauce [Pescatarian, Nut-Free]
-    41. Sweet and Sour Pork (Tray): Pork in sweet and sour sauce [Omnivore, Nut-Free] `; // Add the menu description as before
+    41. Sweet and Sour Pork (Tray): Pork in sweet and sour sauce [Omnivore, Nut-Free] `; // Add all your menu items in this format
 
+async function recommendation1() {
+  const completion = await openai.chat.completions.create({
+    messages: [{ role: "system", content: "You are a helpful assistant." }],
+    model: "gpt-3.5-turbo",
+  });
+
+  return completion.choices[0];
+}
+
+async function recommendation2() {
+  const response = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo-0125",
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful assistant designed to output JSON.",
+      },
+      { role: "user", content: "Who won the world series in 2020?" },
+    ],
+  });
+  return response.choices[0].message.content;
+}
+
+async function revised_generated_recommendation(dietaryData) {
+  // Convert dietaryData object into a string of dietary preferences
+  const dietaryPreferences = Object.entries(dietaryData)
+    .filter(([_, value]) => value)
+    .map(([key, _]) => key)
+    .join(", ");
+  console.log("CALL5: ", dietaryPreferences);
   const prompt = `Given a customer's dietary preferences, suggest suitable menu options from the following list of dishes:
     ${menuDescription}
 
-    The customer's dietary preferences are: ${dietaryRestrictions}. Please provide recommendations for each dietary preference based on the dishes listed.`;
+    The customer's dietary preferences are: ${dietaryPreferences}. Please provide recommendations for each dietary preference based on the dishes listed. And please copy the exact text in the list once selected.`;
 
-  try {
-    const gptResponse = await openaiApi.complete({
-      engine: "davinci",
-      prompt: prompt,
-      maxTokens: 100,
-    });
+  const response = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo-0125",
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful assistant designed to output JSON.",
+      },
+      { role: "user", content: prompt },
+    ],
+  });
 
-    const recommendations = gptResponse.data.choices[0].text
-      .trim()
-      .split("\n")
-      .filter((item) => item);
-    return recommendations.length > 0 ? recommendations : [];
-  } catch (error) {
-    console.error("Error calling OpenAI API:", error);
-    throw error; // Proper error handling
+  const convertedResponse = convertTextToObject(
+    response.choices[0].message.content
+  );
+  return convertedResponse;
+}
+
+function convertTextToObject(text) {
+  // Remove newline characters and escape characters from the text
+  const sanitizedText = text
+    .replace(/\\n|\\/g, "")
+    .trim()
+    .replace(/^```json\s+/, "")
+    .replace(/\s+```$/, "");
+  const obj = JSON.parse(sanitizedText);
+  return extractValues(obj);
+}
+
+function extractValues(obj) {
+  let result = [];
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key) && Array.isArray(obj[key])) {
+      result.push(...obj[key]);
+    }
   }
-};
+  return result;
+}
 
-module.exports = router;
+module.exports = {
+  recommendation1,
+  recommendation2,
+  revised_generated_recommendation,
+  extractValues,
+};
