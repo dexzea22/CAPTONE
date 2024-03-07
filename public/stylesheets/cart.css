@@ -524,5 +524,11 @@ text-align: center;
   border-radius: 3px;
   background-color: rgb(47, 255, 71);
 }
-
+#payment-modal {
+  overflow-y: auto; /* Enables vertical scrolling if content overflows */
+  margin: auto; /* Centers the modal */
+  padding: 20px; /* Padding inside the modal */
+  border-radius: 5px; /* Optional: rounds the corners of the modal */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: adds a shadow to the modal */
+}
   
