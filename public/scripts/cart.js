@@ -1,31 +1,30 @@
-const menuToggle = document.querySelector('.menu-toggle');
-const menu = document.querySelector('.menu');
-  
+document.addEventListener("DOMContentLoaded", function() {
+  // Select the menu toggle button and the menu elements
+  const menuToggle = document.querySelector('.menu-toggle');
+  const menu = document.querySelector('.menu');
+  const sideMenu = document.querySelector(".side-menu");
+
+  // Event listener for toggling the main menu
   menuToggle.addEventListener('click', () => {
-    menu.classList.toggle('show');
+      menu.classList.toggle('show');
+      sideMenu.classList.toggle("show"); // Toggle side menu at the same time
   });
-  document.addEventListener("DOMContentLoaded", function() {
-    var menuToggle = document.querySelector(".menu-toggle");
-    var sideMenu = document.querySelector(".side-menu");
-  
-    if (menuToggle) {
-      menuToggle.addEventListener("click", function() {
-        sideMenu.classList.toggle("show");
-      });
-    }
-  
-    // Check screen size on initial load and hide the menu if the screen is big
-    checkScreenSize();
-    
-    // Check screen size when the window is resized
-    window.addEventListener('resize', checkScreenSize);
-  
-    function checkScreenSize() {
+
+  // Function to check screen size and adjust menu visibility
+  function checkScreenSize() {
       if (window.innerWidth > 768) {
-        sideMenu.classList.remove("show");
+          sideMenu.classList.remove("show"); // Hide side menu on larger screens
+          menu.classList.remove("show"); // Consider if you also want to auto-hide the main menu on larger screens
       }
-    }
-  });
+  }
+
+  // Initial check to apply correct menu state based on current screen size
+  checkScreenSize();
+
+  // Listen for window resize events to adjust menu visibility
+  window.addEventListener('resize', checkScreenSize);
+});
+
 // Function to open the profile modal
 function openProfileModal() {
   document.getElementById('profileModal').style.display = 'block';
@@ -49,293 +48,183 @@ window.addEventListener('click', function(event) {
     closeProfileModal();
   }
 });
-var cartItems = getCartItemsFromStorage() || [];
 
-updateCartCounter();
-
-function updateCartCounter() {
-  var cartCounter = document.getElementById("cart-counter");
-
-  if (cartCounter) {
-    // Check if cartItems is not null and has items
-    if (cartItems && cartItems.length > 0) {
-      var totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
-      cartCounter.textContent = totalItems.toString();
-      cartCounter.style.display = 'inline'; // Show the counter
-    } else {
-      // If cart is null or empty, hide the counter
-      cartCounter.style.display = 'none';
-    }
-  }
+  // Assumes user session management is properly set up and a userId is stored in the session
+  function getUserId() {
+    // This function should retrieve the user ID from your session. 
+    // The implementation depends on how you're managing sessions (e.g., cookies, local storage, etc.)
+    // As an example, if you're using cookies that include the user ID:
+    // return getCookie("userId"); // Implement getCookie() accordingly
+    // Since you're using server-side sessions, this would typically be managed by your server logic instead.
+    // For demonstration purposes, we'll assume it's available as a global variable:
+    return window.userId; // Ensure this is securely managed and assigned.
 }
 
-function addToCart(itemName, cardId) {
-  var selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
-  // Get the image URL based on the cardId
-  var imageUrl = document.querySelector(`#${cardId} img[src^="images/"]`).getAttribute('src');
-
-  if (selectedSize) {
-    var selectedSizeValue = selectedSize.value;
-    var [size, price] = selectedSizeValue.split('-');
-    var numericPrice = parseFloat(price);
-
-    var item = {
-      name: itemName,
-      size: size,
-      price: numericPrice,
-      image: imageUrl,  // Include the image URL
-      quantity: 1,  // Default quantity is set to 1
-    };
-
-    // Check if the addition of the new item exceeds the total price limit
-    var currentTotalPrice = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    if (currentTotalPrice + numericPrice > 10000) {
-      // Alert the user that the total price limit will be exceeded
-      Swal.fire({
-        icon: 'error',
-        title: 'Limit Exceeded',
-        text: 'Adding this item will exceed the total cart limit of ₱10,000.',
-        showConfirmButton: true,
-      });
-      return; // Prevent adding the item to the cart
-    }
-
-    cartItems.push(item);
-    updateCartDisplay();
-    saveCartItemsToStorage(cartItems);
-
-    // Show SweetAlert notification using the unique lightbox ID
-    Swal.fire({
-      icon: 'success',
-      title: 'Item Added to Cart',
-      text: `${itemName} ${size} has been added to your cart.`,
-      showConfirmButton: true,
-    });
-  } else {
-    // Replace the alert with SweetAlert
-    Swal.fire({
-      icon: 'warning',
-      title: 'Oops...',
-      text: 'Please select a size before adding to the cart.',
-      showConfirmButton: false,
-      timer: 2000,
-    });
-  }
-  updateCartCounter();
-  updateItemCounter();
-}
 
 
 function updateCartDisplay() {
-  var cartList = document.getElementById("mod-cart-items");
-  var totalAmount = document.getElementById("total-amount");
-  var hiddentotal= document.getElementById("total-amounthidden");
-  cartList.innerHTML = "";
-  var totalPrice = 0;
+        const userId = getUserId();
+        if (!userId) {
+            console.error("User ID not found");
+            return;
+        }
 
-  console.log("cartList:", cartList);
-  console.log("totalAmount:", totalAmount);
-  console.log("hiddentotal:", hiddentotal);
-  
+        fetch(`/api/cart/items/${userId}`, {
+            method: 'GET',
+            credentials: 'include', // Necessary for sessions to work
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.length > 0) {
+                renderCartItems(data);
+                updateItemCounter(data);
+            } else {
+                console.log("Cart is empty");
+                // Handle empty cart scenario
+            }
+        })
+        .catch(error => console.error('Error fetching cart items:', error));
+    }
 
-  for (var i = 0; i < cartItems.length; i++) {
-    var div = document.createElement("div");
-    // Add numbering to the items
-    var itemNumber = i + 1;
-    // Compute the total price based on quantity
-    var totalItemPrice = (cartItems[i].quantity || 1) * cartItems[i].price;
-    // Display the item name, size, quantity, and formatted price
-    var itemInfo = document.createElement("span");
-    itemInfo.innerHTML = `${itemNumber}. ${cartItems[i].name} : ${cartItems[i].size} Quantity: ${cartItems[i].quantity || 1} Price:₱${totalItemPrice.toLocaleString()}`;
-    itemInfo.style.textDecoration = "underline"; // Add underline style
-    itemInfo.style.fontWeight = "Bold"; // Add underline style
-
-    var imageElement = document.createElement("img");
-    imageElement.src = cartItems[i].image; 
-    imageElement.alt = "Product Image";
-    div.appendChild(imageElement);
-    imageElement.classList.add("imgs"); // Add your custom class here
-
-
-    // Add a delete button for each item
-    var deleteButton = createDeleteButton(i);
-    // Add increment and decrement buttons
-    var incrementButton = createIncrementButton(i);
-    var decrementButton = createDecrementButton(i);
-
-    div.appendChild(itemInfo);
-    div.appendChild(deleteButton);
-    div.appendChild(incrementButton);
-    div.appendChild(decrementButton);
-
-    cartList.appendChild(div);
-
-    totalPrice += cartItems[i].price * (cartItems[i].quantity || 1);
+    function updateCartCounter(userId) {
+      fetch(`/api/cart/items/${userId}`, {
+          method: 'GET',
+          credentials: 'include', // Necessary for sessions
+      })
+      .then(response => response.json())
+      .then(cartItems => {
+          const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+          document.getElementById("cart-counter").textContent = totalItems;
+      })
+      .catch(error => console.error('Error updating cart counter:', error));
   }
 
-  totalAmount.innerHTML = "<strong>₱" + totalPrice.toLocaleString() + "</strong>";
-  totalAmount.setAttribute('data-numeric-value', totalPrice);
-  
-  hiddentotal.innerHTML = totalPrice;
-  console.log(hiddentotal.innerHTML);
-  updateCartCounter();
-  updateItemCounter();
-}
-
-
- // Function to create an increment button for a specific item
- function createIncrementButton(index) {
-  var incrementButton = document.createElement("button");
-  incrementButton.classList.add("inc"); // Add your custom class here
-
-  incrementButton.textContent = "+";
-  incrementButton.addEventListener("click", function () {
-    incrementItem(index);
-  });
-  return incrementButton;
-}
-
-// Function to create a decrement button for a specific item
-function createDecrementButton(index) {
-  var decrementButton = document.createElement("button");
-  decrementButton.classList.add("inc"); // Add your custom class here
-
-  decrementButton.textContent = "-";
-  decrementButton.addEventListener("click", function () {
-    decrementItem(index);
-  });
-  return decrementButton;
-}
-// Function to increment the quantity of a specific item
-function incrementItem(index) {
-  // Calculate what the new total price would be if the item is incremented
-  var potentialNewTotalPrice = (cartItems[index].quantity + 1) * cartItems[index].price;
-  var currentTotalPrice = cartItems.reduce((total, item, currentIndex) => {
-    return total + (currentIndex === index ? potentialNewTotalPrice : item.quantity * item.price);
-  }, 0);
-
-  // Check if the potential new total price exceeds 15,000
-  if (currentTotalPrice > 10000) {
-    // Alert the user that they cannot add more of this item
-    Swal.fire({
-      icon: 'error',
-      title: 'Limit Reached',
-      text: `Adding another ${cartItems[index].name} would exceed the total cart limit of ₱10,000.`,
-      showConfirmButton: true,
+  function renderCartItems(cartItems) {
+    const cartList = document.getElementById("mod-cart-items");
+    cartList.innerHTML = ""; // Clear the cart list first
+    cartItems.forEach(item => {
+        // Render each cart item as needed
     });
-    return; // Stop the function here to prevent adding more
-  }
+}
 
-  // If the limit is not reached, increment the quantity and update the total price
-  cartItems[index].quantity += 1;
-  cartItems[index].totalPrice = cartItems[index].quantity * cartItems[index].price; // Update total price
-
-  // Update the cart display and save the new cart state
-  updateCartDisplay();
-  saveCartItemsToStorage(cartItems);
-  updateCartCounter();
-  updateItemCounter();
+function deleteCartItem(itemId) {
+  const userId = getUserId();
+  fetch(`/api/cart/delete/${userId}/${itemId}`, {
+      method: 'DELETE',
+      credentials: 'include', // Necessary for sessions
+  })
+  .then(response => {
+      if (!response.ok) throw new Error('Failed to delete cart item');
+      console.log("Cart item deleted successfully");
+      updateCartDisplay(userId);
+      updateCartCounter(userId);
+  })
+  .catch(error => {
+      console.error("Error deleting cart item:", error);
+  });
 }
 
 
-function decrementItem(index) {
-if (cartItems[index].quantity > 1) {
-  cartItems[index].quantity -= 1;
-  cartItems[index].totalPrice = cartItems[index].quantity * cartItems[index].price; // Update total price
-} else {
-  deleteCartItem(index);
-}
-updateCartDisplay();
-saveCartItemsToStorage(cartItems);
-updateCartCounter();
-updateItemCounter();
-}
+// function openCartModal() {
+//   // Assumes cart data is already updated, simply checks if modal should open
+//   const userId = 'yourUserIdHere'; // Replace with actual logic to retrieve user ID
+//   fetch(`/api/cart/${userId}`)
+//       .then(response => response.json())
+//       .then(cartItems => {
+//           if (cartItems.length > 0) {
+//               console.log("Redirecting to /cart");
+//               window.location.href = '/cart';
+//           } else {
+//               console.log("Cart is empty");
+//               Swal.fire({
+//                   icon: 'warning',
+//                   title: 'Your cart is empty!',
+//                   text: 'Please add food to your cart first.',
+//                   showConfirmButton: true,
+//               });
+//           }
+//       })
+//       .catch(error => {
+//           console.error("Error checking cart items:", error);
+//           alert('Failed to check cart items. Please try again.');
+//       });
+// }
 
-
-// Function to create a delete button for a specific item
-function createDeleteButton(index) {
-var deleteButton = document.createElement("i");
-var icon = document.createElement("i");
-// Set the icon class
-icon.classList.add("fas", "fa-trash");
-// Style the icon to be red
-icon.style.color = "red";
-// Append the icon to the delete button
-deleteButton.appendChild(icon);
-
-// Add classes and styles to position the button
-deleteButton.classList.add("delete-icon");
-deleteButton.style.float = "right"; 
-deleteButton.style.marginLeft = "15px";  
-deleteButton.style.cursor = "pointer";  
-
-// Add a click event to delete the item when the delete button is clicked
-deleteButton.addEventListener("click", function () {
-  deleteCartItem(index);
-});
-
-return deleteButton;
-}
-
-// Function to delete a specific item from the cart
-function deleteCartItem(index) {
-  cartItems.splice(index, 1);
-  console.log("Cart items after deletion:", cartItems);
-  updateCartDisplay();
-  updateCartCounter(); // Update the cart counter
-  updateItemCounter(); // Update the item counter
-  saveCartItemsToStorage(cartItems);
-}
-
-function updateItemCounter() {
-  var itemCounter = document.getElementById("item-counter");
-  if (itemCounter) {
-    var totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
-    itemCounter.textContent = totalItems.toString();
-  }
-}
-
-function saveCartItemsToStorage(items) {
-  localStorage.setItem("cartItems", JSON.stringify(items));
-}
-
-function getCartItemsFromStorage() {
-  var storedItems = localStorage.getItem("cartItems");
-  return storedItems ? JSON.parse(storedItems) : [];
-}
-
-function displayStoredItems() {
-  var storedItems = getCartItemsFromStorage();
-
-  if (storedItems.length > 0) {
-    cartItems = storedItems; // Update the global cartItems array
-    updateCartDisplay();
-    updateItemCounter()
-  }
-}
-
-window.onload = function () {
-  displayStoredItems();
-  updateCartCounter(); // Update the cart counter
-  updateItemCounter(); // Update the item counter
-};
+// Function to open cart modal
 function openCartModal() {
-  var cartItems = getCartItemsFromStorage() || [];
-  console.log("Cart Items:", cartItems);
-
-  if (cartItems.length > 0) {
-    console.log("Redirecting to /cart");
-    window.location.href = '/cart';
-  } else {
-    console.log("Cart is empty");
-    Swal.fire({
-      icon: 'warning',
-      title: 'Your cart is empty!',
-      text: 'Please add food to your cart first.',
-      showConfirmButton: true,
-    }); 
-  }
+  fetch('/api/cart/items')
+    .then(response => response.json())
+    .then(data => {
+      if (data && data.cartItems && data.cartItems.length > 0) {
+        console.log("Redirecting to /cart");
+        window.location.href = '/cart';
+      } else {
+        console.log("Cart is empty");
+        // Use SweetAlert to show the empty cart message
+        Swal.fire({
+          icon: 'warning',
+          title: 'Your cart is empty!',
+          text: 'Please add food to your cart first.',
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Optionally, you can add a redirect here if needed
+            console.log("Redirecting to /userMenu");
+            window.location.href = '/userMenu';
+          }
+        });
+      }
+    })
+    .catch(error => console.error('Error checking cart status:', error));
 }
+
+
+
+
+// Function to increment the quantity of a specific cart item
+
+function incrementItem(itemId) {
+  const userId = getUserId(); // Retrieve user ID as implemented in your context
+  fetch(`/api/cart/increment/${itemId}`, {
+      method: 'POST',
+      credentials: 'include', // Necessary for sessions
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }) // Assuming your API needs this
+  })
+  .then(response => {
+      if (!response.ok) throw new Error('Failed to increment item quantity');
+      console.log("Item quantity incremented successfully");
+      updateCartDisplay(userId);
+      updateCartCounter(userId);
+  })
+  .catch(error => console.error("Error incrementing item quantity:", error));
+}
+
+// Function to decrement the quantity of a specific cart item
+function decrementItem(itemId) {
+  const userId = getUserId(); // Retrieve user ID as implemented in your context
+  fetch(`/api/cart/decrement/${itemId}`, {
+      method: 'POST',
+      credentials: 'include', // Necessary for sessions
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }) // Assuming your API needs this
+  })
+  .then(response => {
+      if (!response.ok) throw new Error('Failed to decrement item quantity');
+      console.log("Item quantity decremented successfully");
+      updateCartDisplay(userId);
+      updateCartCounter(userId);
+  })
+  .catch(error => console.error("Error decrementing item quantity:", error));
+}
+
+// Make sure to call these functions in your HTML or UI event listeners as needed.
+
+
 
  // JavaScript function to create a star rating
  function createStarRating(containerId, rating) {

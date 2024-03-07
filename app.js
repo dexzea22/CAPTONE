@@ -1,4 +1,10 @@
 require("dotenv").config(); // This should be at the very top
+const mongoose = require('mongoose');
+// Use the DATABASE_URL from your .env file
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB...'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
+
 const openai = require("openai-api");
 
 var createError = require("http-errors");
@@ -29,6 +35,7 @@ var dietaryRouter = require("./routes/dietaryPreferences");
 const profileRouter = require("./routes/profile");
 const recommendationsRoute = require("./routes/recommendations");
 const cartRouter = require("./routes/cart");
+
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
@@ -90,8 +97,14 @@ app.get("/aboutUs", (req, res) => {
   res.render("aboutUs"); // Render a view named "new-page.ejs"
 });
 app.get("/cart", (req, res) => {
-  res.render("cart"); // Render a view named "new-page.ejs"
+  try {
+    res.render("cart");
+  } catch (error) {
+    console.error("Error rendering cart page:", error);
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
 });
+
 app.get("/recommendation", (req, res) => {
   res.render("recommendation"); // Render a view named "new-page.ejs"
 });
@@ -130,6 +143,7 @@ app.use(
   })
 );
 
+
 app.use("/", loginRouter);
 app.use("/", registerRouter);
 app.use("/", confirmoderinfoRouter);
@@ -138,7 +152,8 @@ app.use("/orders", ordersRouter);
 app.use("/", dietaryRouter); // Use the dietary routes
 app.use("/profile", profileRouter);
 app.use("/recommendations", recommendationsRoute);
-app.use("/cart", cartRouter);
+app.use("/api/cart", cartRouter);
+
 const generateAccessToken = async () => {
   try {
     if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {

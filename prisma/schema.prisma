@@ -18,33 +18,9 @@ model User {
   address           String?
   dateOfBirth       DateTime?
   phoneNumber       String?
-  confirmOrderInfo  ConfirmOrderInfo?
-  orders            Order[]
   dietaryPreference DietaryPreference?
-}
-
-model ConfirmOrderInfo {
-  id               String    @id @map("_id") @db.ObjectId
-  userId           String    @unique
-  firstname        String?
-  middlename       String?
-  lastname         String?
-  gender           String?
-  birthdate        DateTime
-  foodChoice       String[]  // Presumably IDs of FoodItems
-  deliveryAddress  String
-  specialRequests  String?
-  createdAt        DateTime  @default(now())
-  user             User?     @relation(fields: [userId], references: [id])
-}
-
-model Order {
-  id         String    @id @map("_id") @db.ObjectId
-  userId     String
-  products   Json      // This could be an array of product IDs or similar
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  user       User      @relation(fields: [userId], references: [id])
+  cartItems         CartItem[]          // Define the relation to CartItem
+  orders            Order[]
 }
 
 model Log {
@@ -55,39 +31,57 @@ model Log {
 }
 
 model DietaryPreference {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String   @unique
-  vegetarian        Boolean  @default(false)
-  vegan             Boolean  @default(false)
-  omnivore          Boolean  @default(false)
-  halal             Boolean  @default(false)
-  kosher            Boolean  @default(false)
-  glutenFree        Boolean  @default(false)
-  lactoseFree       Boolean  @default(false)
-  nutAllergy        Boolean  @default(false)
-  otherRestrictions String?  // Optional string for other restrictions
-  user              User     @relation(fields: [userId], references: [id])
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @unique
+  vegetarian        Boolean @default(false)
+  vegan             Boolean @default(false)
+  omnivore          Boolean @default(false)
+  halal             Boolean @default(false)
+  kosher            Boolean @default(false)
+  glutenFree        Boolean @default(false)
+  lactoseFree       Boolean @default(false)
+  nutAllergy        Boolean @default(false)
+  otherRestrictions String?
+  user              User    @relation(fields: [userId], references: [id])
 }
 
 model FoodItem {
-  id                  String     @id @default(auto()) @map("_id") @db.ObjectId
+  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
   name                String
   description         String?
   price               Float
-  category            Category?  @relation(fields: [categoryId], references: [id])
-  categoryId          String?
-  dietaryRestrictions String[]   // Array of DietaryRestriction IDs
+  size                String?     // Added size field here
+  category            String?     // Assuming simple string categories
+  dietaryRestrictions String[]    // Array of strings
   imageUrl            String?
+  cartItems           CartItem[]  // Define the relation to CartItem
+  orderItems          OrderItem[]
+  @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
 }
 
-model Category {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  name      String     @unique
-  foodItems FoodItem[]
+model CartItem {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String
+  itemId   String
+  quantity Int
+  user     User     @relation(fields: [userId], references: [id])
+  foodItem FoodItem @relation(fields: [itemId], references: [id]) // Define the relation to FoodItem
 }
 
-model DietaryRestriction {
-  id    String   @id @default(auto()) @map("_id") @db.ObjectId
-  name  String   @unique
-  // No need to reference FoodItems here, as the relation is stored in FoodItem
+model Order {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  orderItems  OrderItem[] 
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id])
+}
+
+model OrderItem {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId  String
+  itemId   String
+  quantity Int
+  foodItem FoodItem @relation(fields: [itemId], references: [id])
+  order    Order    @relation(fields: [orderId], references: [id])
 }

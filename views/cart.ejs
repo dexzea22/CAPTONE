@@ -41,7 +41,10 @@
         <a class="prof" href="/logout">Logout</a>
       </div>
     </div>
-    <a class="nav" onclick="openCart()" style=" margin:0.8% 0 0 0; font-size: 19px; cursor:pointer;color:#976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span></a>
+    <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;">
+      <i class="fas fa-shopping-cart fa-2x"></i>
+      <span id="cart-counter">0</span>
+  </a>
     <%- include('dietaryPreferences.ejs') %>
     <!-- <a class="nav" id="openDietaryModal" href="#">Dietary Preferences</a> -->
     <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
@@ -76,28 +79,38 @@
   </div>
   <div class="card"  id="cart-mod">
     <div class="row">
-        <div class="col-md-8 cart">
-            <div class="title">
-                <div class="row">
-                    <div class="col"><h4><b>My Cart</b></h4></div>
-                </div>
-            </div>    
-            <div class="row border-top border-bottom">
-                <div>
-                    <div class="col-2"><img class="img-fluid" src=""></div>
-                    <div>
-                      <div id="mod-cart-items"></div>
+      <div class="col-md-8 cart">
+        <div class="title">
+            <div class="row">
+                <div class="col"><h4><b>My Cart</b></h4></div>
+            </div>
+        </div>
+        <div id="mod-cart-items">
+            <% cartItems.forEach(cartItem => { %>
+                <div class="row border-top border-bottom">
+                    <div class="col-2">
+                        <img class="img-fluid" src="<%= cartItem.foodItem.imageUrl %>" alt="<%= cartItem.foodItem.name %>">
+                    </div>
+                    <div class="col-6">
+                        <h5><%= cartItem.foodItem.name %></h5>
+                        <p>Price: ₱<%= cartItem.foodItem.price.toLocaleString() %></p>
+                        <p>Quantity: <%= cartItem.quantity %></p>
                     </div>
                 </div>
-            </div>
-            <div class="back-to-shop"><a href="/userMenu"><i class="fas fa-arrow-left"></i>
-            </a><span>Back to shop</span></div>
+            <% }) %>
         </div>
-        <div class="col-md-4 summary">
-            <div><h5><b style="color: black;">Summary</b></h5></div>
-            <hr>
-            <div class="row">
-                <div class="col" style="padding-left: 0; font-weight:bold;color: black;">ITEMS <span id="item-counter">0</span></div>
+        <div class="back-to-shop">
+            <a href="/userMenu"><i class="fas fa-arrow-left"></i></a>
+            <span>Back to shop</span>
+        </div>
+    </div>
+    
+    <div class="col-md-4 summary">
+        <div><h5><b style="color: black;">Summary</b></h5></div>
+        <hr>
+        <div class="row">
+            <div class="col" style="padding-left: 0; font-weight:bold;color: black;">ITEMS <span id="item-counter">0</span></div>
+    
             </div>
             <form action="" method="">
             <label class="frm" for="">Shipping Address</label>
@@ -185,5 +198,6 @@ span.onclick = function(event) {
 <script src="scripts/cart.js"></script>
 <script src="scripts/index.js"></script>
 <script src="scripts/payment.js"></script>
+
 </body>
 </html>

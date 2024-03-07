@@ -40,7 +40,12 @@
           <a class="prof" href="/logout">Logout</a>
         </div>
       </div>
-      <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span>
+      <!-- <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span> -->
+        <a class="nav" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;" onclick="openCartModal()">
+          <i class="fas fa-shopping-cart fa-2x"></i>
+          <span id="cart-counter">0</span>
+      </a>
+      
       </a>
       <%- include('dietaryPreferences.ejs') %>
       <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
@@ -212,7 +217,7 @@
           </button>
         </div>
       </div>
-      <div class="cards" style="height: 475px" id="lsrm">
+       <div class="cards" style="height: 475px" id="lsrm">
         <img class="card-image" src="images/ls.jpg" alt="" />
         <div class="card-detail">
           <h4>Lumpiang Shanghai</h4>
@@ -224,9 +229,9 @@
           </div>
           <div class="rat" style="margin-top: 9%">
             <p>Rating:</p>
-            <div class="star-rating" id="starmls4">
+            <div class="star-rating" id="starmls4"> -->
               <!-- Star icons will be added here using JavaScript -->
-            </div>
+             </div>
           </div>
           <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
           <button class="cbtn">Order</button>
@@ -238,6 +243,7 @@
           </button>
         </div>
       </div>
+    
       <div class="cards" style="height: 475px" id="ptcrm">
         <img class="card-image" src="images/ptcrm.jpg" alt="" />
         <div class="card-detail">
@@ -276,36 +282,8 @@
         </div>
       </div>
     </div>
-    <script src="scripts/meals.js"></script>
-    <script>
-      // Get the cards initially
-      var cards = document.querySelectorAll('.cards');
-    
-      // Add event listener for keydown event
-      document.getElementById('menuSearchInput').addEventListener('keydown', function(event) {
-        // Check if Enter key is pressed (key code 13)
-        if (event.keyCode === 13) {
-          performSearch();
-        }
-      });
-    
-      function performSearch() {
-        // Get the value from the search input
-        var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
-    
-        // Perform your search logic here
-        // For demonstration, you can hide/show cards based on the search query
-        cards.forEach(function(card) {
-          var cardTitle = card.querySelector('h4').innerText.toLowerCase();
-          if (cardTitle.includes(searchQuery)) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      }
-    </script>
-  </body>
+  
+
   <div class="cntr" style="margin-top: 100px">
     <footer
       class="text-white text-center text-lg-start"
@@ -408,4 +386,48 @@
       <!-- Copyright -->
     </footer>
   </div>
+  <script src="scripts/meals.js"></script>
+  
+  <script>
+    // Get the cards initially
+    var cards = document.querySelectorAll('.cards');
+  
+    // Add event listener for keydown event
+    document.getElementById('menuSearchInput').addEventListener('keydown', function(event) {
+      // Check if Enter key is pressed (key code 13)
+      if (event.keyCode === 13) {
+        performSearch();
+      }
+    });
+  
+    function performSearch() {
+      // Get the value from the search input
+      var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
+  
+      // Perform your search logic here
+      // For demonstration, you can hide/show cards based on the search query
+      cards.forEach(function(card) {
+        var cardTitle = card.querySelector('h4').innerText.toLowerCase();
+        if (cardTitle.includes(searchQuery)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Example function to read selected size and price
+function getSelectedSizeAndPrice(cardId) {
+  const selected = document.querySelector(`#${cardId} input[name="size"]:checked`);
+  if (selected) {
+      const [size, price] = selected.value.split('-');
+      console.log(`Selected size: ${size}, Price: ${price}`);
+      // Now you can use size and price for further operations
+  } else {
+      console.log('No size selected');
+  }
+}
+
+  </script>
+  </body>
 </html>

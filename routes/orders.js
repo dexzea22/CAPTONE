@@ -6,27 +6,51 @@ const prisma = new PrismaClient();
 
 // Create an order
 router.post('/create', async (req, res) => {
-  const { userId, products } = req.body;
+  const { userId, items } = req.body; // items: array of { itemId, quantity }
+
   try {
+    // Validate userId and items
+    if (!userId || !items || !Array.isArray(items)) {
+      return res.status(400).json({ error: 'Invalid data' });
+    }
+
     const order = await prisma.order.create({
       data: {
-        userId,
-        products,
+        userId: userId,
+        orderItems: {
+          createMany: {
+            data: items.map(item => ({
+              itemId: item.itemId,
+              quantity: item.quantity,
+            })),
+          },
+        },
+      },
+      include: {
+        orderItems: true,
       },
     });
     res.json(order);
   } catch (error) {
-    res.status(500).json({ error: 'Error creating order' });
+    res.status(500).json({ error: 'Error creating order', details: error.message });
   }
 });
 
 // Get all orders
 router.get('/', async (req, res) => {
   try {
-    const orders = await prisma.order.findMany();
+    const orders = await prisma.order.findMany({
+      include: {
+        orderItems: {
+          include: {
+            foodItem: true,
+          },
+        },
+      },
+    });
     res.json(orders);
   } catch (error) {
-    res.status(500).json({ error: 'Error retrieving orders' });
+    res.status(500).json({ error: 'Error retrieving orders', details: error.message });
   }
 });
 
@@ -34,25 +58,62 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const order = await prisma.order.findUnique({ where: { id } });
-    res.json(order);
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        orderItems: {
+          include: {
+            foodItem: true,
+          },
+        },
+      },
+    });
+    if (order) {
+      res.json(order);
+    } else {
+      res.status(404).json({ error: 'Order not found' });
+    }
   } catch (error) {
-    res.status(500).json({ error: 'Error retrieving order' });
+    res.status(500).json({ error: 'Error retrieving order', details: error.message });
   }
 });
 
-// Update an order
+// Update an order (assuming updating the entire order's items)
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { userId, products } = req.body;
+  const { items } = req.body; // New set of items
+
   try {
-    const order = await prisma.order.update({
-      where: { id },
-      data: { userId, products },
+    // Validate items
+    if (!items || !Array.isArray(items)) {
+      return res.status(400).json({ error: 'Invalid data' });
+    }
+
+    // Delete existing items
+    await prisma.orderItem.deleteMany({
+      where: { orderId: id },
     });
-    res.json(order);
+
+    // Create new items
+    const updatedOrder = await prisma.order.update({
+      where: { id },
+      data: {
+        orderItems: {
+          createMany: {
+            data: items.map(item => ({
+              itemId: item.itemId,
+              quantity: item.quantity,
+            })),
+          },
+        },
+      },
+      include: {
+        orderItems: true,
+      },
+    });
+    res.json(updatedOrder);
   } catch (error) {
-    res.status(500).json({ error: 'Error updating order' });
+    res.status(500).json({ error: 'Error updating order', details: error.message });
   }
 });
 
@@ -60,10 +121,12 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const order = await prisma.order.delete({ where: { id } });
-    res.json(order);
+    await prisma.order.delete({
+      where: { id },
+    });
+    res.json({ message: 'Order deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Error deleting order' });
+    res.status(500).json({ error: 'Error deleting order', details: error.message });
   }
 });
 
