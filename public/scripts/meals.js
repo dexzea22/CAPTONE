@@ -247,31 +247,32 @@ window.onload = function () {
 };
 
 // Function to open cart modal
-async function openCartModal() {
+function openCartModal() {
   fetch('/api/cart/items')
-    .then(response => {
-      console.log("hello")
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       if (data && data.cartItems && data.cartItems.length > 0) {
         console.log("Redirecting to /cart");
         window.location.href = '/cart';
       } else {
+        console.log("Cart is empty");
         // Use SweetAlert to show the empty cart message
         Swal.fire({
           icon: 'warning',
           title: 'Your cart is empty!',
           text: 'Please add food to your cart first.',
           showConfirmButton: true,
-        });
+        })
       }
     })
     .catch(error => console.error('Error checking cart status:', error));
 }
+
+// Function to open cart page
+// function openCartPage() {
+//   console.log("Redirecting to /cart");
+//   window.location.href = '/cart';
+// }
 
 
 // Update the cart counter when the page loads

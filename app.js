@@ -91,7 +91,11 @@ app.get("/userTrays", (req, res) => {
   res.render("userTrays"); // Render a view named "new-page.ejs"
 });
 app.get("/userMeals", (req, res) => {
-  res.render("userMeals"); // Render a view named "new-page.ejs"
+  const userId = req.session.userId;
+  console.log('HelloWorld', userId)
+  
+  res.render("userMeals", {userId:'HelloWorld'}); // Render a view named "new-page.ejs"
+  
 });
 app.get("/aboutUs", (req, res) => {
   res.render("aboutUs"); // Render a view named "new-page.ejs"
