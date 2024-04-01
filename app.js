@@ -1,10 +1,4 @@
 require("dotenv").config(); // This should be at the very top
-const mongoose = require('mongoose');
-// Use the DATABASE_URL from your .env file
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB...'))
-  .catch(err => console.error('Could not connect to MongoDB...', err));
-
 const openai = require("openai-api");
 
 var createError = require("http-errors");
@@ -17,7 +11,7 @@ const paypal = require("paypal-rest-sdk");
 const app = express();
 const axios = require("axios");
 const cors = require("cors");
-
+const MongoStore = require('connect-mongo');
 const port = process.env.PORT || 8000;
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Now you can access the API key
@@ -35,7 +29,6 @@ var dietaryRouter = require("./routes/dietaryPreferences");
 const profileRouter = require("./routes/profile");
 const recommendationsRoute = require("./routes/recommendations");
 const cartRouter = require("./routes/cart");
-
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
@@ -91,24 +84,39 @@ app.get("/userTrays", (req, res) => {
   res.render("userTrays"); // Render a view named "new-page.ejs"
 });
 app.get("/userMeals", (req, res) => {
-  const userId = req.session.userId;
-  console.log('HelloWorld', userId)
-  
-  res.render("userMeals", {userId:'HelloWorld'}); // Render a view named "new-page.ejs"
-  
+  res.render("userMeals"); // Render a view named "new-page.ejs"
 });
+
+
+
+
 app.get("/aboutUs", (req, res) => {
   res.render("aboutUs"); // Render a view named "new-page.ejs"
 });
-app.get("/cart", (req, res) => {
+
+
+
+app.get('/cart', async (req, res) => {
   try {
-    res.render("cart");
+      // Ensure the user is authenticated and userId is set
+      const userId = req.session.userId;
+      if (!userId) {
+          // User is not authenticated or session does not contain userId
+          return res.status(401).json({ message: 'User not authenticated.' });
+      }
+
+      const cartItems = await prisma.cartItem.findMany({
+          where: { userId: userId },
+          include: { foodItem: true },
+      });
+
+      // Render the cart template and pass the cartItems data to it
+      res.render('cart', { cartItems });
   } catch (error) {
-    console.error("Error rendering cart page:", error);
-    res.status(500).json({ success: false, message: "Internal server error." });
+      console.error('Error fetching cart items:', error);
+      res.status(500).json({ message: 'Failed to fetch cart items.', error: error.message });
   }
 });
-
 app.get("/recommendation", (req, res) => {
   res.render("recommendation"); // Render a view named "new-page.ejs"
 });
@@ -121,17 +129,19 @@ app.get("/contactUs", (req, res) => {
 app.get("/contact", (req, res) => {
   res.render("contact"); // Render a view named "new-page.ejs"
 });
-app.use(
-  session({
-    secret: "secret-key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 86400000, // 24 hours
-    },
-  })
-);
-
+app.use(session({
+  secret: "secret-key", // Replace "secret-key" with a real secret string
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.DATABASE_URL // Use the DATABASE_URL from .env
+  }),
+  cookie: {
+    maxAge: 86400000, // 24 hours
+    secure: process.env.NODE_ENV === "production", // Enable secure cookies in production
+    httpOnly: true, // Prevent access to cookie via client-side JS
+  }
+}));
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -143,10 +153,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "http://localhost:8000",
+    origin: "http://localhost:3000",
   })
 );
-
 
 app.use("/", loginRouter);
 app.use("/", registerRouter);

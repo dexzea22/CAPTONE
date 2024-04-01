@@ -1,3 +1,4 @@
+
 const menuToggle = document.querySelector('.menu-toggle');
   const menu = document.querySelector('.menu');
   
@@ -77,6 +78,7 @@ createStarRating('starmls6', 5);
 function updateCartCounter() {
   fetch('/api/cart/items', {
     method: 'GET',
+    credentials: 'include', // Ensures cookies are sent with the request
     headers: {
       'Content-Type': 'application/json'
       // Include any necessary authentication headers
@@ -220,40 +222,45 @@ function deleteCartItem(itemId) {
 function fetchCartItemsAndUpdateUI() {
   fetch('/api/cart/items', {
       method: 'GET',
+      credentials: 'include', // Ensures cookies, such as session cookies, are sent with the request
       headers: {
           'Content-Type': 'application/json',
-          // Include any additional headers like authentication tokens here
       }
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Failed to fetch cart items: ${response.statusText}`);
+    }
+    return response.json();
+  })
   .then(cartItems => {
-      updateCartDisplay(cartItems);
-      updateCartCounter(cartItems);
+    updateCartDisplay(cartItems);
+    updateCartCounter(cartItems);
   })
   .catch(error => console.error('Error fetching cart items:', error));
 }
 
-function updateItemCounter(cartItems) {
-  var itemCounter = document.getElementById("item-counter");
-  if (itemCounter) {
-    var totalItems = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
-    itemCounter.textContent = totalItems.toString();
-    itemCounter.style.display = totalItems > 0 ? 'inline' : 'none';
-  }
-}
 
 window.onload = function () {
   fetchCartItemsAndUpdateUI(); // Fetch cart items from the server and update UI accordingly
 };
 
-// Function to open cart modal
-function openCartModal() {
+/// Function to open cart page
+function openCartPage() {
   fetch('/api/cart/items')
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch cart items.');
+      }
+      return response.json();
+    })
     .then(data => {
-      if (data && data.cartItems && data.cartItems.length > 0) {
+      console.log('Response from server:', data); // Log the response from the server
+      
+      // Check if data is an array and has items
+      if (data && Array.isArray(data) && data.length > 0) {
         console.log("Redirecting to /cart");
-        window.location.href = '/cart';
+        window.location.href = '/cart'; // Redirect to /cart page
       } else {
         console.log("Cart is empty");
         // Use SweetAlert to show the empty cart message
@@ -265,21 +272,28 @@ function openCartModal() {
         })
       }
     })
-    .catch(error => console.error('Error checking cart status:', error));
+    .catch(error => {
+      console.error('Error checking cart status:', error);
+      // Handle error: show error message using SweetAlert
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to fetch cart items. Please try again later.',
+        showConfirmButton: true,
+      });
+    });
 }
 
-// Function to open cart page
-// function openCartPage() {
-//   console.log("Redirecting to /cart");
-//   window.location.href = '/cart';
-// }
+// Event listener to trigger cart view when user clicks the cart
+document.getElementById('cart-button').addEventListener('click', viewCart);
+
 
 
 // Update the cart counter when the page loads
 window.onload = function() {
   updateCartCounter();
 };
-
+s
 
 // Function to update cart display
 function updateCartDisplay(cartItems) {

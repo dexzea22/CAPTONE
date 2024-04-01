@@ -8,20 +8,14 @@ const bcrypt = require('bcrypt');
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-app.use(session({
-  secret: 'secret-key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 86400000 // 24 hours
-  }
-}));
 
 // Middleware to check if user is authenticated
 function authenticate(req, res, next) {
+  console.log('Session:', req.session);
   if (!req.session.userId) {
     return res.redirect('/login');
   } else {
+    console.log('User authenticated with userId:', req.session.userId);
     next();
   }
 }
@@ -49,65 +43,51 @@ async function restrictAccess(userType, req, res, next) {
 }
 
 /* GET home page. */
-router.get('/login', async function(req, res, next) {
+router.get('/login', async function (req, res, next) {
+  console.log('Session:', req.session);
   var users = await prisma.User.findMany();
   if (req.session.userId) {
-    return res.redirect('/UserDashboard');
+      console.log('User logged in with userId:', req.session.userId);
+      return res.redirect('/UserDashboard');
   } else {
-    res.render('index', { title: 'Express', users: users });
+      res.render('index', { title: 'Express', users: users });
   }
 });
 
-router.post('/login', async function(req, res, next) {
+/* POST login page. */
+router.post('/login', async function (req, res, next) {
   const { email, password } = req.body;
 
-  // check if user already has an active session
-  if (req.session.userId) {
-    const user = await prisma.User.findUnique({
-      where: { id: req.session.userId },
-    });
-
-    if (user.usertype === 'Admin') {
-      return res.redirect('/adminDashboard');
-    } else if (user.usertype === 'Manager') {
-      return res.redirect('/managerDashboard');
-    } else {
-      return res.redirect('/UserDashboard');
-    }
-  } else {
-    try {
+  try {
       const user = await prisma.User.findUnique({
-        where: { email: email },
+          where: { email: email },
       });
 
       if (!user) {
-        return res.render('index', { errorMessage: 'Incorrect Email / Password.' });
-      } else {
-        const match = await bcrypt.compare(password, user.password);
-        if (match) {
-          const userId = user.id;
-          req.session.userId = userId;
-          console.log(req.session.userId);
-
-          // check user role and redirect to appropriate page
-          if (user.usertype === 'Admin') {
-            return res.redirect('/adminDashboard');
-          } else if (user.usertype === 'Manager') {
-            return res.redirect('/managerDashboard');
-          } else {
-            return res.redirect('/UserDashboard');
-          }
-        } else {
-          return res.render('index', { errorMessage: 'Incorrect Password.' });
-        }
+          return res.render('index', { errorMessage: 'Incorrect Email / Password.' });
       }
-    } catch (err) {
-      console.error(err);
-      console.log(req.session.userId);
-      return res.render('index', { errorMessage: `Something went wrong: ${err.message}` });
-    }
+
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+          return res.render('index', { errorMessage: 'Incorrect Password.' });
+      }
+
+      // Set the userId in the session
+      req.session.userId = user.id;
+
+      // Redirect based on user type
+      const redirectUrl = user.usertype === 'Admin' ? '/adminDashboard' :
+          user.usertype === 'Manager' ? '/managerDashboard' :
+              '/UserDashboard';
+      return res.redirect(redirectUrl);
+  } catch (error) {
+      console.error('Error logging in:', error);
+      return res.render('error', { errorMessage: 'Error logging in. Please try again.' });
   }
 });
+
+
+
 
 router.get('/logout', async (req, res) => {
   try {
@@ -260,6 +240,22 @@ router.get('/UserDashboard', authenticate, restrictAccess.bind(null, 'User'), as
     return res.status(500).send('Internal server error');
   }
 });
+
+/* Protected route for user meals */
+router.get('/userMeals', authenticate, restrictAccess.bind(null, 'User'), async (req, res) => {
+  try {
+    // Your data retrieval logic for user meals goes here...
+    // Example: const userMeals = await fetchUserMeals(req.session.userId);
+    // Adjust this based on your actual implementation
+
+    // Render the userMeals template with the retrieved data
+    res.render('userMeals', { userMeals }); // Adjust this based on your actual implementation
+  } catch (error) {
+    console.error('Error fetching user meals:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
 
 app.use('/', router);
 module.exports = app;

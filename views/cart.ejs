@@ -41,10 +41,11 @@
         <a class="prof" href="/logout">Logout</a>
       </div>
     </div>
-    <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;">
-      <i class="fas fa-shopping-cart fa-2x"></i>
-      <span id="cart-counter">0</span>
-  </a>
+    <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;"
+    onclick="openCartPage()">
+    <i class="fas fa-shopping-cart fa-2x"></i>
+    <span id="cart-counter">0</span>
+</a>
     <%- include('dietaryPreferences.ejs') %>
     <!-- <a class="nav" id="openDietaryModal" href="#">Dietary Preferences</a> -->
     <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
@@ -79,38 +80,28 @@
   </div>
   <div class="card"  id="cart-mod">
     <div class="row">
-      <div class="col-md-8 cart">
-        <div class="title">
-            <div class="row">
-                <div class="col"><h4><b>My Cart</b></h4></div>
-            </div>
-        </div>
-        <div id="mod-cart-items">
-            <% cartItems.forEach(cartItem => { %>
-                <div class="row border-top border-bottom">
-                    <div class="col-2">
-                        <img class="img-fluid" src="<%= cartItem.foodItem.imageUrl %>" alt="<%= cartItem.foodItem.name %>">
-                    </div>
-                    <div class="col-6">
-                        <h5><%= cartItem.foodItem.name %></h5>
-                        <p>Price: ₱<%= cartItem.foodItem.price.toLocaleString() %></p>
-                        <p>Quantity: <%= cartItem.quantity %></p>
+        <div class="col-md-8 cart">
+            <div class="title">
+                <div class="row">
+                    <div class="col"><h4><b>My Cart</b></h4></div>
+                </div>
+            </div>    
+            <div class="row border-top border-bottom">
+                <div>
+                    <div class="col-2"><img class="img-fluid" src=""></div>
+                    <div>
+                      <div id="mod-cart-items"></div>
                     </div>
                 </div>
-            <% }) %>
+            </div>
+            <div class="back-to-shop"><a href="/userMenu"><i class="fas fa-arrow-left"></i>
+            </a><span>Back to shop</span></div>
         </div>
-        <div class="back-to-shop">
-            <a href="/userMenu"><i class="fas fa-arrow-left"></i></a>
-            <span>Back to shop</span>
-        </div>
-    </div>
-    
-    <div class="col-md-4 summary">
-        <div><h5><b style="color: black;">Summary</b></h5></div>
-        <hr>
-        <div class="row">
-            <div class="col" style="padding-left: 0; font-weight:bold;color: black;">ITEMS <span id="item-counter">0</span></div>
-    
+        <div class="col-md-4 summary">
+            <div><h5><b style="color: black;">Summary</b></h5></div>
+            <hr>
+            <div class="row">
+                <div class="col" style="padding-left: 0; font-weight:bold;color: black;">ITEMS <span id="item-counter">0</span></div>
             </div>
             <form action="" method="">
             <label class="frm" for="">Shipping Address</label>
@@ -152,69 +143,51 @@
 </form>
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {
-      // Flag to track if buttons have been added
-      var buttonsAdded = false;
-  
-      // Get the modal
-      var modal = document.getElementById("payment-modal");
-  
-      // Get the button that opens the modal
-      var btn = document.getElementById("checkoutButton");
-  
-      // Get the <span> element that closes the modal
-      var span = document.getElementsByClassName("close-button")[1];
-  
-      // Function to add buttons to the modal
-      function addButtonsToModal() {
-          if (!buttonsAdded) {
-              // Your logic to add buttons goes here.
-              // For example:
-              // var button = document.createElement("button");
-              // button.innerText = "New Button";
-              // modal.appendChild(button);
-  
-              // Mark that buttons have been added so we don't add them again
-              buttonsAdded = true;
-          }
-      }
-  
-      if (btn && modal && span) {
-          // When the user clicks the button, open the modal 
-          btn.onclick = function(event) {
-              event.preventDefault();  // Prevent any default button action
-              modal.style.display = "block";
-              addButtonsToModal(); // Call the function to add buttons if not already added
-          }
-  
-          // When the user clicks on <span> (x), close the modal
-          span.onclick = function(event) {
-              event.preventDefault();  // Prevent any default span action
-              modal.style.display = "none";
-          };
-  
-          // When the user clicks anywhere outside of the modal, close it
-          window.onclick = function(event) {
-              if (event.target == modal) {
-                  event.preventDefault();  // Prevent any default window action
-                  modal.style.display = "none";
-              }
-          }
-  
-          // Prevent events inside the modal from closing it and stop propagation
-          modal.children[0].onclick = function(event) {
-              event.stopPropagation();
-              event.preventDefault();  // Prevent any default action inside the modal
-          }
-      } else {
-          console.error("Elements not found. Please check the IDs and class names.");
-      }
-  });
-  </script>
-  
+    // Get the modal
+    var modal = document.getElementById("payment-modal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("checkoutButton");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close-button")[0];
+
+    if (btn && modal && span) {
+        // When the user clicks the button, open the modal 
+        btn.onclick = function(event) {
+            event.preventDefault();  // Prevent any default button action
+            modal.style.display = "block";
+        }
+
+     // When the user clicks on <span> (x), close the modal
+span.onclick = function(event) {
+    event.preventDefault();  // Prevent any default span action
+    modal.style.display = "none";
+};
+
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                event.preventDefault();  // Prevent any default window action
+                modal.style.display = "none";
+            }
+        }
+
+        // Prevent events inside the modal from closing it and stop propagation
+        modal.children[0].onclick = function(event) {
+            event.stopPropagation();
+            event.preventDefault();  // Prevent any default action inside the modal
+        }
+    } else {
+        console.error("Elements not found. Please check the IDs and class names.");
+    }
+});
+
+</script>
 <script src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o&currency=PHP"></script>
 <script src="scripts/cart.js"></script>
 <script src="scripts/index.js"></script>
 <script src="scripts/payment.js"></script>
-
 </body>
 </html>
