@@ -57,24 +57,16 @@ router.get('/login', async function (req, res, next) {
 /* POST login page. */
 router.post('/login', async function (req, res, next) {
   const { email, password } = req.body;
-
   try {
-      const user = await prisma.User.findUnique({
-          where: { email: email },
-      });
-
+      const user = await prisma.User.findUnique({ where: { email: email } });
       if (!user) {
           return res.render('index', { errorMessage: 'Incorrect Email / Password.' });
       }
-
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
           return res.render('index', { errorMessage: 'Incorrect Password.' });
       }
-
-      // Set the userId in the session
-      req.session.userId = user.id;
-
+      req.session.userId = user.id; // Set the userId in the session
       // Redirect based on user type
       const redirectUrl = user.usertype === 'Admin' ? '/adminDashboard' :
           user.usertype === 'Manager' ? '/managerDashboard' :
@@ -85,6 +77,7 @@ router.post('/login', async function (req, res, next) {
       return res.render('error', { errorMessage: 'Error logging in. Please try again.' });
   }
 });
+
 
 
 
@@ -241,20 +234,7 @@ router.get('/UserDashboard', authenticate, restrictAccess.bind(null, 'User'), as
   }
 });
 
-/* Protected route for user meals */
-router.get('/userMeals', authenticate, restrictAccess.bind(null, 'User'), async (req, res) => {
-  try {
-    // Your data retrieval logic for user meals goes here...
-    // Example: const userMeals = await fetchUserMeals(req.session.userId);
-    // Adjust this based on your actual implementation
 
-    // Render the userMeals template with the retrieved data
-    res.render('userMeals', { userMeals }); // Adjust this based on your actual implementation
-  } catch (error) {
-    console.error('Error fetching user meals:', error);
-    res.status(500).send('Internal server error');
-  }
-});
 
 
 app.use('/', router);

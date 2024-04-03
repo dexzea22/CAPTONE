@@ -140,14 +140,14 @@ function addToCart(itemName, cardId) {
     if (data.success) {
       // Update cart counter
       updateCartCounter(); // Call the function to update the cart counter
-      // Update UI based on the response
-      updateCartDisplay();
+      // Optionally, refresh the cart UI here
+      // If you want to refresh the cart UI, you can call your updateCartDisplay function here
+      // updateCartDisplay();
       Swal.fire({
         icon: 'success',
         title: 'Item Added to Cart',
         text: `${itemName} ${size} has been added to your cart.`,
       });
-      // Optionally, refresh the cart UI here
     } else {
       Swal.fire({
         icon: 'error',
@@ -165,7 +165,10 @@ function addToCart(itemName, cardId) {
     });
   });
 }
+
 // addtoCart //
+
+
 
 // Assuming cartItem has an ID and you have an API endpoint set up for these actions
 
@@ -220,27 +223,34 @@ function deleteCartItem(itemId) {
 
 // Function to fetch cart items from the server and update UI
 function fetchCartItemsAndUpdateUI() {
+  console.log('Fetching cart items...');
   fetch('/api/cart/items', {
-      method: 'GET',
-      credentials: 'include', // Ensures cookies, such as session cookies, are sent with the request
-      headers: {
-          'Content-Type': 'application/json',
-      }
+    method: 'GET',
+    credentials: 'include', // Ensures cookies, such as session cookies, are sent with the request
+    headers: {
+        'Content-Type': 'application/json',
+    }
   })
-  .then(response => {
+.then(response => {
+    console.log('Received response from server:', response);
     if (!response.ok) {
       throw new Error(`Failed to fetch cart items: ${response.statusText}`);
     }
     return response.json();
   })
-  .then(cartItems => {
-    updateCartDisplay(cartItems);
-    updateCartCounter(cartItems);
+.then(cartItems => {
+    console.log('Received cart items:', cartItems);
+    if (cartItems && cartItems.length > 0 && cartItems[0] && cartItems[0].userId) {
+      updateCartDisplay(cartItems);
+      updateCartCounter(cartItems);
+    } else {
+      console.error('Error fetching cart items:', 'No items in cart');
+    }
   })
-  .catch(error => console.error('Error fetching cart items:', error));
+.catch(error => {
+    console.error('Error fetching cart items:', error);
+  });
 }
-
-
 window.onload = function () {
   fetchCartItemsAndUpdateUI(); // Fetch cart items from the server and update UI accordingly
 };
@@ -304,24 +314,26 @@ function updateCartDisplay(cartItems) {
 
   if (cartItems && cartItems.length > 0) {
     cartItems.forEach((item, index) => {
-      var div = document.createElement("div");
-      var itemNumber = index + 1;
-      var totalItemPrice = item.quantity * item.foodItem.price;
-      var itemInfo = document.createElement("span");
-      itemInfo.innerHTML = `${itemNumber}. ${item.foodItem.name} : ${item.foodItem.size} Quantity: ${item.quantity} Price: ₱${totalItemPrice.toLocaleString()}`;
-      itemInfo.style.textDecoration = "underline";
-      itemInfo.style.fontWeight = "bold";
+      if (item && item.userId) {
+        var div = document.createElement("div");
+        var itemNumber = index + 1;
+        var totalItemPrice = item.quantity * item.foodItem.price;
+        var itemInfo = document.createElement("span");
+        itemInfo.innerHTML = `${itemNumber}. ${item.foodItem.name} : ${item.foodItem.size} Quantity: ${item.quantity} Price: ₱${totalItemPrice.toLocaleString()}`;
+        itemInfo.style.textDecoration = "underline";
+        itemInfo.style.fontWeight = "bold";
 
-      var imageElement = document.createElement("img");
-      imageElement.src = item.foodItem.imageUrl;
-      imageElement.alt = "Product Image";
-      div.appendChild(imageElement);
-      imageElement.classList.add("imgs");
+        var imageElement = document.createElement("img");
+        imageElement.src = item.foodItem.imageUrl;
+        imageElement.alt = "Product Image";
+        div.appendChild(imageElement);
+        imageElement.classList.add("imgs");
 
-      div.appendChild(itemInfo);
-      cartList.appendChild(div);
+        div.appendChild(itemInfo);
+        cartList.appendChild(div);
 
-      totalPrice += totalItemPrice;
+        totalPrice += totalItemPrice;
+      }
     });
   } else {
     var emptyCartMessage = document.createElement("p");

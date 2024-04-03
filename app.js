@@ -1,5 +1,9 @@
 require("dotenv").config(); // This should be at the very top
 const openai = require("openai-api");
+const { PrismaClient } = require('@prisma/client'); // Import PrismaClient
+
+const prisma = new PrismaClient(); // Initialize PrismaClient
+
 
 var createError = require("http-errors");
 const express = require("express");
@@ -32,6 +36,21 @@ const cartRouter = require("./routes/cart");
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
+
+// Configure session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || "secret-key",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.DATABASE_URL,
+  }),
+  cookie: {
+    maxAge: 86400000, // 24 hours
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  }
+}));
 
 // Correct usage with 'app'
 app.get("/", (req, res) => {
@@ -94,22 +113,28 @@ app.get("/aboutUs", (req, res) => {
   res.render("aboutUs"); // Render a view named "new-page.ejs"
 });
 
+// Middleware to check if user is authenticated
+function authenticate(req, res, next) {
+  console.log('Session:', req.session);
+  if (!req.session.userId) {
+      return res.redirect('/login');
+  } else {
+      console.log('User authenticated with userId:', req.session.userId);
+      next();
+  }
+}
 
 
-app.get('/cart', async (req, res) => {
+app.get('/cart', authenticate, async (req, res) => {
   try {
-      // Ensure the user is authenticated and userId is set
       const userId = req.session.userId;
       if (!userId) {
-          // User is not authenticated or session does not contain userId
           return res.status(401).json({ message: 'User not authenticated.' });
       }
-
       const cartItems = await prisma.cartItem.findMany({
           where: { userId: userId },
           include: { foodItem: true },
       });
-
       // Render the cart template and pass the cartItems data to it
       res.render('cart', { cartItems });
   } catch (error) {
@@ -117,6 +142,7 @@ app.get('/cart', async (req, res) => {
       res.status(500).json({ message: 'Failed to fetch cart items.', error: error.message });
   }
 });
+
 app.get("/recommendation", (req, res) => {
   res.render("recommendation"); // Render a view named "new-page.ejs"
 });
@@ -129,19 +155,8 @@ app.get("/contactUs", (req, res) => {
 app.get("/contact", (req, res) => {
   res.render("contact"); // Render a view named "new-page.ejs"
 });
-app.use(session({
-  secret: "secret-key", // Replace "secret-key" with a real secret string
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.DATABASE_URL // Use the DATABASE_URL from .env
-  }),
-  cookie: {
-    maxAge: 86400000, // 24 hours
-    secure: process.env.NODE_ENV === "production", // Enable secure cookies in production
-    httpOnly: true, // Prevent access to cookie via client-side JS
-  }
-}));
+
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
