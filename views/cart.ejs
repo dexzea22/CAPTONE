@@ -1,207 +1,407 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyCart | Maya&Me </title>
-<link rel="website icon" type="png" href="images/maya.png">
-<link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-<link rel="stylesheet" href="stylesheets/cart.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCart | Maya&Me </title>
+    <link rel="website icon" type="png" href="images/maya.png">
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="stylesheets/cart.css">
+    <!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-xxxxxxxxxxxxxx" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
+
 <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
-<div class="topnav">
-   <!-- Mobile Menu Toggle -->
-   <div class="menu-toggle">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    </div>
-  <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px"></a>
-  <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px"></a>
-  <div class="menu">
-    <a class="nav" href="/UserDashboard">Home</a>
-    <div class="nav" onclick="openProfileModal()" style="font-size: 22px; cursor:pointer; float: right; margin:1.3% 3% 0 0;color:#976b35;">
-      <i class="fas fa-user-circle fa-2x"></i>
-    </div>
-    <!-- Profile Modal -->
-    <div id="profileModal" class="pmod">
-      <div class="modal-contents">
-        <span class="close" onclick="closeProfileModal()">&times;</span>
-        <a class="prof" href="/profile">My Profile</a>
-        <a class="prof" href="/recommendations">Recommended</a>
-        <a class="prof" href="/logout">Logout</a>
-      </div>
-    </div>
-    <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;"
-    onclick="openCartPage()">
-    <i class="fas fa-shopping-cart fa-2x"></i>
-    <span id="cart-counter">0</span>
-</a>
-    <%- include('dietaryPreferences.ejs') %>
-    <!-- <a class="nav" id="openDietaryModal" href="#">Dietary Preferences</a> -->
-    <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-    <a class="nav" href="/recommendations">Recommended</a>
-    <a class="nav" href="/contact">Contact Us</a>
-    <a class="nav" href="/about">About Us</a>
-  </div>
-  <div class="side-menu">
-    <a href="/UserDashboard">Home</a>
-    <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-    <a href="/recommendations">Recommended</a>
-    <a href="/contact">Contact</a>
-    <a href="/about">About</a>
-    <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
-    <a href="/profile">My Profile</a>
-    <a href="/logout">Logout</a>
-  </div>
-    </div>
-</div>
-<div class="dashboard-banner">
-    <img src="images/long.jpg" alt=""/>
-    <div class="banner-promo">
-        <img class="logo" src="images/maya.png" alt="">
-  </div>
-  <div class="cont">
-    <div class="log">
-      <a class="fbtn" href="/userMenu">Food Menu</a>
-      <a class="fbtn" href="/userTrays">Party Trays</a>
-      <a class="fbtn" href="/userMeals">Solo Meals</a>
-    </div>
-    </div>
-  </div>
-  <div class="card"  id="cart-mod">
-    <div class="row">
-    <div class="col-md-8 cart">
-    <div class="title">
-        <div class="row">
-            <div class="col"><h4><b>My Cart</b></h4></div>
+    <div class="topnav">
+        <!-- Mobile Menu Toggle -->
+        <div class="menu-toggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
         </div>
-    </div>    
-    <div class="row border-top border-bottom">
-        <div>
-            <div class="col-2"><img class="img-fluid" src=""></div>
-            <div>
-                <div id="mod-cart-items">
-                    <!-- Loop over cart items and display them here -->
-                    <% cartItems.forEach(item => { %>
-                        <div class="row border-top border-bottom">
-                            <div class="col-2">
-                                <img class="img-fluid" src="<%= item.foodItem.imageUrl %>">
-                            </div>
-                            <div>
-                                <div>
-                                    <span><%= item.foodItem.name %></span> (<span><%= item.foodItem.size %></span>)
-                                </div>
-                                <div>Price: PHP <span><%= item.foodItem.price.toFixed(2) %></span></div>
-                                <div>
-                                    Quantity: 
-                                    <button class="btn-quantity" data-action="decrease">-</button>
-                                    <span><%= item.quantity %></span>
-                                    <button class="btn-quantity" data-action="increase">+</button>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
-                    <!-- End of loop -->
+        <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px"></a>
+        <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px"></a>
+        <div class="menu">
+            <a class="nav" href="/UserDashboard">Home</a>
+            <div class="nav" onclick="openProfileModal()"
+                style="font-size: 22px; cursor:pointer; float: right; margin:1.3% 3% 0 0;color:#976b35;">
+                <i class="fas fa-user-circle fa-2x"></i>
+            </div>
+            <!-- Profile Modal -->
+            <div id="profileModal" class="pmod">
+                <div class="modal-contents">
+                    <span class="close" onclick="closeProfileModal()">&times;</span>
+                    <a class="prof" href="/profile">My Profile</a>
+                    <a class="prof" href="/recommendations">Recommended</a>
+                    <a class="prof" href="/logout">Logout</a>
                 </div>
             </div>
+            <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;"
+                onclick="openCartPage()">
+                <i class="fas fa-shopping-cart fa-2x"></i>
+                <span id="cart-counter">0</span>
+            </a>
+            <%- include('dietaryPreferences.ejs') %>
+                <!-- <a class="nav" id="openDietaryModal" href="#">Dietary Preferences</a> -->
+                <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
+                <a class="nav" href="/recommendations">Recommended</a>
+                <a class="nav" href="/contact">Contact Us</a>
+                <a class="nav" href="/about">About Us</a>
+        </div>
+        <div class="side-menu">
+            <a href="/UserDashboard">Home</a>
+            <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+            <a href="/recommendations">Recommended</a>
+            <a href="/contact">Contact</a>
+            <a href="/about">About</a>
+            <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
+            <a href="/profile">My Profile</a>
+            <a href="/logout">Logout</a>
         </div>
     </div>
-    <div class="back-to-shop"><a href="/userMenu"><i class="fas fa-arrow-left"></i>
-    </a><span>Back to shop</span></div>
-</div>
-        <div class="col-md-4 summary">
-            <div><h5><b style="color: black;">Summary</b></h5></div>
-            <hr>
-            <div class="row">
-                <div class="col" style="padding-left: 0; font-weight:bold;color: black;">ITEMS <span id="item-counter">0</span></div>
+    </div>
+    <div class="dashboard-banner">
+        <img src="images/long.jpg" alt="" />
+        <div class="banner-promo">
+            <img class="logo" src="images/maya.png" alt="">
+        </div>
+        <div class="cont">
+            <div class="log">
+                <a class="fbtn" href="/userMenu">Food Menu</a>
+                <a class="fbtn" href="/userTrays">Party Trays</a>
+                <a class="fbtn" href="/userMeals">Solo Meals</a>
             </div>
-            <form action="" method="">
-            <label class="frm" for="">Shipping Address</label>
-                <input class="inpts" type="text" id="adrss" placeholder="Place Delivery Address">
-            <label class="frm" for="">Contact Person</label>
-                <input class="inpts" type="text" id="cntct" placeholder="Place Contact Person">
-            <label class="frm" for="">Contact Number</label>
-                <input class="inpts" type="tel" id="num" placeholder="Place Contact Number">
-            <label class="frm" for="">Email</label>
-                <input class="inpts" type="email" id="email" placeholder="Place Email">
-          <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
-              <div class="col" style="font-weight: bold; color: black;">TOTAL PRICE</div>
-              <div style="color: black;" id="total-amount"></div>
-              <div style="color: black;" id="total-amounthidden" hidden></div>
-          </div>  
-          <div style="color: rgb(255, 0, 0);font-weight: bold; ">**SHIPPING FEE IS FREE AROUND LUISIANA LAGUNA**</div>
-            </form>
-            <!-- Checkout Button -->
-            <input type="submit" value="CHECKOUT" id="checkoutButton" class="btn">
-
-            <!-- Payment Modal Container -->
-            <div id="payment-modal" class="modal-container" style="display:none;">
-              <!-- Modal Content -->
-              <div class="modal-content">
-              <span class="close-button">&times;</span>
-                <h2>Select Your Payment Method</h2>
-                  <!-- Payment Methods Here -->
-                
-                    <input class="cod" type="button" value="Cash On Delivery">
-                  
-                  <div id="paypal-button"></div>
-                  
-              </div>
-          </div>
-
         </div>
     </div>
-</div>
-</form>
-<script>
-  // Function to update the quantity of a cart item
-  function updateCartItemQuantity(cartItemId, newQuantity) {
-      fetch('/api/cart/updateQuantity', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Important for sessions
-          body: JSON.stringify({ cartItemId, quantity: newQuantity }),
-      })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Failed to update item quantity in cart. Please try again.');
-          }
-          return response.json();
-      })
-      .then(data => {
-          if (data.success) {
-              // Call the function to fetch and display cart items again
-              displayCartItems();
-          } else {
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: data.message || 'Could not update item quantity in the cart.',
-              });
-          }
-      })
-      .catch(error => {
-          console.error('Error updating item quantity in cart:', error);
-          Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
-          });
-      });
-  }
+    <div class="card" id="cart-mod">
+        <!-- Add the empty cart message div here -->
+        <div id="empty-cart-message" style="display: none;">Your cart is empty!</div>
+    
+        <div class="row">
+            <div class="col-md-8 cart">
+                <div class="title">
+                    <div class="row">
+                        <div class="col">
+                            <h4><b>My Cart</b></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row border-top border-bottom">
+                    <div>
+                        <div id="mod-cart-items">
+                            
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="back-to-shop"><a href="/userMenu"><i class="fas fa-arrow-left"></i>
+                    </a><span>Back to shop</span></div>
+            </div>
+            <div class="col-md-4 summary">
+                <div>
+                    <h5><b style="color: black;">Summary</b></h5>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col" style="padding-left: 0; font-weight:bold;color: black;">ITEMS <span
+                            id="item-counter">0</span></div>
+                </div>
+                <form action="" method="">
+                    <label class="frm" for="">Shipping Address</label>
+                    <input class="inpts" type="text" id="adrss" placeholder="Place Delivery Address">
+                    <label class="frm" for="">Contact Person</label>
+                    <input class="inpts" type="text" id="cntct" placeholder="Place Contact Person">
+                    <label class="frm" for="">Contact Number</label>
+                    <input class="inpts" type="tel" id="num" placeholder="Place Contact Number">
+                    <label class="frm" for="">Email</label>
+                    <input class="inpts" type="email" id="email" placeholder="Place Email">
+                    <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                        <div class="col" style="font-weight: bold; color: black;">TOTAL PRICE</div>
+                        <div style="color: black;" id="total-amount"></div>
+                        <div style="color: black;" id="total-amounthidden" hidden></div>
+                    </div>
+                    <div style="color: rgb(255, 0, 0);font-weight: bold; ">**SHIPPING FEE IS FREE AROUND LUISIANA
+                        LAGUNA**</div>
+                </form>
+                <!-- Checkout Button -->
+                <input type="submit" value="CHECKOUT" id="checkoutButton" class="btn">
 
-  // Function to fetch and display cart items
+                <!-- Payment Modal Container -->
+                <div id="payment-modal" class="modal-container" style="display:none;">
+                    <!-- Modal Content -->
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <h2>Select Your Payment Method</h2>
+                        <!-- Payment Methods Here -->
+
+                        <input class="cod" type="button" value="Cash On Delivery">
+
+                        <div id="paypal-button"></div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </form>
+    <script>
+       // Function to update the quantity of a cart item
+function updateCartItemQuantity(cartItemId, newQuantity) {
+    fetch('/api/cart/updateQuantity', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Important for sessions
+        body: JSON.stringify({ cartItemId, quantity: newQuantity }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update item quantity in cart. Please try again.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Call the function to fetch and display cart items again
+            displayCartItems();
+            updateCartCounter(); // Update cart counter immediately after updating the quantity
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Could not update item quantity in the cart.',
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error updating item quantity in cart:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
+        });
+    });
+}
+
+       // Function to fetch and display cart items
 function displayCartItems() {
+    fetch('/api/cart/items', {
+        method: 'GET',
+        credentials: 'include', // Important for sessions
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch cart items. Please try again.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const cartItemsContainer = document.getElementById('mod-cart-items');
+            cartItemsContainer.innerHTML = ''; // Clear previous content
+
+            if (data.length > 0) { // Check if data is not empty
+                let totalPrice = 0; // Initialize total price variable
+
+                data.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('row', 'border-top', 'border-bottom');
+
+                    // Calculate the total price for each item
+                    const itemTotalPrice = item.foodItem.price * item.quantity;
+                    totalPrice += itemTotalPrice; // Add to the total price
+
+                    itemElement.innerHTML = `
+            <div class="col-2"><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
+            <div>
+                <div>${item.foodItem.name} (${item.foodItem.size})</div>
+                <div>Price: PHP ${item.foodItem.price.toFixed(2)}</div>
+                <div>Quantity: 
+                    <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
+
+                </div>
+                <div>Total Price: PHP ${itemTotalPrice.toFixed(2)}</div> <!-- Display total price for each item -->
+                <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')">Delete</button>
+            </div>
+        `;
+
+                    cartItemsContainer.appendChild(itemElement);
+                });
+
+                // Update the total price displayed in the UI
+                document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
+                document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
+
+                // Check if the total price exceeds the limit
+                if (totalPrice > 10000) {
+                    // Display a warning message
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cart Limit Exceeded',
+                        text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                    });
+                }
+            } else {
+                // Display a message if the cart is empty
+                cartItemsContainer.innerHTML = '<div>No items in cart</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching cart items:', error);
+            // Display an error message
+            const cartItemsContainer = document.getElementById('mod-cart-items');
+            cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
+        });
+}
+
+
+
+        // Call the function to fetch and display cart items when the page loads
+        document.addEventListener('DOMContentLoaded', displayCartItems);
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get the modal
+            var modal = document.getElementById("payment-modal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("checkoutButton");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close-button")[0];
+
+            if (btn && modal && span) {
+                // When the user clicks the button, open the modal 
+                btn.onclick = function (event) {
+                    event.preventDefault();  // Prevent any default button action
+                    modal.style.display = "block";
+                }
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function (event) {
+                    event.preventDefault();  // Prevent any default span action
+                    modal.style.display = "none";
+                };
+
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        event.preventDefault();  // Prevent any default window action
+                        modal.style.display = "none";
+                    }
+                }
+
+                // Prevent events inside the modal from closing it and stop propagation
+                modal.children[0].onclick = function (event) {
+                    event.stopPropagation();
+                    event.preventDefault();  // Prevent any default action inside the modal
+                }
+            } else {
+                console.error("Elements not found. Please check the IDs and class names.");
+            }
+        });
+
+        function updateQuantity(cartItemId, newQuantity) {
+            // Ensure the quantity is not negative
+            if (newQuantity < 0) {
+                return;
+            }
+            updateCartItemQuantity(cartItemId, newQuantity);
+        }
+        // Function to update the cart counter and item counter
+        function updateCartCounter() {
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Calculate total number of items in the cart
+                    const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                    // Update the cart counter and item counter in the UI
+                    document.getElementById('cart-counter').textContent = totalItems;
+                    document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message or handle it as per your requirement
+                });
+        }
+
+        // Call the function to update the cart counter and item counter when the page loads
+        document.addEventListener('DOMContentLoaded', updateCartCounter);
+
+ // Function to delete a cart item
+function deleteCartItem(cartItemId) {
+    fetch(`/api/cart/delete/${cartItemId}`, {
+        method: 'DELETE',
+        credentials: 'include', // Important for sessions
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete item from cart. Please try again.');
+        }
+        // If deletion is successful, remove the item from the UI
+        const deletedItem = document.getElementById(cartItemId);
+        if (deletedItem) {
+            deletedItem.remove();
+        }
+        // Update the cart counter
+        updateCartCounter();
+        // Check if the cart is empty
+        fetch('/api/cart/items', {
+            method: 'GET',
+            credentials: 'include', // Important for sessions
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch cart items. Please try again.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // If cart is empty, set the total amount to 0
+            if (data.length === 0) {
+                document.getElementById('total-amount').textContent = '0.00';
+            } else {
+                // Update the total amount
+                updateTotalAmount();
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching cart items:', error);
+            // Display an error message or handle it as per your requirement
+        });
+    })
+    .catch(error => {
+        console.error('Error deleting item from cart:', error);
+        // Display an error message if deletion fails
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || 'Failed to delete item from cart. Please try again.',
+        });
+    });
+}
+
+
+// Function to update the total amount displayed in the UI
+function updateTotalAmount() {
     fetch('/api/cart/items', {
         method: 'GET',
         credentials: 'include', // Important for sessions
@@ -213,113 +413,25 @@ function displayCartItems() {
         return response.json();
     })
     .then(data => {
-        if (data.length > 0) { // Check if data is not empty
-            const cartItemsContainer = document.getElementById('mod-cart-items');
-            cartItemsContainer.innerHTML = ''; // Clear previous content
-
-            let totalPrice = 0; // Initialize total price variable
-
-            data.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.classList.add('row', 'border-top', 'border-bottom');
-
-                // Calculate the total price for each item
-                const itemTotalPrice = item.foodItem.price * item.quantity;
-                totalPrice += itemTotalPrice; // Add to the total price
-
-                itemElement.innerHTML = `
-                    <div class="col-2"><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
-                    <div>
-                        <div>${item.foodItem.name} (${item.foodItem.size})</div>
-                        <div>Price: PHP ${item.foodItem.price.toFixed(2)}</div>
-                        <div>Quantity: 
-                            <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
-                            <span>${item.quantity}</span>
-                            <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
-
-                        </div>
-                        <div>Total Price: PHP ${itemTotalPrice.toFixed(2)}</div> <!-- Display total price for each item -->
-                    </div>
-                `;
-
-                cartItemsContainer.appendChild(itemElement);
-            });
-
-            // Update the total price displayed in the UI
-            document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
-            document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
-        } else {
-            // Display a message if the cart is empty
-            const cartItemsContainer = document.getElementById('mod-cart-items');
-            cartItemsContainer.innerHTML = '<div>No items in cart</div>';
-        }
+        // Calculate total amount
+        const totalAmount = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
+        // Update the total amount displayed in the UI
+        document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
     })
     .catch(error => {
         console.error('Error fetching cart items:', error);
-        // Display an error message
-        const cartItemsContainer = document.getElementById('mod-cart-items');
-        cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
+        // Display an error message or handle it as per your requirement
     });
 }
 
-
-  // Call the function to fetch and display cart items when the page loads
-  document.addEventListener('DOMContentLoaded', displayCartItems);
-
-  document.addEventListener('DOMContentLoaded', (event) => {
-      // Get the modal
-      var modal = document.getElementById("payment-modal");
-
-      // Get the button that opens the modal
-      var btn = document.getElementById("checkoutButton");
-
-      // Get the <span> element that closes the modal
-      var span = document.getElementsByClassName("close-button")[0];
-
-      if (btn && modal && span) {
-          // When the user clicks the button, open the modal 
-          btn.onclick = function(event) {
-              event.preventDefault();  // Prevent any default button action
-              modal.style.display = "block";
-          }
-
-          // When the user clicks on <span> (x), close the modal
-          span.onclick = function(event) {
-              event.preventDefault();  // Prevent any default span action
-              modal.style.display = "none";
-          };
-
-          // When the user clicks anywhere outside of the modal, close it
-          window.onclick = function(event) {
-              if (event.target == modal) {
-                  event.preventDefault();  // Prevent any default window action
-                  modal.style.display = "none";
-              }
-          }
-
-          // Prevent events inside the modal from closing it and stop propagation
-          modal.children[0].onclick = function(event) {
-              event.stopPropagation();
-              event.preventDefault();  // Prevent any default action inside the modal
-          }
-      } else {
-          console.error("Elements not found. Please check the IDs and class names.");
-      }
-  });
-
-  function updateQuantity(cartItemId, newQuantity) {
-      // Ensure the quantity is not negative
-      if (newQuantity < 0) {
-          return;
-      }
-      updateCartItemQuantity(cartItemId, newQuantity);
-  }
-</script>
+    </script>
 
 
-<script src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o&currency=PHP"></script>
-<script src="scripts/meals.js"></script>
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o&currency=PHP"></script>
 
-<script src="scripts/payment.js"></script>
+    <script src="scripts/meals.js"></script>
+    <script src="scripts/payment.js"></script>
 </body>
+
 </html>

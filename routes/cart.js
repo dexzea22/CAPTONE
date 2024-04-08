@@ -118,4 +118,28 @@ router.put('/updateQuantity', async (req, res) => {
     }
 });
 
+// Delete Cart Item
+router.delete('/delete/:cartItemId', async (req, res) => {
+    const userId = req.session && req.session.userId; // Check if session exists and userId is set
+    const cartItemId = req.params.cartItemId;
+
+    try {
+        // Ensure user is logged in
+        if (!userId) {
+            return res.status(401).json({ message: 'User not authenticated.' });
+        }
+
+        // Delete cart item
+        await prisma.cartItem.delete({
+            where: { id: cartItemId },
+        });
+
+        res.status(200).json({ success: true, message: 'Item deleted from cart successfully.' });
+    } catch (error) {
+        console.error('Failed to delete item from cart:', error);
+        res.status(500).json({ message: 'Could not delete item from cart.', error: error.message });
+    }
+});
+
+
 module.exports = router;

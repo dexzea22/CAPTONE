@@ -584,27 +584,6 @@ declare function defineExtension(ext: ExtensionArgs | ((client: Client) => Clien
 
 declare const denylist: readonly ["$connect", "$disconnect", "$on", "$transaction", "$use", "$extends"];
 
-/**
- * Detect the current JavaScript runtime following
- * the WinterCG Runtime Keys proposal:
- *
- * - `edge-routine` Alibaba Cloud Edge Routine
- * - `workerd` Cloudflare Workers
- * - `deno` Deno and Deno Deploy
- * - `lagon` Lagon
- * - `react-native` React Native
- * - `netlify` Netlify Edge Functions
- * - `electron` Electron
- * - `node` Node.js
- * - `bun` Bun
- * - `edge-light` Vercel Edge Functions
- * - `fastly` Fastly Compute@Edge
- *
- * @see https://runtime-keys.proposal.wintercg.org/
- * @returns {Runtime}
- */
-export declare function detectRuntime(): Runtime;
-
 export declare type DevTypeMapDef = {
     meta: {
         modelProps: string;
@@ -623,10 +602,6 @@ export declare type DevTypeMapFnDef = {
     args: any;
     result: any;
     payload: OperationPayload;
-};
-
-declare type Dictionary<T> = {
-    [key: string]: T | undefined;
 };
 
 export declare namespace DMMF {
@@ -839,7 +814,7 @@ export declare namespace DMMF {
 
 export declare interface DriverAdapter extends Queryable {
     /**
-     * Starts new transation.
+     * Starts new transaction.
      */
     startTransaction(): Promise<Result_4<Transaction>>;
     /**
@@ -1315,7 +1290,18 @@ declare interface GeneratorConfig {
     output: EnvValue | null;
     isCustomOutput?: boolean;
     provider: EnvValue;
-    config: Dictionary<string | string[]>;
+    config: {
+        /** `output` is a reserved name and will only be available directly at `generator.output` */
+        output?: never;
+        /** `provider` is a reserved name and will only be available directly at `generator.provider` */
+        provider?: never;
+        /** `binaryTargets` is a reserved name and will only be available directly at `generator.binaryTargets` */
+        binaryTargets?: never;
+        /** `previewFeatures` is a reserved name and will only be available directly at `generator.previewFeatures` */
+        previewFeatures?: never;
+    } & {
+        [key: string]: string | string[] | undefined;
+    };
     binaryTargets: BinaryTargetsEnvValue[];
     previewFeatures: string[];
 }
@@ -1602,6 +1588,14 @@ export declare type GetResult<P extends OperationPayload, A, O extends Operation
     findRaw: JsonObject;
     aggregateRaw: JsonObject;
 }[O];
+
+export declare function getRuntime(): GetRuntimeOutput;
+
+declare type GetRuntimeOutput = {
+    id: Runtime;
+    prettyName: string;
+    isEdge: boolean;
+};
 
 export declare type GetSelect<Base extends Record<any, any>, R extends InternalArgs['result'][string], KR extends keyof R = string extends keyof R ? never : keyof R> = {
     [K in KR | keyof Base]?: K extends KR ? boolean : Base[K];
@@ -2075,6 +2069,8 @@ export declare const objectEnumValues: {
     };
 };
 
+declare const officialPrismaAdapters: readonly ["@prisma/adapter-planetscale", "@prisma/adapter-neon", "@prisma/adapter-libsql", "@prisma/adapter-d1", "@prisma/adapter-pg", "@prisma/adapter-pg-worker"];
+
 declare type Omit_2<T, K extends string | number | symbol> = {
     [P in keyof T as P extends K ? never : P]: T[P];
 };
@@ -2335,6 +2331,7 @@ declare type Query = {
 
 declare interface Queryable {
     readonly provider: 'mysql' | 'postgres' | 'sqlite';
+    readonly adapterName: (typeof officialPrismaAdapters)[number] | (string & {});
     /**
      * Execute a query given as SQL, interpolating the given parameters,
      * and returning the type-aware result set of the query.

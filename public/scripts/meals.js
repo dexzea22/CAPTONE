@@ -74,39 +74,34 @@ createStarRating('starmls5', 4);
 createStarRating('starmls6', 5);
 
 
-// Function to update cart counter
+// Function to update cart counter and item counter
 function updateCartCounter() {
   fetch('/api/cart/items', {
-    method: 'GET',
-    credentials: 'include', // Ensures cookies are sent with the request
-    headers: {
-      'Content-Type': 'application/json'
-      // Include any necessary authentication headers
-    }
+      method: 'GET',
+      credentials: 'include', // Important for sessions
   })
   .then(response => {
-    if (!response.ok) {
-      throw new Error('Failed to fetch cart items.');
-    }
-    return response.json();
+      if (!response.ok) {
+          throw new Error('Failed to fetch cart items. Please try again.');
+      }
+      return response.json();
   })
-  .then(cartItems => {
-    const cartCounter = document.getElementById('cart-counter');
-    if (cartCounter) {
-      const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-      cartCounter.textContent = totalItems.toString();
-      cartCounter.style.display = totalItems > 0 ? 'inline' : 'none';
-    }
+  .then(data => {
+      // Calculate total number of items in the cart
+      const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+      // Update the cart counter and item counter in the UI
+      document.getElementById('cart-counter').textContent = totalItems;
+      document.getElementById('item-counter').textContent = totalItems; // Update item counter
   })
   .catch(error => {
-    console.error('Error updating cart counter:', error);
+      console.error('Error fetching cart items:', error);
+      // Display an error message or handle it as per your requirement
   });
 }
+
 // Function to update cart counter
 
-
-
-// addtoCart //
+// addToCart function
 function addToCart(itemName, cardId) {
   const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
   const imageUrl = document.querySelector(`#${cardId} img[src^="images/"]`).getAttribute('src');
@@ -124,50 +119,82 @@ function addToCart(itemName, cardId) {
   const [size, price] = selectedSize.value.split('-');
   const numericPrice = parseFloat(price);
 
-  fetch('/api/cart/add', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  // Fetch current cart total price
+  fetch('/api/cart/items', {
+    method: 'GET',
     credentials: 'include', // Important for sessions
-    body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity: 1 }),
   })
   .then(response => {
     if (!response.ok) {
-      throw new Error('Failed to add item to cart. Please try again.');
+      throw new Error('Failed to fetch cart items. Please try again.');
     }
     return response.json();
   })
   .then(data => {
-    if (data.success) {
-      // Update cart counter
-      updateCartCounter(); // Call the function to update the cart counter
-      // Optionally, refresh the cart UI here
-      // If you want to refresh the cart UI, you can call your updateCartDisplay function here
-      // updateCartDisplay();
+    const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
+    const itemTotalPrice = numericPrice * 1; // Calculate total price for the new item
+    const newTotalPrice = totalPrice + itemTotalPrice;
+
+    // Check if adding the new item will exceed the limit
+    if (newTotalPrice > 10000) {
       Swal.fire({
-        icon: 'success',
-        title: 'Item Added to Cart',
-        text: `${itemName} ${size} has been added to your cart.`,
+        icon: 'warning',
+        title: 'Cart Limit Exceeded',
+        text: 'Adding this item will exceed PHP 10,000. Please remove some items.',
       });
     } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: data.message || 'Could not add item to the cart.',
+      // Proceed with adding the item to the cart
+      fetch('/api/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Important for sessions
+        body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity: 1 }),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to add item to cart. Please try again.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Update cart counter
+          updateCartCounter(); // Call the function to update the cart counter
+          // Optionally, refresh the cart UI here
+          // If you want to refresh the cart UI, you can call your updateCartDisplay function here
+          // updateCartDisplay();
+          Swal.fire({
+            icon: 'success',
+            title: 'Item Added to Cart',
+            text: `${itemName} ${size} has been added to your cart.`,
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Could not add item to the cart.',
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error adding item to cart:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message || 'An unexpected error occurred.',
+        });
       });
     }
   })
   .catch(error => {
-    console.error('Error adding item to cart:', error);
+    console.error('Error fetching cart items:', error);
     Swal.fire({
       icon: 'error',
       title: 'Error',
-      text: error.message || 'An unexpected error occurred.',
+      text: 'Failed to fetch cart items. Please try again.',
     });
   });
 }
-
-// addtoCart //
-
 
 
 // Assuming cartItem has an ID and you have an API endpoint set up for these actions
@@ -182,11 +209,13 @@ function incrementItem(itemId) {
     if (data.success) {
       // Update UI based on the response
       console.log('Item incremented successfully');
-      updateCartDisplay(); // You might need to fetch the cart items again or update the UI based on the response
+      updateCartCounter(); // Update cart counter immediately after incrementing
+      updateCartDisplay(); // Update cart display
     }
   })
   .catch(error => console.error('Error incrementing item:', error));
 }
+
 
 // Function to decrement the quantity of a specific item
 function decrementItem(itemId) {
@@ -198,28 +227,38 @@ function decrementItem(itemId) {
     if (data.success) {
       // Update UI based on the response
       console.log('Item decremented successfully');
-      updateCartDisplay(); // You might need to fetch the cart items again or update the UI based on the response
+      updateCartCounter(); // Update cart counter immediately after decrementing
+      updateCartDisplay(); // Update cart display
     }
   })
   .catch(error => console.error('Error decrementing item:', error));
 }
-
-// Function to delete a specific item from the cart
-function deleteCartItem(itemId) {
-  fetch(`/api/cart/delete/${itemId}`, {
-    method: 'DELETE',
+// Function to delete a cart item
+function deleteCartItem(cartItemId) {
+  fetch(`/api/cart/delete/${cartItemId}`, {
+      method: 'DELETE',
+      credentials: 'include', // Important for sessions
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      // Update UI based on the response
-      console.log('Item deleted successfully');
-      updateCartDisplay(); // You might need to fetch the cart items again or update the UI based on the response
-    }
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to delete item from cart. Please try again.');
+      }
+      // If deletion is successful, refresh the cart UI
+      displayCartItems();
+      updateCartCounter(); // Update cart counter immediately after deletion
   })
-  .catch(error => console.error('Error deleting item:', error));
+  .catch(error => {
+      console.error('Error deleting item from cart:', error);
+      // Display an error message if deletion fails
+      Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message || 'Failed to delete item from cart. Please try again.',
+      });
+  });
 }
-////////
+
+
 
 // Function to fetch cart items from the server and update UI
 function fetchCartItemsAndUpdateUI() {

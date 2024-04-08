@@ -1,1653 +1,1864 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Menu | Maya&Me</title>
-    <link rel="website icon" type="png" href="images/maya.png" />
-    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet"href="https://fonts.googleapis.com/css?family=Rubik:400,700"/>
-    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"/>
-    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous"referrerpolicy="no-referrer"/>
-    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet"href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="stylesheets/menu.css" />
-  </head>
-  <body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
-    <div class="topnav"> 
-      <div class="menu-toggle">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu | Maya&Me</title>
+  <link rel="website icon" type="png" href="images/maya.png" />
+  <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="stylesheets/menu.css" />
+</head>
+
+<body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
+  <div class="topnav">
+    <div class="menu-toggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px" /></a>
+    <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px" /></a>
+    <div class="menu">
+      <a class="nav" href="/UserDashboard">Home</a>
+      <div class="nav" onclick="openProfileModal()"
+        style="font-size: 22px;cursor: pointer;float: right;margin: 1.3% 3% 0 0;color: #976b35;"> <i
+          class="fas fa-user-circle fa-2x"></i>
       </div>
-      <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px"/></a>
-      <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px"/></a>
-      <div class="menu">
-        <a class="nav" href="/UserDashboard">Home</a>
-      <div class="nav" onclick="openProfileModal()" style="font-size: 22px;cursor: pointer;float: right;margin: 1.3% 3% 0 0;color: #976b35;"> <i class="fas fa-user-circle fa-2x"></i>
-      </div>
-        <!-- Profile Modal -->
-        <div id="profileModal" class="pmod">
-          <div class="modal-contents">
-            <span class="close" onclick="closeProfileModal()">&times;</span>
-            <a class="prof" href="/profile">My Profile</a>
-            <a class="prof" href="/recommendations">Recommended</a>
-            <a class="prof" href="/logout">Logout</a>
-          </div>
+      <!-- Profile Modal -->
+      <div id="profileModal" class="pmod">
+        <div class="modal-contents">
+          <span class="close" onclick="closeProfileModal()">&times;</span>
+          <a class="prof" href="/profile">My Profile</a>
+          <a class="prof" href="/recommendations">Recommended</a>
+          <a class="prof" href="/logout">Logout</a>
         </div>
-        <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span>
-        </a>
-        <%- include('dietaryPreferences.ejs') %>
+      </div>
+      <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;"
+        onclick="openCartPage()">
+        <i class="fas fa-shopping-cart fa-2x"></i>
+        <span id="cart-counter">0</span>
+      </a>
+      </a>
+      <%- include('dietaryPreferences.ejs') %>
         <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
         <a class="nav" href="/recommendations">Recommended</a>
         <a class="nav" href="/contact">Contact Us</a>
-      <a class="nav" href="/about">About Us</a>
-      <div class="nav" style="float: right;">
-        <div class="search-input">
-          <i class="fas fa-search"></i>
-          <input type="text" class="form-control" style="margin-top: 12px;" placeholder="Search menu items" id="menuSearchInput">
-        </div>
-      </div>
-      </div>
-       <div class="side-menu">
-        <a href="/UserDashboard">Home</a>
-        <a href="/confirmorderinfo">Orders</a>
-        <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-        <a href="/contact">Contact Us</a>
-        <a href="/about">About Us</a>
-        <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
-        <a href="/profile">My Profile</a>
-        <a href="/logout">Logout</a>
-      </div>
-    </div>
-    <div class="dashboard">
-      <div class="dashboard-banner">
-        <img src="images/long.jpg" alt="" />
-        <div class="banner-promo">
-          <span
-            ><img class="logo" src="images/maya.png" alt="" height="330px"
-          /></span>
-        </div>
-        <div class="cont">
-          <div class="log">
-            <a class="fbtns active" href="/userMenu">Food Menu</a>
-            <a class="fbtns" href="/userTrays">Party Trays</a>
-            <a class="fbtns" href="/userMeals">Solo Meals</a>           
+        <a class="nav" href="/about">About Us</a>
+        <div class="nav" style="float: right;">
+          <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control" style="margin-top: 12px;" placeholder="Search menu items"
+              id="menuSearchInput">
           </div>
+        </div>
+    </div>
+    <div class="side-menu">
+      <a href="/UserDashboard">Home</a>
+      <a href="/confirmorderinfo">Orders</a>
+      <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+      <a href="/contact">Contact Us</a>
+      <a href="/about">About Us</a>
+      <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
+      <a href="/profile">My Profile</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+  <div class="dashboard">
+    <div class="dashboard-banner">
+      <img src="images/long.jpg" alt="" />
+      <div class="banner-promo">
+        <span><img class="logo" src="images/maya.png" alt="" height="330px" /></span>
+      </div>
+      <div class="cont">
+        <div class="log">
+          <a class="fbtns active" href="/userMenu">Food Menu</a>
+          <a class="fbtns" href="/userTrays">Party Trays</a>
+          <a class="fbtns" href="/userMeals">Solo Meals</a>
         </div>
       </div>
     </div>
-    
-   
-    <!-- main dashboard -->
-    <div class="dashboard-content" id="container">
-      <div class="cards" id="afrtd">
-        <img class="card-image" src="images/afritada.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Afritada (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-570" />
-              S (₱570) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1350" />
-              M (₱1,350) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2600" />
-              L (₱2,600) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating4">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Afritada','afrtd')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="brm">
-        <img class="card-image" src="images/bac.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Bacon (Rice Meal)</h4>
-          <div style="margin-top: 11%">
-            <input type="radio" name="size" value="With Egg-100" />
-            <label for="">With Egg (₱100.00)</label><br />
-            <input type="radio" name="size" value="Without Egg-95" />
-            <label for="">Without Egg (₱95.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 29%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating5">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <div>
-            <button class="cbtn">Order</button>
-            <button onclick="addToCart('Bacon Rice Meal','brm')" class="cbtn">
-              <i class="fas fa-shopping-cart"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="cards" id="bcdp">
-        <img class="card-image" src="images/bcd.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Baked Cream Dory w/ Potatoes (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-350" />
-              S (₱350) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-950" />
-              M (₱950) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1500" />
-              L (₱1,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating6">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Baked Cream Dory','bcdp')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div style="color: black" id="total-amounthidden" hidden></div>
-      <div class="cards" id="bc">
-        <img class="card-image" src="images/caldereta.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Beef Caldereta (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-700" />
-              S (₱700) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1800" />
-              M (₱1,800) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-3500" />
-              L (₱3,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating7">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Beef Caldereta','bc')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="bm">
-        <img class="card-image" src="images/bm.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Beef Mechado (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-700" />
-              S (₱700) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1800" />
-              M (₱1,800) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-3500" />
-              L (₱3,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating8">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Beef Mechado','bm')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="btrm">
-        <img class="card-image" src="images/tap.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Beef Tapa (Rice Meal)</h4>
-          <div>
-            <input type="radio" name="size" value="With Egg-110" />
-            <label for="">With Egg (₱110.00)</label><br />
-            <input type="radio" name="size" value="Without Egg-105" />
-            <label for="">Without Egg (₱105.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 29%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating9">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Beef Tapa Rice Meal','btrm')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="bwb">
-        <img class="card-image" src="images/bwb.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Beef w/ Broccoli (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-750" />
-              S (₱750) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1800" />
-              M (₱1,800) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-3500" />
-              L (₱3,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating10">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Beef w/ Broccoli','bwb')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="bs">
-        <img class="card-image" src="images/bs.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Beef Salpicao (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-750" />
-              S (₱750) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1850" />
-              M (₱1,850) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-3650" />
-              L (₱3,650) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating11">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Beef Salpicao','bs')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="bcc">
-        <img class="card-image" src="images/bcc.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Buttered Carrots w/ Chicharo (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-420" />
-              S (₱420) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1000" />
-              M (₱1,000) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1850" />
-              L (₱1,850) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating12">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Buttered Carrots','bcc')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="bpm">
-        <img class="card-image" src="images/bpm.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Buttered Potato Marbles (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-450" />
-              S (₱450) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-950" />
-              M (₱950) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1950" />
-              L (₱1,950) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating13">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Buttered Potato Marbles','bpm')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="cg">
-        <img class="card-image" src="images/cg.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Canton Guisado (Short Order)</h4>
-          <div style="margin-top: 11%">
-            <input type="radio" name="size" value="Tub-100" />
-            <label for="">Tub (₱100.00)</label><br />
-            <input type="radio" name="size" value=" Bilao-350" />
-            <label for=""> Bilao (₱350.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 20%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating14">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Canton Guisado','cg')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="cldrt">
-        <img class="card-image" src="images/pc.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Caldereta (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-570" />
-              S (₱570) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1350" />
-              M (₱1,350) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2600" />
-              L (₱2,600) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating15">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Caldereta','cldrt')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="chm">
-        <img class="card-image" src="images/chmi.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Chami (Short Order)</h4>
-          <div style="margin-top: 11%">
-            <input type="radio" name="size" value="Tub-100" />
-            <label for="">Tub (₱100.00)</label><br />
-            <input type="radio" name="size" value=" Bilao-350" />
-            <label for=""> Bilao (₱350.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 20%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating16">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Chami', 'chm')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="cak">
-        <img class="card-image" src="images/cak.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Chicken Ala King (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-500" />
-              S (₱500) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1200" />
-              M (₱1,200) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2350" />
-              L (₱2,350) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating17">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Chicken Ala King','cak')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="ce">
-        <img class="card-image" src="images/ce.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Chicken Embotido (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-340" />
-              S (₱340) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-850" />
-              M (₱850) (10-12)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)1200" />
-              L (₱1,200) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating18">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Chicken Embotido','ce')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="crrm">
-        <img class="card-image" src="images/cr.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Chicken Roll (Rice Meal)</h4>
-          <div>
-            <input type="radio" name="size" value="With Egg-100" />
-            <label for="">With Egg (₱100.00)</label><br />
-            <input type="radio" name="size" value="Without Egg-95" />
-            <label for="">Without Egg (₱95.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 29%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating19">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Chicken Roll Rice Meal','crrm')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="chkr">
-        <img class="card-image" src="images/f1.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Chicken Roll (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-400" />
-              S (₱400) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)1000" />
-              M (₱1,000) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1500" />
-              L (₱1,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating20">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Chicken Roll','chkr')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="cbm">
-        <img class="card-image" src="images/cbm.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Creamy Beef w/ Mushroom (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-700" />
-              S (₱700) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1800" />
-              M (₱1,800) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(455 to 50 pax)-3500" />
-              L (₱3,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating21">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Creamy Beef Mushroom','cbm')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="embtdo">
-        <img class="card-image" src="images/emb.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Embotido (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-400" />
-              S (₱400) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1000" />
-              M (₱1,000) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1500" />
-              L (₱1,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating22">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Embotido','embtdo')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="flu">
-        <img class="card-image" src="images/flu.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Fresh Lumpiang Ubod<br />(Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-400" />
-              S (₱400) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-600" />
-              M (₱600) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1000" />
-              L (₱1,000) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating23">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Fresh Lumpiang Ubod','flu')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="fcf">
-        <img class="card-image" src="images/fcf.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Fried Chicken Fingers<br />(Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-500" />
-              S (₱500) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1000" />
-              M (₱1,000) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2350" />
-              L (₱2,350) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating24">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Fried Chicken Fingers','fcf')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="fff">
-        <img class="card-image" src="images/f5.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Fried Fish Filet (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-300" />
-              S (₱300) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25  to 30 pax)-900" />
-              M (₱900) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1400" />
-              L (₱1,400) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating25">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Fried Fish Fillet','fff')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="chk">
-        <img class="card-image" src="images/gc.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Glazed Chicken (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-525" />
-              S (₱525) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25  to 30 pax)-1000" />
-              M (₱1,000) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2500" />
-              L (₱2,500) (45-50 pax)
-            </label>
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating26">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Glazed Chicken','chk')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="gff">
-        <img class="card-image" src="images/gff.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Glazed Fish Fillet (Tray)</h4>
-          <div class="gllry" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-300" />
-              S (₱300) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25  to 30 pax)-900" />
-              M (₱900) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1400" />
-              L (₱1,400) (45-50 pax)
-            </label>
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating27">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Glaze Fish Fillet','gff')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="hndo">
-        <img class="card-image" src="images/hmdo.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Hamonado (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-600" />
-              S (₱600) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1450" />
-              M (₱1,450) (25 to 30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2800" />
-              L (₱2,800) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating28">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Hamonado','hndo')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="hsr">
-        <img class="card-image" src="images/hs.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Hungarian Sausage (Rice Meal)</h4>
-          <div>
-            <input type="radio" name="size" value="With Egg-100" />
-            <label for="">With Egg (₱85.00)</label><br />
-            <input type="radio" name="size" value="Without Egg-95" />
-            <label for="">Without Egg (₱80.00)</label><br />
-            <input type="radio" name="size" value="Additional Sausage-115" />
-            <label for="">Additional Sausage (₱115.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 19%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating29">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Hungarian Rice Meal','hsr')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="kk">
-        <img class="card-image" src="images/kk.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Kare-Kare (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-570" />
-              S (₱570) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1350" />
-              M (₱1,350) (25 to 30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2800" />
-              L (₱2,800) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating30">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Kare-Kare','kk')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="kbs">
-        <img class="card-image" src="images/kbs.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Korean Beef Stew (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-700" />
-              S (₱700) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1800" />
-              M (₱1,800) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-3500" />
-              L (₱3,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating31">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Korean Beef Stew','kbs')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="lrm">
-        <img class="card-image" src="images/lrm.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Longganisa (Rice Meal)</h4>
-          <div style="margin-top: 11%">
-            <input type="radio" name="size" value="With Egg-85" />
-            <label for="">With Egg (₱85.00)</label><br />
-            <input type="radio" name="size" value="Without Egg-80" />
-            <label for="">Without Egg (₱80.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 28%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating42">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Longganisa Rice Meal','lrm')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="lsrm">
-        <img class="card-image" src="images/ls.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Lumpiang Shanghai (Rice Meal)</h4>
-          <div>
-            <input type="radio" name="size" value="With Egg-100" />
-            <label for="">With Egg (₱100.00)</label><br />
-            <input type="radio" name="size" value="Without Egg-95" />
-            <label for="">Without Egg (₱95.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 28%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating32">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Lumpiang Shanghai Rice Meal','lsrm')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="mnd">
-        <img class="card-image" src="images/mn.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Menudo (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-570" />
-              S (₱570) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1350" />
-              M (₱1,350) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2600" />
-              L (₱2,600) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating33">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Menudo','mnd')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="mvc">
-        <img class="card-image" src="images/cream.jpeg" alt="" />
-        <div class="card-detail">
-          <h4>Mixed Vegies in Cream (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-400" />
-              S (₱400) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-900" />
-              M (₱900) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1850" />
-              L (₱1,850) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating34">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Mixed Veggies in Cream','mvc')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="mb">
-        <img class="card-image" src="images/mong.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Mongolian Beef (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-700" />
-              S (₱700) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1800" />
-              M (₱1,800)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50)-3500" />
-              L (₱3,500) (45 to 50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating35">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Mongolian Beef','mb')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="ptcrm">
-        <img class="card-image" src="images/ptcrm.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Pork Tocino (Rice Meal)</h4>
-          <div style="margin-top: 11%">
-            <input type="radio" name="size" value="With Egg-90" />
-            <label for="">With Egg (₱90.00)</label><br />
-            <input type="radio" name="size" value="Without Egg-85" />
-            <label for="">Without Egg (₱85.00)</label><br />
-          </div>
-          <div class="rat" style="margin-top: 28%">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating43">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Pork Tocino Rice Meal','ptcrm')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="pp">
-        <img class="card-image" src="images/pastel.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Pork Pastel (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-570" />
-              S (₱570) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1350" />
-              M (₱1,350) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2600" />
-              L (₱2,600) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating36">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Pork Pastel','pp')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="sfvcgs">
-        <img class="card-image" src="images/fishveg.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Sauted Fish and Veggies in Chili Garlic Sauce (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-400" />
-              S (₱400) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1000" />
-              M (₱1,000) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1550" />
-              L (₱1,550) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating37">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Sauted Fish and Veggies','sfvcgs')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="svos">
-        <img class="card-image" src="images/saute.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Sauteed Veggies in Oyster Sauce (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-400" />
-              S (₱400) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-900" />
-              M (₱900) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1850" />
-              L (₱1,850) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating38">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Sauteed Veggies in Oyster','svos')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="ssg">
-        <img class="card-image" src="images/sisig.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Sisig (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-600" />
-              S (₱600) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1450" />
-              M (₱1,450) (25-30 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2800" />
-              L (₱2,800) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating39">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button onclick="addToCart('Sisig','ssg')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="ssf">
-        <img class="card-image" src="images/ssf.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Sweet and Sour Fish Fillet (Tray)</h4>
-          <div class="gallery">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-300" />
-              S (₱300) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-950" />
-              M (₱950) (25-30)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-1500" />
-              L (₱1,500) (45-50 pax)
-            </label>
-          </div>
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
-          </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating40">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button class="cbtn">Order</button>
-          <button
-            onclick="addToCart('Sweet/Sour Fish Fillet','ssf')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
-        </div>
-      </div>
-      <div class="cards" id="ssp">
-        <img class="card-image" src="images/ssp.jpg" alt="" />
-        <div class="card-detail">
-          <h4>Sweet and Sour Pork (Tray)</h4>
-          <div class="gallery" style="margin-top: 11%">
-            <label>
-              <img src="images/sTray.png" alt="Image 1" /><br />
-              <input type="radio" name="size" value="(10 to 12 pax)-570" />
-              S (₱570) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/mTray.png" alt="Image 2" /><br />
-              <input type="radio" name="size" value="(25 to 30 pax)-1350" />
-              M (₱1,350) (10-12 pax)
-            </label>
-            <label>
-              <img src="images/lTray.png" alt="Image 3" /><br />
-              <input type="radio" name="size" value="(45 to 50 pax)-2600" />
-              L (₱2,600) (45-50 pax)
-            </label>
-          </div>
-          <div style="color: black" id="total-amounthidden" hidden></div>
+  </div>
 
-          <!-- Lightbox (hidden by default) -->
-          <div class="lightbox" id="lightbox">
-            <img src="" alt="Enlarged Image" class="lightbox-image" />
+
+  <!-- main dashboard -->
+  <div class="dashboard-content" id="container">
+    <div class="cards" id="afrtd">
+      <img class="card-image" src="images/afritada.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Afritada (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
+            S (₱570) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
+            M (₱1,350) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
+            L (₱2,600) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating4">
+            <!-- Star icons will be added here using JavaScript -->
           </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <div class="star-rating" id="star-rating41">
-              <!-- Star icons will be added here using JavaScript -->
-            </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Afritada','afrtd')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="brm">
+      <img class="card-image" src="images/bac.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Bacon (Rice Meal)</h4>
+        <div style="margin-top: 11%">
+          <input type="radio" name="size" value="With Egg-100" />
+          <label for="">With Egg (₱100.00)</label><br />
+          <input type="radio" name="size" value="Without Egg-95" />
+          <label for="">Without Egg (₱95.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 29%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating5">
+            <!-- Star icons will be added here using JavaScript -->
           </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <div>
           <button class="cbtn">Order</button>
-          <button onclick="addToCart('Sweet and Sour Pork','ssp')" class="cbtn">
+          <button onclick="addToCart('Bacon Rice Meal','brm')" class="cbtn">
             <i class="fas fa-shopping-cart"></i>
           </button>
         </div>
       </div>
-      <div id="cart-mod" class="mod">
-        <div class="mod-cont">
-          <span class="clse" onclick="closeCartModal()">&times;</span>
-          <h2 class="crt">My Cart</h2>
-          <ul id="mod-cart-items"></ul>
-          <div class="total-amount"><span id="total-amount">0</span></div>
-          <div class="plc">
-            <button onclick="placeOrder()">Place Order</button>
+    </div>
+    <div class="cards" id="bcdp">
+      <img class="card-image" src="images/bcd.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Baked Cream Dory w/ Potatoes (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-350" />
+            S (₱350) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-950" />
+            M (₱950) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
+            L (₱1,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating6">
+            <!-- Star icons will be added here using JavaScript -->
           </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Baked Cream Dory','bcdp')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div style="color: black" id="total-amounthidden" hidden></div>
+    <div class="cards" id="bc">
+      <img class="card-image" src="images/caldereta.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Beef Caldereta (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
+            S (₱700) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
+            M (₱1,800) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
+            L (₱3,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating7">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Beef Caldereta','bc')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="bm">
+      <img class="card-image" src="images/bm.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Beef Mechado (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
+            S (₱700) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
+            M (₱1,800) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
+            L (₱3,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating8">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Beef Mechado','bm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="btrm">
+      <img class="card-image" src="images/tap.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Beef Tapa (Rice Meal)</h4>
+        <div>
+          <input type="radio" name="size" value="With Egg-110" />
+          <label for="">With Egg (₱110.00)</label><br />
+          <input type="radio" name="size" value="Without Egg-105" />
+          <label for="">Without Egg (₱105.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 29%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating9">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Beef Tapa Rice Meal','btrm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="bwb">
+      <img class="card-image" src="images/bwb.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Beef w/ Broccoli (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-750" />
+            S (₱750) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
+            M (₱1,800) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
+            L (₱3,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating10">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Beef w/ Broccoli','bwb')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="bs">
+      <img class="card-image" src="images/bs.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Beef Salpicao (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-750" />
+            S (₱750) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1850" />
+            M (₱1,850) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-3650" />
+            L (₱3,650) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating11">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Beef Salpicao','bs')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="bcc">
+      <img class="card-image" src="images/bcc.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Buttered Carrots w/ Chicharo (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-420" />
+            S (₱420) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
+            M (₱1,000) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1850" />
+            L (₱1,850) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating12">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Buttered Carrots','bcc')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="bpm">
+      <img class="card-image" src="images/bpm.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Buttered Potato Marbles (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-450" />
+            S (₱450) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-950" />
+            M (₱950) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1950" />
+            L (₱1,950) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating13">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Buttered Potato Marbles','bpm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="cg">
+      <img class="card-image" src="images/cg.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Canton Guisado (Short Order)</h4>
+        <div style="margin-top: 11%">
+          <input type="radio" name="size" value="Tub-100" />
+          <label for="">Tub (₱100.00)</label><br />
+          <input type="radio" name="size" value=" Bilao-350" />
+          <label for=""> Bilao (₱350.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 20%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating14">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Canton Guisado','cg')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="cldrt">
+      <img class="card-image" src="images/pc.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Caldereta (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
+            S (₱570) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
+            M (₱1,350) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
+            L (₱2,600) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating15">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Caldereta','cldrt')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="chm">
+      <img class="card-image" src="images/chmi.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Chami (Short Order)</h4>
+        <div style="margin-top: 11%">
+          <input type="radio" name="size" value="Tub-100" />
+          <label for="">Tub (₱100.00)</label><br />
+          <input type="radio" name="size" value=" Bilao-350" />
+          <label for=""> Bilao (₱350.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 20%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating16">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Chami', 'chm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="cak">
+      <img class="card-image" src="images/cak.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Chicken Ala King (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-500" />
+            S (₱500) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1200" />
+            M (₱1,200) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2350" />
+            L (₱2,350) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating17">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Chicken Ala King','cak')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="ce">
+      <img class="card-image" src="images/ce.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Chicken Embotido (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-340" />
+            S (₱340) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-850" />
+            M (₱850) (10-12)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)1200" />
+            L (₱1,200) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating18">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Chicken Embotido','ce')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="crrm">
+      <img class="card-image" src="images/cr.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Chicken Roll (Rice Meal)</h4>
+        <div>
+          <input type="radio" name="size" value="With Egg-100" />
+          <label for="">With Egg (₱100.00)</label><br />
+          <input type="radio" name="size" value="Without Egg-95" />
+          <label for="">Without Egg (₱95.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 29%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating19">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Chicken Roll Rice Meal','crrm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="chkr">
+      <img class="card-image" src="images/f1.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Chicken Roll (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
+            S (₱400) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)1000" />
+            M (₱1,000) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
+            L (₱1,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating20">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Chicken Roll','chkr')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="cbm">
+      <img class="card-image" src="images/cbm.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Creamy Beef w/ Mushroom (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
+            S (₱700) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
+            M (₱1,800) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(455 to 50 pax)-3500" />
+            L (₱3,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating21">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Creamy Beef Mushroom','cbm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="embtdo">
+      <img class="card-image" src="images/emb.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Embotido (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
+            S (₱400) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
+            M (₱1,000) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
+            L (₱1,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating22">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Embotido','embtdo')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="flu">
+      <img class="card-image" src="images/flu.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Fresh Lumpiang Ubod<br />(Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
+            S (₱400) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-600" />
+            M (₱600) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1000" />
+            L (₱1,000) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating23">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Fresh Lumpiang Ubod','flu')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="fcf">
+      <img class="card-image" src="images/fcf.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Fried Chicken Fingers<br />(Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-500" />
+            S (₱500) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
+            M (₱1,000) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2350" />
+            L (₱2,350) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating24">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Fried Chicken Fingers','fcf')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="fff">
+      <img class="card-image" src="images/f5.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Fried Fish Filet (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-300" />
+            S (₱300) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25  to 30 pax)-900" />
+            M (₱900) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1400" />
+            L (₱1,400) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating25">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Fried Fish Fillet','fff')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="chk">
+      <img class="card-image" src="images/gc.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Glazed Chicken (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-525" />
+            S (₱525) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25  to 30 pax)-1000" />
+            M (₱1,000) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2500" />
+            L (₱2,500) (45-50 pax)
+          </label>
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating26">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Glazed Chicken','chk')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="gff">
+      <img class="card-image" src="images/gff.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Glazed Fish Fillet (Tray)</h4>
+        <div class="gllry" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-300" />
+            S (₱300) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25  to 30 pax)-900" />
+            M (₱900) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1400" />
+            L (₱1,400) (45-50 pax)
+          </label>
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating27">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Glaze Fish Fillet','gff')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="hndo">
+      <img class="card-image" src="images/hmdo.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Hamonado (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-600" />
+            S (₱600) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1450" />
+            M (₱1,450) (25 to 30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2800" />
+            L (₱2,800) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating28">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Hamonado','hndo')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="hsr">
+      <img class="card-image" src="images/hs.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Hungarian Sausage (Rice Meal)</h4>
+        <div>
+          <input type="radio" name="size" value="With Egg-100" />
+          <label for="">With Egg (₱85.00)</label><br />
+          <input type="radio" name="size" value="Without Egg-95" />
+          <label for="">Without Egg (₱80.00)</label><br />
+          <input type="radio" name="size" value="Additional Sausage-115" />
+          <label for="">Additional Sausage (₱115.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 19%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating29">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Hungarian Rice Meal','hsr')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="kk">
+      <img class="card-image" src="images/kk.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Kare-Kare (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
+            S (₱570) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
+            M (₱1,350) (25 to 30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2800" />
+            L (₱2,800) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating30">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Kare-Kare','kk')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="kbs">
+      <img class="card-image" src="images/kbs.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Korean Beef Stew (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
+            S (₱700) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
+            M (₱1,800) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
+            L (₱3,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating31">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Korean Beef Stew','kbs')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="lrm">
+      <img class="card-image" src="images/lrm.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Longganisa (Rice Meal)</h4>
+        <div style="margin-top: 11%">
+          <input type="radio" name="size" value="With Egg-85" />
+          <label for="">With Egg (₱85.00)</label><br />
+          <input type="radio" name="size" value="Without Egg-80" />
+          <label for="">Without Egg (₱80.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 28%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating42">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Longganisa Rice Meal','lrm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="lsrm">
+      <img class="card-image" src="images/ls.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Lumpiang Shanghai (Rice Meal)</h4>
+        <div>
+          <input type="radio" name="size" value="With Egg-100" />
+          <label for="">With Egg (₱100.00)</label><br />
+          <input type="radio" name="size" value="Without Egg-95" />
+          <label for="">Without Egg (₱95.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 28%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating32">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Lumpiang Shanghai Rice Meal','lsrm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="mnd">
+      <img class="card-image" src="images/mn.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Menudo (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
+            S (₱570) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
+            M (₱1,350) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
+            L (₱2,600) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating33">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Menudo','mnd')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="mvc">
+      <img class="card-image" src="images/cream.jpeg" alt="" />
+      <div class="card-detail">
+        <h4>Mixed Vegies in Cream (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
+            S (₱400) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-900" />
+            M (₱900) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1850" />
+            L (₱1,850) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating34">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Mixed Veggies in Cream','mvc')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="mb">
+      <img class="card-image" src="images/mong.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Mongolian Beef (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
+            S (₱700) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
+            M (₱1,800)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50)-3500" />
+            L (₱3,500) (45 to 50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating35">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Mongolian Beef','mb')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="ptcrm">
+      <img class="card-image" src="images/ptcrm.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Pork Tocino (Rice Meal)</h4>
+        <div style="margin-top: 11%">
+          <input type="radio" name="size" value="With Egg-90" />
+          <label for="">With Egg (₱90.00)</label><br />
+          <input type="radio" name="size" value="Without Egg-85" />
+          <label for="">Without Egg (₱85.00)</label><br />
+        </div>
+        <div class="rat" style="margin-top: 28%">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating43">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Pork Tocino Rice Meal','ptcrm')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="pp">
+      <img class="card-image" src="images/pastel.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Pork Pastel (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
+            S (₱570) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
+            M (₱1,350) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
+            L (₱2,600) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating36">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Pork Pastel','pp')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="sfvcgs">
+      <img class="card-image" src="images/fishveg.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Sauted Fish and Veggies in Chili Garlic Sauce (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
+            S (₱400) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
+            M (₱1,000) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1550" />
+            L (₱1,550) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating37">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Sauted Fish and Veggies','sfvcgs')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="svos">
+      <img class="card-image" src="images/saute.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Sauteed Veggies in Oyster Sauce (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
+            S (₱400) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-900" />
+            M (₱900) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1850" />
+            L (₱1,850) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating38">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Sauteed Veggies in Oyster','svos')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="ssg">
+      <img class="card-image" src="images/sisig.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Sisig (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-600" />
+            S (₱600) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1450" />
+            M (₱1,450) (25-30 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2800" />
+            L (₱2,800) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating39">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Sisig','ssg')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="ssf">
+      <img class="card-image" src="images/ssf.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Sweet and Sour Fish Fillet (Tray)</h4>
+        <div class="gallery">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-300" />
+            S (₱300) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-950" />
+            M (₱950) (25-30)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
+            L (₱1,500) (45-50 pax)
+          </label>
+        </div>
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating40">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Sweet/Sour Fish Fillet','ssf')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div class="cards" id="ssp">
+      <img class="card-image" src="images/ssp.jpg" alt="" />
+      <div class="card-detail">
+        <h4>Sweet and Sour Pork (Tray)</h4>
+        <div class="gallery" style="margin-top: 11%">
+          <label>
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
+            S (₱570) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/mTray.png" alt="Image 2" /><br />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
+            M (₱1,350) (10-12 pax)
+          </label>
+          <label>
+            <img src="images/lTray.png" alt="Image 3" /><br />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
+            L (₱2,600) (45-50 pax)
+          </label>
+        </div>
+        <div style="color: black" id="total-amounthidden" hidden></div>
+
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image" />
+        </div>
+        <div class="rat">
+          <p>Rating:</p>
+          <div class="star-rating" id="star-rating41">
+            <!-- Star icons will be added here using JavaScript -->
+          </div>
+        </div>
+        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+        <button class="cbtn">Order</button>
+        <button onclick="addToCart('Sweet and Sour Pork','ssp')" class="cbtn">
+          <i class="fas fa-shopping-cart"></i>
+        </button>
+      </div>
+    </div>
+    <div id="cart-mod" class="mod">
+      <div class="mod-cont">
+        <span class="clse" onclick="closeCartModal()">&times;</span>
+        <h2 class="crt">My Cart</h2>
+        <ul id="mod-cart-items"></ul>
+        <div class="total-amount"><span id="total-amount">0</span></div>
+        <div class="plc">
+          <button onclick="placeOrder()">Place Order</button>
         </div>
       </div>
     </div>
-    <script>
-      // Get the cards initially
-      var cards = document.querySelectorAll('.cards');
-    
-      // Add event listener for keydown event
-      document.getElementById('menuSearchInput').addEventListener('keydown', function(event) {
-        // Check if Enter key is pressed (key code 13)
-        if (event.keyCode === 13) {
-          performSearch();
+  </div>
+  <script>
+    // Get the cards initially
+    var cards = document.querySelectorAll('.cards');
+
+    // Add event listener for keydown event
+    document.getElementById('menuSearchInput').addEventListener('keydown', function (event) {
+      // Check if Enter key is pressed (key code 13)
+      if (event.keyCode === 13) {
+        performSearch();
+      }
+    });
+
+    function performSearch() {
+      // Get the value from the search input
+      var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
+
+      // Perform your search logic here
+      // For demonstration, you can hide/show cards based on the search query
+      cards.forEach(function (card) {
+        var cardTitle = card.querySelector('h4').innerText.toLowerCase();
+        if (cardTitle.includes(searchQuery)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
         }
       });
-    
-      function performSearch() {
-        // Get the value from the search input
-        var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
-    
-        // Perform your search logic here
-        // For demonstration, you can hide/show cards based on the search query
-        cards.forEach(function(card) {
-          var cardTitle = card.querySelector('h4').innerText.toLowerCase();
-          if (cardTitle.includes(searchQuery)) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
+    }
+     // Function to update the quantity of a cart item
+function updateCartItemQuantity(cartItemId, newQuantity) {
+    fetch('/api/cart/items', {
+        method: 'GET',
+        credentials: 'include', // Important for sessions
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch cart items. Please try again.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
+        const itemToUpdate = data.find(item => item._id === cartItemId || item.id === cartItemId);
+        const updatedTotalPrice = itemToUpdate.foodItem.price * newQuantity;
+
+        // Check if adding the updated item exceeds the limit
+        if (totalPrice + updatedTotalPrice > 10000) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cart Limit Exceeded',
+                text: 'Adding this item will exceed PHP 10,000. Please remove some items.',
+            });
+        } else {
+            // Proceed with updating the item quantity in the cart
+            fetch('/api/cart/updateQuantity', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // Important for sessions
+                body: JSON.stringify({ cartItemId, quantity: newQuantity }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to update item quantity in cart. Please try again.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Call the function to fetch and display cart items again
+                    displayCartItems();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Could not update item quantity in the cart.',
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error updating item quantity in cart:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
+                });
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching cart items:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to fetch cart items. Please try again.',
         });
-      }
-    </script>
-  </body>
-  <script src="scripts/cart.js"></script>
-  <div class="cntr" style="margin-top: 100px">
-    <footer
-      class="text-white text-center text-lg-start"
-      style="background-color: #c69b68"
-    >
-      <!-- Grid container -->
-      <div class="p-5">
-        <!--Grid row-->
+    });
+}
 
-        <div class="row mt-4">
-          <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-          <!--Grid column-->
-          <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-4">About company</h5>
 
-            <label style="color: white">
-              Thank you for choosing Maya&Me Services for your food ordering
-              needs. We're here to satisfy your cravings, one delicious meal at
-              a time. Enjoy your meal and have a wonderful day!
-            </label>
+       // Function to fetch and display cart items
+function displayCartItems() {
+    fetch('/api/cart/items', {
+        method: 'GET',
+        credentials: 'include', // Important for sessions
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch cart items. Please try again.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const cartItemsContainer = document.getElementById('mod-cart-items');
+            cartItemsContainer.innerHTML = ''; // Clear previous content
 
-            <div class="mt-4">
-              <!-- Facebook -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
-                ><i class="fab fa-facebook-f"></i
-              ></a>
-              <!-- Dribbble -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
-                ><i class="fab fa-dribbble"></i
-              ></a>
-              <!-- Twitter -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
-                ><i class="fab fa-twitter"></i
-              ></a>
-              <!-- Google + -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
-                ><i class="fab fa-google-plus-g"></i
-              ></a>
-              <!-- Linkedin -->
+            if (data.length > 0) { // Check if data is not empty
+                let totalPrice = 0; // Initialize total price variable
+
+                data.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('row', 'border-top', 'border-bottom');
+
+                    // Calculate the total price for each item
+                    const itemTotalPrice = item.foodItem.price * item.quantity;
+                    totalPrice += itemTotalPrice; // Add to the total price
+
+                    itemElement.innerHTML = `
+            <div class="col-2"><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
+            <div>
+                <div>${item.foodItem.name} (${item.foodItem.size})</div>
+                <div>Price: PHP ${item.foodItem.price.toFixed(2)}</div>
+                <div>Quantity: 
+                    <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
+
+                </div>
+                <div>Total Price: PHP ${itemTotalPrice.toFixed(2)}</div> <!-- Display total price for each item -->
+                <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')">Delete</button>
             </div>
-          </div>
-          <!--Grid column-->
-          <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-          <!--Grid column-->
-          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
+        `;
 
-            <ul class="fa-ul" style="margin-left: 1.65em">
-              <li class="mb-3">
-                <span class="fa-li"><i class="fas fa-home"></i></span
-                ><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
-              </li>
-              <li class="mb-3">
-                <span class="fa-li"><i class="fas fa-envelope"></i></span
-                ><span class="ms-2">mayaandme74@gmail.com</span>
-              </li>
-              <li class="mb-3">
-                <span class="fa-li"><i class="fas fa-phone"></i></span
-                ><span class="ms-2">09186506362</span>
-              </li>
-            </ul>
-          </div>
-          <!--Grid column-->
+                    cartItemsContainer.appendChild(itemElement);
+                });
 
-          <!--Grid column-->
-          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-4">Opening hours</h5>
+                // Update the total price displayed in the UI
+                document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
+                document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
 
-            <table class="table text-center text-white">
-              <tbody class="font-weight-normal">
-                <tr>
-                  <td>Mon - Thu:</td>
-                  <td>8am - 9pm</td>
-                </tr>
-                <tr>
-                  <td>Fri - Sat:</td>
-                  <td>8am - 1am</td>
-                </tr>
-                <tr>
-                  <td>Sunday:</td>
-                  <td>9am - 10pm</td>
-                </tr>
-              </tbody>
-            </table>
+                // Check if the total price exceeds the limit
+                if (totalPrice > 10000) {
+                    // Display a warning message
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cart Limit Exceeded',
+                        text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                    });
+                }
+            } else {
+                // Display a message if the cart is empty
+                cartItemsContainer.innerHTML = '<div>No items in cart</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching cart items:', error);
+            // Display an error message
+            const cartItemsContainer = document.getElementById('mod-cart-items');
+            cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
+        });
+}
+
+
+
+        // Call the function to fetch and display cart items when the page loads
+        document.addEventListener('DOMContentLoaded', displayCartItems);
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Get the modal
+            var modal = document.getElementById("payment-modal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("checkoutButton");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close-button")[0];
+
+            if (btn && modal && span) {
+                // When the user clicks the button, open the modal 
+                btn.onclick = function (event) {
+                    event.preventDefault();  // Prevent any default button action
+                    modal.style.display = "block";
+                }
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function (event) {
+                    event.preventDefault();  // Prevent any default span action
+                    modal.style.display = "none";
+                };
+
+                // When the user clicks anywhere outside of the modal, close it
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        event.preventDefault();  // Prevent any default window action
+                        modal.style.display = "none";
+                    }
+                }
+
+                // Prevent events inside the modal from closing it and stop propagation
+                modal.children[0].onclick = function (event) {
+                    event.stopPropagation();
+                    event.preventDefault();  // Prevent any default action inside the modal
+                }
+            } else {
+                console.error("Elements not found. Please check the IDs and class names.");
+            }
+        });
+
+        function updateQuantity(cartItemId, newQuantity) {
+            // Ensure the quantity is not negative
+            if (newQuantity < 0) {
+                return;
+            }
+            updateCartItemQuantity(cartItemId, newQuantity);
+        }
+        // Function to update the cart counter and item counter
+        function updateCartCounter() {
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Calculate total number of items in the cart
+                    const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                    // Update the cart counter and item counter in the UI
+                    document.getElementById('cart-counter').textContent = totalItems;
+                    document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message or handle it as per your requirement
+                });
+        }
+
+        // Call the function to update the cart counter and item counter when the page loads
+        document.addEventListener('DOMContentLoaded', updateCartCounter);
+
+        // Function to delete a cart item
+        function deleteCartItem(cartItemId) {
+            fetch(`/api/cart/delete/${cartItemId}`, {
+                method: 'DELETE',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete item from cart. Please try again.');
+                    }
+                    // If deletion is successful, remove the item from the UI
+                    const deletedItem = document.getElementById(cartItemId);
+                    if (deletedItem) {
+                        deletedItem.remove();
+                    }
+                    // Update the cart counter
+                    updateCartCounter();
+                })
+                .catch(error => {
+                    console.error('Error deleting item from cart:', error);
+                    // Display an error message if deletion fails
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Failed to delete item from cart. Please try again.',
+                    });
+                });
+        }
+  </script>
+  <script src="scripts/meals.js"></script>
+</body>
+
+<div class="cntr" style="margin-top: 100px">
+  <footer class="text-white text-center text-lg-start" style="background-color: #c69b68">
+    <!-- Grid container -->
+    <div class="p-5">
+      <!--Grid row-->
+
+      <div class="row mt-4">
+        <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+        <!--Grid column-->
+        <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4">About company</h5>
+
+          <label style="color: white">
+            Thank you for choosing Maya&Me Services for your food ordering
+            needs. We're here to satisfy your cravings, one delicious meal at
+            a time. Enjoy your meal and have a wonderful day!
+          </label>
+
+          <div class="mt-4">
+            <!-- Facebook -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+            <!-- Dribbble -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+            <!-- Twitter -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+            <!-- Google + -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+            <!-- Linkedin -->
           </div>
-          <!--Grid column-->
         </div>
-        <!--Grid row-->
-      </div>
-      <!-- Grid container -->
+        <!--Grid column-->
+        <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+        <!--Grid column-->
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
 
-      <!-- Copyright -->
-      <div
-        class="text-center p-3"
-        style="font-weight: bold; background-color: #ffefe4; color: #c69b68"
-      >
-        © 2023 Copyright:
-        <label style="color: #c69b68">Maya&Me Services</label>
+          <ul class="fa-ul" style="margin-left: 1.65em">
+            <li class="mb-3">
+              <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro
+                Luisiana,Laguna</span>
+            </li>
+            <li class="mb-3">
+              <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
+            </li>
+            <li class="mb-3">
+              <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
+            </li>
+          </ul>
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4">Opening hours</h5>
+
+          <table class="table text-center text-white">
+            <tbody class="font-weight-normal">
+              <tr>
+                <td>Mon - Thu:</td>
+                <td>8am - 9pm</td>
+              </tr>
+              <tr>
+                <td>Fri - Sat:</td>
+                <td>8am - 1am</td>
+              </tr>
+              <tr>
+                <td>Sunday:</td>
+                <td>9am - 10pm</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--Grid column-->
       </div>
-      <!-- Copyright -->
-    </footer>
-  </div>
+      <!--Grid row-->
+    </div>
+    <!-- Grid container -->
+
+    <!-- Copyright -->
+    <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #c69b68">
+      © 2023 Copyright:
+      <label style="color: #c69b68">Maya&Me Services</label>
+    </div>
+    <!-- Copyright -->
+  </footer>
+</div>
+
 </html>

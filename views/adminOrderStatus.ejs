@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Order Status</title>
+    <!-- Add any necessary CSS links here -->
+</head>
+<body>
+    <h1>Admin Order Status</h1>
+    <form action="/adminOrderStatus/update" method="post">
+        <label for="orderId">Order ID:</label>
+        <input type="text" id="orderId" name="orderId" required><br><br>
+        
+        <label for="newStatus">New Status:</label>
+        <select id="newStatus" name="newStatus" required>
+            <option value="preparing">Preparing</option>
+            <option value="cooking">Cooking</option>
+            <option value="ready">Ready</option>
+            <option value="dispatched">Dispatched</option>
+            <option value="delivered">Delivered</option>
+        </select><br><br>
+
+        <button type="submit">Update Status</button>
+    </form>
+</body>
+</html>

@@ -1,14 +1,7 @@
 // Function to open the payment modal
-
-var totalAmountElement=document.getElementById('total-amount');
-var totalAmount;
-const modalContainer = document.querySelector('.modal-container');
 function openPaymentModal() {
-
     var modal = document.getElementById("payment-mod");
-
     modal.style.display = "flex";
-    
 }
 
 // Function to close the payment modal
@@ -18,18 +11,14 @@ function closePaymentModal() {
 }
 
 // Function to initialize the PayPal button
-function initializePayPalButton() {
-    var totalPrice = document.getElementById('total-amounthidden');
-    var totalPriceValue = parseFloat(totalPrice.innerText);
-    console.log(totalPriceValue);
+function initializePayPalButton(totalAmountValue) {
     paypal.Buttons({
         createOrder: function (data, actions) {
-     
             // Use the same currency code as in the script tag
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: totalPriceValue.toString(),
+                        value: totalAmountValue.toString(),
                         currency_code: 'PHP', // Use the correct currency code
                     },
                 }],
@@ -37,8 +26,6 @@ function initializePayPalButton() {
         },
         onApprove: function (data, actions) {
             return actions.order.capture().then(function (details) {
-        
-                console.log(data);
                 console.log("Payment successful:", details);
                 Swal.fire({
                     icon: 'success',
@@ -49,32 +36,27 @@ function initializePayPalButton() {
                 closePaymentModal();
             });
         },
-      
+        onError: function (err) {
+            console.error('An error occurred during PayPal checkout:', err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Error',
+                text: 'An error occurred during payment processing. Please try again later.',
+            });
+        }
     }).render('#paypal-button');
-
 }
+
+// Function to retrieve the total price from the cart
 function getTotalPriceFromCart() {
-    var totalAmount = totalAmountElement.getAttribute('data-numeric-value');
-    console.log(totalAmount);
+    var totalAmountElement = document.getElementById('total-amounthidden');
+    var totalAmount = parseFloat(totalAmountElement.innerText);
     return totalAmount;
 }
 
-
-// document.addEventListener("DOMContentLoaded", function () {
-
-//     var totalPrice = document.getElementById('total-amounthidden');
-  
-//     console.log(totalPrice.innerText);
-   
-// console.log(totalAmountElement.innerText);
-//     initializePayPalButton();
-    
-
-// });
-
+// Event listener for checkout button click
 document.getElementById("checkoutButton").addEventListener("click", function () {
-
-    initializePayPalButton();
+    var totalAmount = getTotalPriceFromCart();
+    initializePayPalButton(totalAmount);
     openPaymentModal();
-  
 });
