@@ -140,8 +140,8 @@
                 <div id="payment-modal" class="modal-container" style="display:none;">
                     <!-- Modal Content -->
                     <div class="modal-content">
-                        <span class="close-button">&times;</span>
-                        <h2>Select Your Payment Method</h2>
+                        <span class="closebtn">&times;</span>
+                        <h2 class="spm">Select Your Payment Method</h2>
                         <!-- Payment Methods Here -->
 
                         <input class="cod" type="button" value="Cash On Delivery">
@@ -221,19 +221,18 @@ function displayCartItems() {
                     totalPrice += itemTotalPrice; // Add to the total price
 
                     itemElement.innerHTML = `
-            <div class="col-2"><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
-            <div>
-                <div>${item.foodItem.name} (${item.foodItem.size})</div>
-                <div>Price: PHP ${item.foodItem.price.toFixed(2)}</div>
-                <div>Quantity: 
+            <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
+            
+               <div class="Itm"> ${item.foodItem.name} ${item.foodItem.size}
+               Price: PHP ${item.foodItem.price.toFixed(2)}
+               Quantity: 
                     <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
                     <span>${item.quantity}</span>
                     <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
-
-                </div>
-                <div>Total Price: PHP ${itemTotalPrice.toFixed(2)}</div> <!-- Display total price for each item -->
-                <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')">Delete</button>
-            </div>
+                Total Price: PHP ${itemTotalPrice.toFixed(2)}
+                <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')"><i class="fa fa-trash" aria-hidden="true"></i>
+</button>
+            </div >
         `;
 
                     cartItemsContainer.appendChild(itemElement);
@@ -274,12 +273,13 @@ function displayCartItems() {
             // Get the modal
             var modal = document.getElementById("payment-modal");
 
+            
             // Get the button that opens the modal
             var btn = document.getElementById("checkoutButton");
-
+            
             // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close-button")[0];
-
+            var span = document.getElementsByClassName("closebtn")[0];
+                
             if (btn && modal && span) {
                 // When the user clicks the button, open the modal 
                 btn.onclick = function (event) {
@@ -288,18 +288,12 @@ function displayCartItems() {
                 }
 
                 // When the user clicks on <span> (x), close the modal
-                span.onclick = function (event) {
+                span.onclick = function(event) {
                     event.preventDefault();  // Prevent any default span action
                     modal.style.display = "none";
+                    location.reload();  // Refresh the window
                 };
 
-                // When the user clicks anywhere outside of the modal, close it
-                window.onclick = function (event) {
-                    if (event.target == modal) {
-                        event.preventDefault();  // Prevent any default window action
-                        modal.style.display = "none";
-                    }
-                }
 
                 // Prevent events inside the modal from closing it and stop propagation
                 modal.children[0].onclick = function (event) {

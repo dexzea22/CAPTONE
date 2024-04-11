@@ -31,6 +31,40 @@ const menuToggle = document.querySelector('.menu-toggle');
     // You can set the login page URL here
     window.location.href = "/login"; // Replace "login.html" with the actual URL of your login page
   }
+  menuToggle.addEventListener('click', () => {
+    menu.classList.toggle('show');
+  });
+
+      const imagePaths = [
+  'mong.jpg',
+  'bpm.jpg',
+  'bs.jpg',
+  'cream.jpeg',
+  'emb.jpg',
+  'fishveg.jpg',
+  // Add more image file paths as needed
+];
+
+const slideshowContainer = document.querySelector('.slideshow-container');
+let currentIndex = 0;
+
+
+function updateBackgroundImage() {
+  if (currentIndex >= imagePaths.length) {
+    currentIndex = 0;
+  }
+  const imagePath = imagePaths[currentIndex];
+  const imageUrl = `url('images/${imagePath}')`;
+  document.querySelector('.jumbotron').style.backgroundImage = imageUrl;
+  document.querySelector('.jumbotron').style.backgroundSize = '100% 100%'; // or 'contain' or custom size
+  document.querySelector('.jumbotron').style.backgroundRepeat = 'no-repeat';
+  document.querySelector('.jumbotron').style.backgroundPosition =  'center';
+
+  currentIndex++;
+}
+
+// Update the background image every 3 seconds (3000 milliseconds)
+setInterval(updateBackgroundImage, 3000);
  // JavaScript function to create a star rating
  function createStarRating(containerId, rating) {
   const container = document.getElementById(containerId);
@@ -105,6 +139,7 @@ function updateCartCounter() {
 function addToCart(itemName, cardId) {
   const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
   const imageUrl = document.querySelector(`#${cardId} img[src^="images/"]`).getAttribute('src');
+  
 
   if (!selectedSize) {
     Swal.fire({
@@ -143,6 +178,7 @@ function addToCart(itemName, cardId) {
         text: 'Adding this item will exceed PHP 10,000. Please remove some items.',
       });
     } else {
+      
       // Proceed with adding the item to the cart
       fetch('/api/cart/add', {
         method: 'POST',
@@ -150,6 +186,7 @@ function addToCart(itemName, cardId) {
         credentials: 'include', // Important for sessions
         body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity: 1 }),
       })
+      
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to add item to cart. Please try again.');
@@ -176,6 +213,7 @@ function addToCart(itemName, cardId) {
           });
         }
       })
+      
       .catch(error => {
         console.error('Error adding item to cart:', error);
         Swal.fire({
@@ -365,6 +403,8 @@ function updateCartDisplay(cartItems) {
         var imageElement = document.createElement("img");
         imageElement.src = item.foodItem.imageUrl;
         imageElement.alt = "Product Image";
+        // Set the desired width and height for the image
+      
         div.appendChild(imageElement);
         imageElement.classList.add("imgs");
 
