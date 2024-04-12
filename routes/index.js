@@ -57,6 +57,7 @@ router.get('/login', async function (req, res, next) {
 /* POST login page. */
 router.post('/login', async function (req, res, next) {
   const { email, password } = req.body;
+  console.log('Email received in request body:', email); // Log the email received in the request body
   try {
       const user = await prisma.User.findUnique({ where: { email: email } });
       if (!user) {
@@ -66,7 +67,14 @@ router.post('/login', async function (req, res, next) {
       if (!match) {
           return res.render('index', { errorMessage: 'Incorrect Password.' });
       }
-      req.session.userId = user.id; // Set the userId in the session
+      
+      // Store both userId and email in the session
+      req.session.userId = user.id; 
+      req.session.email = email; // Assign email to req.session.email
+
+      console.log('User authenticated with userId:', user.id);
+      console.log('User email stored in session:', email); // Log the stored email
+
       // Redirect based on user type
       const redirectUrl = user.usertype === 'Admin' ? '/adminDashboard' :
           user.usertype === 'Manager' ? '/managerDashboard' :
@@ -77,9 +85,6 @@ router.post('/login', async function (req, res, next) {
       return res.render('error', { errorMessage: 'Error logging in. Please try again.' });
   }
 });
-
-
-
 
 
 router.get('/logout', async (req, res) => {
