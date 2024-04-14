@@ -248,80 +248,63 @@ const createOrder = async (cartItems) => {
 
 const captureOrder = async (orderID, cartItems, userId) => {
   try {
-    const accessToken = await generateAccessToken(); // Retrieve PayPal access token
-    const url = `${base}/v2/checkout/orders/${orderID}/capture`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+      const accessToken = await generateAccessToken(); // Retrieve PayPal access token
+      const url = `${base}/v2/checkout/orders/${orderID}/capture`;
+      const response = await fetch(url, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+          },
+      });
 
-    if (!response.ok) {
-      throw new Error(`Failed to capture order. Status: ${response.status}`);
-    }
+      if (!response.ok) {
+          throw new Error(`Failed to capture order. Status: ${response.status}`);
+      }
 
-    const data = await response.json();
-    console.log("Order captured:", data);
+      const data = await response.json();
+      console.log("Order captured:", data);
 
-    // Calculate total amount based on cart items
-    const totalAmount = calculateTotalAmount(cartItems);
+      // Calculate total amount based on cart items
+      const totalAmount = calculateTotalAmount(cartItems);
+      console.log("Total Amount:", totalAmount);
 
-    // Save order details to the database
-    const order = await prisma.order.create({
-      data: {
-        userId: userId,
-        paypalOrderId: orderID, // Store the PayPal order ID
-        status: data.status,
-        amount: totalAmount,
-        orderItems: {
-          create: cartItems.map((item) => {
-            // Ensure that foodItem exists in cart item
-            if (!item.foodItem) {
-              throw new Error(`Food item is missing for cart item with ID: ${item.id}`);
-            }
+      // Save order details to the database
+      const order = await prisma.order.create({
+          data: {
+              userId: userId,
+              paypalOrderId: orderID,
+              status: data.status,
+              amount: totalAmount,
+              // Initialize orderItems here directly to handle atomicity
+              orderItems: {
+                  create: cartItems.map(item => ({
+                      itemId: item.itemId,
+                      itemName: item.foodItem.name,
+                      itemDescription: item.foodItem.description,
+                      itemPrice: item.foodItem.price,
+                      itemSize: item.foodItem.size,
+                      itemImageUrl: item.foodItem.imageUrl,
+                      quantity: item.quantity,
+                      totalPrice: item.quantity * item.foodItem.price,
+                  }))
+              }
+          },
+      });
 
-            // Ensure that all required properties exist in foodItem
-            const { id, name, description, price, size, imageUrl } = item.foodItem;
-            if (!id || !name || !description || !price || !size || !imageUrl) {
-              throw new Error(`Incomplete food item data for cart item with ID: ${item.id}`);
-            }
+      console.log("Order and OrderItems saved to database:", order);
 
-            // Create OrderItem object
-            return {
-              itemId: id,
-              itemName: name,
-              itemDescription: description,
-              itemPrice: price,
-              itemSize: size,
-              itemImageUrl: imageUrl,
-              quantity: item.quantity,
-              totalPrice: item.quantity * price,
-              // Associate the OrderItem with the Order
-              order: { connect: { id: orderID } },
-            };
-          }),
-        },
-      },
-      include: {
-        orderItems: true, // Include order items in the response
-      },
-    });
+      // Optionally, you can remove the cart items after the order is captured
+      await prisma.cartItem.deleteMany({
+          where: {
+              userId: userId,
+          },
+      });
 
-    // Optionally, you can remove the cart items after the order is captured
-    await prisma.cartItem.deleteMany({
-      where: {
-        userId: userId,
-      },
-    });
-
-    console.log("Order saved to database:", order);
-
-    return order;
+      return order;
   } catch (error) {
-    console.error("Failed to capture order:", error);
-    throw error;
+      console.error("Failed to capture order:", error);
+      throw error;
   }
 };
 
@@ -415,39 +398,44 @@ function authenticate(req, res, next) {
 // Route to capture a PayPal order
 app.post("/capture/:orderId", authenticate, async (req, res) => {
   try {
-    const { orderId } = req.params;
-    
-    // Retrieve cart items from session
-    const cartItems = req.session.cartItems || [];
-    const userId = req.session.userId;
-    
-    // Capture PayPal order
-    const capturedOrder = await captureOrder(orderId, cartItems, userId);
+      const { orderId } = req.params;
+      
+      // Retrieve cart items from session
+      const cartItems = req.session.cartItems || [];
 
-    // Ensure user information exists in the session
-    if (req.session && req.session.userId && req.session.email) {
-      // Create a log entry for the captured payment
-      await prisma.log.create({
-        data: {
-          action: `Payment captured for order ${orderId}`,
-          email: req.session.email,
-          userId: req.session.userId,
-        },
-      });
+      const userId = req.session.userId;
+      
+      // Log cartItems for verification
+      console.log("Cart Items:", cartItems);
 
-      // Send response
-      res.status(200).json({ message: "Order captured successfully" });
-    } else {
-      console.error("Failed to capture PayPal order: User information not found in session");
-      res.status(500).json({ error: "Failed to capture PayPal order: User information not found in session" });
-    }
+      // Capture PayPal order
+      const capturedOrder = await captureOrder(orderId, cartItems, userId); // Ensure cartItems are passed correctly
+
+      // Log capturedOrder for verification
+      console.log("Captured Order:", capturedOrder);
+
+      // Ensure user information exists in the session
+      if (req.session && req.session.userId && req.session.email) {
+          // Create a log entry for the captured payment
+          await prisma.log.create({
+              data: {
+                  action: `Payment captured for order ${orderId}`,
+                  email: req.session.email,
+                  userId: req.session.userId,
+              },
+          });
+
+          // Send response
+          res.status(200).json({ message: "Order captured successfully" });
+      } else {
+          console.error("Failed to capture PayPal order: User information not found in session");
+          res.status(500).json({ error: "Failed to capture PayPal order: User information not found in session" });
+      }
   } catch (error) {
-    console.error("Failed to capture PayPal order:", error);
-    res.status(500).json({ error: "Failed to capture PayPal order." });
+      console.error("Failed to capture PayPal order:", error);
+      res.status(500).json({ error: "Failed to capture PayPal order." });
   }
 });
-
-
 
 
 

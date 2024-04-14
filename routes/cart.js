@@ -27,6 +27,10 @@ router.get('/items', authenticate, async (req, res) => {
             include: { foodItem: true },
         });
         console.log('Cart Items:', cartItems); // Log retrieved cart items
+        
+        // Store cart items in session
+        req.session.cartItems = cartItems;
+
         res.json(cartItems);
     } catch (error) {
         console.error('Error fetching cart items:', error);
