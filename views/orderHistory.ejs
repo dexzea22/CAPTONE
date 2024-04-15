@@ -1,0 +1,45 @@
+<!-- orderHistory.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+</head>
+
+<body>
+    <h1>Order History</h1>
+
+    <% if (orders.length > 0) { %>
+        <ul>
+            <% orders.forEach(order => { %>
+                <li>
+                    <strong>Order ID:</strong> <%= order.id %><br>
+                    <strong>Status:</strong> <%= order.status %><br>
+                    <strong>Amount:</strong> <%= order.amount %><br>
+                    <strong>Shipping Address:</strong> <%= order.shippingAddress %><br>
+                    <strong>Contact Person:</strong> <%= order.contactPerson %><br>
+                    <strong>Contact Number:</strong> <%= order.contactNumber %><br>
+                    <strong>Order Items:</strong><br>
+                    <ul>
+                        <% order.orderItems.forEach(item => { %>
+                            <li>
+                                <%= item.itemName %> - Quantity: <%= item.quantity %>, Price: <%= item.itemPrice %>, Total Price: <%= item.totalPrice %>
+                            </li>
+                        <% }); %>
+                    </ul>
+                </li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No orders found.</p>
+    <% } %>
+
+    <a href="/orderStatus">Check Order Status</a>
+    <!-- Add more links or buttons as needed -->
+
+</body>
+
+</html>

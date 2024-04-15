@@ -11,14 +11,14 @@ function closePaymentModal() {
 }
 
 // Function to initialize the PayPal button
-function initializePayPalButton(totalAmountValue) {
+function initializePayPalButton(totalAmount, shippingAddress, contactPerson, contactNumber) {
     paypal.Buttons({
         createOrder: function(data, actions) {
             // Use the same currency code as in the script tag
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: totalAmountValue.toFixed(2), // Format total amount with 2 decimal places
+                        value: totalAmount.toFixed(2), // Format total amount with 2 decimal places
                         currency_code: 'PHP', // Use the correct currency code
                     },
                 }],
@@ -31,8 +31,12 @@ function initializePayPalButton(totalAmountValue) {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    // Pass any additional data you want to store in the payment log
-                    body: JSON.stringify({ /* Add any additional data here */ })
+                    // Pass shipping address, contact person, and contact number in the body
+                    body: JSON.stringify({
+                        shippingAddress: shippingAddress,
+                        contactPerson: contactPerson,
+                        contactNumber: contactNumber
+                    })
                 })
                 .then(function(response) {
                     if (!response.ok) {
@@ -70,6 +74,23 @@ function initializePayPalButton(totalAmountValue) {
     }).render('#paypal-button');
 }
 
+// Event listener for checkout form submission
+document.getElementById("checkoutForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    var totalAmount = getTotalPriceFromCart();
+    var shippingAddress = document.getElementById("adrss").value;
+    var contactPerson = document.getElementById("cntct").value;
+    var contactNumber = document.getElementById("num").value;
+
+    console.log("Form submitted with values:");
+    console.log("Total Amount:", totalAmount);
+    console.log("Shipping Address:", shippingAddress);
+    console.log("Contact Person:", contactPerson);
+    console.log("Contact Number:", contactNumber);
+
+    initializePayPalButton(totalAmount, shippingAddress, contactPerson, contactNumber);
+    openPaymentModal();
+});
 
 // Function to retrieve the total price from the cart
 function getTotalPriceFromCart() {
@@ -78,9 +99,5 @@ function getTotalPriceFromCart() {
     return totalAmount;
 }
 
-// Event listener for checkout button click
-document.getElementById("checkoutButton").addEventListener("click", function () {
-    var totalAmount = getTotalPriceFromCart();
-    initializePayPalButton(totalAmount);
-    openPaymentModal();
-});
+// Log a message indicating that the payment script has loaded
+console.log("Payment script loaded.");
