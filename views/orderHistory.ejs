@@ -26,7 +26,13 @@
                     <ul>
                         <% order.orderItems.forEach(item => { %>
                             <li>
-                                <%= item.itemName %> - Quantity: <%= item.quantity %>, Price: <%= item.itemPrice %>, Total Price: <%= item.totalPrice %>
+                                <strong>Item ID:</strong> <%= item.itemId %><br>
+                                <strong>Item Name:</strong> <%= item.itemName %><br>
+                                <strong>Item Size:</strong> <%= item.itemSize %><br>
+                                <strong>Quantity:</strong> <%= item.quantity %><br>
+                                <strong>Price:</strong> <%= item.itemPrice %><br>
+                                <strong>Total Price:</strong> <%= item.totalPrice %><br>
+                                <strong>Item Image:</strong> <img src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>"><br>
                             </li>
                         <% }); %>
                     </ul>

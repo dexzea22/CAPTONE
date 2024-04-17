@@ -9,6 +9,7 @@ const fetch = require("node-fetch"); // Import fetch module for making HTTP requ
 var createError = require("http-errors");
 const express = require("express");
 const session = require("express-session");
+const flash = require('express-flash');
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -39,7 +40,7 @@ const orderRouter = require('./routes/orderRoutes');
 const adminOrderStatusRouter = require('./routes/adminOrderStatusRouter');
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
-
+app.use(flash());
 // Configure session middleware
 app.use(session({
   secret: process.env.SESSION_SECRET || "secret-key",
@@ -110,13 +111,53 @@ app.get("/userMeals", (req, res) => {
 app.get("/aboutUs", (req, res) => {
   res.render("aboutUs"); // Render a view named "new-page.ejs"
 });
-app.get('/orderHistory', authenticate, (req, res) => {
-  res.render('orderHistory');
+// Route to display user order history
+app.get('/orderHistory', authenticate, async (req, res) => {
+  try {
+    // Fetch order history data from the database based on the logged-in user
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: req.session.userId
+      },
+      include: {
+        orderItems: true,
+      },
+    });
+
+    // Render EJS template with order history data
+    res.render('orderHistory', { orders });
+  } catch (error) {
+    console.error('Error fetching order history:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
-app.get('/orderStatus', authenticate, (req, res) => {
-  res.render('orderStatus');
+// Define route handler to render orderStatus.ejs template
+app.get('/orderStatus', authenticate, async (req, res) => {
+  try {
+    // Fetch order status data from the database based on the logged-in user
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: req.session.userId,
+        NOT: [{ status: 'Completed' }, { status: 'Delivered' }] // Exclude orders with statuses 'Completed' and 'Delivered'
+      },
+      include: {
+        orderItems: true,
+      },
+    });
+
+    // Verify that the orders array is correctly filtered
+    console.log('Filtered Orders:', orders);
+
+    // Render the orderStatus.ejs template with the filtered orders data
+    res.render('orderStatus', { orders });
+  } catch (error) {
+    console.error('Error fetching order status:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
+
 
 app.get('/userOrder', authenticate, (req, res) => {
   res.render('userOrder');
@@ -288,17 +329,16 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
     const totalAmount = calculateTotalAmount(cartItems);
     console.log("Total Amount:", totalAmount);
 
-    // Save order details to the database
+    // Save order details to the database with a default status
     const order = await prisma.order.create({
       data: {
         userId: userId,
         paypalOrderId: orderId,
-        status: data.status,
+        status: 'PENDING', // Set a default status here
         amount: totalAmount,
-        shippingAddress: shippingAddress, // New field for shipping address
-        contactPerson: contactPerson, // New field for contact person
-        contactNumber: contactNumber, // New field for contact number
-        // Initialize orderItems here directly to handle atomicity
+        shippingAddress: shippingAddress,
+        contactPerson: contactPerson,
+        contactNumber: contactNumber,
         orderItems: {
           create: cartItems.map(item => ({
             itemId: item.itemId,
@@ -340,6 +380,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
 
 
+
 // Helper function to calculate total amount based on items in the cart
 function calculateTotalAmount(cartItems) {
   let totalAmount = 0;
@@ -350,15 +391,15 @@ function calculateTotalAmount(cartItems) {
 }
 
 
-// Function to create a PayPal order
+// Function to create a PayPal order with intent set to "AUTHORIZE"
 const createPayPalOrder = async (cartItems) => {
   try {
     const accessToken = await generateAccessToken(); // Retrieve PayPal access token
     const totalAmount = calculateTotalAmount(cartItems).toFixed(2);
 
-    // Construct the request body
+    // Construct the request body with intent set to "AUTHORIZE"
     const requestBody = {
-      intent: "CAPTURE",
+      intent: "AUTHORIZE", // Change intent to AUTHORIZE
       purchase_units: [{
         amount: {
           currency_code: "PHP",
@@ -394,6 +435,7 @@ const createPayPalOrder = async (cartItems) => {
   }
 };
 
+
 // Route to create a PayPal order
 app.post("/pay", async (req, res) => {
   try {
@@ -423,7 +465,7 @@ function authenticate(req, res, next) {
 app.post("/capture/:orderId", authenticate, async (req, res) => {
   try {
     const { orderId } = req.params; // Retrieve orderId from route params
-    
+
     // Retrieve cart items from session
     const cartItems = req.session.cartItems || [];
     const userId = req.session.userId;
@@ -462,6 +504,7 @@ app.post("/capture/:orderId", authenticate, async (req, res) => {
     res.status(500).json({ error: "Failed to capture PayPal order." });
   }
 });
+
 
 
 

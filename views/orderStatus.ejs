@@ -1,11 +1,57 @@
+<!-- orderStatus.ejs -->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STATUS</title>
+    <title>Order Status</title>
 </head>
+
 <body>
-    <H1>HELLO STATUS</H1>
+    <h1>Order Status</h1>
+
+    <% const filteredOrders = orders.filter(order => order.status !== 'Completed' && order.status !== 'delivered'); %>
+
+    <!-- Debugging: Output the filteredOrders array to the console -->
+    <script>
+        // Escape the JavaScript code properly
+        var filteredOrders = <%- JSON.stringify(filteredOrders) %>;
+        console.log("Filtered Orders:", filteredOrders);
+    </script>
+
+    <% if (filteredOrders.length > 0) { %>
+        <ul>
+            <% filteredOrders.forEach(order => { %>
+                <li>
+                    <strong>Order ID:</strong> <%= order.id %><br>
+                    <strong>Status:</strong> <%= order.status %><br>
+                    <strong>Amount:</strong> <%= order.amount %><br>
+                    <!-- Add more order details here as needed -->
+                    <strong>Shipping Address:</strong> <%= order.shippingAddress %><br>
+                    <strong>Contact Person:</strong> <%= order.contactPerson %><br>
+                    <strong>Contact Number:</strong> <%= order.contactNumber %><br>
+                    <strong>Order Items:</strong><br>
+                    <ul>
+                        <% order.orderItems.forEach(item => { %>
+                            <li>
+                                <strong>Item Name:</strong> <%= item.itemName %><br>
+                                <strong>Quantity:</strong> <%= item.quantity %><br>
+                                <strong>Price:</strong> <%= item.itemPrice %><br>
+                                <strong>Total Price:</strong> <%= item.totalPrice %><br>
+                            </li>
+                        <% }); %>
+                    </ul>
+                </li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No orders found.</p>
+    <% } %>
+
+    <!-- Add more links or buttons as needed -->
+
 </body>
+
 </html>

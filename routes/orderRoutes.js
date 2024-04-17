@@ -14,23 +14,34 @@ function authenticate(req, res, next) {
     }
 }
 
-// Route to display user order status
+// Import necessary modules and dependencies
+
+// Import necessary modules and dependencies
+
+// Define route handler to fetch order data and render a view
 router.get('/orderStatus', authenticate, async (req, res) => {
     try {
-        // Fetch order status data from the database based on the logged-in user
-        const orders = await prisma.order.findMany({
-            where: {
-                userId: req.session.userId,
-            },
-        });
-
-        // Render EJS template with order status data
-        res.render('orderStatus', { orders });
+      // Fetch order data from the database based on the logged-in user
+      const orders = await prisma.order.findMany({
+        where: {
+          userId: req.session.userId,
+          NOT: [{ status: 'Completed' }, { status: 'delivered' }] // Exclude orders with statuses 'Completed' and 'Delivered'
+        },
+        include: {
+          orderItems: true,
+        },
+      });
+  
+      // Render the orderStatus.ejs template with the filtered order data
+      res.render('orderStatus', { orders });
     } catch (error) {
-        console.error('Error fetching order status:', error);
-        res.status(500).send('Internal Server Error');
+      console.error('Error fetching order data:', error);
+      res.status(500).send('Internal Server Error');
     }
-});
+  });
+
+
+
 
 // Route to display user order history
 router.get('/orderHistory', authenticate, async (req, res) => {
@@ -40,7 +51,13 @@ router.get('/orderHistory', authenticate, async (req, res) => {
             where: {
                 userId: req.session.userId,
             },
+            include: {
+                orderItems: true,
+            },
         });
+
+        // Log the order history data for debugging
+        console.log('Order history data:', orders);
 
         // Render EJS template with order history data
         res.render('orderHistory', { orders });
