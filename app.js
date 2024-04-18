@@ -384,7 +384,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
     console.log("Order and OrderItems saved to database:", order);
 
-    // Optionally, you can remove the cart items after the order is captured
+     // Optionally, you can remove the cart items after the order is captured
     await prisma.cartItem.deleteMany({
       where: {
         userId: userId,
@@ -531,6 +531,8 @@ app.post("/capture/:orderId", authenticate, async (req, res) => {
     res.status(500).json({ error: "Failed to capture order." });
   }
 });
+
+
 
 
 

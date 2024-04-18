@@ -3,7 +3,24 @@ function setPaymentMethod(method) {
     document.getElementById('paymentMethod').value = method;
     document.getElementById('checkoutForm').submit();
 }
+// Function to handle Cash On Delivery (COD) process
+function handleCOD() {
+    // Set payment method to COD
+    document.getElementById('paymentMethod').value = 'COD';
+    
+    // Simulate successful order capture (replace this with actual COD order capture logic)
+    // For demonstration purposes, we'll just display a success message
+    Swal.fire({
+        icon: 'success',
+        title: 'Order Captured Successfully!',
+        text: 'Your order has been successfully captured.',
+    });
 
+    // Optionally, you can clear the form fields or perform any other actions
+    
+    // Prevent the default form submission
+    return false;
+}
 document.addEventListener('DOMContentLoaded', (event) => {
     // Get the modal
     var modal = document.getElementById("payment-modal");
