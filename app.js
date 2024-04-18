@@ -337,6 +337,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
           amount: calculateTotalAmount(cartItems),
           paymentMethod: 'PayPal', // Set payment method as PayPal
           shippingAddress: shippingAddress,
+          createdAt: new Date(),
           contactPerson: contactPerson,
           contactNumber: contactNumber,
           orderItems: {
@@ -362,6 +363,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
           amount: calculateTotalAmount(cartItems),
           paymentMethod: 'COD', // Set payment method as Cash On Delivery
           shippingAddress: shippingAddress,
+          createdAt: new Date(),
           contactPerson: contactPerson,
           contactNumber: contactNumber,
           orderItems: {

@@ -83,7 +83,6 @@ model Order {
   amount          Float
   orderItems      OrderItem[]   // Define the relation to OrderItem
   user            User          @relation(name: "UserToOrder", fields: [userId], references: [id]) // Define the opposite relation to User
-  
   // New fields for shipping information
   shippingAddress String?
   contactPerson   String?
