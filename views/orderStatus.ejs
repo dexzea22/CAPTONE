@@ -28,11 +28,13 @@
                     <strong>Order ID:</strong> <%= order.id %><br>
                     <strong>Status:</strong> <%= order.status %><br>
                     <strong>Amount:</strong> <%= order.amount %><br>
+                    <strong>Payment Method:</strong> <%= order.paymentMethod %><br> <!-- Display payment method -->
                     <!-- Add more order details here as needed -->
                     <strong>Shipping Address:</strong> <%= order.shippingAddress %><br>
                     <strong>Contact Person:</strong> <%= order.contactPerson %><br>
                     <strong>Contact Number:</strong> <%= order.contactNumber %><br>
                     <strong>Order Items:</strong><br>
+                    
                     <ul>
                         <% order.orderItems.forEach(item => { %>
                             <li>
@@ -42,9 +44,11 @@
                                 <strong>Price:</strong> <%= item.itemPrice %><br>
                                 <strong>Total Price:</strong> <%= item.totalPrice %><br>
                                 <strong>Item Image:</strong> <img src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>"><br>
+
+
                             </li>
                         <% }); %>
-                    </ul>s
+                    </ul>
                 </li>
             <% }); %>
         </ul>

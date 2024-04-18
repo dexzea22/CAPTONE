@@ -301,58 +301,86 @@ const createOrder = async (cartItems) => {
   }
 };
 
-const captureOrder = async (orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber) => {
+const captureOrder = async (orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod) => {
   try {
-    const accessToken = await generateAccessToken(); // Retrieve PayPal access token
-    const url = `${base}/v2/checkout/orders/${orderId}/capture`;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        shippingAddress: shippingAddress,
-        contactPerson: contactPerson,
-        contactNumber: contactNumber
-      })
-    });
+    let order;
 
-    if (!response.ok) {
-      throw new Error(`Failed to capture order. Status: ${response.status}`);
+    if (paymentMethod === 'PayPal') {
+      const accessToken = await generateAccessToken(); // Retrieve PayPal access token
+      const url = `${base}/v2/checkout/orders/${orderId}/capture`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          shippingAddress: shippingAddress,
+          contactPerson: contactPerson,
+          contactNumber: contactNumber
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to capture PayPal order. Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("PayPal Order captured:", data);
+
+      // Save order details to the database for PayPal order
+      order = await prisma.order.create({
+        data: {
+          userId: userId,
+          paypalOrderId: orderId,
+          status: 'PENDING', // Set a default status here
+          amount: calculateTotalAmount(cartItems),
+          paymentMethod: 'PayPal', // Set payment method as PayPal
+          shippingAddress: shippingAddress,
+          contactPerson: contactPerson,
+          contactNumber: contactNumber,
+          orderItems: {
+            create: cartItems.map(item => ({
+              itemId: item.itemId,
+              itemName: item.foodItem.name,
+              itemDescription: item.foodItem.description,
+              itemPrice: item.foodItem.price,
+              itemSize: item.foodItem.size,
+              itemImageUrl: item.foodItem.imageUrl,
+              quantity: item.quantity,
+              totalPrice: item.quantity * item.foodItem.price,
+            }))
+          }
+        },
+      });
+    } else if (paymentMethod === 'COD') {
+      // Save order details to the database for Cash On Delivery (COD) order
+      order = await prisma.order.create({
+        data: {
+          userId: userId,
+          status: 'PENDING', // Set a default status here
+          amount: calculateTotalAmount(cartItems),
+          paymentMethod: 'COD', // Set payment method as Cash On Delivery
+          shippingAddress: shippingAddress,
+          contactPerson: contactPerson,
+          contactNumber: contactNumber,
+          orderItems: {
+            create: cartItems.map(item => ({
+              itemId: item.itemId,
+              itemName: item.foodItem.name,
+              itemDescription: item.foodItem.description,
+              itemPrice: item.foodItem.price,
+              itemSize: item.foodItem.size,
+              itemImageUrl: item.foodItem.imageUrl,
+              quantity: item.quantity,
+              totalPrice: item.quantity * item.foodItem.price,
+            }))
+          }
+        },
+      });
+    } else {
+      throw new Error('Invalid payment method.');
     }
-
-    const data = await response.json();
-    console.log("Order captured:", data);
-
-    // Calculate total amount based on cart items
-    const totalAmount = calculateTotalAmount(cartItems);
-    console.log("Total Amount:", totalAmount);
-
-    // Save order details to the database with a default status
-    const order = await prisma.order.create({
-      data: {
-        userId: userId,
-        paypalOrderId: orderId,
-        status: 'PENDING', // Set a default status here
-        amount: totalAmount,
-        shippingAddress: shippingAddress,
-        contactPerson: contactPerson,
-        contactNumber: contactNumber,
-        orderItems: {
-          create: cartItems.map(item => ({
-            itemId: item.itemId,
-            itemName: item.foodItem.name,
-            itemDescription: item.foodItem.description,
-            itemPrice: item.foodItem.price,
-            itemSize: item.foodItem.size,
-            itemImageUrl: item.foodItem.imageUrl,
-            quantity: item.quantity,
-            totalPrice: item.quantity * item.foodItem.price,
-          }))
-        }
-      },
-    });
 
     console.log("Order and OrderItems saved to database:", order);
 
@@ -369,14 +397,6 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
     throw error;
   }
 };
-
-
-
-
-
-
-
-
 
 
 
@@ -461,7 +481,7 @@ function authenticate(req, res, next) {
   }
 }
 
-// Route to capture a PayPal order
+// Route to capture a PayPal or COD order
 app.post("/capture/:orderId", authenticate, async (req, res) => {
   try {
     const { orderId } = req.params; // Retrieve orderId from route params
@@ -470,14 +490,21 @@ app.post("/capture/:orderId", authenticate, async (req, res) => {
     const cartItems = req.session.cartItems || [];
     const userId = req.session.userId;
 
-    // Extract shipping address, contact person, and contact number from request body
-    const { shippingAddress, contactPerson, contactNumber } = req.body;
+    // Extract shipping address, contact person, contact number, and payment method from request body
+    const { shippingAddress, contactPerson, contactNumber, paymentMethod } = req.body;
 
     // Log cartItems for verification
     console.log("Cart Items:", cartItems);
 
-    // Capture PayPal order
-    const capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber); // Ensure cartItems are passed correctly
+    // Capture order based on payment method
+    let capturedOrder;
+    if (paymentMethod === 'PayPal') {
+      capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod);
+    } else if (paymentMethod === 'COD') {
+      capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod);
+    } else {
+      throw new Error("Invalid payment method");
+    }
 
     // Log capturedOrder for verification
     console.log("Captured Order:", capturedOrder);
@@ -496,14 +523,16 @@ app.post("/capture/:orderId", authenticate, async (req, res) => {
       // Send response
       res.status(200).json({ message: "Order captured successfully" });
     } else {
-      console.error("Failed to capture PayPal order: User information not found in session");
-      res.status(500).json({ error: "Failed to capture PayPal order: User information not found in session" });
+      console.error("Failed to capture order: User information not found in session");
+      res.status(500).json({ error: "Failed to capture order: User information not found in session" });
     }
   } catch (error) {
-    console.error("Failed to capture PayPal order:", error);
-    res.status(500).json({ error: "Failed to capture PayPal order." });
+    console.error("Failed to capture order:", error);
+    res.status(500).json({ error: "Failed to capture order." });
   }
 });
+
+
 
 
 

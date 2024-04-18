@@ -380,49 +380,9 @@ document.getElementById('cart-button').addEventListener('click', viewCart);
 window.onload = function() {
   updateCartCounter();
 };
-s
 
-// Function to update cart display
-function updateCartDisplay(cartItems) {
-  var cartList = document.getElementById("mod-cart-items");
-  var totalAmount = document.getElementById("total-amount");
-  cartList.innerHTML = "";
-  let totalPrice = 0;
 
-  if (cartItems && cartItems.length > 0) {
-    cartItems.forEach((item, index) => {
-      if (item && item.userId) {
-        var div = document.createElement("div");
-        var itemNumber = index + 1;
-        var totalItemPrice = item.quantity * item.foodItem.price;
-        var itemInfo = document.createElement("span");
-        itemInfo.innerHTML = `${itemNumber}. ${item.foodItem.name} : ${item.foodItem.size} Quantity: ${item.quantity} Price: ₱${totalItemPrice.toLocaleString()}`;
-        itemInfo.style.textDecoration = "underline";
-        itemInfo.style.fontWeight = "bold";
 
-        var imageElement = document.createElement("img");
-        imageElement.src = item.foodItem.imageUrl;
-        imageElement.alt = "Product Image";
-        // Set the desired width and height for the image
-      
-        div.appendChild(imageElement);
-        imageElement.classList.add("imgs");
-
-        div.appendChild(itemInfo);
-        cartList.appendChild(div);
-
-        totalPrice += totalItemPrice;
-      }
-    });
-  } else {
-    var emptyCartMessage = document.createElement("p");
-    emptyCartMessage.textContent = "Your cart is empty!";
-    cartList.appendChild(emptyCartMessage);
-  }
-
-  totalAmount.innerHTML = `<strong>₱${totalPrice.toLocaleString()}</strong>`;
-}
-//updateCartDisplay //
 
 $('#openDietaryModal').click(function () {
   $('#dietaryPreferencesModal').modal('show');

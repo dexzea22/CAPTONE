@@ -129,6 +129,9 @@
                     
                     <!-- Other form fields -->
                     
+                    <!-- Hidden input field to capture payment method -->
+                    <input type="hidden" id="paymentMethod" name="paymentMethod">
+            
                     <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                         <div class="col" style="font-weight: bold; color: black;">TOTAL PRICE</div>
                         <div style="color: black;" id="total-amount"></div>
@@ -139,7 +142,7 @@
                     <!-- Checkout Button -->
                     <input type="submit" value="CHECKOUT" id="checkoutButton" class="btn">
                 </form>
-
+            
                 <!-- Payment Modal Container -->
                 <div id="payment-modal" class="modal-container" style="display:none;">
                     <!-- Modal Content -->
@@ -147,19 +150,19 @@
                         <span class="closebtn">&times;</span>
                         <h2 class="spm">Select Your Payment Method</h2>
                         <!-- Payment Methods Here -->
-
-                        <input class="cod" type="button" value="Cash On Delivery">
-
+            
+                        <!-- Add event listeners to set the payment method -->
+                        <input class="cod" type="button" value="Cash On Delivery" onclick="setPaymentMethod('COD')">
                         <div id="paypal-button"></div>
-
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
     </form>
     <script>
+
+
        // Function to update the quantity of a cart item
 function updateCartItemQuantity(cartItemId, newQuantity) {
     fetch('/api/cart/updateQuantity', {
@@ -274,58 +277,7 @@ function displayCartItems() {
         document.addEventListener('DOMContentLoaded', displayCartItems);
 
         
-        document.addEventListener('DOMContentLoaded', (event) => {
-    // Get the modal
-    var modal = document.getElementById("payment-modal");
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("checkoutButton");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("closebtn")[0];
-
-    if (btn && modal && span) {
-        // When the user clicks the button, open the modal 
-        btn.onclick = function(event) {
-            event.preventDefault(); // Prevent any default button action
-
-            // Get the values of the input boxes
-            var shippingAddress = document.getElementById('adrss').value.trim();
-            var contactPerson = document.getElementById('cntct').value.trim();
-            var contactNumber = document.getElementById('num').value.trim();
-
-            // Check if any of the input boxes are empty
-            if (shippingAddress === '' || contactPerson === '' || contactNumber === '') {
-                // If any input box is empty, show an error message
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Incomplete Information',
-                    text: 'Please fill out all the required fields before proceeding to checkout.',
-                });
-            } else {
-                // If all input boxes are filled, proceed to checkout
-                var totalAmount = getTotalPriceFromCart();
-                initializePayPalButton(totalAmount, shippingAddress, contactPerson, contactNumber); // Pass shipping address, contact person, and contact number
-                openPaymentModal();
-            }
-        }
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function(event) {
-            event.preventDefault(); // Prevent any default span action
-            modal.style.display = "none";
-            location.reload(); // Refresh the window
-        };
-
-        // Prevent events inside the modal from closing it and stop propagation
-        modal.children[0].onclick = function(event) {
-            event.stopPropagation();
-            event.preventDefault(); // Prevent any default action inside the modal
-        }
-    } else {
-        console.error("Elements not found. Please check the IDs and class names.");
-    }
-});
+       
 
         function updateQuantity(cartItemId, newQuantity) {
             // Ensure the quantity is not negative

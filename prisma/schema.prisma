@@ -78,7 +78,7 @@ model Order {
   userId          String
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  paypalOrderId   String        // Add this field to store the PayPal order ID
+  paypalOrderId   String?       // Add this field to store the PayPal order ID
   status          String
   amount          Float
   orderItems      OrderItem[]   // Define the relation to OrderItem
@@ -88,6 +88,9 @@ model Order {
   shippingAddress String?
   contactPerson   String?
   contactNumber   String?
+
+  // New field for payment method
+  paymentMethod   String?       // Add field for payment method (e.g., "PayPal", "COD", etc.)
 }
 
 
