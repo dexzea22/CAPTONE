@@ -37,12 +37,14 @@
                         <% order.orderItems.forEach(item => { %>
                             <li>
                                 <strong>Item Name:</strong> <%= item.itemName %><br>
+                                <strong>Item Size:</strong> <%= item.itemSize %><br>
                                 <strong>Quantity:</strong> <%= item.quantity %><br>
                                 <strong>Price:</strong> <%= item.itemPrice %><br>
                                 <strong>Total Price:</strong> <%= item.totalPrice %><br>
+                                <strong>Item Image:</strong> <img src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>"><br>
                             </li>
                         <% }); %>
-                    </ul>
+                    </ul>s
                 </li>
             <% }); %>
         </ul>
