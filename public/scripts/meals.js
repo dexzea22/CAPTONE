@@ -175,7 +175,7 @@ function addToCart(itemName, cardId) {
       Swal.fire({
         icon: 'warning',
         title: 'Cart Limit Exceeded',
-        text: 'Adding this item will exceed PHP 10,000. Please remove some items.',
+        text: 'Adding this item will exceed PHP 10,000. You cannot add to your cart anymore.',
       });
     } else {
       
