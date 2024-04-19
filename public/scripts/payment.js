@@ -1,23 +1,41 @@
-// Function to set the payment method and submit the form
-function setPaymentMethod(method) {
-    document.getElementById('paymentMethod').value = method;
-    document.getElementById('checkoutForm').submit();
-}
 // Function to handle Cash On Delivery (COD) process
 function handleCOD() {
-    // Set payment method to COD
     document.getElementById('paymentMethod').value = 'COD';
-    
-    // Simulate successful order capture (replace this with actual COD order capture logic)
-    // For demonstration purposes, we'll just display a success message
-    Swal.fire({
-        icon: 'success',
-        title: 'Order Captured Successfully!',
-        text: 'Your order has been successfully captured.',
+    const formData = {
+        shippingAddress: document.getElementById('adrss').value.trim(),
+        contactPerson: document.getElementById('cntct').value.trim(),
+        contactNumber: document.getElementById('num').value.trim(),
+        paymentMethod: 'COD'
+    };
+
+    fetch('/capture', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Order Captured Successfully!',
+            text: 'Your COD order has been successfully captured.',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        // Optionally, reset the form
+        document.getElementById('checkoutForm').reset();
+    })
+    .catch(error => {
+        console.error('An error occurred during COD processing:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Payment Error',
+            text: 'An error occurred during payment processing. Please try again later.',
+        });
     });
 
-    // Optionally, you can clear the form fields or perform any other actions
-    
     // Prevent the default form submission
     return false;
 }
@@ -86,66 +104,49 @@ function closePaymentModal() {
     modal.style.display = "none";
 }
 
-// Function to initialize the PayPal button
+// Adjust the PayPal initialization to handle the specific route
 function initializePayPalButton(totalAmount, shippingAddress, contactPerson, contactNumber) {
     paypal.Buttons({
         createOrder: function(data, actions) {
-            // Use the same currency code as in the script tag
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: totalAmount.toFixed(2), // Format total amount with 2 decimal places
-                        currency_code: 'PHP', // Use the correct currency code
-                    },
-                }],
+                        value: totalAmount.toFixed(2),
+                        currency_code: 'PHP'
+                    }
+                }]
             });
         },
         onApprove: function(data, actions) {
-            // Send a request to your server to capture the order
-            return fetch('/capture/' + data.orderID, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    // Pass shipping address, contact person, and contact number in the body
-                    body: JSON.stringify({
-                        shippingAddress: shippingAddress,
-                        contactPerson: contactPerson,
-                        contactNumber: contactNumber,
-                        paymentMethod: 'PayPal' // Add payment method to the body
-                    })
+            return fetch(`/capture/${data.orderID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    shippingAddress: shippingAddress,
+                    contactPerson: contactPerson,
+                    contactNumber: contactNumber,
+                    paymentMethod: 'PayPal'
                 })
-                .then(function(response) {
-                    if (!response.ok) {
-                        throw new Error('Failed to capture order. Server responded with ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(function(data) {
-                    console.log("Payment successful:", data);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Payment Successful!',
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-                    closePaymentModal();
-                })
-                .catch(function(error) {
-                    console.error('An error occurred during PayPal checkout:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Payment Error',
-                        text: 'An error occurred during payment processing. Please try again later.',
-                    });
+            })
+            .then(response => response.json())
+            .then(data => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Successful!',
+                    showConfirmButton: false,
+                    timer: 1500
                 });
-        },
-        onError: function(err) {
-            console.error('An error occurred during PayPal checkout:', err);
-            Swal.fire({
-                icon: 'error',
-                title: 'Payment Error',
-                text: 'An error occurred during payment processing. Please try again later.',
+                closePaymentModal();
+            })
+            .catch(error => {
+                console.error('An error occurred during PayPal checkout:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Error',
+                    text: 'An error occurred during payment processing. Please try again later.',
+                });
             });
         }
     }).render('#paypal-button');

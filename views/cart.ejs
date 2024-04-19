@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,14 +10,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="stylesheets/cart.css">
     <!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-xxxxxxxxxxxxxx" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-xxxxxxxxxxxxxx" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
 
@@ -87,7 +91,7 @@
     <div class="card" id="cart-mod">
         <!-- Add the empty cart message div here -->
         <div id="empty-cart-message" style="display: none;">Your cart is empty!</div>
-    
+
         <div class="row">
             <div class="col-md-8 cart">
                 <div class="title">
@@ -100,11 +104,11 @@
                 <div class="row border-top border-bottom">
                     <div>
                         <div id="mod-cart-items">
-                            
+
                         </div>
                     </div>
                 </div>
-    
+
                 <div class="back-to-shop"><a href="/userMenu"><i class="fas fa-arrow-left"></i>
                     </a><span>Back to shop</span></div>
             </div>
@@ -117,43 +121,44 @@
                     <div class="col" style="padding-left: 0; font-weight:bold;color: black;">ITEMS <span
                             id="item-counter">0</span></div>
                 </div>
-                <form id="checkoutForm" action="/capture/:orderId" method="POST"> <!-- Update the action attribute with the correct endpoint -->
+                <form id="checkoutForm" action="/capture/:orderId" method="POST">
+                    <!-- Update the action attribute with the correct endpoint -->
                     <label class="frm" for="adrss">Shipping Address</label>
-                    <input class="inpts" type="text" id="adrss" name="shippingAddress" placeholder="Place Delivery Address" required>
-                    
+                    <input class="inpts" type="text" id="adrss" name="shippingAddress"
+                        placeholder="Place Delivery Address" required>
+
                     <label class="frm" for="cntct">Contact Person</label>
-                    <input class="inpts" type="text" id="cntct" name="contactPerson" placeholder="Place Contact Person" required>
-                    
+                    <input class="inpts" type="text" id="cntct" name="contactPerson" placeholder="Place Contact Person"
+                        required>
+
                     <label class="frm" for="num">Contact Number</label>
-                    <input class="inpts" type="tel" id="num" name="contactNumber" placeholder="Place Contact Number" required>
-                    
+                    <input class="inpts" type="tel" id="num" name="contactNumber" placeholder="Place Contact Number"
+                        required>
+
                     <!-- Other form fields -->
-                    
+
                     <!-- Hidden input field to capture payment method -->
                     <input type="hidden" id="paymentMethod" name="paymentMethod">
-            
+
                     <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                         <div class="col" style="font-weight: bold; color: black;">TOTAL PRICE</div>
                         <div style="color: black;" id="total-amount"></div>
                         <div style="color: black;" id="total-amounthidden" hidden></div>
                     </div>
-                    <div style="color: rgb(255, 0, 0);font-weight: bold; ">**SHIPPING FEE IS FREE AROUND LUISIANA LAGUNA**</div>
-                    
+                    <div style="color: rgb(255, 0, 0);font-weight: bold; ">**SHIPPING FEE IS FREE AROUND LUISIANA
+                        LAGUNA**</div>
+
                     <!-- Checkout Button -->
                     <input type="submit" value="CHECKOUT" id="checkoutButton" class="btn">
                 </form>
-            
+
                 <!-- Payment Modal Container -->
                 <div id="payment-modal" class="modal-container" style="display:none;">
-                    <!-- Modal Content -->
                     <div class="modal-content">
                         <span class="closebtn">&times;</span>
                         <h2 class="spm">Select Your Payment Method</h2>
-                        <!-- Payment Methods Here -->
-            
-                        <!-- Add event listeners to set the payment method -->
-                        <input class="cod" type="button" value="Cash On Delivery" onclick="setPaymentMethod('COD')">
-                        <div id="paypal-button"></div>
+                        <input class="cod" type="button" value="Cash On Delivery" onclick="handleCOD()">
+                        <div id="paypal-button"></div> <!-- PayPal Button will be dynamically inserted here -->
                     </div>
                 </div>
             </div>
@@ -163,71 +168,71 @@
     <script>
 
 
-       // Function to update the quantity of a cart item
-function updateCartItemQuantity(cartItemId, newQuantity) {
-    fetch('/api/cart/updateQuantity', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Important for sessions
-        body: JSON.stringify({ cartItemId, quantity: newQuantity }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to update item quantity in cart. Please try again.');
+        // Function to update the quantity of a cart item
+        function updateCartItemQuantity(cartItemId, newQuantity) {
+            fetch('/api/cart/updateQuantity', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // Important for sessions
+                body: JSON.stringify({ cartItemId, quantity: newQuantity }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update item quantity in cart. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Call the function to fetch and display cart items again
+                        displayCartItems();
+                        updateCartCounter(); // Update cart counter immediately after updating the quantity
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'Could not update item quantity in the cart.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating item quantity in cart:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
+                    });
+                });
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // Call the function to fetch and display cart items again
-            displayCartItems();
-            updateCartCounter(); // Update cart counter immediately after updating the quantity
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: data.message || 'Could not update item quantity in the cart.',
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error updating item quantity in cart:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
-        });
-    });
-}
 
-       // Function to fetch and display cart items
-function displayCartItems() {
-    fetch('/api/cart/items', {
-        method: 'GET',
-        credentials: 'include', // Important for sessions
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch cart items. Please try again.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const cartItemsContainer = document.getElementById('mod-cart-items');
-            cartItemsContainer.innerHTML = ''; // Clear previous content
+        // Function to fetch and display cart items
+        function displayCartItems() {
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const cartItemsContainer = document.getElementById('mod-cart-items');
+                    cartItemsContainer.innerHTML = ''; // Clear previous content
 
-            if (data.length > 0) { // Check if data is not empty
-                let totalPrice = 0; // Initialize total price variable
+                    if (data.length > 0) { // Check if data is not empty
+                        let totalPrice = 0; // Initialize total price variable
 
-                data.forEach(item => {
-                    const itemElement = document.createElement('div');
-                    itemElement.classList.add('row', 'border-top', 'border-bottom');
+                        data.forEach(item => {
+                            const itemElement = document.createElement('div');
+                            itemElement.classList.add('row', 'border-top', 'border-bottom');
 
-                    // Calculate the total price for each item
-                    const itemTotalPrice = item.foodItem.price * item.quantity;
-                    totalPrice += itemTotalPrice; // Add to the total price
+                            // Calculate the total price for each item
+                            const itemTotalPrice = item.foodItem.price * item.quantity;
+                            totalPrice += itemTotalPrice; // Add to the total price
 
-                    itemElement.innerHTML = `
+                            itemElement.innerHTML = `
             <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
             
                <div class="Itm"> ${item.foodItem.name} ${item.foodItem.size}
@@ -242,42 +247,42 @@ function displayCartItems() {
             </div >
         `;
 
-                    cartItemsContainer.appendChild(itemElement);
+                            cartItemsContainer.appendChild(itemElement);
+                        });
+
+                        // Update the total price displayed in the UI
+                        document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
+                        document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
+
+                        // Check if the total price exceeds the limit
+                        if (totalPrice > 10000) {
+                            // Display a warning message
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Cart Limit Exceeded',
+                                text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                            });
+                        }
+                    } else {
+                        // Display a message if the cart is empty
+                        cartItemsContainer.innerHTML = '<div>No items in cart</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message
+                    const cartItemsContainer = document.getElementById('mod-cart-items');
+                    cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
                 });
-
-                // Update the total price displayed in the UI
-                document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
-                document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
-
-                // Check if the total price exceeds the limit
-                if (totalPrice > 10000) {
-                    // Display a warning message
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Cart Limit Exceeded',
-                        text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
-                    });
-                }
-            } else {
-                // Display a message if the cart is empty
-                cartItemsContainer.innerHTML = '<div>No items in cart</div>';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching cart items:', error);
-            // Display an error message
-            const cartItemsContainer = document.getElementById('mod-cart-items');
-            cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
-        });
-}
+        }
 
 
 
         // Call the function to fetch and display cart items when the page loads
         document.addEventListener('DOMContentLoaded', displayCartItems);
 
-        
-       
+
+
 
         function updateQuantity(cartItemId, newQuantity) {
             // Ensure the quantity is not negative
@@ -314,83 +319,83 @@ function displayCartItems() {
         // Call the function to update the cart counter and item counter when the page loads
         document.addEventListener('DOMContentLoaded', updateCartCounter);
 
- // Function to delete a cart item
-function deleteCartItem(cartItemId) {
-    fetch(`/api/cart/delete/${cartItemId}`, {
-        method: 'DELETE',
-        credentials: 'include', // Important for sessions
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to delete item from cart. Please try again.');
+        // Function to delete a cart item
+        function deleteCartItem(cartItemId) {
+            fetch(`/api/cart/delete/${cartItemId}`, {
+                method: 'DELETE',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete item from cart. Please try again.');
+                    }
+                    // If deletion is successful, remove the item from the UI
+                    const deletedItem = document.getElementById(cartItemId);
+                    if (deletedItem) {
+                        deletedItem.remove();
+                    }
+                    // Update the cart counter
+                    updateCartCounter();
+                    // Check if the cart is empty
+                    fetch('/api/cart/items', {
+                        method: 'GET',
+                        credentials: 'include', // Important for sessions
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch cart items. Please try again.');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // If cart is empty, set the total amount to 0
+                            if (data.length === 0) {
+                                document.getElementById('total-amount').textContent = '0.00';
+                            } else {
+                                // Update the total amount
+                                updateTotalAmount();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching cart items:', error);
+                            // Display an error message or handle it as per your requirement
+                        });
+                })
+                .catch(error => {
+                    console.error('Error deleting item from cart:', error);
+                    // Display an error message if deletion fails
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Failed to delete item from cart. Please try again.',
+                    });
+                });
         }
-        // If deletion is successful, remove the item from the UI
-        const deletedItem = document.getElementById(cartItemId);
-        if (deletedItem) {
-            deletedItem.remove();
-        }
-        // Update the cart counter
-        updateCartCounter();
-        // Check if the cart is empty
-        fetch('/api/cart/items', {
-            method: 'GET',
-            credentials: 'include', // Important for sessions
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch cart items. Please try again.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // If cart is empty, set the total amount to 0
-            if (data.length === 0) {
-                document.getElementById('total-amount').textContent = '0.00';
-            } else {
-                // Update the total amount
-                updateTotalAmount();
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching cart items:', error);
-            // Display an error message or handle it as per your requirement
-        });
-    })
-    .catch(error => {
-        console.error('Error deleting item from cart:', error);
-        // Display an error message if deletion fails
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: error.message || 'Failed to delete item from cart. Please try again.',
-        });
-    });
-}
 
 
-// Function to update the total amount displayed in the UI
-function updateTotalAmount() {
-    fetch('/api/cart/items', {
-        method: 'GET',
-        credentials: 'include', // Important for sessions
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch cart items. Please try again.');
+        // Function to update the total amount displayed in the UI
+        function updateTotalAmount() {
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Calculate total amount
+                    const totalAmount = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
+                    // Update the total amount displayed in the UI
+                    document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message or handle it as per your requirement
+                });
         }
-        return response.json();
-    })
-    .then(data => {
-        // Calculate total amount
-        const totalAmount = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-        // Update the total amount displayed in the UI
-        document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
-    })
-    .catch(error => {
-        console.error('Error fetching cart items:', error);
-        // Display an error message or handle it as per your requirement
-    });
-}
 
     </script>
 

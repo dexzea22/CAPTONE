@@ -483,58 +483,69 @@ function authenticate(req, res, next) {
   }
 }
 
-// Route to capture a PayPal or COD order
+// Route to capture a PayPal order
 app.post("/capture/:orderId", authenticate, async (req, res) => {
   try {
-    const { orderId } = req.params; // Retrieve orderId from route params
-
-    // Retrieve cart items from session
+    const { orderId } = req.params;
     const cartItems = req.session.cartItems || [];
     const userId = req.session.userId;
+    const { shippingAddress, contactPerson, contactNumber } = req.body;
 
-    // Extract shipping address, contact person, contact number, and payment method from request body
-    const { shippingAddress, contactPerson, contactNumber, paymentMethod } = req.body;
-
-    // Log cartItems for verification
-    console.log("Cart Items:", cartItems);
-
-    // Capture order based on payment method
-    let capturedOrder;
-    if (paymentMethod === 'PayPal') {
-      capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod);
-    } else if (paymentMethod === 'COD') {
-      capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod);
-    } else {
-      throw new Error("Invalid payment method");
+    if (req.body.paymentMethod !== 'PayPal') {
+      throw new Error("Invalid payment method for this endpoint");
     }
 
-    // Log capturedOrder for verification
-    console.log("Captured Order:", capturedOrder);
+    const capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'PayPal');
 
-    // Ensure user information exists in the session
     if (req.session && req.session.userId && req.session.email) {
-      // Create a log entry for the captured payment
       await prisma.log.create({
         data: {
-          action: `Payment captured for order ${orderId}`,
+          action: `PayPal Payment captured for order ${orderId}`,
           email: req.session.email,
           userId: req.session.userId,
         },
       });
-
-      // Send response
-      res.status(200).json({ message: "Order captured successfully" });
+      res.status(200).json({ message: "PayPal Order captured successfully" });
     } else {
-      console.error("Failed to capture order: User information not found in session");
-      res.status(500).json({ error: "Failed to capture order: User information not found in session" });
+      res.status(500).json({ error: "User information not found in session" });
     }
   } catch (error) {
-    console.error("Failed to capture order:", error);
-    res.status(500).json({ error: "Failed to capture order." });
+    console.error("Failed to capture PayPal order:", error);
+    res.status(500).json({ error: "Failed to capture PayPal order." });
   }
 });
 
 
+// Route to capture a COD order
+app.post("/capture", authenticate, async (req, res) => {
+  try {
+    const cartItems = req.session.cartItems || [];
+    const userId = req.session.userId;
+    const { shippingAddress, contactPerson, contactNumber } = req.body;
+
+    if (req.body.paymentMethod !== 'COD') {
+      throw new Error("Invalid payment method for this endpoint");
+    }
+
+    const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD');
+
+    if (req.session && req.session.userId && req.session.email) {
+      await prisma.log.create({
+        data: {
+          action: `COD Payment captured for order`,
+          email: req.session.email,
+          userId: req.session.userId,
+        },
+      });
+      res.status(200).json({ message: "COD Order captured successfully" });
+    } else {
+      res.status(500).json({ error: "User information not found in session" });
+    }
+  } catch (error) {
+    console.error("Failed to capture COD order:", error);
+    res.status(500).json({ error: "Failed to capture COD order." });
+  }
+});
 
 
 

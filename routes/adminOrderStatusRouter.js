@@ -51,7 +51,7 @@ router.post('/update', async (req, res) => {
         }
 
         // Check if the new status is one of the allowed status values
-        const allowedStatusValues = ['Preparing', 'Cooking', 'Ready', 'Dispatched', 'Delivered'];
+        const allowedStatusValues = ['preparing', 'cooking', 'ready', 'dispatched', 'delivered'];
         if (!allowedStatusValues.includes(newStatus)) {
             // Return an error response if the new status is invalid
             req.flash('error', 'Invalid new status.');

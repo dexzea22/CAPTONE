@@ -35,7 +35,7 @@ const menuToggle = document.querySelector('.menu-toggle');
     menu.classList.toggle('show');
   });
 
-  const imagePaths = [
+      const imagePaths = [
   'mong.jpg',
   'bpm.jpg',
   'bs.jpg',

@@ -541,7 +541,7 @@ text-align: center;
   float: left;
   cursor:pointer;
   font-size: 30px;
-}
+width: 100px;}
 .cod{
   padding: 4px;
   margin-bottom: 15px;
