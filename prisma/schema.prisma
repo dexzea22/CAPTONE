@@ -106,6 +106,7 @@ model OrderItem {
   totalPrice          Float
   order               Order       @relation(fields: [orderId], references: [id]) // Define the opposite relation to Order
   foodItem            FoodItem    @relation(fields: [itemId], references: [id]) // Define the opposite relation to FoodItem
+  createdAt       DateTime      @default(now())
 }
 
 
