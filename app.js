@@ -350,6 +350,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
               itemImageUrl: item.foodItem.imageUrl,
               quantity: item.quantity,
               totalPrice: item.quantity * item.foodItem.price,
+              createdAt: new Date(),
             }))
           }
         },
@@ -376,6 +377,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
               itemImageUrl: item.foodItem.imageUrl,
               quantity: item.quantity,
               totalPrice: item.quantity * item.foodItem.price,
+              createdAt: new Date(),
             }))
           }
         },
