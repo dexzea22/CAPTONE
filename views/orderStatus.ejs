@@ -73,7 +73,154 @@
                 <% } else { %>
                     <p>No orders found.</p>
                 <% } %>
-   
+    <div class="lblso" style="margin:3% 0 0 1%;">
+        <label class="fpu" for="">Menu and Prices</label>s
+        </div>
+        <div>
+        <div class="gallery">
+        <img src="images/m1.jpg" alt="Image 1">
+        <img src="images/m4.jpg" alt="Image 1">
+        <img src="images/m2.jpg" alt="Image 1">
+        <img src="images/m5.jpg" alt="Image 1">
+        <img src="images/m3.jpg" alt="Image 1">
+        <!-- Add more images as needed -->
+        </div>
+        
+        <!-- Lightbox (hidden by default) -->
+        <div class="lightbox" id="lightbox">
+          <img src="" alt="Enlarged Image" class="lightbox-image">
+        </div>
+        </div>
+        <div class="container">
+            <div class="lblso" style="margin-top: 5%;">
+              <label class="fpu" for="">Store Location</label>
+             </div>
+            <div class="card-maps">   
+                <div>
+                  <img class="map-img"  src="images/mam.png" alt="">
+                </div>
+                  <div>
+                      <iframe class="gmap" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d15473.095439622592!2d121.50914925672969!3d14.178731599845047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTTCsDEwJzU1LjkiTiAxMjHCsDMwJzM2LjAiRQ!5e0!3m2!1sen!2sus!4v1701578225488!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> 
+                   </div>
+            </div>
+            </div>
+            <div class="cntr">
+            
+            <footer class="text-white text-center text-lg-start" style="background-color: #C69B68;">
+              <!-- Grid container -->
+              <div class="p-5">
+              
+              <!--Grid row-->
+              
+              <div class="row mt-4">
+                <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase mb-4">About company</h5>
+            
+                <label style="color: white;">
+                  Thank you for choosing Maya&Me Services for your food ordering needs. We're here to satisfy your cravings, one delicious meal at a time. Enjoy your meal and have a wonderful day!
+                </label>
+            
+                <div class="mt-4">
+                  <!-- Facebook -->
+                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+                  <!-- Dribbble -->
+                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+                  <!-- Twitter -->
+                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+                  <!-- Google + -->
+                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+                  <!-- Linkedin -->
+                </div>
+                </div>
+                <!--Grid column-->
+            <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
+            
+                <ul class="fa-ul" style="margin-left: 1.65em;">
+                  <li class="mb-3">
+                  <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
+                  </li>
+                  <li class="mb-3">
+                  <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
+                  </li>
+                  <li class="mb-3">
+                  <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
+                  </li>
+               
+                </ul>
+                </div>
+                <!--Grid column-->
+            
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 class="text-uppercase mb-4">Opening hours</h5>
+            
+                <table class="table text-center text-white">
+                  <tbody class="font-weight-normal">
+                  <tr>
+                    <td>Mon - Thu:</td>
+                    <td>8am - 9pm</td>
+                  </tr>
+                  <tr style="background-color: #C69B68;">
+                    <td>Fri - Sat:</td>
+                    <td>8am - 1am</td>
+                  </tr>
+                  <tr>
+                    <td>Sunday:</td>
+                    <td>9am - 10pm</td>
+                  </tr>
+                  </tbody>
+                </table>
+                </div>
+                <!--Grid column-->
+              </div>
+              <!--Grid row-->
+              </div>
+              <!-- Grid container -->
+            
+              <!-- Copyright -->
+              <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
+              © 2023 Copyright:
+              <label style="color: #C69B68;">Maya&Me Services</label>
+              </div>
+              <!-- Copyright -->
+            </footer>
+            </div>
+    <!-- Add more links or buttons as needed -->
+    <script>
+      // Function to update the cart counter and item counter
+      function updateCartCounter() {
+                fetch('/api/cart/items', {
+                    method: 'GET',
+                    credentials: 'include', // Important for sessions
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch cart items. Please try again.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Calculate total number of items in the cart
+                        const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                        // Update the cart counter and item counter in the UI
+                        document.getElementById('cart-counter').textContent = totalItems;
+                        document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                    })
+                    .catch(error => {
+                        console.error('Error fetching cart items:', error);
+                        // Display an error message or handle it as per your requirement
+                    });
+            }
+    
+            // Call the function to update the cart counter and item counter when the page loads
+            document.addEventListener('DOMContentLoaded', updateCartCounter);
+    </script>
+    <script src="scripts/meals.js"></script>
 
 </body>
 
