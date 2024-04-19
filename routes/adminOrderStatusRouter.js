@@ -8,11 +8,39 @@ const router = express.Router();
 
 // Define routes
 router.get('/', async (req, res) => {
+    const { page = 1, searchTerm = '' } = req.query;
+    const pageSize = 10; // Display 10 orders per page
+    const skip = (page - 1) * pageSize;
+
     try {
-        // Fetch all orders from the database
-        const orders = await prisma.order.findMany();
-        // Render the admin order status editing page with order data
-        res.render('adminOrderStatus', { orders, successMsg: req.flash('success'), errorMsg: req.flash('error') });
+        // Adjusted query to safely handle search terms
+        const totalOrders = await prisma.order.count({
+            where: {
+                status: { contains: searchTerm }
+            }
+        });
+
+        const orders = await prisma.order.findMany({
+            where: {
+                status: { contains: searchTerm }
+            },
+            skip: skip,
+            take: pageSize,
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        const totalPages = Math.ceil(totalOrders / pageSize);
+
+        res.render('adminOrderStatus', {
+            orders,
+            currentPage: parseInt(page),
+            totalPages,
+            searchTerm,
+            successMsg: req.flash('success'),
+            errorMsg: req.flash('error')
+        });
     } catch (error) {
         console.error('Error fetching orders:', error);
         req.flash('error', 'Error fetching orders.');
@@ -20,69 +48,84 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Update order status
 router.post('/update', async (req, res) => {
+    const { orderId, newStatus } = req.body;
+
+    if (!orderId || !newStatus) {
+        req.flash('error', 'Order ID and new status are required.');
+        return res.redirect('/adminOrderStatus');
+    }
+
     try {
-        // Retrieve order ID and new status from the form submission
-        const orderId = req.body.orderId;
-        const newStatus = req.body.newStatus;
-
-        // Server-side validation
-        if (!orderId || !newStatus) {
-            // Return an error response if either order ID or new status is missing
-            req.flash('error', 'Order ID and new status are required.');
-            return res.redirect('/adminOrderStatus');
-        }
-
-        // Validate orderId format and length before querying the database
-        if (!isValidOrderId(orderId)) {
-            // Return an error response if orderId is invalid
-            req.flash('error', 'Invalid order ID format.');
-            return res.redirect('/adminOrderStatus');
-        }
-
-        // Check if the order ID exists in the database
-        const order = await prisma.order.findUnique({
-            where: { id: orderId }
-        });
-        if (!order) {
-            // Return an error response if the order ID does not exist
-            req.flash('error', 'Order not found.');
-            return res.redirect('/adminOrderStatus');
-        }
-
-        // Check if the new status is one of the allowed status values
-        const allowedStatusValues = ['preparing', 'cooking', 'ready', 'dispatched', 'delivered'];
-        if (!allowedStatusValues.includes(newStatus)) {
-            // Return an error response if the new status is invalid
-            req.flash('error', 'Invalid new status.');
-            return res.redirect('/adminOrderStatus');
-        }
-
-        // Update the order status in the database
-        await prisma.order.update({
+        const order = await prisma.order.update({
             where: { id: orderId },
             data: { status: newStatus }
         });
 
-        // Set a success flash message
         req.flash('success', 'Order status updated successfully.');
-
-        // Redirect back to the order status editing page
         res.redirect('/adminOrderStatus');
     } catch (error) {
         console.error('Error updating order status:', error);
-        // Return an error response if an unexpected error occurs
         req.flash('error', 'An unexpected error occurred.');
         res.redirect('/adminOrderStatus');
     }
 });
 
-// Function to validate orderId format (Alphanumeric string)
+
+
+// Delete an order and its related items
+router.post('/delete/:orderId', async (req, res) => {
+    const { orderId } = req.params;
+    try {
+        // First, delete related order items
+        await prisma.orderItem.deleteMany({
+            where: {
+                orderId: orderId
+            }
+        });
+
+        // Then, delete the order
+        await prisma.order.delete({
+            where: {
+                id: orderId
+            }
+        });
+
+        req.flash('success', 'Order and related items deleted successfully.');
+        res.redirect('/adminOrderStatus');
+    } catch (error) {
+        console.error('Error deleting order:', error);
+        req.flash('error', 'Failed to delete order.');
+        res.redirect('/adminOrderStatus');
+    }
+});
+
+// Fetch order details for editing
+router.get('/details/:orderId', async (req, res) => {
+    try {
+        const order = await prisma.order.findUnique({
+            where: { id: req.params.orderId },
+            include: {
+                orderItems: true // Include related order items
+            }
+        });
+
+        if (order) {
+            res.send(order);
+        } else {
+            res.status(404).send({ success: false, message: 'Order not found.' });
+        }
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).send({ success: false, message: 'Failed to fetch order details.' });
+        
+    }
+});
+
+
 function isValidOrderId(orderId) {
-    // Check if orderId is a non-empty string
-    return typeof orderId === 'string' && orderId.length > 0;
+    return typeof orderId === 'string' && orderId.trim().length > 0;
 }
 
-
-// Export the router
 module.exports = router;

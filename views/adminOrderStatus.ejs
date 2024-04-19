@@ -1,94 +1,164 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Order Status</title>
-    <link rel="website icon" type="png" href="images/maya.png">
-    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="stylesheets/admin.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 </head>
-
 <body>
-    <div class="container mt-5">
-        <!-- Flash message handling -->
-        <% if (typeof successMsg !=='undefined' && successMsg.length> 0) { %>
-            <div class="alert alert-success" role="alert">
-                <%= successMsg %>
-            </div>
+<div class="container mt-5">
+    <h1>Order Management</h1>
+    <form class="form-inline my-2 my-lg-0" action="/adminOrderStatus" method="GET">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search by Status" aria-label="Search" name="searchTerm" value="<%= searchTerm %>">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    <button class="btn btn-primary" onclick="showCreateForm()">Create New Order</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(order => { %>
+            <tr>
+                <td><%= order.id %></td>
+                <td><%= order.status %></td>
+                <td><%= new Date(order.createdAt).toLocaleString() %></td>
+                <td>
+                    <button class="btn btn-info" onclick="editOrder('<%= order.id %>')">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteOrder('<%= order.id %>')">Delete</button>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <% for(let i=1; i <= totalPages; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?page=<%= i %>&searchTerm=<%= searchTerm %>"><%= i %></a>
+            </li>
             <% } %>
+        </ul>
+    </nav>
+</div>
 
-                <% if (typeof errorMsg !=='undefined' && errorMsg.length> 0) { %>
-                    <div class="alert alert-danger" role="alert">
-                        <%= errorMsg %>
+<!-- Modal for Create/Edit Form -->
+<div class="modal" id="orderFormModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Form</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="orderForm">
+                    <input type="hidden" id="orderId" name="orderId">
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select class="form-control" id="newStatus" name="newStatus" required>
+                            <option value="preparing">Preparing</option>
+                            <option value="cooking">Cooking</option>
+                            <option value="ready">Ready</option>
+                            <option value="dispatched">Dispatched</option>
+                            <option value="delivered">Delivered</option>
+                        </select>
                     </div>
-                    <% } %>
-
-                        <div class="container">
-                            <h1>Admin Order Status</h1>
-                            <form id="orderStatusForm" action="/adminOrderStatus/update" method="post">
-                                <label for="orderId">Order ID:</label>
-                                <input type="text" id="orderId" name="orderId" required><br><br>
-
-                                <label for="newStatus">New Status:</label>
-                                <select id="newStatus" name="newStatus" required>
-                                    <option value="">Select Status</option>
-                                    <option value="preparing">Preparing</option>
-                                    <option value="cooking">Cooking</option>
-                                    <option value="ready">Ready</option>
-                                    <option value="dispatched">Dispatched</option>
-                                    <option value="delivered">Delivered</option>
-                                </select><br><br>
-
-                                <button type="submit">Update Status</button>
-                            </form>
-                        </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <!-- Add your JavaScript code here -->
-    <script>
-        // Function to validate the form before submission
-        function validateForm() {
-            const orderId = document.getElementById('orderId').value;
-            const newStatus = document.getElementById('newStatus').value;
+</div>
 
-            // Check if order ID is empty
-            if (!orderId.trim()) {
-                alert('Please enter a valid order ID.');
-                return false;
+<script>
+function showCreateForm() {
+    $('#orderForm').attr('action', '/adminOrderStatus/create');
+    $('#orderId').val('');
+    $('#newStatus').val('');
+    $('#orderFormModal').modal('show');
+}
+
+function editOrder(orderId) {
+    // Clear previous errors
+    $('#errorContainer').empty();
+
+    fetch(`/adminOrderStatus/details/${orderId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch order details');
             }
-
-            // Check if new status is selected
-            if (!newStatus) {
-                alert('Please select a new status.');
-                return false;
+            return response.json();
+        })
+        .then(data => {
+            if (data.success === false) {
+                throw new Error(data.message); // Show specific error from server
             }
-
-            // Form is valid
-            return true;
-        }
-
-        // Add event listener to form submission
-        document.getElementById('orderStatusForm').addEventListener('submit', function (event) {
-            // Validate the form before submission
-            if (!validateForm()) {
-                // Prevent form submission if validation fails
-                event.preventDefault();
-            }
+            $('#orderForm').attr('action', '/adminOrderStatus/update');
+            $('#orderId').val(data.id);
+            $('#newStatus').val(data.status);
+            $('#orderFormModal').modal('show');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            $('#errorContainer').html(`<div class="alert alert-danger">${error.message}</div>`); // Display error message in a designated error container
         });
-    </script>
-</body>
+}
+fetch(`/adminOrderStatus/details/${orderId}`, {
+    headers: {
+        'Cache-Control': 'no-cache'
+    }
+})
 
+function deleteOrder(orderId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.value) {
+            fetch(`/adminOrderStatus/delete/${orderId}`, { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        );
+                        location.reload(); // Reload the page to update the table
+                    }
+                });
+        }
+    });
+}
+
+$('#orderForm').on('submit', function(event) {
+    event.preventDefault();
+    const url = $(this).attr('action');
+    const postData = {
+        orderId: $('#orderId').val(),
+        newStatus: $('#newStatus').val()
+    };
+    $.post(url, postData, function(response) {
+        $('#orderFormModal').modal('hide');
+        Swal.fire('Success', 'Order updated successfully', 'success');
+        location.reload();
+    }).fail(function() {
+        Swal.fire('Error', 'Something went wrong', 'error');
+    });
+});
+</script>
+</body>
 </html>
