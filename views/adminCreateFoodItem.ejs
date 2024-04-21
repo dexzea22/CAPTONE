@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Food Item</title>
+  <link rel="website icon" type="png" href="images/maya.png" />
+  <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="stylesheets/admin.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
+</head>
+<body>
+    <div class="sidenav">
+        <a href="/adminDashboard">Dashboard</a>
+        <a href="/adminUserTable">User Table</a>
+        <a href="/logs">Logs</a>
+        <a href="/logout">Logout</a>
+        <a href="/adminOrderStatus">Transaction History</a>
+        <a href="/adminOrderNotifications">Order Notifications</a>
+        <a href="/adminCreateFoodItem">Add Food Item</a>
+       
+      </div>
+      <div class="side-menu">
+        <a href="/adminDashboard">Dashboard</a>
+        <a href="/adminUserTable">User Table</a>
+        <a href="/adminOrderStatus">Transaction History</a>
+        <a href="/adminOrderNotifications">Order Notifications</a>
+        <a href="/adminCreateFoodItem">Add Food Item</a>
+        <a href="/logs">Logs</a>
+        <a href="/logout">Logout</a>
+      </div>
+<div class="container mt-5">
+    <h1>Create New Food Item</h1>
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <form action="/adminCreateFoodItem" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (₱):</label>
+                    <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="size">Size:</label>
+                    <input type="text" class="form-control" id="size" name="size">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" class="form-control" id="category" name="category">
+                </div>
+                <div class="form-group">
+                    <label for="dietaryRestrictions">Dietary Restrictions:</label>
+                    <select multiple class="form-control" id="dietaryRestrictions" name="dietaryRestrictions">
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="glutenFree">Gluten Free</option>
+                        <option value="nutFree">Nut Free</option>
+                        <!-- Add more options as necessary -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="imageUrl">Image URL:</label>
+                    <input type="text" class="form-control" id="imageUrl" name="imageUrl">
+                </div>
+                <button type="submit" class="btn btn-primary">Create Food Item</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+</body>
+</html>

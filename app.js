@@ -38,6 +38,8 @@ const cartRouter = require("./routes/cart");
 const orderRouter = require('./routes/orderRoutes');
 
 const adminOrderStatusRouter = require('./routes/adminOrderStatusRouter');
+const adminOrderNotificationsRouter = require('./routes/adminOrderNotificationsRouter');
+const adminCreateFoodItemRouter = require('./routes/adminCreateFoodItemRouter');
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
 app.use(flash());
@@ -236,6 +238,9 @@ app.use("/api/cart", cartRouter);
 app.use('/orders', orderRouter);
 
 app.use('/adminOrderStatus', adminOrderStatusRouter);
+app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
+
+app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
 
 const generateAccessToken = async () => {
   try {
@@ -350,7 +355,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
               itemImageUrl: item.foodItem.imageUrl,
               quantity: item.quantity,
               totalPrice: item.quantity * item.foodItem.price,
-              createdAt: new Date(),
+              // createdAt: new Date(),
             }))
           }
         },
@@ -377,7 +382,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
               itemImageUrl: item.foodItem.imageUrl,
               quantity: item.quantity,
               totalPrice: item.quantity * item.foodItem.price,
-              createdAt: new Date(),
+              // createdAt: new Date(),
             }))
           }
         },

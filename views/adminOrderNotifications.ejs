@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Notifications</title>
+  <link rel="website icon" type="png" href="images/maya.png" />
+  <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="stylesheets/admin.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
+</head>
+
+<body>
+    <div class="menu-toggle">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <div>
+        <div class="sidenav">
+            <a href="/adminDashboard">Dashboard</a>
+            <a href="/adminUserTable">User Table</a>
+            <a href="/logs">Logs</a>
+            <a href="/logout">Logout</a>
+            <a href="/adminOrderStatus">Transaction History</a>
+            <a href="/adminOrderNotifications">Order Notifications</a>
+            <a href="/adminCreateFoodItem">Add Food Item</a>
+           
+          </div>
+          <div class="side-menu">
+            <a href="/adminDashboard">Dashboard</a>
+            <a href="/adminUserTable">User Table</a>
+            <a href="/adminOrderStatus">Transaction History</a>
+            <a href="/adminOrderNotifications">Order Notifications</a>
+            <a href="/adminCreateFoodItem">Add Food Item</a>
+            <a href="/logs">Logs</a>
+            <a href="/logout">Logout</a>
+          </div>
+        </div>
+        <div class="container mt-5">
+            <h1>New Order Notifications</h1>
+            <div class="alert alert-info" role="alert">
+                Below are the newly received orders. Click on 'View Details' to see full order information and update
+                status.
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Status</th>
+                        <th>Customer Name</th>
+                        <th>Contact Number</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% orders.forEach(order=> { %>
+                        <tr>
+                            <td>
+                                <%= order.id %>
+                            </td>
+                            <td>
+                                <%= order.status %>
+                            </td>
+                            <td>
+                                <%= order.user.firstName %>
+                                    <%= order.user.lastName %>
+                            </td>
+                            <td>
+                                <%= order.contactNumber %>
+                            </td>
+                            <td>
+                                <%= new Date(order.createdAt).toLocaleString() %>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" onclick="viewOrderDetails('<%= order.id %>')">View
+                                    Details</button>
+                                <button class="btn btn-danger" onclick="deleteOrder('<%= order.id %>')">Delete</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <% for(let i=1; i <=totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>">
+                                <%= i %>
+                            </a>
+                        </li>
+                        <% } %>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Modal for Viewing and Updating Order Status -->
+        <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog"
+            aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="orderDetailsModalLabel">Order Details and Update Status</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="orderInfo"></div>
+                        <form id="updateOrderStatusForm">
+                            <div class="form-group">
+                                <label for="newStatus">Update Status:</label>
+                                <select class="form-control" id="newStatus" name="newStatus" required>
+                                    <option value="preparing">Preparing</option>
+                                    <option value="cooking">Cooking</option>
+                                    <option value="ready">Ready</option>
+                                    <option value="dispatched">Dispatched</option>
+                                    <option value="delivered">Delivered</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function viewOrderDetails(orderId) {
+            fetch(`/adminOrderNotifications/details/${orderId}`, {
+                headers: {
+                    'Cache-Control': 'no-cache', // This forces the request to bypass the cache
+                    'Pragma': 'no-cache'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(`Failed to fetch order details: ${response.statusText}`);
+                    }
+                })
+                .then(data => {
+                    if (!data || Object.keys(data).length === 0) {
+                        throw new Error("No data returned from server");
+                    }
+
+                    const orderInfo = `
+            <p><strong>Order ID:</strong> ${data.id}</p>
+            <p><strong>Customer:</strong> ${data.user.firstName} ${data.user.lastName}</p>
+            <p><strong>Contact:</strong> ${data.contactNumber}</p>
+            <p><strong>Address:</strong> ${data.shippingAddress}</p>
+            <p><strong>Ordered Items:</strong></p>
+            <ul>
+                ${data.orderItems.map(item => `<li>${item.foodItem.name} (${item.itemSize}) - ${item.quantity} pcs at ₱${item.itemPrice} each</li>`).join('')}
+
+            </ul>
+        `;
+                    $('#orderInfo').html(orderInfo);
+                    $('#newStatus').val(data.status);
+                    $('#updateOrderStatusForm').attr('action', `/adminOrderNotifications/update/${data.id}`);
+                    $('#orderDetailsModal').modal('show');
+                })
+                .catch(error => {
+                    console.error('Error fetching order details:', error);
+                    Swal.fire('Error', error.toString(), 'error');
+                });
+        }
+
+
+        function deleteOrder(orderId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    fetch(`/adminOrderNotifications/delete/${orderId}`, { method: 'POST' })
+                        .then(response => {
+                            if (response.ok) {
+                                Swal.fire('Deleted!', 'The order has been deleted.', 'success');
+                                location.reload();
+                            } else {
+                                throw new Error('Failed to delete the order.');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', error.toString(), 'error');
+                        });
+                }
+            });
+        }
+
+        $('#updateOrderStatusForm').on('submit', function (event) {
+            event.preventDefault();
+            const url = $(this).attr('action');
+            const postData = {
+                newStatus: $('#newStatus').val()
+            };
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update order status.');
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    $('#orderDetailsModal').modal('hide');
+                    // Set a timer for the Swal alert
+                    Swal.fire({
+                        title: 'Updated!',
+                        text: 'The order status has been updated successfully.',
+                        icon: 'success',
+                        timer: 5000, // Display the alert for 5000 milliseconds (5 seconds)
+                        timerProgressBar: true, // Adds a visual progress bar to indicate when the alert will close
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    }).then((result) => {
+                        /* Read more about handling dismissals below */
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                            console.log('I was closed by the timer');
+                        }
+                    });
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Failed to update order status: ' + error.toString(), 'error');
+                });
+        });
+
+    </script>
+</body>
+
+</html>

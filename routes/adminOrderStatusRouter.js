@@ -8,22 +8,24 @@ const router = express.Router();
 
 // Define routes
 router.get('/', async (req, res) => {
-    const { page = 1, searchTerm = '' } = req.query;
+    const { page = 1, orderId = '', statusTerm = '' } = req.query;
     const pageSize = 10; // Display 10 orders per page
     const skip = (page - 1) * pageSize;
 
     try {
-        // Adjusted query to safely handle search terms
+        const filterOptions = {
+            AND: [
+                ...(orderId ? [{ id: orderId }] : []), // Search by Order ID if provided
+                ...(statusTerm ? [{ status: { contains: statusTerm, mode: 'insensitive' } }] : []) // Filter by status if provided
+            ]
+        };
+
         const totalOrders = await prisma.order.count({
-            where: {
-                status: { contains: searchTerm }
-            }
+            where: filterOptions
         });
 
         const orders = await prisma.order.findMany({
-            where: {
-                status: { contains: searchTerm }
-            },
+            where: filterOptions,
             skip: skip,
             take: pageSize,
             orderBy: {
@@ -37,7 +39,8 @@ router.get('/', async (req, res) => {
             orders,
             currentPage: parseInt(page),
             totalPages,
-            searchTerm,
+            orderId, // Pass orderId back to the view for persistent search value
+            statusTerm, // Pass statusTerm back to the view for selection persistence
             successMsg: req.flash('success'),
             errorMsg: req.flash('error')
         });
@@ -47,32 +50,6 @@ router.get('/', async (req, res) => {
         res.redirect('/adminOrderStatus');
     }
 });
-
-// Update order status
-router.post('/update', async (req, res) => {
-    const { orderId, newStatus } = req.body;
-
-    if (!orderId || !newStatus) {
-        req.flash('error', 'Order ID and new status are required.');
-        return res.redirect('/adminOrderStatus');
-    }
-
-    try {
-        const order = await prisma.order.update({
-            where: { id: orderId },
-            data: { status: newStatus }
-        });
-
-        req.flash('success', 'Order status updated successfully.');
-        res.redirect('/adminOrderStatus');
-    } catch (error) {
-        console.error('Error updating order status:', error);
-        req.flash('error', 'An unexpected error occurred.');
-        res.redirect('/adminOrderStatus');
-    }
-});
-
-
 
 // Delete an order and its related items
 router.post('/delete/:orderId', async (req, res) => {
@@ -101,7 +78,7 @@ router.post('/delete/:orderId', async (req, res) => {
     }
 });
 
-// Fetch order details for editing
+// Fetch order details for viewing
 router.get('/details/:orderId', async (req, res) => {
     try {
         const order = await prisma.order.findUnique({
@@ -119,13 +96,7 @@ router.get('/details/:orderId', async (req, res) => {
     } catch (error) {
         console.error('Error fetching order details:', error);
         res.status(500).send({ success: false, message: 'Failed to fetch order details.' });
-        
     }
 });
-
-
-function isValidOrderId(orderId) {
-    return typeof orderId === 'string' && orderId.trim().length > 0;
-}
 
 module.exports = router;
