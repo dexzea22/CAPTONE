@@ -135,11 +135,11 @@ function updateCartCounter() {
 
 // Function to update cart counter
 
-// addToCart function
+// Updated addToCart function to include quantity
 function addToCart(itemName, cardId) {
   const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
   const imageUrl = document.querySelector(`#${cardId} img[src^="images/"]`).getAttribute('src');
-  
+  const quantity = parseInt(document.getElementById('quantity-' + cardId).value); // Get quantity from the input
 
   if (!selectedSize) {
     Swal.fire({
@@ -167,7 +167,7 @@ function addToCart(itemName, cardId) {
   })
   .then(data => {
     const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-    const itemTotalPrice = numericPrice * 1; // Calculate total price for the new item
+    const itemTotalPrice = numericPrice * quantity; // Calculate total price for the new item considering the quantity
     const newTotalPrice = totalPrice + itemTotalPrice;
 
     // Check if adding the new item will exceed the limit
@@ -178,15 +178,13 @@ function addToCart(itemName, cardId) {
         text: 'Adding this item will exceed PHP 10,000. You cannot add to your cart anymore.',
       });
     } else {
-      
       // Proceed with adding the item to the cart
       fetch('/api/cart/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Important for sessions
-        body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity: 1 }),
+        body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity: quantity }),
       })
-      
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to add item to cart. Please try again.');
@@ -197,9 +195,6 @@ function addToCart(itemName, cardId) {
         if (data.success) {
           // Update cart counter
           updateCartCounter(); // Call the function to update the cart counter
-          // Optionally, refresh the cart UI here
-          // If you want to refresh the cart UI, you can call your updateCartDisplay function here
-          // updateCartDisplay();
           Swal.fire({
             icon: 'success',
             title: 'Item Added to Cart',
@@ -213,7 +208,6 @@ function addToCart(itemName, cardId) {
           });
         }
       })
-      
       .catch(error => {
         console.error('Error adding item to cart:', error);
         Swal.fire({
@@ -233,6 +227,7 @@ function addToCart(itemName, cardId) {
     });
   });
 }
+
 
 
 // Assuming cartItem has an ID and you have an API endpoint set up for these actions
