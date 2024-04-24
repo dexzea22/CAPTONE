@@ -105,18 +105,27 @@
         <div class="gallerys" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-400" />
+            <input type="radio" name="size" value="(10 to 12 pax)&emsp14;-400" />
             S (₱400) (10-12 pax)
-          </label>
+            <button class="qbtn" onclick="QTY('decrement', 'sQuantityOutput')">-</button>
+            <span id='sQuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'sQuantityOutput')">+</button>
+          </label>          
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)1000" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
             M (₱1,000) (25-30 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'mQuantityOutput')">-</button>
+            <span id='mQuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'mQuantityOutput')">+</button>
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
             <input type="radio" name="size" value="(45 to 50 pax)-1500" />
             L (₱1,500) (45-50 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'lQuantityOutput')">-</button>
+            <span id='lQuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'lQuantityOutput')">+</button>
           </label>
         </div>
         <!-- Lightbox (hidden by default) -->
@@ -145,16 +154,25 @@
             <img src="images/sTray.png" alt="Image 1" /><br />
             <input type="radio" name="size" value="(10 to 12 pax)-300" />
             S (₱300) (10-12 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'sf5QuantityOutput')">-</button>
+            <span id='sf5QuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'sf5QuantityOutput')">+</button>
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
             <input type="radio" name="size" value="(25  to 30 pax)-900" />
             M (₱900) (25-30 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'mf5QuantityOutput')">-</button>
+            <span id='mf5QuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'mf5QuantityOutput')">+</button>
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
             <input type="radio" name="size" value="(45 to 50 pax)-1400" />
             L (₱1,400) (45-50 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'lf5QuantityOutput')">-</button>
+            <span id='lf5QuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'lf5QuantityOutput')">+</button>
           </label>
         </div>
         <!-- Lightbox (hidden by default) -->
@@ -183,16 +201,25 @@
             <img src="images/sTray.png" alt="Image 1" /><br />
             <input type="radio" name="size" value="(10 to 12 pax)-600" />
             S (₱600) (10-12 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'ssgQuantityOutput')">-</button>
+            <span id='ssgQuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'ssgQuantityOutput')">+</button>
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
             <input type="radio" name="size" value="(25 to 30 pax)-1450" />
             M (₱1,450) (25-30 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'mssgQuantityOutput')">-</button>
+            <span id='mssgQuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'mssgQuantityOutput')">+</button>
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
             <input type="radio" name="size" value="(45 to 50 pax)-2800" />
             L (₱2,800) (45-50 pax)
+            <button class="qbtn" onclick="QTY('decrement', 'lssgQuantityOutput')">-</button>
+            <span id='lssgQuantityOutput'>0</span>
+            <button class="qbtn" onclick="QTY('increment', 'lssgQuantityOutput')">+</button>
           </label>
         </div>
         <!-- Lightbox (hidden by default) -->
@@ -370,6 +397,27 @@
 
         // Call the function to update the cart counter and item counter when the page loads
         document.addEventListener('DOMContentLoaded', updateCartCounter);
+        function createStarRating(containerId, rating) {
+  const container = document.getElementById(containerId);
+  
+  // Clear any existing content in the container
+  container.innerHTML = '';
+  
+  // Create a loop to generate the stars
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement('span');
+    star.classList.add('star', i <= rating ? 'filled' : 'empty');
+    star.innerHTML = '★'; // You can use a star icon here if available
+    container.appendChild(star);
+  }
+}
+
+// Call the function with the desired rating (e.g., 4 out of 5 stars)
+createStarRating('star-rating', 4);
+createStarRating('star-rating2', 4);
+createStarRating('star-rating3', 5);
+
+
 </script>
 <script src="scripts/meals.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

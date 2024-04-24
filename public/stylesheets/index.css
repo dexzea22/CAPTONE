@@ -1,7 +1,9 @@
 body{
       background-color: #FFF3EB;
 }
-
+.qbtn{
+  height: 30px;
+}
 .jumbotron {
     width: 100%;
     margin: auto;

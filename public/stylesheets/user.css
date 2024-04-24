@@ -319,16 +319,7 @@ h2 {
 }
 
 /* Styles for the button with onclick event "placeOrder()" */
-button {
-  background-color: #4caf50;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  width: 300px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: auto;
-}
+
 .lbls{
   font-family: Caveat, open-sans; 
   font-size: 85px;

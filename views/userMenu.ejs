@@ -405,7 +405,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Buttered Carrots','bcc')" class="cbtn">
+        <button onclick="addToCart('Bttrd Crrts/Chro','bcc')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -443,7 +443,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Buttered Potato Marbles','bpm')" class="cbtn">
+        <button onclick="addToCart('Bttrd Ptt Mrbls','bpm')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -1770,6 +1770,63 @@ function displayCartItems() {
                     });
                 });
         }
+        // JavaScript function to create a star rating
+ function createStarRating(containerId, rating) {
+  const container = document.getElementById(containerId);
+  
+  // Clear any existing content in the container
+  container.innerHTML = '';
+  
+  // Create a loop to generate the stars
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement('span');
+    star.classList.add('star', i <= rating ? 'filled' : 'empty');
+    star.innerHTML = '★'; // You can use a star icon here if available
+    container.appendChild(star);
+  }
+}
+// Call the function with the desired rating (e.g., 4 out of 5 stars)
+createStarRating('star-rating4', 4);
+createStarRating('star-rating5', 3);
+createStarRating('star-rating6', 4);
+createStarRating('star-rating7', 5);
+createStarRating('star-rating8', 2);
+createStarRating('star-rating9', 4);
+createStarRating('star-rating10', 5);
+createStarRating('star-rating11', 4);
+createStarRating('star-rating12', 3);
+createStarRating('star-rating13', 5);
+createStarRating('star-rating14', 4);
+createStarRating('star-rating15', 5);
+createStarRating('star-rating16', 4);
+createStarRating('star-rating17', 4);
+createStarRating('star-rating18', 3);
+createStarRating('star-rating19', 5);
+createStarRating('star-rating20', 4);
+createStarRating('star-rating21', 5);
+createStarRating('star-rating22', 4);
+createStarRating('star-rating23', 5);
+createStarRating('star-rating24', 5);
+createStarRating('star-rating25', 4);
+createStarRating('star-rating26', 4);
+createStarRating('star-rating27', 3);
+createStarRating('star-rating28', 3);
+createStarRating('star-rating29', 5);
+createStarRating('star-rating30', 4);
+createStarRating('star-rating31', 2);
+createStarRating('star-rating32', 3);
+createStarRating('star-rating33', 5);
+createStarRating('star-rating34', 4);
+createStarRating('star-rating35', 4);
+createStarRating('star-rating36', 5);
+createStarRating('star-rating37', 2);
+createStarRating('star-rating38', 3);
+createStarRating('star-rating39', 4);
+createStarRating('star-rating40', 3);
+createStarRating('star-rating41', 5);
+createStarRating('star-rating42', 4);
+createStarRating('star-rating43', 5);
+
   </script>
   <script src="scripts/meals.js"></script>
 </body>

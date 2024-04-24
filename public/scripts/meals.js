@@ -133,14 +133,34 @@ function updateCartCounter() {
   });
 }
 
+function QTY(operation, outputId) {
+  // Get the span element by its id
+  const quantityOutput = document.getElementById(outputId);
+  
+  // Get the current quantity value
+  let currentQuantity = parseInt(quantityOutput.innerText);
+  
+  // Update the quantity based on the operation
+  if (operation === 'increment') {
+      // Increment the quantity by 1
+      currentQuantity++;
+  } else if (operation === 'decrement' && currentQuantity > 0) {
+      // Decrement the quantity by 1, if it's greater than 0
+      currentQuantity--;
+  }
+  
+  // Display the updated quantity
+  quantityOutput.innerText = currentQuantity;
+}
+
 // Function to update cart counter
 
 // addToCart function
 function addToCart(itemName, cardId) {
   const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
   const imageUrl = document.querySelector(`#${cardId} img[src^="images/"]`).getAttribute('src');
+  const quantity = parseInt(document.getElementById('sQuantityOutput').innerText); // Get the quantity value
   
-
   if (!selectedSize) {
     Swal.fire({
       icon: 'warning',
@@ -167,7 +187,7 @@ function addToCart(itemName, cardId) {
   })
   .then(data => {
     const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-    const itemTotalPrice = numericPrice * 1; // Calculate total price for the new item
+    const itemTotalPrice = numericPrice * quantity; // Use the quantity value
     const newTotalPrice = totalPrice + itemTotalPrice;
 
     // Check if adding the new item will exceed the limit
@@ -178,15 +198,13 @@ function addToCart(itemName, cardId) {
         text: 'Adding this item will exceed PHP 10,000. You cannot add to your cart anymore.',
       });
     } else {
-      
       // Proceed with adding the item to the cart
       fetch('/api/cart/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Important for sessions
-        body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity: 1 }),
+        body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity }),
       })
-      
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to add item to cart. Please try again.');
@@ -195,25 +213,25 @@ function addToCart(itemName, cardId) {
       })
       .then(data => {
         if (data.success) {
-          // Update cart counter
-          updateCartCounter(); // Call the function to update the cart counter
-          // Optionally, refresh the cart UI here
-          // If you want to refresh the cart UI, you can call your updateCartDisplay function here
-          // updateCartDisplay();
-          Swal.fire({
-            icon: 'success',
-            title: 'Item Added to Cart',
-            text: `${itemName} ${size} has been added to your cart.`,
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: data.message || 'Could not add item to the cart.',
-          });
-        }
+  // Update cart counter
+  updateCartCounter(); // Call the function to update the cart counter
+  Swal.fire({
+    icon: 'success',
+    title: 'Item Added to Cart',
+    text: `${itemName} ${size} has been added to your cart.`,
+  }).then(() => {
+    // Reload the window to reflect the updated cart count
+    window.location.reload();
+  });
+} else {
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: data.message || 'Could not add item to the cart.',
+  });
+}
+
       })
-      
       .catch(error => {
         console.error('Error adding item to cart:', error);
         Swal.fire({
@@ -233,6 +251,7 @@ function addToCart(itemName, cardId) {
     });
   });
 }
+
 
 
 // Assuming cartItem has an ID and you have an API endpoint set up for these actions

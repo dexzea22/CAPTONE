@@ -410,7 +410,7 @@
           </div>
           <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
           
-          <button onclick="addToCart('Buttered Carrots','bcc')" class="cbtn">
+          <button onclick="addToCart('Bttrd Crrts/Chro','bcc')" class="cbtn">
             <i class="fas fa-shopping-cart"></i>
           </button>
         </div>
@@ -457,7 +457,7 @@
           <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
           
           <button
-            onclick="addToCart('Buttered Potato Marbles','bpm')"
+            onclick="addToCart('Bttrd Ptt Mrbls','bpm')"
             class="cbtn"
           >
             <i class="fas fa-shopping-cart"></i>
@@ -1862,6 +1862,54 @@ fetch('/api/cart/items', {
                 });
             });
     }
+    // JavaScript function to create a star rating
+ function createStarRating(containerId, rating) {
+  const container = document.getElementById(containerId);
+  
+  // Clear any existing content in the container
+  container.innerHTML = '';
+  
+  // Create a loop to generate the stars
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement('span');
+    star.classList.add('star', i <= rating ? 'filled' : 'empty');
+    star.innerHTML = '★'; // You can use a star icon here if available
+    container.appendChild(star);
+  }
+}
+
+// Call the function with the desired rating (e.g., 4 out of 5 stars)
+createStarRating('star', 4);
+createStarRating('star1', 4);
+createStarRating('star2', 5);
+createStarRating('star3', 2);
+createStarRating('star4', 5);
+createStarRating('starbs', 4);
+createStarRating('star5', 3);
+createStarRating('star6', 5);
+createStarRating('starc', 5);
+createStarRating('star7', 4);
+createStarRating('starce', 3);
+createStarRating('star8', 4);
+createStarRating('star9', 5);
+createStarRating('star10', 4);
+createStarRating('star11', 5);
+createStarRating('star12', 5);
+createStarRating('star13', 4);
+createStarRating('star14', 3);
+createStarRating('star15', 4);
+createStarRating('star16', 3);
+createStarRating('star17', 4);
+createStarRating('star18', 3);
+createStarRating('star19', 5);
+createStarRating('star20', 4);
+createStarRating('star21', 4);
+createStarRating('star22', 5);
+createStarRating('star23', 4);
+createStarRating('star24', 3);
+createStarRating('star25', 4);
+createStarRating('star26', 3);
+createStarRating('star27', 5);
     </script>
     <script src="scripts/meals.js"></script>
   </body>
