@@ -19,7 +19,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
   <link rel="stylesheet" href="stylesheets/menu.css" />
-  <title>User Meals</title>
+  <title>Meals | Maya&Me</title>
 </head>
 
 <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
@@ -59,11 +59,7 @@
         <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
         <a class="nav" href="/recommendations">Recommended</a>
         <a class="nav" href="/contact">Contact Us</a>
-        <a class="nav" href="/about">About Us</a>
-       
-        <!-- <a class="nav" href="/orderHistory">Order History</a>
-        <a class="nav" href="/orderStatus">Order Status</a> -->
-        <a class="nav" href="/userOrder">Order</a>
+        <a class="nav" href="/userOrder">Orders</a>
         <div class="nav" style="float: right;">
           <div class="search-input">
             <i class="fas fa-search"></i>
@@ -78,7 +74,7 @@
       <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
       <a href="#">Contact</a>
       <a href="/about">About</a>
-      <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
+      <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
       <a href="/profile">My Profile</a>
       <a href="/logout">Logout</a>
     </div>
@@ -100,172 +96,223 @@
     </div>
   </div>
   <div class="dashboard-content" id="container">
-    <div class="cards" style="height: 475px" id="brm">
+    <div class="cards"  id="brm">
       <img class="card-image" src="images/bac.jpg" alt="" />
       <div class="card-detail">
-        <h4>Bacon</h4>
-        <div>
-          <input type="radio" name="size" value="With Egg-100" />
-          <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="Without Egg-95" />
-          <label for="">Without Egg (₱95.00)</label><br />
-        </div>
-        <div class="rat" style="margin-top: 9%">
-          <p>Rating:</p>
-          <div class="star-rating" id="starmls">
-            <!-- Star icons will be added here using JavaScript -->
+          <h4>Bacon</h4>
+          <div>
+              <input type="radio" name="size" value="With Egg &emsp14; -100" onchange="updatePriceDisplay('brm')" />
+              <label for="">With Egg (₱100.00)</label><br />
+              <input type="radio" name="size" value="Without Egg-95" onchange="updatePriceDisplay('brm')" />
+              <label for="">Without Egg (₱95.00)</label><br />
           </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        <div>
-          
-          <button onclick="addToCart('Bacon Rice Meal','brm')" class="cbtn">
-            <i class="fas fa-shopping-cart"></i>
+          <div class="quantity-selector"  style="margin-top: 33%;">
+              <label>Quantity:</label>
+              <button onclick="changeQuantity('brm', -1)">-</button>
+              <input type="text" id="quantity-brm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('brm')">
+              <button onclick="changeQuantity('brm', 1)">+</button>
+          </div>
+          <div>Total Price: ₱<span id="total-price-brm">0.00</span></div>
+          <div class="rat">
+              <p>Rating:</p>
+              <div class="star-rating" id="starmls">
+                  <!-- Star icons will be added here using JavaScript -->
+              </div>
+          </div>
+          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+          <button onclick="addToCart('Bacon Rice Meal', 'brm')" class="cbtn">
+              <i class="fas fa-shopping-cart"></i>
           </button>
+      </div>
+  </div>
+  
+  <div class="cards" value="0" id="btrm">
+    <img class="card-image" src="images/tap.jpg" alt="" />
+    <div class="card-detail">
+      <h4>Beef Tapa</h4>
+      <div>
+        <input type="radio" name="size" value="With Egg-110" onchange="updatePriceDisplay('btrm')" />
+        <label for="">With Egg (₱110.00)</label><br />
+        <input type="radio" name="size" value="Without Egg-105" onchange="updatePriceDisplay('btrm')" />
+        <label for="">Without Egg (₱105.00)</label><br />
+      </div>
+      <div class="quantity-selector" style="margin-top: 33%;">
+        <label>Quantity:</label>
+        <button onclick="changeQuantity('btrm', -1)">-</button>
+        <input type="text" id="quantity-btrm" value="1" style="width: 35px; text-align: center;" onchange="updatePriceDisplay('btrm')">
+        <button onclick="changeQuantity('btrm', 1)">+</button>
+      </div>
+      <div>Total Price: ₱<span id="total-price-btrm">0.00</span></div>
+      <div class="rat" value="0">
+        <p>Rating:</p>
+        <div class="star-rating" id="starmls1">
+          <!-- Star icons will be added here using JavaScript -->
         </div>
       </div>
+      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+      
+      <button onclick="addToCart('Beef Tapa Rice Meal','btrm')" class="cbtn">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
     </div>
-    <div class="cards" style="height: 475px" id="btrm">
-      <img class="card-image" src="images/tap.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Beef Tapa</h4>
-        <div>
-          <input type="radio" name="size" value="With Egg-110" />
-          <label for="">With Egg (₱110.00)</label><br />
-          <input type="radio" name="size" value="Without Egg-105" />
-          <label for="">Without Egg (₱105.00)</label><br />
-        </div>
-        <div class="rat" style="margin-top: 9%">
-          <p>Rating:</p>
-          <div class="star-rating" id="starmls1">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        
-        <button onclick="addToCart('Beef Tapa Rice Meal','btrm')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
-      </div>
-    </div>
-    <div class="cards" style="height: 475px" id="crrm">
+  </div>
+    <div class="cards" value="0" id="crrm">
       <img class="card-image" src="images/cr.jpg" alt="" />
       <div class="card-detail">
-        <h4>Chicken Roll</h4>
-        <div>
-          <input type="radio" name="size" value="With Egg-100" />
-          <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="Without Egg-95" />
-          <label for="">Without Egg (₱95.00)</label><br />
-        </div>
-        <div class="rat" style="margin-top: 9%">
-          <p>Rating:</p>
-          <div class="star-rating" id="starmls2">
-            <!-- Star icons will be added here using JavaScript -->
+          <h4>Chicken Roll</h4>
+          <div>
+              <input type="radio" name="size" value="With Egg-100" onchange="updatePriceDisplay('crrm')" />
+              <label for="">With Egg (₱100.00)</label><br />
+              <input type="radio" name="size" value="Without Egg-95" onchange="updatePriceDisplay('crrm')" />
+              <label for="">Without Egg (₱95.00)</label><br />
           </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        
-        <button onclick="addToCart('Chicken Roll Rice Meal','crrm')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
-      </div>
-    </div>
-    <div class="cards" id="hsrm" style="height: 475px">
-      <img class="card-image" src="images/hs.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Hungarian Sausage</h4>
-        <div>
-          <input type="radio" name="size" value="With Egg-100" />
-          <label for="">With Egg (₱85.00)</label><br />
-          <input type="radio" name="size" value="Without Egg-95" />
-          <label for="">Without Egg (₱80.00)</label><br />
-          <input type="radio" name="size" value="Additional Sausage-115" />
-          <label for="">Additional Sausage (₱115.00)</label><br />
-        </div>
-        <div class="rat">
-          <p>Rating:</p>
-          <div class="star-rating" id="starmls3">
-            <!-- Star icons will be added here using JavaScript -->
+          <div class="quantity-selector" style="margin-top: 33%;">
+              <label>Quantity:</label>
+              <button onclick="changeQuantity('crrm', -1)">-</button>
+              <input type="text" id="quantity-crrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('crrm')">
+              <button onclick="changeQuantity('crrm', 1)">+</button>
           </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        
-        <button onclick="addToCart('Hungarian Rice Meal','hsrm')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
-      </div>
-    </div>
-    <div class="cards" style="height: 475px" id="lrm">
-      <img class="card-image" src="images/lrm.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Longganisa</h4>
-        <div>
-          <input type="radio" name="size" value="With Egg-85" />
-          <label for="">With Egg (₱85.00)</label><br />
-          <input type="radio" name="size" value="Without Egg-80" />
-          <label for="">Without Egg (₱80.00)</label><br />
-        </div>
-        <div class="rat" style="margin-top: 9%">
-          <p>Rating:</p>
-          <div class="star-rating" id="starmls5">
-            <!-- Star icons will be added here using JavaScript -->
+          <div>Total Price: ₱<span id="total-price-crrm">0.00</span></div>
+          <div class="rat" value="0">
+              <p>Rating:</p>
+              <div class="star-rating" id="starmls2">
+                  <!-- Star icons will be added here using JavaScript -->
+              </div>
           </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        
-        <button onclick="addToCart('Longganisa Rice Meal','lrm')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
+          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+          <button onclick="addToCart('Chicken Roll Rice Meal', 'crrm')" class="cbtn">
+              <i class="fas fa-shopping-cart"></i>
+          </button>
       </div>
-    </div>
-    <div class="cards" style="height: 475px" id="lsrm">
-      <img class="card-image" src="images/ls.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Lumpiang Shanghai</h4>
-        <div>
-          <input type="radio" name="size" value="W/Egg-100" />
-          <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="No Egg-95" />
-          <label for="">Without Egg (₱95.00)</label><br />
-        </div>
-        <div class="rat" style="margin-top: 9%">
-          <p>Rating:</p>
-          <div class="star-rating" id="starmls4"> -->
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        
-        <button onclick="addToCart('Lumpiang Shanghai Rice Meal','lsrm')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
+  </div>
+  
+  <div class="cards" id="hsr">
+    <img class="card-image" src="images/hs.jpg" alt="" />
+    <div class="card-detail">
+      <h4>Hungarian Sausage <br>(Rice Meal)</h4>
+      <div>
+        <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('hsr')" />
+        <label for="">With Egg (₱85.00)</label><br />
+        <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('hsr')" />
+        <label for="">Without Egg (₱80.00)</label><br />
+        <input type="radio" name="size" value="(Add Sausage)-115" onchange="updatePriceDisplay('hsr')" />
+        <label for="">Additional Sausage (₱115.00)</label><br />
       </div>
+      <div class="quantity-selector" style="margin-top: 19%">
+        <label>Quantity:</label>
+        <button onclick="changeQuantity('hsr', -1)">-</button>
+        <input type="text" id="quantity-hsr" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('hsr')">
+        <button onclick="changeQuantity('hsr', 1)">+</button>
+      </div>
+      <div>Total Price: ₱<span id="total-price-hsr">0.00</span></div>
+      <div class="rat" >
+        <p>Rating:</p>
+        <div class="star-rating" id="starmls3">
+          <!-- Star icons will be added here using JavaScript -->
+        </div>
+      </div>
+      <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+      
+      <button onclick="addToCart('Hungrn Rice Meal','hsr')" class="cbtn">
+        <i class="fas fa-shopping-cart"></i>
+      </button>
     </div>
+  </div>
 
-    <div class="cards" style="height: 475px" id="ptcrm">
-      <img class="card-image" src="images/ptcrm.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Pork Tocino</h4>
-        <div>
-          <input type="radio" name="size" value="With Egg-90" />
-          <label for="">With Egg (₱90.00)</label><br />
-          <input type="radio" name="size" value="Without Egg-85" />
-          <label for="">Without Egg (₱85.00)</label><br />
-        </div>
-        <div class="rat" style="margin-top: 9%">
-          <p>Rating:</p>
-          <div class="star-rating" id="starmls6">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        
-        <button onclick="addToCart('Pork Tocino Rice Meal','ptcrm')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
+<div class="cards" value="0" id="lrm">
+  <img class="card-image" src="images/lrm.jpg" alt="" />
+  <div class="card-detail">
+    <h4>Longganisa</h4>
+    <div>
+      <input type="radio" name="size" value="With Egg-85" onchange="updatePriceDisplay('lrm')" />
+      <label for="">With Egg (₱85.00)</label><br />
+      <input type="radio" name="size" value="Without Egg-80" onchange="updatePriceDisplay('lrm')" />
+      <label for="">Without Egg (₱80.00)</label><br />
+    </div>
+    <div class="quantity-selector" style="margin-top: 36%;" >
+      <label>Quantity:</label>
+      <button onclick="changeQuantity('lrm', -1)">-</button>
+      <input type="text" id="quantity-lrm" value="0" style="width: 35px; text-align: center;" onchange="updatePriceDisplay('lrm')">
+      <button onclick="changeQuantity('lrm', 1)">+</button>
+    </div>
+    <div> Price: ₱<span id="total-price-lrm">0.00</span></div>
+    <div class="rat">
+      <p>Rating:</p>
+      <div class="star-rating" id="starmls5">
+        <!-- Star icons will be added here using JavaScript -->
       </div>
     </div>
+    <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+    
+    <button onclick="addToCart('Longganisa Rice Meal','lrm')" class="cbtn">
+      <i class="fas fa-shopping-cart"></i>
+    </button>
+  </div>
+</div>
+
+<div class="cards" value="0" id="lsrm">
+  <img class="card-image" src="images/ls.jpg" alt="" />
+  <div class="card-detail">
+    <h4>Lumpiang Shanghai</h4>
+    <div>
+      <input type="radio" name="size" value="(W/Egg)-100" onchange="updatePriceDisplay('lsrm')" />
+      <label for="">With Egg (₱100.00)</label><br />
+      <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('lsrm')" />
+      <label for="">Without Egg (₱95.00)</label><br />
+    </div> 
+    <div class="quantity-selector" style="margin-top: 18%;">
+      <label>Quantity:</label>
+      <button onclick="changeQuantity('lsrm', -1)">-</button>
+      <input type="text" id="quantity-lsrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('lsrm')">
+      <button onclick="changeQuantity('lsrm', 1)">+</button>
+    </div>
+    <div>Total Price: ₱<span id="total-price-lsrm">0.00</span></div>
+    <div class="rat">
+      <p>Rating:</p>
+      <div class="star-rating" id="starmls4">
+        <!-- Star icons will be added here using JavaScript -->
+      </div>
+    </div>
+    <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+    
+    <button onclick="addToCart('Lumpia Rice Meal','lsrm')" class="cbtn">
+      <i class="fas fa-shopping-cart"></i>
+    </button>
+  </div>
+</div>
+
+
+<div class="cards" value="0" id="ptcrm">
+  <img class="card-image" src="images/ptcrm.jpg" alt="" />
+  <div class="card-detail">
+    <h4>Pork Tocino</h4>
+    <div>
+      <input type="radio" name="size" value="With Egg-90" onchange="updatePriceDisplay('ptcrm')" />
+      <label for="">With Egg (₱90.00)</label><br />
+      <input type="radio" name="size" value="Without Egg-85" onchange="updatePriceDisplay('ptcrm')" />
+      <label for="">Without Egg (₱85.00)</label><br />
+    </div>
+    <div class="quantity-selector" style="margin-top: 18%;">
+      <label>Quantity:</label>
+      <button onclick="changeQuantity('ptcrm', -1)">-</button>
+      <input type="text" id="quantity-ptcrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ptcrm')">
+      <button onclick="changeQuantity('ptcrm', 1)">+</button>
+    </div>
+    <div>Total Price: ₱<span id="total-price-ptcrm">0.00</span></div>
+    <div class="rat">
+      <p>Rating:</p>
+      <div class="star-rating" id="starmls6">
+        <!-- Star icons will be added here using JavaScript -->
+      </div>
+    </div>
+    <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+    
+    <button onclick="addToCart('Pork Tocino Rice Meal','ptcrm')" class="cbtn">
+      <i class="fas fa-shopping-cart"></i>
+    </button>
+  </div>
+</div>
+
   </div>
   <div id="cart-mod" class="mod">
     <div class="mod-cont">
@@ -660,6 +707,30 @@ function displayCartItems() {
                     });
                 });
         }
+
+        function createStarRating(containerId, rating) {
+  const container = document.getElementById(containerId);
+  
+  // Clear any existing content in the container
+  container.innerHTML = '';
+  
+  // Create a loop to generate the stars
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement('span');
+    star.classList.add('star', i <= rating ? 'filled' : 'empty');
+    star.innerHTML = '★'; // You can use a star icon here if available
+    container.appendChild(star);
+  }
+}
+
+// Call the function with the desired rating (e.g., 4 out of 5 stars)
+createStarRating('starmls', 3);
+createStarRating('starmls1', 4);
+createStarRating('starmls2', 5);
+createStarRating('starmls3', 5);
+createStarRating('starmls4', 3);
+createStarRating('starmls5', 4);
+createStarRating('starmls6', 5);
   </script>
 </body>
 

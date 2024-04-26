@@ -60,8 +60,7 @@
                 <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
                 <a class="nav" href="/recommendations">Recommended</a>
                 <a class="nav" href="/contact">Contact Us</a>
-                <a class="nav" href="/about">About Us</a>
-                <a class="nav" href="/userOrder">Order</a>
+                <a class="nav" href="/userOrder">Orders</a>
         </div>
         <div class="side-menu">
             <a href="/UserDashboard">Home</a>
@@ -206,6 +205,7 @@
                 });
         }
 
+        // Function to fetch and display cart items
         function displayCartItems() {
     fetch('/api/cart/items', {
         method: 'GET',
@@ -224,7 +224,9 @@
         if (data.length > 0) { // Check if data is not empty
             let totalPrice = 0; // Initialize total price variable
 
-            data.forEach(item => {
+            // Iterate through data in reverse order to display latest item first
+            for (let i = data.length - 1; i >= 0; i--) {
+                const item = data[i];
                 const itemElement = document.createElement('div');
                 itemElement.classList.add('row', 'border-top', 'border-bottom');
 
@@ -234,19 +236,19 @@
 
                 itemElement.innerHTML = `
                     <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
-                    <div class="Itm"> ${item.foodItem.name} ${item.foodItem.size}
-                        Price: PHP ${item.foodItem.price.toFixed(2)}
-                        Quantity: 
+                    <div class="Itm">${item.foodItem.name} ${item.foodItem.size}<br>
+                    Price:PHP${item.foodItem.price.toFixed(2)}<br>
+                    Quantity: 
                         <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
                         <span>${item.quantity}</span>
                         <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
-                        Total Price: PHP ${itemTotalPrice.toFixed(2)}
-                        <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    TotalPrice:PHP${itemTotalPrice.toFixed(2)}
+                    <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')"><i class="fa fa-trash" aria-hidden="true"></i></button>
                     </div>`;
-                
-                // Prepend the new item element to the top of the list
-                cartItemsContainer.prepend(itemElement);
-            });
+
+                // Append item element to the beginning of the container
+                cartItemsContainer.appendChild(itemElement);
+            }
 
             // Update the total price displayed in the UI
             document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
@@ -274,11 +276,9 @@
     });
 }
 
+// Call the function to fetch and display cart items when the page loads
+document.addEventListener('DOMContentLoaded', displayCartItems);
 
-
-
-        // Call the function to fetch and display cart items when the page loads
-        document.addEventListener('DOMContentLoaded', displayCartItems);
 
 
 

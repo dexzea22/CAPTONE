@@ -65,21 +65,7 @@ function updateBackgroundImage() {
 
 // Update the background image every 3 seconds (3000 milliseconds)
 setInterval(updateBackgroundImage, 3000);
- // JavaScript function to create a star rating
- function createStarRating(containerId, rating) {
-  const container = document.getElementById(containerId);
-  
-  // Clear any existing content in the container
-  container.innerHTML = '';
-  
-  // Create a loop to generate the stars
-  for (let i = 1; i <= 5; i++) {
-    const star = document.createElement('span');
-    star.classList.add('star', i <= rating ? 'filled' : 'empty');
-    star.innerHTML = '★'; // You can use a star icon here if available
-    container.appendChild(star);
-  }
-}
+ 
 
 // Function to fetch cart items from the server and update UI
 function loadAndDisplayCartItems() {
@@ -97,16 +83,6 @@ function loadAndDisplayCartItems() {
   })
   .catch(error => console.error('Error fetching cart items:', error));
 }
-
-// Call the function with the desired rating (e.g., 4 out of 5 stars)
-createStarRating('starmls', 3);
-createStarRating('starmls1', 4);
-createStarRating('starmls2', 5);
-createStarRating('starmls3', 5);
-createStarRating('starmls4', 3);
-createStarRating('starmls5', 4);
-createStarRating('starmls6', 5);
-
 
 // Function to update cart counter and item counter
 function updateCartCounter() {
@@ -155,12 +131,13 @@ function QTY(operation, outputId) {
 
 // Function to update cart counter
 
-// addToCart function
+// Updated addToCart function to include quantity
 function addToCart(itemName, cardId) {
   const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
   const imageUrl = document.querySelector(`#${cardId} img[src^="images/"]`).getAttribute('src');
-  const quantity = parseInt(document.getElementById('sQuantityOutput').innerText); // Get the quantity value
-  
+  const quantity = parseInt(document.getElementById('quantity-' + cardId).value); // Get quantity from the input
+
+
   if (!selectedSize) {
     Swal.fire({
       icon: 'warning',
@@ -171,8 +148,10 @@ function addToCart(itemName, cardId) {
     return; // Exit the function if no size is selected
   }
 
+
   const [size, price] = selectedSize.value.split('-');
   const numericPrice = parseFloat(price);
+
 
   // Fetch current cart total price
   fetch('/api/cart/items', {
@@ -187,8 +166,9 @@ function addToCart(itemName, cardId) {
   })
   .then(data => {
     const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-    const itemTotalPrice = numericPrice * quantity; // Use the quantity value
+    const itemTotalPrice = numericPrice * quantity; // Calculate total price for the new item considering the quantity
     const newTotalPrice = totalPrice + itemTotalPrice;
+
 
     // Check if adding the new item will exceed the limit
     if (newTotalPrice > 10000) {
@@ -203,7 +183,7 @@ function addToCart(itemName, cardId) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Important for sessions
-        body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity }),
+        body: JSON.stringify({ name: itemName, size, price: numericPrice, image: imageUrl, quantity: quantity }),
       })
       .then(response => {
         if (!response.ok) {
@@ -213,24 +193,20 @@ function addToCart(itemName, cardId) {
       })
       .then(data => {
         if (data.success) {
-  // Update cart counter
-  updateCartCounter(); // Call the function to update the cart counter
-  Swal.fire({
-    icon: 'success',
-    title: 'Item Added to Cart',
-    text: `${itemName} ${size} has been added to your cart.`,
-  }).then(() => {
-    // Reload the window to reflect the updated cart count
-    window.location.reload();
-  });
-} else {
-  Swal.fire({
-    icon: 'error',
-    title: 'Error',
-    text: data.message || 'Could not add item to the cart.',
-  });
-}
-
+          // Update cart counter
+          updateCartCounter(); // Call the function to update the cart counter
+          Swal.fire({
+            icon: 'success',
+            title: 'Item Added to Cart',
+            text: `${itemName} ${size} has been added to your cart.`,
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.message || 'Could not add item to the cart.',
+          });
+        }
       })
       .catch(error => {
         console.error('Error adding item to cart:', error);
@@ -251,6 +227,10 @@ function addToCart(itemName, cardId) {
     });
   });
 }
+
+
+
+
 
 
 
@@ -429,3 +409,4 @@ window.addEventListener('click', function(event) {
     closeProfileModal();
   }
 });
+

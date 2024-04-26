@@ -79,6 +79,9 @@ color: white;
     float: left;
     margin: 25px 0 0 15px;
   }
+  .cntr{
+    margin-top: 35%;
+  }
 }
 
 .side-menu {
@@ -218,7 +221,14 @@ width: 100%; /* Expand the underline on hover */
   max-width: 1186px; /* Adjust the max-width as needed */
   width: 100%;
 }
-.fbtn{
+.Olog {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 2500px; /* Adjust the max-width as needed */
+  width: 100%;
+}
+.fbtn,.obtn{
 margin: 0 10px 0 10px;
 background-color:#C69B68;
 border: none;
@@ -232,17 +242,17 @@ position: relative;
 text-decoration: none;
 text-align: center;
 }
-.fbtns:hover{
+.fbtns:hover,.obtns:hover{
   background-color:rgb(243, 185, 113);
   color: rgb(0, 0, 0);
   text-decoration: none;
   }
-  .fbtns.active{
+  .fbtns.active,.obtns.active{
   background-color:rgb(243, 185, 113);
   color: rgb(0, 0, 0);
   text-decoration: none;
   }
-  .fbtns {
+  .fbtns,.obtns {
     padding: 10px 20px;
         margin: 0 10px 0 10px;
         text-decoration: none;
@@ -253,8 +263,9 @@ text-align: center;
         font-size: 20px;
         font-weight: bold;
   }
+  
 @media (max-width: 900px) {
-  .log {
+  .log,.Olog {
     flex-direction: row;
     justify-content: center;
   }
@@ -267,7 +278,13 @@ text-align: center;
     height: 35px;
     text-align: center;
   }
-
+.obtns{
+  width: 123px;
+  font-size: 13px;
+  font-weight: bold;
+  height: 35px;
+  text-align: center;
+}
   
 }
 .fbtn:hover{
@@ -398,8 +415,8 @@ z-index: 3;
 padding: 10px 0;
 }
 .cbtn{
-padding: 9px;
-width: 23%;
+padding: 5px;
+width: 20%;
 background-color: #C69B68;
 color: white;
 margin: 0 3% 5% 0;
@@ -493,13 +510,19 @@ z-index: 1;
 }
 .lbls{
   font-family: Caveat, open-sans; 
-  font-size: 60px;
+  font-size: 85px;
   font-weight: bold;
   color: #C69B68;
   margin-top:50px;
   position: relative;
   z-index: 1;
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
+@media(max-width:900px){
+.lbls{
+  font-size: 50px;
+  margin-top: 100%;
+}
 }
 .ftr{
 font-size: 1vw;
@@ -521,6 +544,7 @@ box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   z-index: 2; 
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
 }
+
 .card-maps{
   width: calc(100%);
   border: 1px solid #ccc;
@@ -596,9 +620,15 @@ grid-template-columns: repeat(3,1fr);
 gap:10px;
 margin-left:15px;
 }
+.ogallery{
+display: grid;
+grid-template-columns: repeat(5,1fr); 
+gap:10px;
+margin-left:15px;
+}
 /* Individual image styles */
-.gallery img, .gllry img {
-max-width: 75%;
+.gallery img, .gllry img, .ogallery img{
+max-width: 87%;
 height: auto;
 cursor: pointer;
 transition: transform 0.2s;
@@ -607,7 +637,7 @@ margin: auto;
 width: 950px;
 }
 /* Hover effect on images */
-.gallery img:hover, .gllry img:hover {
+.gallery img:hover, .gllry img:hover,.ogallery img:hover {
 transform: scale(1.1); /* Zoom effect on hover */
 }
 
