@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="stylesheets/user.css">
@@ -19,45 +20,48 @@
 </head>
 
 <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
-
   <div class="topnav">
     <div class="menu-toggle">
-      <div class="bars"></div>
-      <div class="bars"></div>
-      <div class="bars"></div>
-      <div class="bars"></div>
-      </div>
-    <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px"></a>
-    <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px"></a>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px" /></a>
+    <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px" /></a>
     <div class="menu">
       <a class="nav" href="/UserDashboard">Home</a>
-      <!-- The button or icon for opening the profile modal -->
-      <div class="nav" onclick="openProfileModal()" style="font-size: 22px; cursor:pointer; float: right; margin:1.3% 3% 0 0;color:#976b35;">
-        <i class="fas fa-user-circle fa-2x"></i>
+      <div class="nav" onclick="openProfileModal()"
+        style="font-size: 22px;cursor: pointer;float: right;margin: 1.3% 3% 0 0;color: #976b35;"> <i
+          class="fas fa-user-circle fa-2x"></i>
       </div>
       <!-- Profile Modal -->
       <div id="profileModal" class="pmod">
         <div class="modal-contents">
           <span class="close" onclick="closeProfileModal()">&times;</span>
-          <a  class="prof" href="/profile">My Profile</a>
-          <a  class="prof" href="/recommendations">Recommended</a>
-          <a  class="prof" href="/logout">Logout</a>
+          <a class="prof" href="/profile">My Profile</a>
+          <a class="prof" href="/recommendations">Recommended</a>
+          <a class="prof" href="/logout">Logout</a>
         </div>
       </div>
-      <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;" onclick="openCartPage()">
+      <!-- <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span> -->
+        <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;"
+        onclick="openCartPage()">
         <i class="fas fa-shopping-cart fa-2x"></i>
         <span id="cart-counter">0</span>
-        </a> 
-     <%- include('dietaryPreferences.ejs') %>
-      <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-      <a class="nav" href="/recommendations">Recommended</a>
-      <a class="nav" href="/contact">Contact Us</a>
-      <a class="nav" href="/userOrder">Orders</a>
+    </a>
+
+      </a>
+      <%- include('dietaryPreferences.ejs') %>
+        <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
+        <a class="nav" href="/recommendations">Recommended</a>
+        <a class="nav" href="/contact">Contact Us</a>
+        <a class="nav" href="/userOrder">Orders</a>
       <span class="nav welcome-message" style="font-size: 24px; cursor:pointer; float: right; margin:1.4% 0 0 0;color:#976b35;"><%= welcomeMessage %></span>
     </div>
     <div class="side-menu">
       <a style="color: black;" href="/UserDashboard">Home</a>
-      <a style="color: black;" href="/confirmorderinfo">Orders</a>
+      <a style="color: black;" href="/userOrder">Orders</a>
       <a style="color: black;" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
       <a style="color: black;" href="#">Contact Us</a>
       <a style="color: black;" href="/about">About Us</a>
@@ -357,7 +361,7 @@
   <!-- Copyright -->
   <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
   © 2023 Copyright:
-  <label style="color: #C69B68;">Maya&Me Services</label>
+  <label style="color: #976b35;">Maya&Me Services</label>
   </div>
   <!-- Copyright -->
 </footer>
@@ -387,29 +391,7 @@ function changeQuantity(cardId, delta) {
     // Get the cards initially
     var cards = document.querySelectorAll('.cards');
 
-    // Add event listener for keydown event
-    document.getElementById('menuSearchInput').addEventListener('keydown', function (event) {
-      // Check if Enter key is pressed (key code 13)
-      if (event.keyCode === 13) {
-        performSearch();
-      }
-    });
-
-    function performSearch() {
-      // Get the value from the search input
-      var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
-
-      // Perform your search logic here
-      // For demonstration, you can hide/show cards based on the search query
-      cards.forEach(function (card) {
-        var cardTitle = card.querySelector('h4').innerText.toLowerCase();
-        if (cardTitle.includes(searchQuery)) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
+   
       // Example function to read selected size and price
       function getSelectedSizeAndPrice(cardId) {
       const selected = document.querySelector(`#${cardId} input[name="size"]:checked`);
@@ -611,39 +593,38 @@ function displayCartItems() {
         });
 
         function updateQuantity(cartItemId, newQuantity) {
-            // Ensure the quantity is not negative
-            if (newQuantity < 0) {
-                return;
+                // Ensure the quantity is not negative
+                if (newQuantity < 0) {
+                    return;
+                }
+                updateCartItemQuantity(cartItemId, newQuantity);
             }
-            updateCartItemQuantity(cartItemId, newQuantity);
-        }
-        // Function to update the cart counter and item counter
         function updateCartCounter() {
-            fetch('/api/cart/items', {
-                method: 'GET',
-                credentials: 'include', // Important for sessions
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch cart items. Please try again.');
-                    }
-                    return response.json();
+                fetch('/api/cart/items', {
+                    method: 'GET',
+                    credentials: 'include', // Important for sessions
                 })
-                .then(data => {
-                    // Calculate total number of items in the cart
-                    const totalItems = data.reduce((total, item) => total + item.quantity, 0);
-                    // Update the cart counter and item counter in the UI
-                    document.getElementById('cart-counter').textContent = totalItems;
-                    document.getElementById('item-counter').textContent = totalItems; // Update item counter
-                })
-                .catch(error => {
-                    console.error('Error fetching cart items:', error);
-                    // Display an error message or handle it as per your requirement
-                });
-        }
-
-        // Call the function to update the cart counter and item counter when the page loads
-        document.addEventListener('DOMContentLoaded', updateCartCounter);
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch cart items. Please try again.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Calculate total number of items in the cart
+                        const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                        // Update the cart counter and item counter in the UI
+                        document.getElementById('cart-counter').textContent = totalItems;
+                        document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                    })
+                    .catch(error => {
+                        console.error('Error fetching cart items:', error);
+                        // Display an error message or handle it as per your requirement
+                    });
+            }
+    
+            // Call the function to update the cart counter and item counter when the page loads
+            document.addEventListener('DOMContentLoaded', updateCartCounter);
 
 
 

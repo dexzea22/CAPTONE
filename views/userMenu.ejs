@@ -53,7 +53,7 @@
         <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
         <a class="nav" href="/recommendations">Recommended</a>
         <a class="nav" href="/contact">Contact Us</a>
-        <a class="nav" href="/order">Orders</a>
+        <a class="nav" href="/userOrder">Orders</a>
         <div class="nav" style="float: right;">
           <div class="search-input">
             <i class="fas fa-search"></i>
@@ -64,7 +64,7 @@
     </div>
     <div class="side-menu">
       <a href="/UserDashboard">Home</a>
-      <a href="/confirmorderinfo">Orders</a>
+      <a href="/userOrder">Orders</a>
       <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
       <a href="/contact">Contact Us</a>
       <a href="/about">About Us</a>
@@ -147,7 +147,7 @@
           <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('brm')" />
           <label for="">Without Egg (₱95.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 32%">
+        <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('brm', -1)">-</button>
           <input type="text" id="quantity-brm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('brm')">
@@ -308,13 +308,13 @@
       <img class="card-image" src="images/tap.jpg" alt="" />
       <div class="card-detail">
         <h4>Beef Tapa (Rice Meal)</h4>
-        <div>
+        <div style="margin-top: 11%">
           <input type="radio" name="size" value="(With Egg)-110" onchange="updatePriceDisplay('btrm')" />
           <label for="">With Egg (₱110.00)</label><br />
           <input type="radio" name="size" value="(Without Egg)-105"  onchange="updatePriceDisplay('btrm')"/>
           <label for="">Without Egg (₱105.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 41%">
+        <div class="quantity-selector" style="margin-top: 28%" >
           <label>Quantity:</label>
           <button onclick="changeQuantity('btrm', -1)">-</button>
           <input type="text" id="quantity-btrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('btrm')">
@@ -524,7 +524,7 @@
           <input type="radio" name="size" value=" Bilao-350" onchange="updatePriceDisplay('cg')" />
           <label for=""> Bilao (₱350.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 23%">
+        <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('cg', -1)">-</button>
           <input type="text" id="quantity-cg" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('cg')">
@@ -548,7 +548,7 @@
       <img class="card-image" src="images/pc.jpg" alt="" />
       <div class="card-detail">
         <h4>Caldereta (Tray)</h4>
-        <div class="gallery">
+        <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
             <input type="radio" name="size" value="(10 to 12 pax)-570" onchange="updatePriceDisplay('cldrt')" />
@@ -599,7 +599,7 @@
           <input type="radio" name="size" value=" &emsp14;&emsp14;Bilao&emsp14;&emsp14;-350" onchange="updatePriceDisplay('chm')" />
           <label for=""> Bilao (₱350.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 23%">
+        <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('chm', -1)">-</button>
           <input type="text" id="quantity-chm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('chm')">
@@ -623,7 +623,7 @@
       <img class="card-image" src="images/cak.jpg" alt="" />
       <div class="card-detail">
         <h4>Chicken Ala King (Tray)</h4>
-        <div class="gallery">
+        <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
             <input type="radio" name="size" value="(10 to 12 pax)-500" onchange="updatePriceDisplay('cak')" />
@@ -668,7 +668,7 @@
       <img class="card-image" src="images/ce.jpg" alt="" />
       <div class="card-detail">
         <h4>Chicken Embotido (Tray)</h4>
-        <div class="gallery">
+        <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
             <input type="radio" name="size" value="(10 to 12 pax)-340" onchange="updatePriceDisplay('ce')" />
@@ -713,13 +713,13 @@
       <img class="card-image" src="images/cr.jpg" alt="" />
       <div class="card-detail">
         <h4>Chicken Roll (Rice Meal)</h4>
-        <div style="margin-top: 12%">
+        <div style="margin-top: 11%">
           <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('crrm')" />
           <label for="">With Egg (₱100.00)</label><br />
           <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('crrm')" />
           <label for="">Without Egg (₱95.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 31%">
+        <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('crrm', -1)">-</button>
           <input type="text" id="quantity-crrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('crrm')">
@@ -1148,7 +1148,7 @@
           <input type="radio" name="size" value="(Add Sausage)-115" onchange="updatePriceDisplay('hsr')" />
           <label for="">Additional Sausage (₱115.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 23%">
+        <div class="quantity-selector" style="margin-top: 20%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('hsr', -1)">-</button>
           <input type="text" id="quantity-hsr" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('hsr')">
@@ -1268,7 +1268,7 @@
           <input type="radio" name="size" value="(Without Egg)-80" onchange="updatePriceDisplay('lrm')" />
           <label for="">Without Egg (₱80.00)</label><br />
         </div>
-        <div class="quantity-selector"  style="margin-top: 32%">
+        <div class="quantity-selector"  style="margin-top: 28%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('lrm', -1)">-</button>
           <input type="text" id="quantity-lrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('lrm')">
@@ -1298,7 +1298,7 @@
           <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('lsrm')" />
           <label for="">Without Egg (₱95.00)</label><br />
         </div>
-        <div class="quantity-selector"  style="margin-top: 32%">
+        <div class="quantity-selector"  style="margin-top: 28%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('lsrm', -1)">-</button>
           <input type="text" id="quantity-lsrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('lsrm')">
@@ -1463,7 +1463,7 @@
           <input type="radio" name="size" value="(Without Egg)-85" onchange="updatePriceDisplay('ptcrm')" />
           <label for="">Without Egg (₱85.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 32%">
+        <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
           <button onclick="changeQuantity('ptcrm', -1)">-</button>
           <input type="text" id="quantity-ptcrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ptcrm')">
@@ -2130,16 +2130,16 @@ createStarRating('star-rating43', 5);
         </label>
     
         <div class="mt-4">
-          <!-- Facebook -->
-          <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
-          <!-- Dribbble -->
-          <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
-          <!-- Twitter -->
-          <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
-          <!-- Google + -->
-          <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
-          <!-- Linkedin -->
-        </div>
+      <!-- Facebook -->
+      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+      <!-- Dribbble -->
+      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+      <!-- Twitter -->
+      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+      <!-- Google + -->
+      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+      <!-- Linkedin -->
+    </div>
         </div>
       <!--Grid column-->
   <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>

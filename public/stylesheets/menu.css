@@ -330,6 +330,11 @@ text-decoration: none;
   font-size: 13px;
   text-align: center;
 }
+
+  .cards{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+  }
 }
 .dashboard-content {
 display: grid;
@@ -364,6 +369,7 @@ border-radius: 15px;
 
 .card-detail {
 padding: 10px;
+font-size: 16px;
 }
 
 .card-time {
@@ -518,10 +524,24 @@ z-index: 1;
   z-index: 1;
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
 }
+.lblso{
+  font-family: Caveat, open-sans; 
+  font-size: 85px;
+  font-weight: bold;
+  color: #C69B68;
+  margin-top:200px;
+  position: relative;
+  z-index: 1;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+}
 @media(max-width:900px){
 .lbls{
   font-size: 50px;
   margin-top: 100%;
+}
+.lblso{
+  font-size: 50px;
+  margin-top: 200px;
 }
 }
 .ftr{
@@ -612,13 +632,38 @@ box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   padding: 5px;
   background-color: rgba(255, 255, 255, 0.461);
 }
+@media(max-width:900px){
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 5px;
+  }
+  .item-card {
+    border: 1px solid #000000;
+    padding: 0px;
+    background-color: rgba(255, 255, 255, 0.461);
+    font-size: 10px;
+    height: 230px;
+  }
+  .order-card {
+    border: 1px solid #ccc;
+    font-size: 10px;
+  }
+  .fimg{
+    display: block; /* Ensures the image behaves as a block element */
+    margin: auto;   /* Centers the image horizontally */
+    width: 100px;
+    height: 50px;
+    border-radius: 5px;
+  }
+}
 
 
 .gallery,.gllry {
 display: grid;
 grid-template-columns: repeat(3,1fr); 
-gap:10px;
-margin-left:15px;
+gap:5px;
+margin-left:10px;
 }
 .ogallery{
 display: grid;
@@ -626,10 +671,19 @@ grid-template-columns: repeat(5,1fr);
 gap:10px;
 margin-left:15px;
 }
-/* Individual image styles */
-.gallery img, .gllry img, .ogallery img{
-max-width: 87%;
+.ogallery img{
+  max-width: 87%;
 height: auto;
+cursor: pointer;
+transition: transform 0.2s;
+align-items: center;
+margin: auto;
+width: 950px;
+}
+/* Individual image styles */
+.gallery img, .gllry img{
+max-width: 87%;
+height: 100px;
 cursor: pointer;
 transition: transform 0.2s;
 align-items: center;

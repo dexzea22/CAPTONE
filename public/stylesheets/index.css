@@ -42,7 +42,7 @@ body{
   .bar {
     width: 30px;
     height: 3px;
-    background-color: white;
+    background-color: rgb(0, 0, 0);
     margin: 5px 0;
     }
   .menu.show {
