@@ -3,15 +3,18 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
+    <title>ContactUs | Maya&Me</title>
     <link rel="website icon" type="png" href="images/maya.png">
     <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
+    integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="stylesheets/contactUs.css">
@@ -39,21 +42,21 @@
               <a class="prof" href="/logout">Logout</a>
             </div>
           </div>
-          <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span>
+          <a class="nav" onclick="openCartPage()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span>
           </a>
           <%- include('dietaryPreferences.ejs') %>
           <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
           <a class="nav" href="/recommendations">Recommended</a>
           <a class="nav" href="/contact">Contact Us</a>
-        <a class="nav" href="/about">About Us</a>
+          <a class="nav" href="/userOrder">Orders</a>
         </div>
-         <div class="side-menu">
+        <div class="side-menu">
           <a href="/UserDashboard">Home</a>
-          <a href="/recommendations">Recommended</a>
+          <a href="/userOrder">Orders</a>
           <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
           <a href="/contact">Contact Us</a>
           <a href="/about">About Us</a>
-          <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
+          <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
           <a href="/profile">My Profile</a>
           <a href="/logout">Logout</a>
         </div>
