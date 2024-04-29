@@ -10,14 +10,27 @@ const {
   extractValues,
 } = require("../utils/revisedGenerateRecommendation");
 
+// Middleware to ensure the user is authenticated
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  console.log("Unauthorized attempt to access dietary preferences");
+  return res.status(401).json({ success: false, message: "Unauthorized access. Please log in." });
+}
+
 // Endpoint to display the recommendations page
-router.get("/", async (req, res) => {
-  const userId = req.session.userId;
+router.get("/", ensureAuthenticated, async (req, res) => {
+  const userId = req.user.id;  // Correctly using Passport's user object
 
   try {
     const existingPreference = await prisma.dietaryPreference.findUnique({
-      where: { userId },
+      where: { userId: userId },  // Ensuring that 'userId' is correctly provided
     });
+
+    if (!existingPreference) {
+      return res.status(404).json({ success: false, message: "Dietary preferences not found." });
+    }
 
     const gptResponse = await revised_generated_recommendation({
       vegetarian: existingPreference.vegetarian,
@@ -31,13 +44,12 @@ router.get("/", async (req, res) => {
       otherRestrictions: existingPreference.otherRestrictions,
     });
 
-    // Generate recommendations based on the dietaryData
     console.log("CALL 10: ", gptResponse);
     res.render("recommendations", {
       recommendations: [...gptResponse],
     });
   } catch (error) {
-    console.error("Error in submitting dietary preferences:", error);
+    console.error("Error in accessing dietary preferences:", error);
     res.render("recommendations", { recommendations: [] });
   }
 });

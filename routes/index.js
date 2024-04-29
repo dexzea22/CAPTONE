@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const session = require('express-session');
+
 const app = express();
 app.use(express.json());
 const bcrypt = require('bcrypt');
@@ -11,14 +11,17 @@ const prisma = new PrismaClient();
 
 // Middleware to check if user is authenticated
 function authenticate(req, res, next) {
-  console.log('Session:', req.session);
-  if (!req.session.userId) {
-    return res.redirect('/login');
+  // Use Passport's built-in method to check authentication
+  if (req.isAuthenticated()) {  // Checks if the user session is saved and valid
+    console.log('User authenticated with userId:', req.user.id); // Log the authenticated user's ID
+    next();  // Continue to next middleware or request handler
   } else {
-    console.log('User authenticated with userId:', req.session.userId);
-    next();
+    console.log('User not authenticated. Redirecting to login.');
+    res.redirect('/login');  // Redirect to login page if not authenticated
   }
 }
+
+
 
 // Middleware to check user type and restrict access to specific routes
 async function restrictAccess(userType, req, res, next) {
@@ -43,48 +46,50 @@ async function restrictAccess(userType, req, res, next) {
 }
 
 /* GET home page. */
-router.get('/login', async function (req, res, next) {
-  console.log('Session:', req.session);
-  var users = await prisma.User.findMany();
-  if (req.session.userId) {
-      console.log('User logged in with userId:', req.session.userId);
-      return res.redirect('/UserDashboard');
+router.get('/login', async function (req, res) {
+  if (req.isAuthenticated()) {  // Checks if the user is already authenticated
+    console.log('User already logged in, redirecting to dashboard:', req.user.id);
+    return res.redirect('/UserDashboard');
   } else {
-      res.render('index', { title: 'Express', users: users });
+    console.log('Rendering login page.');
+    res.render('index', { title: 'Login' });
   }
 });
 
-/* POST login page. */
-router.post('/login', async function (req, res, next) {
+
+// POST login route for handling login
+app.post('/login', async function (req, res) {
   const { email, password } = req.body;
-  console.log('Email received in request body:', email); // Log the email received in the request body
   try {
-      const user = await prisma.User.findUnique({ where: { email: email } });
-      if (!user) {
-          return res.render('index', { errorMessage: 'Incorrect Email / Password.' });
-      }
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-          return res.render('index', { errorMessage: 'Incorrect Password.' });
+      const user = await prisma.user.findUnique({ where: { email: email } });
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+          console.log('Login failed for user:', email);
+          return res.status(401).render('index', { errorMessage: 'Incorrect Email or Password.' });
       }
       
-      // Store both userId and email in the session
-      req.session.userId = user.id; 
-      req.session.email = email; // Assign email to req.session.email
+      // Use Passport's req.login to handle session setup
+      req.login(user, (err) => {
+          if (err) {
+              console.error('Session login failed:', err);
+              return res.status(500).render('error', { errorMessage: 'Session setup failed.' });
+          }
 
-      console.log('User authenticated with userId:', user.id);
-      console.log('User email stored in session:', email); // Log the stored email
+          console.log('Login successful, redirecting to:', user.usertype === 'Admin' ? '/adminDashboard' :
+              user.usertype === 'Manager' ? '/managerDashboard' : '/UserDashboard');
 
-      // Redirect based on user type
-      const redirectUrl = user.usertype === 'Admin' ? '/adminDashboard' :
-          user.usertype === 'Manager' ? '/managerDashboard' :
-              '/UserDashboard';
-      return res.redirect(redirectUrl);
+          // Redirect based on user type
+          return res.redirect(user.usertype === 'Admin' ? '/adminDashboard' :
+              user.usertype === 'Manager' ? '/managerDashboard' : '/UserDashboard');
+      });
   } catch (error) {
       console.error('Error logging in:', error);
-      return res.render('error', { errorMessage: 'Error logging in. Please try again.' });
+      res.status(500).render('error', { errorMessage: 'Error logging in. Please try again.' });
   }
 });
+
+
+
+
 
 
 router.get('/logout', async (req, res) => {

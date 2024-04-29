@@ -4,15 +4,18 @@ const generateRecommendations = require("../utils/generateRecommendations");
 const router = express.Router();
 const prisma = new PrismaClient();
 
-router.post("/submit-dietary-preferences", async (req, res) => {
-  if (!req.session || !req.session.userId) {
+// Middleware to ensure the user is authenticated
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {  // Passport method to check authentication
+    return next();
+  } else {
     console.log("Unauthorized attempt to access dietary preferences");
-    return res
-      .status(401)
-      .json({ success: false, message: "Unauthorized access. Please log in." });
+    res.status(401).json({ success: false, message: "Unauthorized access. Please log in." });
   }
+}
 
-  const userId = req.session.userId;
+router.post("/submit-dietary-preferences", ensureAuthenticated, async (req, res) => {
+  const userId = req.user.id; // Use req.user provided by Passport
   const dietaryData = req.body;
   console.log("CALL2", dietaryData);
 

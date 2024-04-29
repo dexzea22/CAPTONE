@@ -24,7 +24,7 @@ const menuDescription = `1. Afritada (Tray): Chicken stew with vegetables [Omniv
     17. Chicken Roll (Tray): Chicken meat roll [Omnivore, Gluten-Free, Nut-Free]
     18. Creamy Beef w/ Mushroom (Tray): Beef in creamy mushroom sauce [Omnivore, Gluten-Free, Nut-Free]
     19. Embotido (Tray): Filipino meatloaf [Omnivore, Nut-Free]
-    20. Fresh Lumpiang Ubod: Fresh spring rolls with vegetables [Vegetarian, Gluten-Free, Nut-Free]
+    20. Fresh Lumpiang Ubod (Tray): Fresh spring rolls with vegetables [Vegetarian, Gluten-Free, Nut-Free]
     21. Fried Chicken Fingers: Breaded chicken strips [Omnivore, Nut-Free]
     22. Fried Fish Filet (Tray): Breaded fish fillets [Pescatarian, Nut-Free]
     23. Glazed Chicken (Tray): Chicken with sweet glaze [Omnivore, Gluten-Free, Nut-Free]

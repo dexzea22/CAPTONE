@@ -94,54 +94,42 @@
                   </div>
                 </div>
                 <div class="lblso" >
-                   <label class="fpu">Order Status</label>
-                </div>
+                  <label class="fpu">Order Status</label>
+              </div>
+          
+              <% if (orders.length > 0) { %>
+                <div class="grid-container">
+                    <% orders.forEach(order => { %>
+                        <div class="order-card">
+                            <p><strong>Order ID:</strong> <%= order.id %></p>
+                            <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
+                            <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
+                            <p><strong>Amount:</strong> <%= order.amount %></p>
+                            <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
+                            <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
+                            <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
+                            <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p> <!-- Display payment method -->
+                            <p><strong>Order Items:</strong></p>
             
-                <% const filteredOrders = orders.filter(order => order.status !== 'Completed' && order.status !== 'delivered'); %>
-            
-                <!-- Debugging: Output the filteredOrders array to the console -->
-                <script>
-                  var filteredOrders = <%- JSON.stringify(filteredOrders) %>;
-                  console.log("Filtered Orders:", filteredOrders);
-                  // Sort orders in descending order based on order ID
-                  filteredOrders.sort((b, a) => a.id - b.id);
-              </script>
-              
-              
-            
-                <% if (filteredOrders.length > 0) { %>
-                    <div class="grid-container">
-                        <% filteredOrders.forEach(order => { %>
-                            <div class="order-card">
-                                <p><strong>Order ID:</strong> <%= order.id %></p>
-                                <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
-                                <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
-                                <p><strong>Amount:</strong> <%= order.amount %></p>
-                                <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
-                                <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
-                                <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
-                                <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p> <!-- Display payment method -->
-                                <p><strong>Order Items:</strong></p>
-
-                                <div class="item-grid">
-                                    <% order.orderItems.forEach(item => { %>
-                                        <div class="item-card">
-                                            <p><b>Item Name:</b> <%= item.itemName %></p>
-                                            <p><strong>Item Size:</strong> <%= item.itemSize %></p>
-                                            <p><strong>Quantity:</strong> <%= item.quantity %></p>
-                                            <p><strong>Price:</strong> <%= item.itemPrice %></p>
-                                            <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
-                                            <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
-                                        </div>
-                                    <% }); %>
-                                </div>
+                            <div class="item-grid">
+                                <% order.orderItems.forEach(item => { %>
+                                    <div class="item-card">
+                                        <p><b>Item Name:</b> <%= item.itemName %></p>
+                                        <p><strong>Item Size:</strong> <%= item.itemSize %></p>
+                                        <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                                        <p><strong>Price:</strong> <%= item.itemPrice %></p>
+                                        <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
+                                        <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
+                                    </div>
+                                <% }); %>
                             </div>
-                        <% }); %>
-                    </div>
-                    
-                <% } else { %>
-                    <p>No orders found.</p>
-                <% } %>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <p>No orders found.</p>
+            <% } %>
+            
     <div class="lblso" style="margin:3% 0 0 1%;">
         <label class="fpu" for="">Menu and Prices</label>
         </div>

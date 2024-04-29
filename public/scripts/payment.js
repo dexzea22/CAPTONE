@@ -8,6 +8,12 @@ function handleCOD() {
         paymentMethod: 'COD'
     };
 
+    // Calculate total amount before sending the form data
+    var totalAmount = getTotalPriceFromCart(); // Get total amount from the cart
+
+    // Append totalAmount to the formData object
+    formData.totalAmount = totalAmount;
+
     fetch('/capture', {
         method: 'POST',
         headers: {
@@ -39,6 +45,7 @@ function handleCOD() {
     // Prevent the default form submission
     return false;
 }
+
 document.addEventListener('DOMContentLoaded', (event) => {
     // Get the modal
     var modal = document.getElementById("payment-modal");
