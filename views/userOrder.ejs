@@ -19,7 +19,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
   <link rel="stylesheet" href="stylesheets/menu.css" />
-  <title>Orders | Maya&Me</title>
+  <title>Orders</title>
 </head>
 
     <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
@@ -59,76 +59,33 @@
               <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
               <a class="nav" href="/recommendations">Recommended</a>
               <a class="nav" href="/contact">Contact Us</a>
-              <a class="nav" href="/userOrder">Orders</a>
+              <a class="nav" href="/about">About Us</a>
               <!-- <a class="nav" href="/order-history">Order History</a>
               <a class="nav" href="/order-status">Order Status</a> -->
+              <div class="nav" style="float: right;">
+                <div class="search-input">
+                  <i class="fas fa-search"></i>
+                  <input type="text" class="form-control" style="margin-top: 12px;" placeholder="Search menu items"
+                    id="menuSearchInput">
+                </div>
+              </div>
           </div>
           <div class="side-menu">
             <a href="/UserDashboard">Home</a>
-            <a href="/userOrder">Orders</a>
+            <a href="/confirmorderinfo">Orders</a>
             <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
             <a href="#">Contact</a>
             <a href="/about">About</a>
-            <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
+            <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
             <a href="/profile">My Profile</a>
             <a href="/logout">Logout</a>
           </div>
         </div>
-        <div class="dashboard">
-            <div class="dashboard-banner">
-              <img src="images/long.jpg" alt="" />
-              <div class="banner-promo">
-                <span><img class="logo" src="images/maya.png" alt="" height="330px" /></span>
-              </div>
-              <div class="cont">
-                <div class="log">
-                    <a class="obtns" href="/orderHistory">Order History</a>
-                    <a class="obtns" href="/orderStatus">Order Status</a>
-                </div>
-              </div>
-                <div class="Olog">
-                  <a class="fbtns" href="/userMenu">Food Menu</a>
-                  <a class="fbtns" href="/userTrays">Party Trays</a>
-                  <a class="fbtns" href="/userMeals">Solo Meals</a>
-                </div>
-            </div>
+        <div class="log">
+            <a class="" href="/orderHistory">Order History</a>
+            <a class="" href="/orderStatus">Order Status</a>
+        
           </div>
-          <div class="dashboard-content" id="container">     
-            
-          </div>
-          <div class="cntr">
-            <div class="lbls" style="margin:3% 0 0 1%;">
-            <label class="fpu" for="">Menu and Prices</label>
-            </div>
-            <div>
-            <div class="ogallery">
-            <img src="images/m1.jpg" alt="Image 1">
-            <img src="images/m4.jpg" alt="Image 1">
-            <img src="images/m2.jpg" alt="Image 1">
-            <img src="images/m5.jpg" alt="Image 1">
-            <img src="images/m3.jpg" alt="Image 1">
-            <!-- Add more images as needed -->
-            </div>
-            
-            <!-- Lightbox (hidden by default) -->
-            <div class="lightbox" id="lightbox">
-              <img src="" alt="Enlarged Image" class="lightbox-image">
-            </div>
-            </div>
-            </div>
-            <div class="container">
-            <div class="lbls" style="margin-top: 5%;">
-              <label class="fpu" for="">Store Location</label>
-             </div>
-            <div class="card-maps">   
-                <div>
-                  <img class="map-img"  src="images/mam.png" alt="">
-                </div>
-                  <div>
-                      <iframe class="gmap" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d15473.095439622592!2d121.50914925672969!3d14.178731599845047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTTCsDEwJzU1LjkiTiAxMjHCsDMwJzM2LjAiRQ!5e0!3m2!1sen!2sus!4v1701578225488!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> 
-                   </div>
-            </div>
-            </div>
           <script>
             // Function to update the quantity of a cart item
     function updateCartItemQuantity(cartItemId, newQuantity) {
@@ -385,90 +342,4 @@
           </script>
           <script src="scripts/meals.js"></script>
 </body>
-<div class="cntr" style="margin-top: 100px">
-  <footer class="text-white text-center text-lg-start" style="background-color: #c69b68">
-    <!-- Grid container -->
-    <div class="p-5">
-      <!--Grid row-->
-
-      <div class="row mt-4">
-        <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-        <!--Grid column-->
-        <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
-          <h5 class="text-uppercase mb-4">About company</h5>
-
-          <label style="color: white">
-            Thank you for choosing Maya&Me Services for your food ordering
-            needs. We're here to satisfy your cravings, one delicious meal at
-            a time. Enjoy your meal and have a wonderful day!
-          </label>
-
-          <div class="mt-4">
-            <!-- Facebook -->
-            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
-            <!-- Dribbble -->
-            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
-            <!-- Twitter -->
-            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
-            <!-- Google + -->
-            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
-            <!-- Linkedin -->
-          </div>
-        </div>
-        <!--Grid column-->
-        <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-        <!--Grid column-->
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
-
-          <ul class="fa-ul" style="margin-left: 1.65em">
-            <li class="mb-3">
-              <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro
-                Luisiana,Laguna</span>
-            </li>
-            <li class="mb-3">
-              <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
-            </li>
-            <li class="mb-3">
-              <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
-            </li>
-          </ul>
-        </div>
-        <!--Grid column-->
-
-        <!--Grid column-->
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase mb-4">Opening hours</h5>
-
-          <table class="table text-center text-white">
-            <tbody class="font-weight-normal">
-              <tr>
-                <td>Mon - Thu:</td>
-                <td>8am - 9pm</td>
-              </tr>
-              <tr>
-                <td>Fri - Sat:</td>
-                <td>8am - 1am</td>
-              </tr>
-              <tr>
-                <td>Sunday:</td>
-                <td>9am - 10pm</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!--Grid column-->
-      </div>
-      <!--Grid row-->
-    </div>
-    <!-- Grid container -->
-
-    <!-- Copyright -->
-    <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #c69b68">
-      © 2023 Copyright:
-      <label style="color: #976b35">Maya&Me Services</label>
-    </div>
-    <!-- Copyright -->
-  </footer>
-</div>
 </html>

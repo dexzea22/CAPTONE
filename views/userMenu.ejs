@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,7 +17,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
   <link rel="stylesheet" href="stylesheets/menu.css" />
 </head>
 
@@ -45,15 +46,17 @@
           <a class="prof" href="/logout">Logout</a>
         </div>
       </div>
-      <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;" onclick="openCartPage()">
-      <i class="fas fa-shopping-cart fa-2x"></i>
-      <span id="cart-counter">0</span>
+      <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;"
+        onclick="openCartPage()">
+        <i class="fas fa-shopping-cart fa-2x"></i>
+        <span id="cart-counter">0</span>
+      </a>
       </a>
       <%- include('dietaryPreferences.ejs') %>
         <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
         <a class="nav" href="/recommendations">Recommended</a>
         <a class="nav" href="/contact">Contact Us</a>
-        <a class="nav" href="/userOrder">Orders</a>
+        <a class="nav" href="/about">About Us</a>
         <div class="nav" style="float: right;">
           <div class="search-input">
             <i class="fas fa-search"></i>
@@ -64,11 +67,11 @@
     </div>
     <div class="side-menu">
       <a href="/UserDashboard">Home</a>
-      <a href="/userOrder">Orders</a>
+      <a href="/confirmorderinfo">Orders</a>
       <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
       <a href="/contact">Contact Us</a>
       <a href="/about">About Us</a>
-      <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
+      <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
       <a href="/profile">My Profile</a>
       <a href="/logout">Logout</a>
     </div>
@@ -99,17 +102,17 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-570" onchange="updatePriceDisplay('afrtd')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
             S (₱570) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1350" onchange="updatePriceDisplay('afrtd')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
             M (₱1,350) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2600" onchange="updatePriceDisplay('afrtd')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
             L (₱2,600) (45-50 pax)
           </label>
         </div>
@@ -117,13 +120,6 @@
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('afrtd', -1)">-</button>
-          <input type="text" id="quantity-afrtd" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('afrtd')">
-          <button onclick="changeQuantity('afrtd', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-afrtd">0.00</span></div>
         <div class="rat">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating4">
@@ -132,7 +128,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Pork Afritada','afrtd')" class="cbtn">
+        <button onclick="addToCart('Afritada','afrtd')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -142,19 +138,12 @@
       <div class="card-detail">
         <h4>Bacon (Rice Meal)</h4>
         <div style="margin-top: 11%">
-          <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('brm')" />
+          <input type="radio" name="size" value="(With Egg)-100" />
           <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('brm')" />
+          <input type="radio" name="size" value="(Without Egg)-95" />
           <label for="">Without Egg (₱95.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 28%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('brm', -1)">-</button>
-          <input type="text" id="quantity-brm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('brm')">
-          <button onclick="changeQuantity('brm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-brm">0.00</span></div>
-        <div class="rat">
+        <div class="rat" style="margin-top: 29%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating5">
             <!-- Star icons will be added here using JavaScript -->
@@ -162,6 +151,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         <div>
+          
           <button onclick="addToCart('Bacon Rice Meal','brm')" class="cbtn">
             <i class="fas fa-shopping-cart"></i>
           </button>
@@ -175,17 +165,17 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-350" onchange="updatePriceDisplay('bcdp')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-350" />
             S (₱350) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-950" onchange="updatePriceDisplay('bcdp')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-950" />
             M (₱950) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1500" onchange="updatePriceDisplay('bcdp')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
             L (₱1,500) (45-50 pax)
           </label>
         </div>
@@ -193,13 +183,6 @@
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('bcdp', -1)">-</button>
-          <input type="text" id="quantity-bcdp" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('bcdp')">
-          <button onclick="changeQuantity('bcdp', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-bcdp">0.00</span></div>
         <div class="rat">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating6">
@@ -221,27 +204,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-700" onchange="updatePriceDisplay('bc')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
             S (₱700) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1800" onchange="updatePriceDisplay('bc')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
             M (₱1,800) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-3500" onchange="updatePriceDisplay('bc')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
             L (₱3,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('bc', -1)">-</button>
-          <input type="text" id="quantity-bc" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('bc')">
-          <button onclick="changeQuantity('bc', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-bc">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -266,27 +242,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-700" onchange="updatePriceDisplay('bm')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
             S (₱700) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1800" onchange="updatePriceDisplay('bm')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
             M (₱1,800) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-3500" onchange="updatePriceDisplay('bm')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
             L (₱3,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('bm', -1)">-</button>
-          <input type="text" id="quantity-bm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('bm')">
-          <button onclick="changeQuantity('bm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-bm">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -308,20 +277,13 @@
       <img class="card-image" src="images/tap.jpg" alt="" />
       <div class="card-detail">
         <h4>Beef Tapa (Rice Meal)</h4>
-        <div style="margin-top: 11%">
-          <input type="radio" name="size" value="(With Egg)-110" onchange="updatePriceDisplay('btrm')" />
+        <div>
+          <input type="radio" name="size" value="(With Egg)-110" />
           <label for="">With Egg (₱110.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-105"  onchange="updatePriceDisplay('btrm')"/>
+          <input type="radio" name="size" value="(Without Egg)-105" />
           <label for="">Without Egg (₱105.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 28%" >
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('btrm', -1)">-</button>
-          <input type="text" id="quantity-btrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('btrm')">
-          <button onclick="changeQuantity('btrm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-btrm">0.00</span></div>
-        <div class="rat" >
+        <div class="rat" style="margin-top: 29%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating9">
             <!-- Star icons will be added here using JavaScript -->
@@ -341,27 +303,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-750" onchange="updatePriceDisplay('bwb')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-750" />
             S (₱750) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1800" onchange="updatePriceDisplay('bwb')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
             M (₱1,800) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-3500" onchange="updatePriceDisplay('bwb')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
             L (₱3,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('bwb', -1)">-</button>
-          <input type="text" id="quantity-bwb" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('bwb')">
-          <button onclick="changeQuantity('bwb', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-bwb">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -386,27 +341,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-750" onchange="updatePriceDisplay('bs')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-750" />
             S (₱750) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1850" onchange="updatePriceDisplay('bs')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1850" />
             M (₱1,850) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-3650" onchange="updatePriceDisplay('bs')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-3650" />
             L (₱3,650) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('bs', -1)">-</button>
-          <input type="text" id="quantity-bs" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('bs')">
-          <button onclick="changeQuantity('bs', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-bs">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -431,27 +379,20 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-420" onchange="updatePriceDisplay('bcc')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-420" />
             S (₱420) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1000" onchange="updatePriceDisplay('bcc')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
             M (₱1,000) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1850" onchange="updatePriceDisplay('bcc')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1850" />
             L (₱1,850) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('bcc', -1)">-</button>
-          <input type="text" id="quantity-bcc" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('bcc')">
-          <button onclick="changeQuantity('bcc', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-bcc">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -464,7 +405,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Bttrd Crrts/Chro','bcc')" class="cbtn">
+        <button onclick="addToCart('Buttered Carrots','bcc')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -476,27 +417,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-450" onchange="updatePriceDisplay('bpm')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-450" />
             S (₱450) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-950" onchange="updatePriceDisplay('bpm')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-950" />
             M (₱950) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1950" onchange="updatePriceDisplay('bpm')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1950" />
             L (₱1,950) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('bpm', -1)">-</button>
-          <input type="text" id="quantity-bpm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('bpm')">
-          <button onclick="changeQuantity('bpm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-bpm">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -509,29 +443,22 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Bttrd Ptt Mrbls','bpm')" class="cbtn">
+        <button onclick="addToCart('Buttered Potato Marbles','bpm')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
     </div>
     <div class="cards" id="cg">
-      <img class="card-image" src="images/cg.jpg" alt=""  />
+      <img class="card-image" src="images/cg.jpg" alt="" />
       <div class="card-detail">
         <h4>Canton Guisado (Short Order)</h4>
         <div style="margin-top: 11%">
-          <input type="radio" name="size" value="Tub-100" onchange="updatePriceDisplay('cg')" />
+          <input type="radio" name="size" value="Tub-100" />
           <label for="">Tub (₱100.00)</label><br />
-          <input type="radio" name="size" value=" Bilao-350" onchange="updatePriceDisplay('cg')" />
+          <input type="radio" name="size" value=" Bilao-350" />
           <label for=""> Bilao (₱350.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 28%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('cg', -1)">-</button>
-          <input type="text" id="quantity-cg" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('cg')">
-          <button onclick="changeQuantity('cg', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-cg">0.00</span></div>
-        <div class="rat">
+        <div class="rat" style="margin-top: 20%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating14">
             <!-- Star icons will be added here using JavaScript -->
@@ -539,7 +466,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Cntn Guisdo (Short Order)','cg')" class="cbtn">
+        <button onclick="addToCart('Canton Guisado','cg')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -548,30 +475,23 @@
       <img class="card-image" src="images/pc.jpg" alt="" />
       <div class="card-detail">
         <h4>Caldereta (Tray)</h4>
-        <div class="gallery" style="margin-top: 11%">
+        <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-570" onchange="updatePriceDisplay('cldrt')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
             S (₱570) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1350" onchange="updatePriceDisplay('cldrt')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
             M (₱1,350) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2600" onchange="updatePriceDisplay('cldrt')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
             L (₱2,600) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('cldrt', -1)">-</button>
-          <input type="text" id="quantity-cldrt" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('cldrt')">
-          <button onclick="changeQuantity('cldrt', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-cldrt">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -594,19 +514,12 @@
       <div class="card-detail">
         <h4>Chami (Short Order)</h4>
         <div style="margin-top: 11%">
-          <input type="radio" name="size" value="&emsp14;&emsp14;Tub &emsp14;&emsp14;-100" onchange="updatePriceDisplay('chm')" />
+          <input type="radio" name="size" value="Tub-100" />
           <label for="">Tub (₱100.00)</label><br />
-          <input type="radio" name="size" value=" &emsp14;&emsp14;Bilao&emsp14;&emsp14;-350" onchange="updatePriceDisplay('chm')" />
+          <input type="radio" name="size" value=" Bilao-350" />
           <label for=""> Bilao (₱350.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 28%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('chm', -1)">-</button>
-          <input type="text" id="quantity-chm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('chm')">
-          <button onclick="changeQuantity('chm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-chm">0.00</span></div>
-        <div class="rat">
+        <div class="rat" style="margin-top: 20%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating16">
             <!-- Star icons will be added here using JavaScript -->
@@ -614,7 +527,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Chami (Short Order)', 'chm')" class="cbtn">
+        <button onclick="addToCart('Chami', 'chm')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -623,30 +536,23 @@
       <img class="card-image" src="images/cak.jpg" alt="" />
       <div class="card-detail">
         <h4>Chicken Ala King (Tray)</h4>
-        <div class="gallery" style="margin-top: 11%">
+        <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-500" onchange="updatePriceDisplay('cak')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-500" />
             S (₱500) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1200" onchange="updatePriceDisplay('cak')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1200" />
             M (₱1,200) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2350" onchange="updatePriceDisplay('cak')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2350" />
             L (₱2,350) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('cak', -1)">-</button>
-          <input type="text" id="quantity-cak" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('cak')">
-          <button onclick="changeQuantity('cak', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-cak">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -668,30 +574,23 @@
       <img class="card-image" src="images/ce.jpg" alt="" />
       <div class="card-detail">
         <h4>Chicken Embotido (Tray)</h4>
-        <div class="gallery" style="margin-top: 11%">
+        <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-340" onchange="updatePriceDisplay('ce')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-340" />
             S (₱340) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-850" onchange="updatePriceDisplay('ce')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-850" />
             M (₱850) (10-12)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1200" onchange="updatePriceDisplay('ce')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1200" />
             L (₱1,200) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('ce', -1)">-</button>
-          <input type="text" id="quantity-ce" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ce')">
-          <button onclick="changeQuantity('ce', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-ce">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -713,20 +612,13 @@
       <img class="card-image" src="images/cr.jpg" alt="" />
       <div class="card-detail">
         <h4>Chicken Roll (Rice Meal)</h4>
-        <div style="margin-top: 11%">
-          <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('crrm')" />
+        <div>
+          <input type="radio" name="size" value="(With Egg)-100" />
           <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('crrm')" />
+          <input type="radio" name="size" value="(Without Egg)-95" />
           <label for="">Without Egg (₱95.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 28%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('crrm', -1)">-</button>
-          <input type="text" id="quantity-crrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('crrm')">
-          <button onclick="changeQuantity('crrm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-crrm">0.00</span></div>
-        <div class="rat">
+        <div class="rat" style="margin-top: 29%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating19">
             <!-- Star icons will be added here using JavaScript -->
@@ -746,27 +638,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)&emsp14;&emsp14;-400"  onchange="updatePriceDisplay('chkr')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
             S (₱400) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1000" onchange="updatePriceDisplay('chkr')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
             M (₱1,000) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1500" onchange="updatePriceDisplay('chkr')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
             L (₱1,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('chkr', -1)">-</button>
-          <input type="text" id="quantity-chkr" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('chkr')">
-          <button onclick="changeQuantity('chkr', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-chkr">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -791,27 +676,20 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-700" onchange="updatePriceDisplay('cbm')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
             S (₱700) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1800" onchange="updatePriceDisplay('cbm')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
             M (₱1,800) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(455 to 50 pax)-3500" onchange="updatePriceDisplay('cbm')" />
+            <input type="radio" name="size" value="(455 to 50 pax)-3500" />
             L (₱3,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('cbm', -1)">-</button>
-          <input type="text" id="quantity-cbm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('cbm')">
-          <button onclick="changeQuantity('cbm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-cbm">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -824,7 +702,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Crmy Beef Mushrm','cbm')" class="cbtn">
+        <button onclick="addToCart('Creamy Beef Mushroom','cbm')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -835,28 +713,21 @@
         <h4>Embotido (Tray)</h4>
         <div class="gallery" style="margin-top: 11%">
           <label>
-            <img src="images/sTray.png" alt="Image 1" /><br /> 
-            <input type="radio" name="size" value="(10 to 12 pax)-400" onchange="updatePriceDisplay('embtdo')" />
+            <img src="images/sTray.png" alt="Image 1" /><br />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
             S (₱400) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1000" onchange="updatePriceDisplay('embtdo')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
             M (₱1,000) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1500"  onchange="updatePriceDisplay('embtdo')"/>
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
             L (₱1,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('embtdo', -1)">-</button>
-          <input type="text" id="quantity-embtdo" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('embtdo')">
-          <button onclick="changeQuantity('embtdo', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-embtdo">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -869,7 +740,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Pork Embotido','embtdo')" class="cbtn">
+        <button onclick="addToCart('Embotido','embtdo')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -881,27 +752,20 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-400" onchange="updatePriceDisplay('flu')"  />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
             S (₱400) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-600" onchange="updatePriceDisplay('flu')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-600" />
             M (₱600) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1000" onchange="updatePriceDisplay('flu')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1000" />
             L (₱1,000) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('flu', -1)">-</button>
-          <input type="text" id="quantity-flu" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('flu')">
-          <button onclick="changeQuantity('flu', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-flu">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -914,7 +778,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Frsh Lumpia Ubd','flu')" class="cbtn">
+        <button onclick="addToCart('Fresh Lumpiang Ubod','flu')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -926,27 +790,20 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-500" onchange="updatePriceDisplay('fcf')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-500" />
             S (₱500) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1000" onchange="updatePriceDisplay('fcf')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
             M (₱1,000) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2350" onchange="updatePriceDisplay('fcf')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2350" />
             L (₱2,350) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('fcf', -1)">-</button>
-          <input type="text" id="quantity-fcf" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('fcf')">
-          <button onclick="changeQuantity('fcf', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-fcf">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -959,7 +816,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Fried Chckn Fingers','fcf')" class="cbtn">
+        <button onclick="addToCart('Fried Chicken Fingers','fcf')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -971,27 +828,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-300" onchange="updatePriceDisplay('fff')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-300" />
             S (₱300) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25  to 30 pax)-900" onchange="updatePriceDisplay('fff')" />
+            <input type="radio" name="size" value="(25  to 30 pax)-900" />
             M (₱900) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1400" onchange="updatePriceDisplay('fff')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1400" />
             L (₱1,400) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('fff', -1)">-</button>
-          <input type="text" id="quantity-fff" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('fff')">
-          <button onclick="changeQuantity('fff', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-fff">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1016,27 +866,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-525" onchange="updatePriceDisplay('chk')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-525" />
             S (₱525) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25  to 30 pax)-1000" onchange="updatePriceDisplay('chk')" />
+            <input type="radio" name="size" value="(25  to 30 pax)-1000" />
             M (₱1,000) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2500" onchange="updatePriceDisplay('chk')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2500" />
             L (₱2,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('chk', -1)">-</button>
-          <input type="text" id="quantity-chk" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('chk')">
-          <button onclick="changeQuantity('chk', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-chk">0.00</span></div>
         <div class="rat">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating26">
@@ -1057,27 +900,20 @@
         <div class="gllry" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-300" onchange="updatePriceDisplay('gff')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-300" />
             S (₱300) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25  to 30 pax)-900" onchange="updatePriceDisplay('gff')" />
+            <input type="radio" name="size" value="(25  to 30 pax)-900" />
             M (₱900) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1400" onchange="updatePriceDisplay('gff')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1400" />
             L (₱1,400) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('gff', -1)">-</button>
-          <input type="text" id="quantity-gff" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('gff')">
-          <button onclick="changeQuantity('gff', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-gff">0.00</span></div>
         <div class="rat">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating27">
@@ -1098,27 +934,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-600" onchange="updatePriceDisplay('hndo')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-600" />
             S (₱600) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1450" onchange="updatePriceDisplay('hndo')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1450" />
             M (₱1,450) (25 to 30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2800" onchange="updatePriceDisplay('hndo')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2800" />
             L (₱2,800) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('hndo', -1)">-</button>
-          <input type="text" id="quantity-hndo" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('hndo')">
-          <button onclick="changeQuantity('hndo', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-hndo">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1131,7 +960,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Sweet Hamonado','hndo')" class="cbtn">
+        <button onclick="addToCart('Hamonado','hndo')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -1139,23 +968,16 @@
     <div class="cards" id="hsr">
       <img class="card-image" src="images/hs.jpg" alt="" />
       <div class="card-detail">
-        <h4>Hungarian Sausage <br>(Rice Meal)</h4>
+        <h4>Hungarian Sausage (Rice Meal)</h4>
         <div>
-          <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('hsr')" />
+          <input type="radio" name="size" value="(With Egg)-100" />
           <label for="">With Egg (₱85.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('hsr')" />
+          <input type="radio" name="size" value="(Without Egg)-95" />
           <label for="">Without Egg (₱80.00)</label><br />
-          <input type="radio" name="size" value="(Add Sausage)-115" onchange="updatePriceDisplay('hsr')" />
+          <input type="radio" name="size" value="Additional Sausage-115" />
           <label for="">Additional Sausage (₱115.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 20%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('hsr', -1)">-</button>
-          <input type="text" id="quantity-hsr" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('hsr')">
-          <button onclick="changeQuantity('hsr', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-hsr">0.00</span></div>
-        <div class="rat" >
+        <div class="rat" style="margin-top: 19%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating29">
             <!-- Star icons will be added here using JavaScript -->
@@ -1163,7 +985,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Hungrn Rice Meal','hsr')" class="cbtn">
+        <button onclick="addToCart('Hungarian Rice Meal','hsr')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -1175,27 +997,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-570 &emsp14;&emsp14;" onchange="updatePriceDisplay('kk')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
             S (₱570) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1350 &emsp14;&emsp14;" onchange="updatePriceDisplay('kk')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
             M (₱1,350) (25 to 30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2800 &emsp14;&emsp14;" onchange="updatePriceDisplay('kk')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2800" />
             L (₱2,800) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('kk', -1)">-</button>
-          <input type="text" id="quantity-kk" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('kk')">
-          <button onclick="changeQuantity('kk', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-kk">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1208,7 +1023,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Creamy Kare-Kare','kk')" class="cbtn">
+        <button onclick="addToCart('Kare-Kare','kk')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -1220,27 +1035,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-700" onchange="updatePriceDisplay('kbs')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
             S (₱700) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1800" onchange="updatePriceDisplay('kbs')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
             M (₱1,800) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-3500" onchange="updatePriceDisplay('kbs')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-3500" />
             L (₱3,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('kbs', -1)">-</button>
-          <input type="text" id="quantity-kbs" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('kbs')">
-          <button onclick="changeQuantity('kbs', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-kbs">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1263,19 +1071,12 @@
       <div class="card-detail">
         <h4>Longganisa (Rice Meal)</h4>
         <div style="margin-top: 11%">
-          <input type="radio" name="size" value="(With Egg)-85" onchange="updatePriceDisplay('lrm')" />
+          <input type="radio" name="size" value="(With Egg)-85" />
           <label for="">With Egg (₱85.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-80" onchange="updatePriceDisplay('lrm')" />
+          <input type="radio" name="size" value="(Without Egg)-80" />
           <label for="">Without Egg (₱80.00)</label><br />
         </div>
-        <div class="quantity-selector"  style="margin-top: 28%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('lrm', -1)">-</button>
-          <input type="text" id="quantity-lrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('lrm')">
-          <button onclick="changeQuantity('lrm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-lrm">0.00</span></div>
-        <div class="rat">
+        <div class="rat" style="margin-top: 28%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating42">
             <!-- Star icons will be added here using JavaScript -->
@@ -1291,21 +1092,14 @@
     <div class="cards" id="lsrm">
       <img class="card-image" src="images/ls.jpg" alt="" />
       <div class="card-detail">
-        <h4>Lumpiang Shanghai <br>(Rice Meal)</h4>
+        <h4>Lumpiang Shanghai (Rice Meal)</h4>
         <div>
-          <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('lsrm')" />
+          <input type="radio" name="size" value="(With Egg)-100" />
           <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('lsrm')" />
+          <input type="radio" name="size" value="(Without Egg)-95" />
           <label for="">Without Egg (₱95.00)</label><br />
         </div>
-        <div class="quantity-selector"  style="margin-top: 28%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('lsrm', -1)">-</button>
-          <input type="text" id="quantity-lsrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('lsrm')">
-          <button onclick="changeQuantity('lsrm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-lsrm">0.00</span></div>
-        <div class="rat">
+        <div class="rat" style="margin-top: 28%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating32">
             <!-- Star icons will be added here using JavaScript -->
@@ -1313,7 +1107,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Lumpia Shang Rice Meal','lsrm')" class="cbtn">
+        <button onclick="addToCart('Lumpiang Shanghai Rice Meal','lsrm')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -1325,27 +1119,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-570" onchange="updatePriceDisplay('mnd')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
             S (₱570) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1350" onchange="updatePriceDisplay('mnd')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
             M (₱1,350) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2600" onchange="updatePriceDisplay('mnd')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
             L (₱2,600) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('mnd', -1)">-</button>
-          <input type="text" id="quantity-mnd" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('mnd')">
-          <button onclick="changeQuantity('mnd', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-mnd">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1358,7 +1145,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Pork Menudo','mnd')" class="cbtn">
+        <button onclick="addToCart('Menudo','mnd')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -1370,27 +1157,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-400" onchange="updatePriceDisplay('mvc')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
             S (₱400) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-900" onchange="updatePriceDisplay('mvc')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-900" />
             M (₱900) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1850" onchange="updatePriceDisplay('mvc')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1850" />
             L (₱1,850) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('mvc', -1)">-</button>
-          <input type="text" id="quantity-mvc" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('mvc')">
-          <button onclick="changeQuantity('mvc', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-mvc">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1403,7 +1183,7 @@
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
         
-        <button onclick="addToCart('Mxd Veggs n Crm','mvc')" class="cbtn">
+        <button onclick="addToCart('Mixed Veggies in Cream','mvc')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
       </div>
@@ -1415,27 +1195,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-700" onchange="updatePriceDisplay('mb')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-700" />
             S (₱700) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1800" onchange="updatePriceDisplay('mb')" />
-            M (₱1,800) (25-30 pax)
+            <input type="radio" name="size" value="(25 to 30 pax)-1800" />
+            M (₱1,800)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50)-3500" onchange="updatePriceDisplay('mb')" />
+            <input type="radio" name="size" value="(45 to 50)-3500" />
             L (₱3,500) (45 to 50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('mb', -1)">-</button>
-          <input type="text" id="quantity-mb" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('mb')">
-          <button onclick="changeQuantity('mb', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-mb">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1458,19 +1231,12 @@
       <div class="card-detail">
         <h4>Pork Tocino (Rice Meal)</h4>
         <div style="margin-top: 11%">
-          <input type="radio" name="size" value="(With Egg)-90" onchange="updatePriceDisplay('ptcrm')" />
+          <input type="radio" name="size" value="(With Egg)-90" />
           <label for="">With Egg (₱90.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-85" onchange="updatePriceDisplay('ptcrm')" />
+          <input type="radio" name="size" value="(Without Egg)-85" />
           <label for="">Without Egg (₱85.00)</label><br />
         </div>
-        <div class="quantity-selector" style="margin-top: 28%">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('ptcrm', -1)">-</button>
-          <input type="text" id="quantity-ptcrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ptcrm')">
-          <button onclick="changeQuantity('ptcrm', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-ptcrm">0.00</span></div>
-        <div class="rat">
+        <div class="rat" style="margin-top: 28%">
           <p>Rating:</p>
           <div class="star-rating" id="star-rating43">
             <!-- Star icons will be added here using JavaScript -->
@@ -1490,27 +1256,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax) &emsp14;&emsp14;  -570" onchange="updatePriceDisplay('pp')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
             S (₱570) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax) &emsp14; -1350" onchange="updatePriceDisplay('pp')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
             M (₱1,350) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax) &emsp14; -2600" onchange="updatePriceDisplay('pp')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
             L (₱2,600) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('pp', -1)">-</button>
-          <input type="text" id="quantity-pp" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('pp')">
-          <button onclick="changeQuantity('pp', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-pp">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1535,27 +1294,20 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-400" onchange="updatePriceDisplay('sfvcgs')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
             S (₱400) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1000" onchange="updatePriceDisplay('sfvcgs')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1000" />
             M (₱1,000) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1550" onchange="updatePriceDisplay('sfvcgs')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1550" />
             L (₱1,550) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('sfvcgs', -1)">-</button>
-          <input type="text" id="quantity-sfvcgs" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('sfvcgs')">
-          <button onclick="changeQuantity('sfvcgs', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-sfvcgs">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1580,27 +1332,20 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-400" onchange="updatePriceDisplay('svos')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-400" />
             S (₱400) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-900" onchange="updatePriceDisplay('svos')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-900" />
             M (₱900) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1850" onchange="updatePriceDisplay('svos')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1850" />
             L (₱1,850) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('svos', -1)">-</button>
-          <input type="text" id="quantity-svos" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('svos')">
-          <button onclick="changeQuantity('svos', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-svos">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1625,27 +1370,20 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-600" onchange="updatePriceDisplay('ssg')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-600" />
             S (₱600) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1450" onchange="updatePriceDisplay('ssg')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1450" />
             M (₱1,450) (25-30 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2800" onchange="updatePriceDisplay('ssg')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2800" />
             L (₱2,800) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('ssg', -1)">-</button>
-          <input type="text" id="quantity-ssg" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ssg')">
-          <button onclick="changeQuantity('ssg', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-ssg">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1670,27 +1408,20 @@
         <div class="gallery">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-300" onchange="updatePriceDisplay('ssf')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-300" />
             S (₱300) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-950" onchange="updatePriceDisplay('ssf')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-950" />
             M (₱950) (25-30)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1500" onchange="updatePriceDisplay('ssf')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-1500" />
             L (₱1,500) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('ssf', -1)">-</button>
-          <input type="text" id="quantity-ssf" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ssf')">
-          <button onclick="changeQuantity('ssf', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-ssf">0.00</span></div>
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
           <img src="" alt="Enlarged Image" class="lightbox-image" />
@@ -1715,27 +1446,21 @@
         <div class="gallery" style="margin-top: 11%">
           <label>
             <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-570" onchange="updatePriceDisplay('ssp')" />
+            <input type="radio" name="size" value="(10 to 12 pax)-570" />
             S (₱570) (10-12 pax)
           </label>
           <label>
             <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1350" onchange="updatePriceDisplay('ssp')" />
+            <input type="radio" name="size" value="(25 to 30 pax)-1350" />
             M (₱1,350) (10-12 pax)
           </label>
           <label>
             <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2600" onchange="updatePriceDisplay('ssp')" />
+            <input type="radio" name="size" value="(45 to 50 pax)-2600" />
             L (₱2,600) (45-50 pax)
           </label>
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button onclick="changeQuantity('ssp', -1)">-</button>
-          <input type="text" id="quantity-ssp" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ssp')">
-          <button onclick="changeQuantity('ssp', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-ssp">0.00</span></div>
+        <div style="color: black" id="total-amounthidden" hidden></div>
 
         <!-- Lightbox (hidden by default) -->
         <div class="lightbox" id="lightbox">
@@ -1767,27 +1492,6 @@
     </div>
   </div>
   <script>
-    function updatePriceDisplay(cardId) {
-    const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
-    const quantityInput = document.getElementById('quantity-' + cardId);
-    const totalPriceElement = document.getElementById('total-price-' + cardId);
-
-    if (selectedSize && quantityInput && totalPriceElement) {
-        const [size, price] = selectedSize.value.split('-');
-        const quantity = parseInt(quantityInput.value) || 0;
-        const total = parseFloat(price) * quantity;
-        totalPriceElement.textContent = total.toFixed(2);
-    }
-}
-
-function changeQuantity(cardId, delta) {
-    var input = document.getElementById('quantity-' + cardId);
-    var currentValue = parseInt(input.value) || 0;
-    currentValue += delta;
-    if (currentValue < 1) currentValue = 1; // Prevent negative quantities
-    input.value = currentValue;
-    updatePriceDisplay(cardId); // Update the total price whenever the quantity changes
-}
     // Get the cards initially
     var cards = document.querySelectorAll('.cards');
 
@@ -1814,19 +1518,8 @@ function changeQuantity(cardId, delta) {
         }
       });
     }
-      // Example function to read selected size and price
-      function getSelectedSizeAndPrice(cardId) {
-      const selected = document.querySelector(`#${cardId} input[name="size"]:checked`);
-      if (selected) {
-        const [size, price] = selected.value.split('-');
-        console.log(`Selected size: ${size}, Price: ${price}`);
-        // Now you can use size and price for further operations
-      } else {
-        console.log('No size selected');
-      }
-    }
      // Function to update the quantity of a cart item
-     function updateCartItemQuantity(cartItemId, newQuantity) {
+function updateCartItemQuantity(cartItemId, newQuantity) {
     fetch('/api/cart/items', {
         method: 'GET',
         credentials: 'include', // Important for sessions
@@ -2049,153 +1742,123 @@ function displayCartItems() {
         // Call the function to update the cart counter and item counter when the page loads
         document.addEventListener('DOMContentLoaded', updateCartCounter);
 
-      
-        // JavaScript function to create a star rating
- function createStarRating(containerId, rating) {
-  const container = document.getElementById(containerId);
-  
-  // Clear any existing content in the container
-  container.innerHTML = '';
-  
-  // Create a loop to generate the stars
-  for (let i = 1; i <= 5; i++) {
-    const star = document.createElement('span');
-    star.classList.add('star', i <= rating ? 'filled' : 'empty');
-    star.innerHTML = '★'; // You can use a star icon here if available
-    container.appendChild(star);
-  }
-}
-// Call the function with the desired rating (e.g., 4 out of 5 stars)
-createStarRating('star-rating4', 4);
-createStarRating('star-rating5', 3);
-createStarRating('star-rating6', 4);
-createStarRating('star-rating7', 5);
-createStarRating('star-rating8', 2);
-createStarRating('star-rating9', 4);
-createStarRating('star-rating10', 5);
-createStarRating('star-rating11', 4);
-createStarRating('star-rating12', 3);
-createStarRating('star-rating13', 5);
-createStarRating('star-rating14', 4);
-createStarRating('star-rating15', 5);
-createStarRating('star-rating16', 4);
-createStarRating('star-rating17', 4);
-createStarRating('star-rating18', 3);
-createStarRating('star-rating19', 5);
-createStarRating('star-rating20', 4);
-createStarRating('star-rating21', 5);
-createStarRating('star-rating22', 4);
-createStarRating('star-rating23', 5);
-createStarRating('star-rating24', 5);
-createStarRating('star-rating25', 4);
-createStarRating('star-rating26', 4);
-createStarRating('star-rating27', 3);
-createStarRating('star-rating28', 3);
-createStarRating('star-rating29', 5);
-createStarRating('star-rating30', 4);
-createStarRating('star-rating31', 2);
-createStarRating('star-rating32', 3);
-createStarRating('star-rating33', 5);
-createStarRating('star-rating34', 4);
-createStarRating('star-rating35', 4);
-createStarRating('star-rating36', 5);
-createStarRating('star-rating37', 2);
-createStarRating('star-rating38', 3);
-createStarRating('star-rating39', 4);
-createStarRating('star-rating40', 3);
-createStarRating('star-rating41', 5);
-createStarRating('star-rating42', 4);
-createStarRating('star-rating43', 5);
-
+        // Function to delete a cart item
+        function deleteCartItem(cartItemId) {
+            fetch(`/api/cart/delete/${cartItemId}`, {
+                method: 'DELETE',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to delete item from cart. Please try again.');
+                    }
+                    // If deletion is successful, remove the item from the UI
+                    const deletedItem = document.getElementById(cartItemId);
+                    if (deletedItem) {
+                        deletedItem.remove();
+                    }
+                    // Update the cart counter
+                    updateCartCounter();
+                })
+                .catch(error => {
+                    console.error('Error deleting item from cart:', error);
+                    // Display an error message if deletion fails
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Failed to delete item from cart. Please try again.',
+                    });
+                });
+        }
   </script>
   <script src="scripts/meals.js"></script>
 </body>
 
-<div class="cntr" style="margin-top: 100px;">
-
-  <footer class="text-white text-center text-lg-start" style="background-color: #C69B68;">
+<div class="cntr" style="margin-top: 100px">
+  <footer class="text-white text-center text-lg-start" style="background-color: #c69b68">
     <!-- Grid container -->
     <div class="p-5">
-    
-    <!--Grid row-->
-    
-    <div class="row mt-4">
-      <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-      <!--Grid column-->
-      <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
-        <h5 class="text-uppercase mb-4">About company</h5>
-    
-        <label style="color: white;">
-          Thank you for choosing Maya&Me Services for your food ordering needs. We're here to satisfy your cravings, one delicious meal at a time. Enjoy your meal and have a wonderful day!
-        </label>
-    
-        <div class="mt-4">
-      <!-- Facebook -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
-      <!-- Dribbble -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
-      <!-- Twitter -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
-      <!-- Google + -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
-      <!-- Linkedin -->
-    </div>
+      <!--Grid row-->
+
+      <div class="row mt-4">
+        <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+        <!--Grid column-->
+        <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4">About company</h5>
+
+          <label style="color: white">
+            Thank you for choosing Maya&Me Services for your food ordering
+            needs. We're here to satisfy your cravings, one delicious meal at
+            a time. Enjoy your meal and have a wonderful day!
+          </label>
+
+          <div class="mt-4">
+            <!-- Facebook -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+            <!-- Dribbble -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+            <!-- Twitter -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+            <!-- Google + -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+            <!-- Linkedin -->
+          </div>
         </div>
-      <!--Grid column-->
-  <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-      <!--Grid column-->
-      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-      <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
-  
-      <ul class="fa-ul" style="margin-left: 1.65em;">
-        <li class="mb-3">
-        <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
-        </li>
-        <li class="mb-3">
-        <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
-        </li>
-        <li class="mb-3">
-        <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
-        </li>
-     
-      </ul>
+        <!--Grid column-->
+        <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+        <!--Grid column-->
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
+
+          <ul class="fa-ul" style="margin-left: 1.65em">
+            <li class="mb-3">
+              <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro
+                Luisiana,Laguna</span>
+            </li>
+            <li class="mb-3">
+              <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
+            </li>
+            <li class="mb-3">
+              <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
+            </li>
+          </ul>
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4">Opening hours</h5>
+
+          <table class="table text-center text-white">
+            <tbody class="font-weight-normal">
+              <tr>
+                <td>Mon - Thu:</td>
+                <td>8am - 9pm</td>
+              </tr>
+              <tr>
+                <td>Fri - Sat:</td>
+                <td>8am - 1am</td>
+              </tr>
+              <tr>
+                <td>Sunday:</td>
+                <td>9am - 10pm</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--Grid column-->
       </div>
-      <!--Grid column-->
-  
-      <!--Grid column-->
-      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-      <h5 class="text-uppercase mb-4">Opening hours</h5>
-  
-      <table class="table text-center text-white">
-        <tbody class="font-weight-normal">
-        <tr>
-          <td>Mon - Thu:</td>
-          <td>8am - 9pm</td>
-        </tr>
-        <tr style="background-color: #C69B68;">
-          <td>Fri - Sat:</td>
-          <td>8am - 1am</td>
-        </tr>
-        <tr>
-          <td>Sunday:</td>
-          <td>9am - 10pm</td>
-        </tr>
-        </tbody>
-      </table>
-      </div>
-      <!--Grid column-->
-    </div>
-    <!--Grid row-->
+      <!--Grid row-->
     </div>
     <!-- Grid container -->
-  
+
     <!-- Copyright -->
-    <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
-    © 2023 Copyright:
-    <label style="color:#976b35;" >Maya&Me Services</label>
+    <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #c69b68">
+      © 2023 Copyright:
+      <label style="color: #c69b68">Maya&Me Services</label>
     </div>
     <!-- Copyright -->
   </footer>
-  </div>
+</div>
 
 </html>

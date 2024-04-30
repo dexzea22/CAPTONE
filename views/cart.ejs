@@ -60,7 +60,8 @@
                 <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
                 <a class="nav" href="/recommendations">Recommended</a>
                 <a class="nav" href="/contact">Contact Us</a>
-                <a class="nav" href="/userOrder">Orders</a>
+                <a class="nav" href="/about">About Us</a>
+                <a class="nav" href="/userOrder">Order</a>
         </div>
         <div class="side-menu">
             <a href="/UserDashboard">Home</a>
@@ -165,7 +166,6 @@
         </div>
     </div>
     </form>
-    
     <script>
 
 
@@ -208,78 +208,79 @@
 
         // Function to fetch and display cart items
         function displayCartItems() {
-    fetch('/api/cart/items', {
-        method: 'GET',
-        credentials: 'include', // Important for sessions
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch cart items. Please try again.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const cartItemsContainer = document.getElementById('mod-cart-items');
-        cartItemsContainer.innerHTML = ''; // Clear previous content
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const cartItemsContainer = document.getElementById('mod-cart-items');
+                    cartItemsContainer.innerHTML = ''; // Clear previous content
 
-        if (data.length > 0) { // Check if data is not empty
-            let totalPrice = 0; // Initialize total price variable
+                    if (data.length > 0) { // Check if data is not empty
+                        let totalPrice = 0; // Initialize total price variable
 
-            // Iterate through data in reverse order to display latest item first
-            for (let i = data.length - 1; i >= 0; i--) {
-                const item = data[i];
-                const itemElement = document.createElement('div');
-                itemElement.classList.add('row', 'border-top', 'border-bottom');
+                        data.forEach(item => {
+                            const itemElement = document.createElement('div');
+                            itemElement.classList.add('row', 'border-top', 'border-bottom');
 
-                // Calculate the total price for each item
-                const itemTotalPrice = item.foodItem.price * item.quantity;
-                totalPrice += itemTotalPrice; // Add to the total price
+                            // Calculate the total price for each item
+                            const itemTotalPrice = item.foodItem.price * item.quantity;
+                            totalPrice += itemTotalPrice; // Add to the total price
 
-                itemElement.innerHTML = `
-                    <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
-                    <div class="Itm">${item.foodItem.name} ${item.foodItem.size}<br>
-                    Price:PHP${item.foodItem.price.toFixed(2)}<br>
-                    Quantity: 
-                        <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
-                        <span>${item.quantity}</span>
-                        <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
-                    TotalPrice:PHP${itemTotalPrice.toFixed(2)}
-                    <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                    </div>`;
+                            itemElement.innerHTML = `
+            <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
+            
+               <div class="Itm"> ${item.foodItem.name} ${item.foodItem.size}
+               Price: PHP ${item.foodItem.price.toFixed(2)}
+               Quantity: 
+                    <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
+                Total Price: PHP ${itemTotalPrice.toFixed(2)}
+                <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')"><i class="fa fa-trash" aria-hidden="true"></i>
+</button>
+            </div >
+        `;
 
-                // Append item element to the beginning of the container
-                cartItemsContainer.appendChild(itemElement);
-            }
+                            cartItemsContainer.appendChild(itemElement);
+                        });
 
-            // Update the total price displayed in the UI
-            document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
-            document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
+                        // Update the total price displayed in the UI
+                        document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
+                        document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
 
-            // Check if the total price exceeds the limit
-            if (totalPrice > 10000) {
-                // Display a warning message
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Cart Limit Exceeded',
-                    text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                        // Check if the total price exceeds the limit
+                        if (totalPrice > 10000) {
+                            // Display a warning message
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Cart Limit Exceeded',
+                                text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                            });
+                        }
+                    } else {
+                        // Display a message if the cart is empty
+                        cartItemsContainer.innerHTML = '<div>No items in cart</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message
+                    const cartItemsContainer = document.getElementById('mod-cart-items');
+                    cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
                 });
-            }
-        } else {
-            // Display a message if the cart is empty
-            cartItemsContainer.innerHTML = '<div>No items in cart</div>';
         }
-    })
-    .catch(error => {
-        console.error('Error fetching cart items:', error);
-        // Display an error message
-        const cartItemsContainer = document.getElementById('mod-cart-items');
-        cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
-    });
-}
 
-// Call the function to fetch and display cart items when the page loads
-document.addEventListener('DOMContentLoaded', displayCartItems);
 
+
+        // Call the function to fetch and display cart items when the page loads
+        document.addEventListener('DOMContentLoaded', displayCartItems);
 
 
 
