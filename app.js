@@ -61,8 +61,134 @@ app.use(session({
     httpOnly: true,
   }
 }));
+console.log(require.resolve('passport'));
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/google/callback"
+},
+async (accessToken, refreshToken, profile, done) => {
+  try {
+    console.log('Received profile:', profile); // Log the received Google profile
+    const email = profile.emails[0].value;
+    let user = await prisma.user.findUnique({
+      where: { email: email }
+    });
+
+    if (!user) {
+      console.log('Creating new user with email:', email);
+      user = await prisma.user.create({
+        data: {
+          email: email,
+          firstName: profile.name.givenName || '',
+          lastName: profile.name.familyName || '',
+          usertype: "User"  // Default usertype for new Google-authenticated users
+        }
+      });
+    } else {
+      console.log('User found in database:', user);
+    }
+
+    done(null, user);
+  } catch (error) {
+    console.error('Error during Google authentication:', error);
+    done(error);
+  }
+}
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);  // Serialize user ID into the session
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id } });
+    done(null, user); // Attach the user to the session
+  } catch (error) {
+    done(error);
+  }
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Check user type and redirect accordingly
+    if (req.user.usertype === 'Admin') {
+      res.redirect('/adminDashboard');
+    } else {
+      res.redirect('/UserDashboard');
+    }
+  });
+
+app.get('/adminDashboard', authenticate, async (req, res) => {
+  if (req.user.usertype !== 'Admin') {
+    res.status(403).send("Access Denied: You do not have permission to view this page.");
+    return;
+  }
+
+  try {
+    console.log('Admin User ID:', req.user.id); // Confirm user ID is available
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id }  // Accessing user data via authenticated session
+    });
+  
+    if (!user) {
+      console.error('Admin not found with ID:', req.user.id);
+      return res.status(404).send('Admin not found');
+    }
+  
+    // Render the AdminDashboard with the user data
+    res.render('AdminDashboard', { 
+      title: 'Admin Dashboard', 
+      user: user,
+      welcomeMessage: `Welcome ${user.firstName || 'Admin'}!`  // Safe fallback if firstName is not set
+    });
+  } catch (error) {
+    console.error('Error loading AdminDashboard:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+  app.get('/UserDashboard', authenticate, async (req, res) => {
+    try {
+      console.log('Authenticated User ID:', req.user.id); // Confirm user ID is available
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id }  // Accessing user data via authenticated session
+      });
+  
+      if (!user) {
+        console.error('User not found with ID:', req.user.id);
+        return res.status(404).send('User not found');
+      }
+  
+      // Check if all expected properties are available and non-null if required by the view
+      console.log('User data to be sent to dashboard:', user);
+  
+      // Attempt to render the UserDashboard with the user data
+      res.render('UserDashboard', { 
+        title: 'User Dashboard', 
+        user: user, 
+        welcomeMessage: `Welcome ${user.firstName || 'User'}!`  // Safe fallback if firstName is not set
+      });
+    } catch (error) {
+      console.error('Error loading UserDashboard:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
+
+  
+  
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,

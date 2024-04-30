@@ -65,7 +65,21 @@ function updateBackgroundImage() {
 
 // Update the background image every 3 seconds (3000 milliseconds)
 setInterval(updateBackgroundImage, 3000);
- 
+ // JavaScript function to create a star rating
+ function createStarRating(containerId, rating) {
+  const container = document.getElementById(containerId);
+  
+  // Clear any existing content in the container
+  container.innerHTML = '';
+  
+  // Create a loop to generate the stars
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement('span');
+    star.classList.add('star', i <= rating ? 'filled' : 'empty');
+    star.innerHTML = '★'; // You can use a star icon here if available
+    container.appendChild(star);
+  }
+}
 
 // Function to fetch cart items from the server and update UI
 function loadAndDisplayCartItems() {
@@ -83,6 +97,16 @@ function loadAndDisplayCartItems() {
   })
   .catch(error => console.error('Error fetching cart items:', error));
 }
+
+// Call the function with the desired rating (e.g., 4 out of 5 stars)
+createStarRating('starmls', 3);
+createStarRating('starmls1', 4);
+createStarRating('starmls2', 5);
+createStarRating('starmls3', 5);
+createStarRating('starmls4', 3);
+createStarRating('starmls5', 4);
+createStarRating('starmls6', 5);
+
 
 // Function to update cart counter and item counter
 function updateCartCounter() {
@@ -109,26 +133,6 @@ function updateCartCounter() {
   });
 }
 
-function QTY(operation, outputId) {
-  // Get the span element by its id
-  const quantityOutput = document.getElementById(outputId);
-  
-  // Get the current quantity value
-  let currentQuantity = parseInt(quantityOutput.innerText);
-  
-  // Update the quantity based on the operation
-  if (operation === 'increment') {
-      // Increment the quantity by 1
-      currentQuantity++;
-  } else if (operation === 'decrement' && currentQuantity > 0) {
-      // Decrement the quantity by 1, if it's greater than 0
-      currentQuantity--;
-  }
-  
-  // Display the updated quantity
-  quantityOutput.innerText = currentQuantity;
-}
-
 // Function to update cart counter
 
 // Updated addToCart function to include quantity
@@ -147,10 +151,8 @@ function addToCart(itemName, cardId) {
     return; // Exit the function if no size is selected
   }
 
-
   const [size, price] = selectedSize.value.split('-');
   const numericPrice = parseFloat(price);
-
 
   // Fetch current cart total price
   fetch('/api/cart/items', {
@@ -167,7 +169,6 @@ function addToCart(itemName, cardId) {
     const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
     const itemTotalPrice = numericPrice * quantity; // Calculate total price for the new item considering the quantity
     const newTotalPrice = totalPrice + itemTotalPrice;
-
 
     // Check if adding the new item will exceed the limit
     if (newTotalPrice > 10000) {
@@ -226,10 +227,6 @@ function addToCart(itemName, cardId) {
     });
   });
 }
-
-
-
-
 
 
 
@@ -408,4 +405,3 @@ window.addEventListener('click', function(event) {
     closeProfileModal();
   }
 });
-

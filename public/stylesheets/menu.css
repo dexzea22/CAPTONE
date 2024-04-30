@@ -79,9 +79,6 @@ color: white;
     float: left;
     margin: 25px 0 0 15px;
   }
-  .cntr{
-    margin-top: 35%;
-  }
 }
 
 .side-menu {
@@ -221,14 +218,7 @@ width: 100%; /* Expand the underline on hover */
   max-width: 1186px; /* Adjust the max-width as needed */
   width: 100%;
 }
-.Olog {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: 2500px; /* Adjust the max-width as needed */
-  width: 100%;
-}
-.fbtn,.obtn{
+.fbtn{
 margin: 0 10px 0 10px;
 background-color:#C69B68;
 border: none;
@@ -242,17 +232,17 @@ position: relative;
 text-decoration: none;
 text-align: center;
 }
-.fbtns:hover,.obtns:hover{
+.fbtns:hover{
   background-color:rgb(243, 185, 113);
   color: rgb(0, 0, 0);
   text-decoration: none;
   }
-  .fbtns.active,.obtns.active{
+  .fbtns.active{
   background-color:rgb(243, 185, 113);
   color: rgb(0, 0, 0);
   text-decoration: none;
   }
-  .fbtns,.obtns {
+  .fbtns {
     padding: 10px 20px;
         margin: 0 10px 0 10px;
         text-decoration: none;
@@ -263,9 +253,8 @@ text-align: center;
         font-size: 20px;
         font-weight: bold;
   }
-  
 @media (max-width: 900px) {
-  .log,.Olog {
+  .log {
     flex-direction: row;
     justify-content: center;
   }
@@ -278,13 +267,7 @@ text-align: center;
     height: 35px;
     text-align: center;
   }
-.obtns{
-  width: 123px;
-  font-size: 13px;
-  font-weight: bold;
-  height: 35px;
-  text-align: center;
-}
+
   
 }
 .fbtn:hover{
@@ -330,11 +313,6 @@ text-decoration: none;
   font-size: 13px;
   text-align: center;
 }
-
-  .cards{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns */
-  }
 }
 .dashboard-content {
 display: grid;
@@ -369,7 +347,6 @@ border-radius: 15px;
 
 .card-detail {
 padding: 10px;
-font-size: 16px;
 }
 
 .card-time {
@@ -421,8 +398,8 @@ z-index: 3;
 padding: 10px 0;
 }
 .cbtn{
-padding: 5px;
-width: 20%;
+padding: 9px;
+width: 23%;
 background-color: #C69B68;
 color: white;
 margin: 0 3% 5% 0;
@@ -516,33 +493,13 @@ z-index: 1;
 }
 .lbls{
   font-family: Caveat, open-sans; 
-  font-size: 85px;
+  font-size: 60px;
   font-weight: bold;
   color: #C69B68;
   margin-top:50px;
   position: relative;
   z-index: 1;
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-}
-.lblso{
-  font-family: Caveat, open-sans; 
-  font-size: 85px;
-  font-weight: bold;
-  color: #C69B68;
-  margin-top:200px;
-  position: relative;
-  z-index: 1;
-  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-}
-@media(max-width:900px){
-.lbls{
-  font-size: 50px;
-  margin-top: 100%;
-}
-.lblso{
-  font-size: 50px;
-  margin-top: 200px;
-}
 }
 .ftr{
 font-size: 1vw;
@@ -564,7 +521,6 @@ box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   z-index: 2; 
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
 }
-
 .card-maps{
   width: calc(100%);
   border: 1px solid #ccc;
@@ -632,47 +588,17 @@ box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   padding: 5px;
   background-color: rgba(255, 255, 255, 0.461);
 }
-@media(max-width:900px){
-  .item-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 5px;
-  }
-  .item-card {
-    border: 1px solid #000000;
-    padding: 0px;
-    background-color: rgba(255, 255, 255, 0.461);
-    font-size: 10px;
-    height: 230px;
-  }
-  .order-card {
-    border: 1px solid #ccc;
-    font-size: 10px;
-  }
-  .fimg{
-    display: block; /* Ensures the image behaves as a block element */
-    margin: auto;   /* Centers the image horizontally */
-    width: 100px;
-    height: 50px;
-    border-radius: 5px;
-  }
-}
 
 
 .gallery,.gllry {
 display: grid;
 grid-template-columns: repeat(3,1fr); 
-gap:5px;
-margin-left:10px;
-}
-.ogallery{
-display: grid;
-grid-template-columns: repeat(5,1fr); 
 gap:10px;
 margin-left:15px;
 }
-.ogallery img{
-  max-width: 87%;
+/* Individual image styles */
+.gallery img, .gllry img {
+max-width: 75%;
 height: auto;
 cursor: pointer;
 transition: transform 0.2s;
@@ -680,18 +606,8 @@ align-items: center;
 margin: auto;
 width: 950px;
 }
-/* Individual image styles */
-.gallery img, .gllry img{
-max-width: 87%;
-height: 100px;
-cursor: pointer;
-transition: transform 0.2s;
-align-items: center;
-margin: auto;
-width: 950px;
-}
 /* Hover effect on images */
-.gallery img:hover, .gllry img:hover,.ogallery img:hover {
+.gallery img:hover, .gllry img:hover {
 transform: scale(1.1); /* Zoom effect on hover */
 }
 
