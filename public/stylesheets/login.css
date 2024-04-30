@@ -95,10 +95,18 @@ margin-left: 30px;
   color: #FFF3EB;
 }
 .lbl{
- color: #C69B68;
+color: #C69B68;
 font-weight: bold;
-font-size: 50px;
+font-size: 45px;
 }
+.lbll{
+margin: auto;
+width: 100px;
+color: #C69B68;
+font-weight: bold;
+font-size:20px;
+
+ }
 @media (max-width: 768px) {
 .lbl{
   font-size: 40px;
@@ -182,6 +190,10 @@ width:60%;
   .dha{
     margin-top: 40px;
   }
+  .actionss{
+    margin: auto;
+    width:2px;
+  }
 }
 .formc{
 width: 95%;
@@ -236,17 +248,42 @@ padding: 10	;
 }
 .btns{
   margin: auto;
-  width: 200px; 
-  height: 50px;
+  width: 190px; 
+  height: 40px;
   font-size: 20px;
   background-color:#C69B68;
   color: #fff; 
   border-radius: 5px;
   border: none;
 }
+.btn{
+  height: 40px;
+
+}
+.fa-google {
+  background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-color: #fff;
+}
+.fa-google-wrapper {
+  display: inline-block; /* Ensure the wrapper only takes the width of its content */
+  background-color: white; /* Add a white background */
+  width:25px;
+}
 .action{
   margin: auto;
   width:190px;
+}
+.actions{
+  margin: auto;
+  width:185px;
+}
+.actionss{
+  margin: auto;
+  width:20px;
 }
 .img-fluid{
 height: 610px;

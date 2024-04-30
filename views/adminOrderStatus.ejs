@@ -30,29 +30,28 @@
         <div class="bar"></div>
         <div class="bar"></div>
         <div class="bar"></div>
-    </div>
-    <div>
-        <div class="sidenav">
-            <a href="/adminDashboard">Dashboard</a>
-            <a href="/adminUserTable">User Table</a>
-            <a href="/logs">Logs</a>
-            <a href="/logout">Logout</a>
-            <a href="/adminOrderStatus">Transaction History</a>
-            <a href="/adminOrderNotifications">Order Notifications</a>
-            <a href="/adminCreateFoodItem">Add Food Item</a>
-           
-          </div>
-          <div class="side-menu">
-            <a href="/adminDashboard">Dashboard</a>
-            <a href="/adminUserTable">User Table</a>
-            <a href="/adminOrderStatus">Transaction History</a>
-            <a href="/adminOrderNotifications">Order Notifications</a>
-            <a href="/adminCreateFoodItem">Add Food Item</a>
-            <a href="/logs">Logs</a>
-            <a href="/logout">Logout</a>
-          </div>
-        <div class="container mt-5">
-            <h1>Transaction History of the user</h1>
+      </div>
+      <div>
+        <div class="menu">
+          <a href="/adminDashboard">Dashboard</a>
+          <a href="/adminUserTable">User Table</a>
+          <a href="/logs">Logs</a>
+          <a href="/adminOrderStatus">Transaction History</a>
+          <a href="/adminOrderNotifications">Order Notifications</a>
+          <a href="/adminCreateFoodItem">Add Food Item</a>
+          <a href="/logout">Logout</a>
+        </div>
+        <div class="side-menu">
+          <a href="/adminDashboard">Dashboard</a>
+          <a href="/adminUserTable">User Table</a>
+          <a href="/adminOrderStatus">Transaction History</a>
+          <a href="/adminOrderNotifications">Order Notifications</a>
+          <a href="/adminCreateFoodItem">Add Food Item</a>
+          <a href="/logs">Logs</a>
+          <a href="/logout">Logout</a>
+        </div>
+        <div class="main-content">
+            <h1 class="admn">Transaction History</h1>
             <!-- Instructions for search and filter -->
             <div class="instructions">
                 <p>Use the fields below to search by Order ID or filter by status:</p>
@@ -112,6 +111,7 @@
                 </ul>
             </nav>
         </div>
+        <script src="scripts/index.js"></script>
 
         <script>
             function deleteOrder(orderId) {
