@@ -8,10 +8,13 @@ const prisma = new PrismaClient();
 // Render the registration page
 router.get('/register', async (req, res) => {
     try {
-        // If you want to show existing users or any other information on register page, you can pass it here.
-        res.render('register', { title: 'Register' });
+        // Optionally, prepare any data needed for rendering the page, e.g., passing previous form data (if any)
+        res.render('register', { title: 'Register', data: req.session.formData || {} });
+        // Clear any session data after rendering (optional, depends on your use case)
+        req.session.formData = null;
     } catch (error) {
-        res.status(500).send("Error loading registration page");
+        console.error("Error rendering registration page:", error);
+        res.status(500).send("Error loading registration page: " + error.message);
     }
 });
 
@@ -21,26 +24,27 @@ router.post('/register', async (req, res) => {
 
     // Validate email
     if (!validator.validate(email)) {
-        return res.render('register', { errorMessage: 'Invalid email address' });
+        return res.render('register', { errorMessage: 'Invalid email address', data: req.body });
     }
 
     // Check if passwords match
     if (password !== confirmPassword) {
-        return res.render('register', { errorMessage: 'Passwords do not match.' });
+        return res.render('register', { errorMessage: 'Passwords do not match.', data: req.body });
     }
 
     // Validate password strength
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
     if (!passwordRegex.test(password)) {
         return res.render('register', {
-            errorMessage: 'Password must be at least 8 characters long, include a number, a special character, and an uppercase letter.'
+            errorMessage: 'Password must be at least 8 characters long, include a number, a special character, and an uppercase letter.',
+            data: req.body
         });
     }
 
     // Check if email already registered
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-        return res.render('register', { errorMessage: 'Email already in use.' });
+        return res.render('register', { errorMessage: 'Email already in use.', data: req.body });
     }
 
     try {
@@ -51,14 +55,14 @@ router.post('/register', async (req, res) => {
         // Create user record
         await prisma.user.create({
             data: {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
+                firstName,
+                lastName,
+                email,
                 password: hashedPassword,
-                gender: gender,
-                address: address,
+                gender,
+                address,
                 dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : null,
-                phoneNumber: phoneNumber,
+                phoneNumber,
                 usertype: usertype || 'USER', // defaulting to 'USER' if not provided
             },
         });
@@ -67,7 +71,7 @@ router.post('/register', async (req, res) => {
         res.redirect('/login');
     } catch (error) {
         console.error('Registration error:', error);
-        res.status(500).render('register', { errorMessage: 'There was a problem with your registration.' });
+        res.status(500).render('register', { errorMessage: 'There was a problem with your registration.', data: req.body });
     }
 });
 

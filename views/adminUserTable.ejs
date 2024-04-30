@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>USER TABLE</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <link rel="website icon" type="png" href="images/maya.png">
   <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet">
@@ -46,9 +47,11 @@
             <td><%= user.usertype %></td>
             <td colspan="3">
               <div class="btn-group">
-                <a href="/view?id=<%= user.id %>" class="btn view-btn">View</a>
-                <a href="/edit?id=<%= user.id %>" class="btn update-btn">Edit</a>
-                <a href="#" class="btn delete-btn" data-email="<%= user.email %>">Delete</a>
+                <a href="#" class="btn btn-primary view-btn" data-id="<%= user.id %>">View</a>
+                <a href="#" class="btn btn-warning update-btn" data-id="<%= user.id %>">Edit</a>
+                <a href="#" class="btn btn-danger delete-btn" data-email="<%= user.email %>">Delete</a>
+                
+
               </div>
             </td>
           </tr>
@@ -86,70 +89,67 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       <script>
-        $(document).ready(function() {
-          var deleteEmail;
-        
-          // Set the email to delete when the delete button is clicked
-          $('.delete-btn').click(function() {
-            deleteEmail = $(this).data('email');
-            // Store the email in session
-            $.ajax({
-              url: '/setDeleteEmail',
-              method: 'POST',
-              data: {
-                email: deleteEmail
-              },
-              success: function(response) {
-                // Open the password modal
-                $('#passwordModal').modal('show');
-              },
-              error: function(xhr, status, error) {
-                console.error(error);
-              }
-            });
-          });
-        
-          // Handle the delete confirmation
-          $('#confirmDeleteBtn').click(function() {
-            var password = $('#passwordInput').val();
-        
-            // Make an AJAX request to delete the user
-            $.ajax({
-              url: '/deleteUser',
-              method: 'POST',
-              data: {
-                password: password
-              },
-              success: function(response) {
+      
+        // Function to redirect to the user detail view
+function viewUser(userId) {
+    window.location.href = `/viewUser/${userId}`;
+}
+
+// Function to redirect to the user edit form
+function editUser(userId) {
+    window.location.href = `/editUser/${userId}`;
+}
+
+// Function to show confirmation for deletion
+function confirmDelete(email) {
+    // Store the email in a global variable or data attribute for use in modal confirmation
+    window.deleteEmail = email;
+    $('#passwordModal').modal('show'); // Assuming you have a Bootstrap modal for confirmation
+}
+
+      $(document).ready(function() {
+    $('.view-btn').on('click', function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+        window.location.href = `/viewUser/${userId}`; // Assumes you have a route to display user details
+    });
+
+    $('.update-btn').on('click', function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+        window.location.href = `/editUser/${userId}`; // Route to fetch data and show in form for editing
+    });
+
+    $('.delete-btn').on('click', function(e) {
+        e.preventDefault();
+        deleteEmail = $(this).data('email');
+        $('#passwordModal').modal('show'); // Show modal to confirm deletion
+    });
+
+    $(document).ready(function() {
+    $('#confirmDeleteBtn').click(function() {
+        var password = $('#passwordInput').val();
+        $.ajax({
+            url: '/deleteUser',
+            type: 'POST',
+            data: {
+                email: window.deleteEmail,
+                adminPassword: password
+            },
+            success: function(response) {
                 if (response.success) {
-                  // Log the delete action
-                  $.ajax({
-                    url: '/logAction',
-                    method: 'POST',
-                    data: {
-                      action: 'Delete',
-                      email: deleteEmail
-                    },
-                    success: function(logResponse) {
-                      // Reload the page to reflect the changes
-                      window.location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                      console.error(error);
-                      // Reload the page to reflect the changes
-                      window.location.reload();
-                    }
-                  });
+                    Swal.fire('Deleted!', response.message, 'success');
                 } else {
-                  alert(response.message);
+                    Swal.fire('Error!', response.message, 'error');
                 }
-              },
-              error: function(xhr, status, error) {
-                console.error(error);
-              }
-            });
-          });
+            },
+            error: function(xhr, status, error) {
+                Swal.fire('Error!', 'Server error: ' + error, 'error');
+            }
         });
+    });
+});
+});
       </script>      
 </body>
 </html>

@@ -129,7 +129,7 @@ app.get('/auth/google',
     }
   });
 
-app.get('/adminDashboard', authenticate, async (req, res) => {
+app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) => {
   if (req.user.usertype !== 'Admin') {
     res.status(403).send("Access Denied: You do not have permission to view this page.");
     return;
@@ -158,7 +158,7 @@ app.get('/adminDashboard', authenticate, async (req, res) => {
   }
 });
 
-  app.get('/UserDashboard', authenticate, async (req, res) => {
+  app.get('/UserDashboard', authenticate, checkRole('User'), async (req, res) => {
     try {
       console.log('Authenticated User ID:', req.user.id); // Confirm user ID is available
       const user = await prisma.user.findUnique({
@@ -185,6 +185,15 @@ app.get('/adminDashboard', authenticate, async (req, res) => {
     }
   });
   
+  function checkRole(role) {
+    return (req, res, next) => {
+        if (req.isAuthenticated() && req.user.usertype === role) {
+            next();
+        } else {
+            res.status(403).send("Access Denied: You do not have permission to view this page.");
+        }
+    };
+}
 
   
   
@@ -254,6 +263,9 @@ app.get('/orderHistory', authenticate, async (req, res) => {
       include: {
         orderItems: true,
       },
+      orderBy: {
+        createdAt: 'desc'  // Orders are sorted by creation date in descending order
+      }
     });
 
     // Render EJS template with order history data
@@ -270,16 +282,21 @@ app.get('/orderStatus', authenticate, async (req, res) => {
     // Fetch order status data from the database based on the logged-in user
     const orders = await prisma.order.findMany({
       where: {
-        userId: req.user.id,  // Use the user ID from the user object provided by Passport
-        NOT: [{ status: 'Completed' }, { status: 'Delivered' }] // Exclude orders with statuses 'Completed' and 'Delivered'
+        userId: req.user.id,
+        status: {
+          notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim())  // Handle case sensitivity and trim spaces
+        }
       },
       include: {
         orderItems: true,
       },
+      orderBy: {
+        createdAt: 'desc'  // Sorting orders by creation date in descending order
+      }
     });
 
-    // Verify that the orders array is correctly filtered
-    console.log('Filtered Orders:', orders);
+    // Log to check filtered results
+    console.log('Filtered Orders:', orders.map(order => `${order.id}: ${order.status}`));
 
     // Render the orderStatus.ejs template with the filtered orders data
     res.render('orderStatus', { orders });
@@ -288,6 +305,10 @@ app.get('/orderStatus', authenticate, async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+
+
 
 
 
@@ -301,7 +322,7 @@ app.get('/userOrder', authenticate, (req, res) => {
 function authenticate(req, res, next) {
   // Use Passport's built-in method to check authentication
   if (req.isAuthenticated()) {  // Checks if the user session is saved and valid
-    console.log('User authenticated with userId:', req.user.id); // Log the authenticated user's ID
+    // console.log('User authenticated with userId:', req.user.id); // Log the authenticated user's ID
     next();  // Continue to next middleware or request handler
   } else {
     console.log('User not authenticated. Redirecting to login.');
@@ -673,6 +694,30 @@ app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
     res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
   }
 });
+
+app.post("/contactUs1", async (req, res) => {
+  console.log("Received POST request with data:", req.body);
+  const { fullName, email, phone, subject, message } = req.body;
+
+  try {
+    const newMessage = await prisma.contactMessage.create({
+      data: {
+        fullName,
+        email,
+        phone,
+        subject,
+        message
+      }
+    });
+
+    console.log("Message saved successfully:", newMessage);
+    res.json({ success: true, message: "Message sent successfully!" });
+  } catch (error) {
+    console.error("Failed to save contact message:", error);
+    res.status(500).json({ success: false, message: "Failed to send message." });
+  }
+});
+
 
 
 

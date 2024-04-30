@@ -16,11 +16,12 @@ function authenticate(req, res, next) {
 // Define route handler to fetch order data and render a view
 router.get('/orderStatus', authenticate, async (req, res) => {
     try {
-        // Fetch order data from the database based on the logged-in user
         const orders = await prisma.order.findMany({
             where: {
                 userId: req.user.id,  // Use the user ID from the user object provided by Passport
-                NOT: [{ status: 'Completed' }, { status: 'Delivered' }] // Exclude orders with statuses 'Completed' and 'Delivered'
+                status: {
+                    notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim()) // Handle case sensitivity and trim spaces
+                }
             },
             include: {
                 orderItems: true,
@@ -30,16 +31,15 @@ router.get('/orderStatus', authenticate, async (req, res) => {
             }
         });
 
-        // Log the sorted order dates to verify they are in descending order
-        console.log('Sorted Orders:', orders.map(order => order.createdAt));
+        console.log('Sorted Orders:', orders.map(order => `${order.id}: ${order.status}`));
 
-        // Render the orderStatus.ejs template with the filtered and sorted order data
         res.render('orderStatus', { orders });
     } catch (error) {
         console.error('Error fetching order data:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 
 // Route to display user order history

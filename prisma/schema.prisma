@@ -111,6 +111,15 @@ model OrderItem {
 
 
 
+model ContactMessage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName  String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
 
 
 
