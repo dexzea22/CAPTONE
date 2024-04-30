@@ -244,6 +244,12 @@ padding: 10	;
   border-radius: 5px;
   border: none;
 }
+.btn{
+  width: 200px;
+  margin: auto;
+  height: 43px;
+  justify-content: center;
+}
 .action{
   margin: auto;
   width:190px;
