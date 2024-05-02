@@ -25,10 +25,10 @@ function authenticate(req, res, next) {
 
 // Middleware to check user type and restrict access to specific routes
 async function restrictAccess(userType, req, res, next) {
-  if (req.session.userId) {
+  if (req.user && req.user.id) {
     try {
-      const user = await prisma.User.findUnique({
-        where: { id: req.session.userId },
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
       });
 
       if (user.usertype !== userType) {
@@ -160,89 +160,40 @@ router.post('/setDeleteEmail', (req, res) => {
   return res.sendStatus(200);
 });
 
-router.post('/deleteUser', async (req, res) => {
-  const { password } = req.body;
-  const deleteEmail = req.session.deleteEmail;
 
-  try {
-    const loggedInUserId = req.session.userId;
-    const loggedInUser = await prisma.user.findUnique({
-      where: { id: loggedInUserId },
-    });
 
-    if (!loggedInUser) {
-      return res.json({ success: false, message: 'User not found.' });
-    }
 
-    // Compare the password of the logged-in admin user with the provided password
-    const match = await bcrypt.compare(password, loggedInUser.password);
-    if (!match) {
-      return res.json({ success: false, message: 'Incorrect password.' });
-    }
-
-    const userToDelete = await prisma.user.findUnique({
-      where: { email: deleteEmail.toLowerCase() },
-      include: { student: true }, // Include the associated student info
-    });
-
-    if (!userToDelete) {
-      return res.json({ success: false, message: 'User not found.' });
-    }
-
-    // Log the delete action before performing the deletion
-    await prisma.log.create({
-      data: {
-        action: 'Delete',
-        email: deleteEmail,
-        timestamp: new Date(),
-      },
-    });
-
-    // Delete the associated student info
-    if (userToDelete.student) {
-      await prisma.student_Info.delete({
-        where: { id: userToDelete.student.id },
-      });
-    }
-
-    // Delete the user from the database
-    await prisma.user.delete({
-      where: { email: deleteEmail.toLowerCase() },
-    });
-
-    return res.json({ success: true });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ success: false, message: 'Internal server error.' });
-  }
-});
 
 router.get('/UserDashboard', authenticate, restrictAccess.bind(null, 'User'), async (req, res) => {
   try {
-    const userId = req.session.userId;
-    const user = await prisma.User.findUnique({
-      where: { id: userId }
+    if (!req.user || !req.user.id) {
+      return res.status(404).send('User not found');
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id }
     });
 
     if (!user) {
       return res.status(404).send('User not found');
     }
-
+    
     let welcomeMessage = "Welcome!";
-    if (user && user.firstName) {
+    if (user.firstName) {
       welcomeMessage = "Welcome " + user.firstName + "!";
     }
     
     return res.render('UserDashboard', { 
       title: 'User Page', 
       user: user,
-      welcomeMessage: welcomeMessage // This line sends the message to your front-end
+      welcomeMessage: welcomeMessage
     });
   } catch (err) {
     console.error(err);
     return res.status(500).send('Internal server error');
   }
 });
+
 
 
 

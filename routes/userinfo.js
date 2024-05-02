@@ -3,12 +3,26 @@ const router = express.Router();
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
+const bcrypt = require('bcrypt');
 
 
 router.get('/adminUserTable', async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.render('adminUserTable', { title: 'User Info', users });
+    try {
+        // Fetch only users who are not anonymized
+        const users = await prisma.user.findMany({
+            where: {
+                NOT: {
+                    email: {
+                        startsWith: 'anonymized_'
+                    }
+                }
+            }
+        });
+        res.render('adminUserTable', { title: 'User Info', users });
+    } catch (error) {
+        console.error('Error fetching non-anonymized users:', error);
+        res.status(500).send('Error fetching users');
+    }
 });
 
 // Fetch single user data for viewing or editing
@@ -23,46 +37,78 @@ router.get('/editUser/:userId', async (req, res) => {
   }
 });
 
-// Update user data
+// Handle updating user data including password
 router.post('/updateUser/:userId', async (req, res) => {
-  const { email, usertype, password } = req.body;
-  try {
-      const updatedUser = await prisma.user.update({
-          where: { id: req.params.userId },
-          data: { email, usertype, password }
-      });
-      res.redirect('/adminUserTable');
-  } catch (error) {
-      console.error('Error updating user:', error);
-      res.status(500).send('Failed to update user');
-  }
+    const { email, usertype, password } = req.body;
+
+    try {
+        let updatedUserData = { email, usertype };
+
+        // Check if a new password is provided
+        if (password) {
+            // Hash the new password
+            const saltRounds = 12;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+            updatedUserData.password = hashedPassword;
+        }
+
+        // Update user data
+        const updatedUser = await prisma.user.update({
+            where: { id: req.params.userId },
+            data: updatedUserData
+        });
+
+        res.status(200).json({ success: true, message: 'User data updated successfully.' });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ success: false, message: 'Failed to update user data.' });
+    }
 });
 
-// Delete an order with password confirmation
+
 router.post('/deleteUser', async (req, res) => {
-  const { email, adminPassword } = req.body;
+    const { email, adminPassword } = req.body;
 
-  // Fetch the admin details using a secure method
-  const admin = await prisma.user.findUnique({ where: { email: 'admin@example.com' } });
-  if (admin && bcrypt.compareSync(adminPassword, admin.password)) {
-      try {
-          const userToDelete = await prisma.user.findUnique({ where: { email } });
-          if (!userToDelete) {
-              return res.status(404).json({ success: false, message: 'User not found.' });
-          }
+    // Fetch admin details for authentication
+    const admin = await prisma.user.findUnique({ where: { email: 'admin123@gmail.com' } });
+    if (!admin) {
+        return res.status(404).json({ success: false, message: 'Admin account not found.' });
+    }
 
-          await prisma.user.delete({
-              where: { email: email }
-          });
-          res.json({ success: true, message: 'User deleted successfully.' });
-      } catch (error) {
-          console.error('Error deleting user:', error);
-          res.status(500).json({ success: false, message: 'Failed to delete user' });
-      }
-  } else {
-      res.status(401).json({ success: false, message: 'Unauthorized: Incorrect password' });
-  }
+    if (!bcrypt.compareSync(adminPassword, admin.password)) {
+        return res.status(401).json({ success: false, message: 'Unauthorized: Incorrect password' });
+    }
+
+    try {
+        // Anonymize user data
+        await prisma.user.update({
+            where: { email },
+            data: {
+                email: `anonymized_${new Date().getTime()}@example.com`,
+                password: null,
+                firstName: 'Anonymized',
+                lastName: 'User',
+                address: null,
+                phoneNumber: null,
+                // Other fields to anonymize
+            }
+        });
+
+        console.log('User data anonymized successfully.');
+        res.json({ success: true, message: 'User data anonymized successfully.' });
+    } catch (error) {
+        console.error('Error anonymizing user:', error);
+        res.status(500).json({ success: false, message: 'Failed to anonymize user' });
+    }
 });
+
+  
+
+
+
+
+  
 
 
 

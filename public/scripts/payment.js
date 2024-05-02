@@ -10,9 +10,7 @@ function handleCOD() {
 
     // Calculate total amount before sending the form data
     var totalAmount = getTotalPriceFromCart(); // Get total amount from the cart
-
-    // Append totalAmount to the formData object
-    formData.totalAmount = totalAmount;
+    formData.totalAmount = totalAmount; // Append totalAmount to the formData object
 
     fetch('/capture', {
         method: 'POST',
@@ -29,6 +27,10 @@ function handleCOD() {
             text: 'Your COD order has been successfully captured.',
             showConfirmButton: false,
             timer: 1500
+        }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                window.location.reload(); // Reload the window after the alert
+            }
         });
         // Optionally, reset the form
         document.getElementById('checkoutForm').reset();
@@ -45,6 +47,7 @@ function handleCOD() {
     // Prevent the default form submission
     return false;
 }
+
 
 document.addEventListener('DOMContentLoaded', (event) => {
     // Get the modal
@@ -142,10 +145,15 @@ function initializePayPalButton(totalAmount, shippingAddress, contactPerson, con
                 Swal.fire({
                     icon: 'success',
                     title: 'Payment Successful!',
+                    text: 'Your payment was processed successfully.',
                     showConfirmButton: false,
                     timer: 1500
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.reload(); // Reload the window after the alert
+                    }
                 });
-                closePaymentModal();
+                closePaymentModal(); // Close the payment modal if applicable
             })
             .catch(error => {
                 console.error('An error occurred during PayPal checkout:', error);
@@ -156,8 +164,9 @@ function initializePayPalButton(totalAmount, shippingAddress, contactPerson, con
                 });
             });
         }
-    }).render('#paypal-button');
+    }).render('#paypal-button'); // Render the PayPal button into the specified container
 }
+
 
 // Event listener for checkout form submission
 document.getElementById("checkoutForm").addEventListener("submit", function(event) {

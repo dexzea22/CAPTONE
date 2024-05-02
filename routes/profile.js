@@ -15,7 +15,6 @@ function ensureAuthenticated(req, res, next) {
 // GET request handler for the Profile page
 router.get('/', ensureAuthenticated, async (req, res) => {
   try {
-    // Since we're using Passport, we should have access to req.user
     const user = await prisma.user.findUnique({
       where: { id: req.user.id },
     });
@@ -42,18 +41,31 @@ router.post('/', ensureAuthenticated, async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).send('User not found.');
+      return res.status(404).json({ success: false, message: 'User not found.' });
     }
 
     let updateData = { firstName, lastName, address, phoneNumber };
 
-    // Check if the current password is provided for password update
-    if (currentPassword && newPassword) {
-      const passwordValid = await bcrypt.compare(currentPassword, user.password);
-      if (!passwordValid) {
-        return res.status(401).send('Current password is incorrect.');
+    // Check if a new password is provided
+    if (newPassword) {
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      if (!passwordRegex.test(newPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Password must be at least 8 characters long, include a number, a special character, and an uppercase letter.'
+        });
       }
-      updateData.password = await bcrypt.hash(newPassword, 10);
+
+      // If current password exists, validate it; if not, bypass this for OAuth users setting password for the first time
+      if (user.password && currentPassword) {
+        const passwordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!passwordValid) {
+          return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+        }
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      updateData.password = hashedPassword;
     }
 
     // Update the user profile
@@ -62,11 +74,14 @@ router.post('/', ensureAuthenticated, async (req, res) => {
       data: updateData,
     });
 
-    res.redirect('/profile?alert=success');
+    res.json({ success: true, message: 'Profile updated successfully.' });
   } catch (error) {
     console.error('Error updating profile:', error);
-    res.status(500).send('An error occurred while updating the profile.');
+    res.status(500).json({ success: false, message: 'An error occurred while updating the profile.' });
   }
 });
+
+
+
 
 module.exports = router;

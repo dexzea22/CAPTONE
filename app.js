@@ -307,12 +307,6 @@ app.get('/orderStatus', authenticate, async (req, res) => {
 });
 
 
-
-
-
-
-
-
 app.get('/userOrder', authenticate, (req, res) => {
   res.render('userOrder');
 });
@@ -605,7 +599,7 @@ const createPayPalOrder = async (cartItems) => {
 
 
 // Route to capture a PayPal order
-app.post("/capture/:orderId", authenticate, async (req, res) => {
+app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
     const { orderId } = req.params;
     const cartItems = req.session.cartItems || [];

@@ -73,7 +73,8 @@
             <div class="modal-body">
               <div class="form-group">
                 <label for="passwordInput">Please enter your password to confirm deletion:</label>
-                <input type="password" class="form-control" id="passwordInput">
+                <input type="password" class="form-control" id="passwordInput" required placeholder="Enter your password">
+
               </div>
             </div>
             <div class="modal-footer">
@@ -120,15 +121,20 @@ function confirmDelete(email) {
         window.location.href = `/editUser/${userId}`; // Route to fetch data and show in form for editing
     });
 
+    $(document).ready(function() {
     $('.delete-btn').on('click', function(e) {
         e.preventDefault();
-        deleteEmail = $(this).data('email');
-        $('#passwordModal').modal('show'); // Show modal to confirm deletion
+        const userEmail = $(this).data('email');
+        window.deleteEmail = userEmail; // Set the global variable to be accessed later
+        $('#passwordModal').modal('show'); // Show confirmation modal
     });
 
-    $(document).ready(function() {
     $('#confirmDeleteBtn').click(function() {
         var password = $('#passwordInput').val();
+        if (!password) {
+            Swal.fire('Error!', 'Password is required!', 'error');
+            return;
+        }
         $.ajax({
             url: '/deleteUser',
             type: 'POST',
@@ -138,13 +144,18 @@ function confirmDelete(email) {
             },
             success: function(response) {
                 if (response.success) {
-                    Swal.fire('Deleted!', response.message, 'success');
+                    Swal.fire('Deleted!', response.message, 'success').then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload(); // Reload the page to reflect the deletion
+                        }
+                    });
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
             },
             error: function(xhr, status, error) {
-                Swal.fire('Error!', 'Server error: ' + error, 'error');
+                // Handle the case where the password verification fails
+                Swal.fire('Error!', 'Wrong password entered. Please try again!', 'error');
             }
         });
     });

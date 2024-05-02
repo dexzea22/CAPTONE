@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Edit User</h1>
-        <form action="/updateUser/<%= user.id %>" method="POST">
+        <form id="editUserForm" action="/updateUser/<%= user.id %>" method="POST">
             <div class="form-group">
                 <label>Email:</label>
                 <input type="email" class="form-control" name="email" value="<%= user.email %>" required>
@@ -19,11 +19,65 @@
                 <input type="text" class="form-control" name="usertype" value="<%= user.usertype %>" required>
             </div>
             <div class="form-group">
-                <label>Password:</label>
-                <input type="password" class="form-control" name="password" placeholder="Enter new password">
+                <label>New Password:</label>
+                <input type="password" class="form-control" id="newPassword" name="password" placeholder="Enter new password">
+            </div>
+            <div class="form-group">
+                <label>Confirm New Password:</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password">
             </div>
             <button type="submit" class="btn btn-primary">Update User</button>
         </form>
     </div>
+
+    <!-- Add SweetAlert library script here -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script>
+        document.getElementById('editUserForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Check if passwords match
+            if (newPassword !== confirmPassword) {
+                Swal.fire('Error!', 'Passwords do not match.', 'error');
+                return;
+            }
+
+            // Validate password strength (optional)
+            const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+            if (!passwordRegex.test(newPassword)) {
+                Swal.fire('Error!', 'Password must be at least 8 characters long, include a number, a special character, and an uppercase letter.', 'error');
+                return;
+            }
+
+            // Submit the form via AJAX
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        password: newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire('Success!', 'Password updated successfully.', 'success').then(() => {
+                        window.location.reload(); // Reload the page after success
+                    });
+                } else {
+                    Swal.fire('Error!', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error updating password:', error);
+                Swal.fire('Error!', 'Failed to update password. Please try again.', 'error');
+            }
+        });
+    </script>
 </body>
 </html>
