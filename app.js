@@ -214,14 +214,13 @@ paypal.configure({
 app.get("/revised_recommendation", async (req, res) => {
   const response3 = await revised_generated_recommendation({
     vegetarian: false,
-    vegan: false,
+  
     omnivore: false,
-    halal: false,
-    kosher: false,
-    lactoseFree: false,
+
+
     glutenFree: false,
     nutAllergy: true,
-    otherRestrictions: "",
+
   });
 
   res.json({ message3: response3 });
