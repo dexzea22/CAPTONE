@@ -1,5 +1,42 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Order Management</title>
+    <link rel="website icon" type="png" href="images/maya.png" />
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Rubik:400,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://kit.fontawesome.com/7f01a542af.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="stylesheets/admin.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
+  </head>
 
 <head>
   <meta charset="UTF-8" />
@@ -113,33 +150,29 @@
         </div>
         <script src="scripts/index.js"></script>
 
-        <script>
-            function deleteOrder(orderId) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.value) {
-                        fetch(`/adminOrderStatus/delete/${orderId}`, { method: 'POST' })
-                            .then(response => {
-                                if (response.ok) {
-                                    Swal.fire(
-                                        'Deleted!',
-                                        'Your file has been deleted.',
-                                        'success'
-                                    );
-                                    location.reload(); // Reload the page to update the table
-                                }
-                            });
-                    }
-                });
-            }
-        </script>
-</body>
-
+    <script>
+      function deleteOrder(orderId) {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.value) {
+            fetch(`/adminOrderStatus/delete/${orderId}`, {
+              method: "POST",
+            }).then((response) => {
+              if (response.ok) {
+                Swal.fire("Deleted!", "Your file has been deleted.", "success");
+                location.reload(); // Reload the page to update the table
+              }
+            });
+          }
+        });
+      }
+    </script>
+  </body>
 </html>
