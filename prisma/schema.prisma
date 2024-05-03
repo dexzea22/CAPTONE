@@ -108,6 +108,18 @@ model OrderItem {
   foodItem            FoodItem    @relation(fields: [itemId], references: [id]) // Define the opposite relation to FoodItem
   createdAt       DateTime      @default(now())
 }
+// AddFoodItem model
+
+model AddFoodItem {
+  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  description         String?
+  price               Float
+  size                String?
+  category            String?
+  dietaryRestrictions String[]
+  imageUrl            String?
+}
 
 
 

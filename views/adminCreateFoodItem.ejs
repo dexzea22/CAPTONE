@@ -36,6 +36,47 @@
     <link rel="stylesheet" href="stylesheets/admin.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <style>
+      /* The Modal (background) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      }
+
+      /* Modal Content/Box */
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+      }
+
+      /* Close Button */
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
     <div class="sidenav">
@@ -45,124 +86,447 @@
       <a href="/logout">Logout</a>
       <a href="/adminOrderStatus">Transaction History</a>
       <a href="/adminOrderNotifications">Order Notifications</a>
-      <a href="/adminCreateFoodItem">Add Food Item</a>
+      <a href="/adminCreateFoodItem">Manage Food Item</a>
     </div>
     <div class="side-menu">
       <a href="/adminDashboard">Dashboard</a>
       <a href="/adminUserTable">User Table</a>
       <a href="/adminOrderStatus">Transaction History</a>
       <a href="/adminOrderNotifications">Order Notifications</a>
-      <a href="/adminCreateFoodItem">Add Food Item</a>
+      <a href="/adminCreateFoodItem">Manage Food Item</a>
       <a href="/logs">Logs</a>
       <a href="/logout">Logout</a>
     </div>
     <div class="container mt-5">
-      <h1>Create New Food Item</h1>
-      <div class="row">
-        <div class="col-lg-8 mx-auto">
-          <form
-            action="/adminCreateFoodItem"
-            method="POST"
-            enctype="multipart/form-data"
-          >
-            <div class="form-group">
-              <label for="name">Name:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="name"
-                name="name"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="description">Description:</label>
-              <textarea
-                class="form-control"
-                id="description"
-                name="description"
-              ></textarea>
-            </div>
-            <div class="form-group">
-              <label for="price">Price (₱):</label>
-              <input
-                type="number"
-                class="form-control"
-                id="price"
-                name="price"
-                step="0.01"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="size">Size:</label>
-              <input type="text" class="form-control" id="size" name="size" />
-            </div>
-            <div class="form-group">
-              <label for="category">Category:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="category"
-                name="category"
-              />
-            </div>
-            <div class="form-group">
-              <label for="dietaryRestrictions">Dietary Restrictions:</label>
-              <select
-                multiple
-                class="form-control"
-                id="dietaryRestrictions"
-                name="dietaryRestrictions"
+      <h1>Manage Food Item</h1>
+      <button onclick="openAddModal()">Add Food Item</button>
+      <h1>Food Items</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Size</th>
+            <th>Category</th>
+            <th>Dietary Restrictions</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% foodItems.forEach(item => { %>
+          <tr>
+            <td><%= item.name %></td>
+            <td><%= item.description %></td>
+            <td>$<%= item.price.toFixed(2) %></td>
+            <td><%= item.size %></td>
+            <td><%= item.category %></td>
+            <td><%= item.dietaryRestrictions.join(', ') %></td>
+            <td>
+              <!-- Pass item details to openEditModal function -->
+              <button
+                onclick="openEditModal(
+                '<%= item.id %>',
+                '<%= item.name %>',
+                '<%= item.description %>',
+                '<%= item.price %>',
+                '<%= item.size %>',
+                '<%= item.category %>',
+                '<%= item.dietaryRestrictions.join(', ') %>'
+                )"
               >
-                <option value="vegetarian">Vegetarian</option>
-                <option value="vegan">Vegan</option>
-                <option value="glutenFree">Gluten Free</option>
-                <option value="nutFree">Nut Free</option>
-                <!-- Add more options as necessary -->
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="imageUpload">Upload Image:</label>
-              <input
-                type="file"
-                class="form-control-file"
-                id="imageUpload"
-                name="imageUpload"
-                onchange="previewImage()"
-              />
-            </div>
-            <div class="form-group">
-              <label for="imageUrl">Image Preview:</label>
-              <img
-                id="imagePreview"
-                src="#"
-                alt="Preview"
-                style="max-width: 100%; max-height: 200px"
-              />
-            </div>
-            <button type="submit" class="btn btn-primary">
-              Create Food Item
-            </button>
-          </form>
-        </div>
+                Edit
+              </button>
+              <button onclick="deleteFoodItem('<%= item.id %>')">Delete</button>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <!-- add -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeAddModal()">&times;</span>
+
+        <h2>Add Food Item</h2>
+        <form
+          id="addFoodForm"
+          action="/adminCreateFoodItem/"
+          method="POST"
+          enctype="multipart/form-data"
+          onsubmit="submitAddForm(); return false;"
+        >
+          <label for="name">Name:</label><br />
+          <input type="text" id="name" name="name" required /><br />
+
+          <label for="description">Description:</label><br />
+          <textarea id="description" name="description"></textarea><br />
+
+          <label for="price">Price:</label><br />
+          <input
+            type="number"
+            id="price"
+            name="price"
+            step="0.01"
+            required
+          /><br />
+
+          <label for="size">Size:</label><br />
+          <input type="text" id="size" name="size" /><br />
+
+          <label for="category">Category:</label><br />
+          <input type="text" id="category" name="category" /><br />
+
+          <label for="dietaryRestrictions">Dietary Restrictions:</label><br />
+          <select id="dietaryRestrictions" name="dietaryRestrictions" required>
+            <option value="">Select Restriction:</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="omnivore">Omnivore</option>
+            <option value="glutenFree">Gluten Free</option>
+            <option value="nutAllergy">Nut Allergy</option></select
+          ><br />
+
+          <label for="imageUpload">Upload Image:</label><br />
+          <input
+            type="file"
+            id="imageUpload"
+            name="imageUpload"
+            accept="image/*"
+          /><br />
+
+          <!-- Remove this hidden input field -->
+          <!-- <input type="hidden" id="id" name="id" value="" /> -->
+
+          <button type="submit">Add Food Item</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Food Item Modal -->
+    <div id="editModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Edit Food Item</h2>
+        <form id="editForm">
+          <!-- Input fields for editing food item -->
+          <label for="editName">Name:</label><br />
+          <input type="text" id="editName" name="editName" required /><br />
+
+          <label for="editDescription">Description:</label><br />
+          <textarea id="editDescription" name="editDescription"></textarea
+          ><br />
+
+          <label for="editPrice">Price:</label><br />
+          <input
+            type="number"
+            id="editPrice"
+            name="editPrice"
+            step="0.01"
+            required
+          /><br />
+
+          <label for="editSize">Size:</label><br />
+          <input type="text" id="editSize" name="editSize" /><br />
+
+          <label for="editCategory">Category:</label><br />
+          <input type="text" id="editCategory" name="editCategory" /><br />
+
+          <label for="editDietaryRestrictions">Dietary Restrictions:</label
+          ><br />
+          <select
+            id="editDietaryRestrictions"
+            name="editDietaryRestrictions"
+            required
+          >
+            <option value="">Select Restriction:</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="omnivore">Omnivore</option>
+            <option value="glutenFree">Gluten Free</option>
+            <option value="nutAllergy">Nut Allergy</option></select
+          ><br />
+
+          <label for="editImageUpload">Upload Image:</label><br />
+          <input
+            type="file"
+            id="editImageUpload"
+            name="editImageUpload"
+            accept="image/*"
+            required
+          /><br />
+
+          <input type="hidden" id="editItemId" name="editItemId" />
+
+          <!-- Submit button -->
+          <button type="button" onclick="submitUpdateForm()">
+            Save Changes
+          </button>
+        </form>
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script>
+      function previewImage() {
+        var fileInput = document.getElementById("imageUpload");
+        var imagePreview = document.getElementById("imagePreview");
+
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          imagePreview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      //sweet Alert
+      document
+        .getElementById("addFoodForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const formData = new FormData(event.target);
+          fetch("/adminCreateFoodItem", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                const foodItem = data.foodItem;
+                Swal.fire({
+                  icon: "success",
+                  title: "Food Item Created!",
+                  html: `
+                    <div>
+                        <p><strong>Name:</strong> ${foodItem.name}</p>
+                        <p><strong>Description:</strong> ${
+                          foodItem.description
+                        }</p>
+                        <p><strong>Price:</strong> ${foodItem.price}</p>
+                        <p><strong>Size:</strong> ${foodItem.size}</p>
+                        <p><strong>Category:</strong> ${foodItem.category}</p>
+                        <p><strong>Dietary Restrictions:</strong> ${foodItem.dietaryRestrictions.join(
+                          ", "
+                        )}</p>
+                        <img src="${foodItem.imageUrl}" alt="${
+                    foodItem.name
+                  }" style="max-width: 200px; max-height: 200px;">
+                    </div>
+                `,
+                  showConfirmButton: false,
+                  timer: 5000,
+                }).then(() => {
+                  // Redirect to admin dashboard or any other page
+                  window.location.href = "/adminDashboard";
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: data.message,
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("Error creating food item:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong!",
+              });
+            });
+        });
+      //end
+
+      //Add
+      // Function to open the add modal
+      function openAddModal() {
+        document.getElementById("myModal").style.display = "block";
+      }
+
+      // Function to close the add modal
+      function closeAddModal() {
+        document.getElementById("myModal").style.display = "none";
+      }
+
+      // Function to submit the add form
+      // function submitAddForm() {
+      //   const formData = new FormData(document.getElementById("addFoodForm"));
+      //   fetch("/adminCreateFoodItem/", {
+      //     method: "POST",
+      //     body: formData,
+      //   })
+      //     .then((response) => {
+      //       if (!response.ok) {
+      //         throw new Error("Network response was not ok");
+      //       }
+      //       return response.json();
+      //     })
+      //     .then((data) => {
+      //       if (data.success) {
+      //         // Reload the page after adding
+      //         Swal.fire({
+      //           icon: "success",
+      //           title: "Added!",
+      //           text: "The food item has been added.",
+      //           showConfirmButton: false,
+      //           timer: 1500,
+      //         });
+      //         setTimeout(() => {
+      //           location.reload();
+      //         }, 1500);
+      //       } else {
+      //         // Show error message if adding failed
+      //         Swal.fire({
+      //           icon: "error",
+      //           title: "Oops...",
+      //           text: "Failed to add the food item.",
+      //         });
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error adding food item:", error);
+      //       Swal.fire({
+      //         icon: "error",
+      //         title: "Oops...",
+      //         text: "Something went wrong!",
+      //       });
+      //     });
+      // }
+      //end
+
+      //Edit & delete
+      // Function to open the edit modal
+      function openEditModal(
+        id,
+        name,
+        description,
+        price,
+        size,
+        category,
+        dietaryRestrictions
+      ) {
+        document.getElementById("editName").value = name || "";
+        document.getElementById("editDescription").value = description || "";
+        document.getElementById("editPrice").value = price || "";
+        document.getElementById("editSize").value = size || "";
+        document.getElementById("editCategory").value = category || "";
+        document.getElementById("editDietaryRestrictions").value =
+          dietaryRestrictions || "";
+        document.getElementById("editItemId").value = id || "";
+        document.getElementById("editModal").style.display = "block";
+      }
+
+      // Function to close the edit modal
+      function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+      }
+
+      // Function to submit the update form
+      function submitUpdateForm() {
+        const formData = new FormData(document.getElementById("editForm"));
+        const id = formData.get("editItemId");
+        fetch(`/adminCreateFoodItem/${id}`, {
+          method: "PUT",
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.success) {
+              // Reload the page after update
+              Swal.fire({
+                icon: "success",
+                title: "Updated!",
+                text: "The food item has been updated.",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              setTimeout(() => {
+                location.reload();
+              }, 1500);
+            } else {
+              // Show error message if update failed
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Failed to update the food item.",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error updating food item:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+            });
+          });
+      }
+
+      // Function to delete a food item
+      function deleteFoodItem(id) {
+        // Confirm deletion
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Send delete request to server
+            fetch(`/adminCreateFoodItem/${id}`, {
+              method: "DELETE",
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                return response.json();
+              })
+              .then((data) => {
+                if (data.success) {
+                  // Reload the page after deletion
+                  Swal.fire({
+                    icon: "success",
+                    title: "Deleted!",
+                    text: "The food item has been deleted.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  setTimeout(() => {
+                    location.reload();
+                  }, 1500);
+                } else {
+                  // Show error message if deletion failed
+                  Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Failed to delete the food item.",
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error("Error deleting food item:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: "Something went wrong!",
+                });
+              });
+          }
+        });
+      }
+    </script>
   </body>
-  <script>
-    function previewImage() {
-      var fileInput = document.getElementById("imageUpload");
-      var imagePreview = document.getElementById("imagePreview");
-
-      var file = fileInput.files[0];
-      var reader = new FileReader();
-
-      reader.onload = function (e) {
-        imagePreview.src = e.target.result;
-      };
-
-      reader.readAsDataURL(file);
-    }
-  </script>
 </html>

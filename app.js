@@ -40,6 +40,7 @@ const orderRouter = require('./routes/orderRoutes');
 const adminOrderStatusRouter = require('./routes/adminOrderStatusRouter');
 const adminOrderNotificationsRouter = require('./routes/adminOrderNotificationsRouter');
 const adminCreateFoodItemRouter = require('./routes/adminCreateFoodItemRouter');
+const featuredItemRouter = require('./routes/featuredItemRouter');
 const bestSellerRouter = require('./routes/bestSellerRouter');
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
@@ -245,6 +246,7 @@ app.use('/adminOrderStatus', adminOrderStatusRouter);
 app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
 
 app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
+app.use('/featuredItem', featuredItemRouter);
 app.use('/bestSeller', bestSellerRouter); 
 
 const generateAccessToken = async () => {
