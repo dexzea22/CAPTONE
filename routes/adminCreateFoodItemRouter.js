@@ -12,6 +12,9 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res) => {
     const { name, description, price, size, category, dietaryRestrictions, imageUrl } = req.body;
     try {
+        // Convert dietaryRestrictions to an array if it exists and is not an array
+        const dietaryArray = Array.isArray(dietaryRestrictions) ? dietaryRestrictions : dietaryRestrictions ? [dietaryRestrictions] : [];
+
         const newFoodItem = await prisma.foodItem.create({
             data: {
                 name,
@@ -19,7 +22,7 @@ router.post('/', async (req, res) => {
                 price: parseFloat(price),
                 size,
                 category,
-                dietaryRestrictions: dietaryRestrictions.split(','),
+                dietaryRestrictions: dietaryArray,
                 imageUrl
             }
         });

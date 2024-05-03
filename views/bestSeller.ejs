@@ -1,0 +1,74 @@
+<!-- bestSeller.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Rubik:400,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://kit.fontawesome.com/7f01a542af.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="stylesheets/bestSeller.css" />
+
+    <title>Best Sellers</title>
+  </head>
+  <body>
+    <h1>Top 5 Best Sellers</h1>
+    <div class="cards" id="bestSellerItems">
+      <% bestSellerItems.forEach(item => { %>
+      <div class="cards" id="<%= item.id %>">
+        <img
+          class="card-image"
+          src="<%= item.imageUrl %>"
+          alt="<%= item.name %>"
+        />
+        <div class="card-detail">
+          <h4><%= item.name %></h4>
+          <div class="gallery">
+            <!-- Add sizes dynamically if needed -->
+          </div>
+          <div class="rat">
+            <p>Rating:</p>
+            <!-- Add star rating dynamically if needed -->
+          </div>
+          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
+          <button
+            onclick="addToCart('<%= item.name %>','<%= item.id %>')"
+            class="cbtn"
+          >
+            <i class="fas fa-shopping-cart"></i>
+          </button>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+
+    <!-- Lightbox (hidden by default) -->
+    <div class="lightbox" id="lightbox">
+      <img src="" alt="Enlarged Image" class="lightbox-image" />
+    </div>
+  </body>
+</html>

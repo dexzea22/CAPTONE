@@ -40,6 +40,8 @@ const orderRouter = require('./routes/orderRoutes');
 const adminOrderStatusRouter = require('./routes/adminOrderStatusRouter');
 const adminOrderNotificationsRouter = require('./routes/adminOrderNotificationsRouter');
 const adminCreateFoodItemRouter = require('./routes/adminCreateFoodItemRouter');
+const bestSellerRouter = require('./routes/bestSellerRouter');
+
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
 app.use(flash());
@@ -207,7 +209,9 @@ app.get("/contactUs", (req, res) => {
 app.get("/contact", (req, res) => {
   res.render("contact"); // Render a view named "new-page.ejs"
 });
-
+// app.get("/bestSeller", (req, res) => {
+//   res.render("bestSeller"); // Render the bestSeller.ejs view
+// });
 
 
 
@@ -241,6 +245,7 @@ app.use('/adminOrderStatus', adminOrderStatusRouter);
 app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
 
 app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
+app.use('/bestSeller', bestSellerRouter); 
 
 const generateAccessToken = async () => {
   try {
