@@ -80,32 +80,53 @@ router.get('/details/:orderId', async (req, res) => {
 });
 
 
-// Update order status
 router.post('/update/:orderId', async (req, res) => {
+    const { newStatus } = req.body;
+
     try {
-        const { newStatus } = req.body;
-        await prisma.order.update({
+        // First, check if the order exists
+        const order = await prisma.order.findUnique({
+            where: { id: req.params.orderId }
+        });
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found.' });
+        }
+
+        // Update the order status if the order exists
+        const updatedOrder = await prisma.order.update({
             where: { id: req.params.orderId },
             data: { status: newStatus }
         });
-        res.json({ success: true, message: 'Order status updated successfully.' });
+
+        res.json({ success: true, message: 'Order status updated successfully.', updatedOrder });
     } catch (error) {
         console.error('Error updating order status:', error);
         res.status(500).json({ success: false, message: 'Failed to update order status.' });
     }
 });
 
+
 // Delete an order
 router.post('/delete/:orderId', async (req, res) => {
+    const orderId = req.params.orderId;
     try {
-        await prisma.order.delete({
-            where: { id: req.params.orderId }
+        // First, delete all associated order items
+        await prisma.orderItem.deleteMany({
+            where: { orderId: orderId }
         });
+
+        // Then, delete the order
+        await prisma.order.delete({
+            where: { id: orderId }
+        });
+
         res.json({ success: true, message: 'Order deleted successfully.' });
     } catch (error) {
         console.error('Error deleting order:', error);
         res.status(500).json({ success: false, message: 'Failed to delete order.' });
     }
 });
+
 
 module.exports = router;

@@ -1,4 +1,4 @@
-.sidenav {
+.menu {
     height: 100%;
     width: 250px;
     position: fixed;
@@ -9,8 +9,9 @@
     overflow-x: hidden;
     padding-top: 20px;
     transition: 0.5s;
+    
   }
-  .sidenav a {
+  .menu a {
     margin-top: 20px;
     text-decoration: none;
     font-size: 25px;
@@ -22,7 +23,7 @@
     margin-left: 20px;
   }
   
-  .sidenav a::after {
+  .menu a::after {
     content: "";
     display: block;
     width: 0;
@@ -34,7 +35,7 @@
     transition: width 0.3s ease;
   }
   
-  .sidenav a:hover::after {
+  .menu a:hover::after {
     width: 50%;
   }
   .menu-toggle {
@@ -50,7 +51,7 @@
     }
     /* Show menu on smaller screens */
     @media (max-width: 768px) {
-    #menu {
+    .menu {
       display: none;
       flex-direction: column;
       background-color: #333;
@@ -79,13 +80,14 @@
   .side-menu {
     display: none; /* Hide the side menu by default */
     position: fixed;
-    top: 88px;
+    top: 70px;
     left: 0;
     height: 100%;
     width: 250px;
     background-color: rgba(239, 232, 202, 0.663);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z-index: 998; /* Ensure it's below the menu toggle */
+    
   }
   /* Underline animation */
   .side-menu a::before {
@@ -97,8 +99,12 @@
     height: 3px;
     background-color: rgb(0, 0, 0);
     transition: width 0.3s ease-in-out;
+    
   }
-  
+  .side-menu a {
+    font-family: Kreon, open-sans;
+
+  }
   .side-menu a:hover {
     color: #000000;
   }
@@ -110,6 +116,7 @@
   .side-menu.show {
     display: block;
   }
+  
   .admn{
     font-family: kreon,open-sans;
     font-weight: bold;

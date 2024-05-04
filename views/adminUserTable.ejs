@@ -1,73 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>USER TABLE</title>
-    <link rel="website icon" type="png" href="images/maya.png" />
-    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
-    <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Rubik:400,700"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <script
-      src="https://kit.fontawesome.com/7f01a542af.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    />
-    <link rel="stylesheet" href="stylesheets/admin.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <div class="container">
-      <div class="sidenav">
-        <a href="/adminDashboard">Dashboard</a>
-        <a href="/adminUserTable">User Table</a>
-        <a href="/logs">Logs</a>
-        <a href="/logout">Logout</a>
-        <a href="/adminOrderStatus">Transaction History</a>
-        <a href="/adminOrderNotifications">Order Notifications</a>
-        <a href="/adminCreateFoodItem">Manage Food Item</a>
-      </div>
-      <div class="side-menu">
-        <a href="/adminDashboard">Dashboard</a>
-        <a href="/adminUserTable">User Table</a>
-        <a href="/adminOrderStatus">Transaction History</a>
-        <a href="/adminOrderNotifications">Order Notifications</a>
-        <a href="/adminCreateFoodItem">Manage Food Item</a>
-        <a href="/logs">Logs</a>
-        <a href="/logout">Logout</a>
-      </div>
-      <h1
-        style="
-          font-family: kreon, open-sans;
-          font-weight: bold;
-          font-size: 50px;
-          color: black;
-        "
-      >
-        User Table
-      </h1>
-      <table class="table">
-        <thead class="thead-dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USER TABLE</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <link rel="website icon" type="png" href="images/maya.png">
+  <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="stylesheets/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
+  <div class="menu-toggle">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+  <div>
+    <div class="menu">
+      <a href="/adminDashboard">Dashboard</a>
+      <a href="/adminUserTable">User Table</a>
+      <a href="/logs">Logs</a>
+      <a href="/adminOrderStatus">Transaction History</a>
+      <a href="/adminOrderNotifications">Order Notifications</a>
+      <a href="/adminCreateFoodItem">Add Food Item</a>
+      <a href="/logout">Logout</a>
+    </div>
+    <div class="side-menu">
+      <a href="/adminDashboard">Dashboard</a>
+      <a href="/adminUserTable">User Table</a>
+      <a href="/adminOrderStatus">Transaction History</a>
+      <a href="/adminOrderNotifications">Order Notifications</a>
+      <a href="/adminCreateFoodItem">Add Food Item</a>
+      <a href="/logs">Logs</a>
+      <a href="/logout">Logout</a>
+    </div>
+    <div class="main-content">
+      
+     
+        <h1 class="admn">User Table</h1>
+        <table class="table" style="background-color: white;">
+          <thead class="thead-dark">
           <tr>
             <th>Email</th>
             <th>Password</th>
@@ -84,16 +67,11 @@
             <td><%= user.usertype %></td>
             <td colspan="3">
               <div class="btn-group">
-                <a href="/view?id=<%= user.id %>" class="btn view-btn">View</a>
-                <a href="/edit?id=<%= user.id %>" class="btn update-btn"
-                  >Edit</a
-                >
-                <a
-                  href="#"
-                  class="btn delete-btn"
-                  data-email="<%= user.email %>"
-                  >Delete</a
-                >
+                <a href="#" class="btn btn-primary view-btn" data-id="<%= user.id %>">View</a>
+                <a href="#" class="btn btn-warning update-btn" data-id="<%= user.id %>">Edit</a>
+                <a href="#" class="btn btn-danger delete-btn" data-email="<%= user.email %>">Delete</a>
+                
+
               </div>
             </td>
           </tr>
@@ -133,90 +111,97 @@
               >
               <input type="password" class="form-control" id="passwordInput" />
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="confirmDeleteBtn">
-              Confirm
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Cancel
-            </button>
-          </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="passwordInput">Please enter your password to confirm deletion:</label>
+                <input type="password" class="form-control" id="passwordInput" required placeholder="Enter your password">
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="confirmDeleteBtn">
+      Confirm</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+      </div>
         </div>
       </div>
-    </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        var deleteEmail;
+      <script src="scripts/index.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <script>
+      
+        // Function to redirect to the user detail view
+function viewUser(userId) {
+    window.location.href = `/viewUser/${userId}`;
+}
 
-        // Set the email to delete when the delete button is clicked
-        $(".delete-btn").click(function () {
-          deleteEmail = $(this).data("email");
-          // Store the email in session
-          $.ajax({
-            url: "/setDeleteEmail",
-            method: "POST",
+// Function to redirect to the user edit form
+function editUser(userId) {
+    window.location.href = `/editUser/${userId}`;
+}
+
+// Function to show confirmation for deletion
+function confirmDelete(email) {
+    // Store the email in a global variable or data attribute for use in modal confirmation
+    window.deleteEmail = email;
+    $('#passwordModal').modal('show'); // Assuming you have a Bootstrap modal for confirmation
+}
+
+      $(document).ready(function() {
+    $('.view-btn').on('click', function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+        window.location.href = `/viewUser/${userId}`; // Assumes you have a route to display user details
+    });
+
+    $('.update-btn').on('click', function(e) {
+        e.preventDefault();
+        const userId = $(this).data('id');
+        window.location.href = `/editUser/${userId}`; // Route to fetch data and show in form for editing
+    });
+
+    $(document).ready(function() {
+    $('.delete-btn').on('click', function(e) {
+        e.preventDefault();
+        const userEmail = $(this).data('email');
+        window.deleteEmail = userEmail; // Set the global variable to be accessed later
+        $('#passwordModal').modal('show'); // Show confirmation modal
+    });
+
+    $('#confirmDeleteBtn').click(function() {
+        var password = $('#passwordInput').val();
+        if (!password) {
+            Swal.fire('Error!', 'Password is required!', 'error');
+            return;
+        }
+        $.ajax({
+            url: '/deleteUser',
+            type: 'POST',
             data: {
-              email: deleteEmail,
+                email: window.deleteEmail,
+                adminPassword: password
             },
-            success: function (response) {
-              // Open the password modal
-              $("#passwordModal").modal("show");
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire('Deleted!', response.message, 'success').then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload(); // Reload the page to reflect the deletion
+                        }
+                    });
+                } else {
+                    Swal.fire('Error!', response.message, 'error');
+                }
             },
-            error: function (xhr, status, error) {
-              console.error(error);
-            },
-          });
+            error: function(xhr, status, error) {
+                // Handle the case where the password verification fails
+                Swal.fire('Error!', 'Wrong password entered. Please try again!', 'error');
+            }
         });
-
-        // Handle the delete confirmation
-        $("#confirmDeleteBtn").click(function () {
-          var password = $("#passwordInput").val();
-
-          // Make an AJAX request to delete the user
-          $.ajax({
-            url: "/deleteUser",
-            method: "POST",
-            data: {
-              password: password,
-            },
-            success: function (response) {
-              if (response.success) {
-                // Log the delete action
-                $.ajax({
-                  url: "/logAction",
-                  method: "POST",
-                  data: {
-                    action: "Delete",
-                    email: deleteEmail,
-                  },
-                  success: function (logResponse) {
-                    // Reload the page to reflect the changes
-                    window.location.reload();
-                  },
-                  error: function (xhr, status, error) {
-                    console.error(error);
-                    // Reload the page to reflect the changes
-                    window.location.reload();
-                  },
-                });
-              } else {
-                alert(response.message);
-              }
-            },
-            error: function (xhr, status, error) {
-              console.error(error);
-            },
-          });
-        });
-      });
-    </script>
-  </body>
+    });
+});
+});
+      </script>      
+</body>
 </html>

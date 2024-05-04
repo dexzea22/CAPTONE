@@ -1,10 +1,11 @@
 require("dotenv").config(); // This should be at the very top
 const openai = require("openai-api");
 const { PrismaClient } = require('@prisma/client'); // Import PrismaClient
-
 const prisma = new PrismaClient(); // Initialize PrismaClient
 
 const fetch = require("node-fetch"); // Import fetch module for making HTTP requests
+
+
 
 var createError = require("http-errors");
 const express = require("express");
@@ -45,7 +46,10 @@ const bestSellerRouter = require('./routes/bestSellerRouter');
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
+
+// Initialize flash middleware after session
 app.use(flash());
+
 // Configure session middleware
 app.use(session({
   secret: process.env.SESSION_SECRET || "secret-key",
@@ -60,7 +64,142 @@ app.use(session({
     httpOnly: true,
   }
 }));
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/google/callback"
+},
+async (accessToken, refreshToken, profile, done) => {
+  try {
+    console.log('Received profile:', profile); // Log the received Google profile
+    const email = profile.emails[0].value;
+    let user = await prisma.user.findUnique({
+      where: { email: email }
+    });
+
+    if (!user) {
+      console.log('Creating new user with email:', email);
+      user = await prisma.user.create({
+        data: {
+          email: email,
+          firstName: profile.name.givenName || '',
+          lastName: profile.name.familyName || '',
+          usertype: "User"  // Default usertype for new Google-authenticated users
+        }
+      });
+    } else {
+      console.log('User found in database:', user);
+    }
+
+    done(null, user);
+  } catch (error) {
+    console.error('Error during Google authentication:', error);
+    done(error);
+  }
+}
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);  // Serialize user ID into the session
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id } });
+    done(null, user); // Attach the user to the session
+  } catch (error) {
+    done(error);
+  }
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Check user type and redirect accordingly
+    if (req.user.usertype === 'Admin') {
+      res.redirect('/adminDashboard');
+    } else {
+      res.redirect('/UserDashboard');
+    }
+  });
+
+app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) => {
+  if (req.user.usertype !== 'Admin') {
+    res.status(403).send("Access Denied: You do not have permission to view this page.");
+    return;
+  }
+
+  try {
+    console.log('Admin User ID:', req.user.id); // Confirm user ID is available
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id }  // Accessing user data via authenticated session
+    });
+  
+    if (!user) {
+      console.error('Admin not found with ID:', req.user.id);
+      return res.status(404).send('Admin not found');
+    }
+  
+    // Render the AdminDashboard with the user data
+    res.render('AdminDashboard', { 
+      title: 'Admin Dashboard', 
+      user: user,
+      welcomeMessage: `Welcome ${user.firstName || 'Admin'}!`  // Safe fallback if firstName is not set
+    });
+  } catch (error) {
+    console.error('Error loading AdminDashboard:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+  app.get('/UserDashboard', authenticate, checkRole('User'), async (req, res) => {
+    try {
+      console.log('Authenticated User ID:', req.user.id); // Confirm user ID is available
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.id }  // Accessing user data via authenticated session
+      });
+  
+      if (!user) {
+        console.error('User not found with ID:', req.user.id);
+        return res.status(404).send('User not found');
+      }
+  
+      // Check if all expected properties are available and non-null if required by the view
+      console.log('User data to be sent to dashboard:', user);
+  
+      // Attempt to render the UserDashboard with the user data
+      res.render('UserDashboard', { 
+        title: 'User Dashboard', 
+        user: user, 
+        welcomeMessage: `Welcome ${user.firstName || 'User'}!`  // Safe fallback if firstName is not set
+      });
+    } catch (error) {
+      console.error('Error loading UserDashboard:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
+  function checkRole(role) {
+    return (req, res, next) => {
+        if (req.isAuthenticated() && req.user.usertype === role) {
+            next();
+        } else {
+            res.status(403).send("Access Denied: You do not have permission to view this page.");
+        }
+    };
+}
+
+  
+  
 // Correct usage with 'app'
 app.get("/", (req, res) => {
   // Assume we have a function that gets recommendations.
@@ -78,14 +217,13 @@ paypal.configure({
 app.get("/revised_recommendation", async (req, res) => {
   const response3 = await revised_generated_recommendation({
     vegetarian: false,
-    vegan: false,
+  
     omnivore: false,
-    halal: false,
-    kosher: false,
-    lactoseFree: false,
+
+
     glutenFree: false,
     nutAllergy: true,
-    otherRestrictions: "",
+
   });
 
   res.json({ message3: response3 });
@@ -122,11 +260,14 @@ app.get('/orderHistory', authenticate, async (req, res) => {
     // Fetch order history data from the database based on the logged-in user
     const orders = await prisma.order.findMany({
       where: {
-        userId: req.session.userId
+        userId: req.user.id  // Use the user ID from the user object provided by Passport
       },
       include: {
         orderItems: true,
       },
+      orderBy: {
+        createdAt: 'desc'  // Orders are sorted by creation date in descending order
+      }
     });
 
     // Render EJS template with order history data
@@ -143,16 +284,21 @@ app.get('/orderStatus', authenticate, async (req, res) => {
     // Fetch order status data from the database based on the logged-in user
     const orders = await prisma.order.findMany({
       where: {
-        userId: req.session.userId,
-        NOT: [{ status: 'Completed' }, { status: 'Delivered' }] // Exclude orders with statuses 'Completed' and 'Delivered'
+        userId: req.user.id,
+        status: {
+          notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim())  // Handle case sensitivity and trim spaces
+        }
       },
       include: {
         orderItems: true,
       },
+      orderBy: {
+        createdAt: 'desc'  // Sorting orders by creation date in descending order
+      }
     });
 
-    // Verify that the orders array is correctly filtered
-    console.log('Filtered Orders:', orders);
+    // Log to check filtered results
+    console.log('Filtered Orders:', orders.map(order => `${order.id}: ${order.status}`));
 
     // Render the orderStatus.ejs template with the filtered orders data
     res.render('orderStatus', { orders });
@@ -163,7 +309,6 @@ app.get('/orderStatus', authenticate, async (req, res) => {
 });
 
 
-
 app.get('/userOrder', authenticate, (req, res) => {
   res.render('userOrder');
 });
@@ -171,18 +316,21 @@ app.get('/userOrder', authenticate, (req, res) => {
 
 // Middleware to check if user is authenticated
 function authenticate(req, res, next) {
-  console.log('Session:', req.session);
-  if (!req.session.userId) {
-      return res.redirect('/login');
+  // Use Passport's built-in method to check authentication
+  if (req.isAuthenticated()) {  // Checks if the user session is saved and valid
+    // console.log('User authenticated with userId:', req.user.id); // Log the authenticated user's ID
+    next();  // Continue to next middleware or request handler
   } else {
-      console.log('User authenticated with userId:', req.session.userId);
-      next();
+    console.log('User not authenticated. Redirecting to login.');
+    res.redirect('/login');  // Redirect to login page if not authenticated
   }
 }
 
+
 app.get('/cart', authenticate, async (req, res) => {
   try {
-      const userId = req.session.userId;
+      // Use req.user.id directly provided by Passport
+      const userId = req.user.id;
       if (!userId) {
           return res.status(401).json({ message: 'User not authenticated.' });
       }
@@ -197,6 +345,7 @@ app.get('/cart', authenticate, async (req, res) => {
       res.status(500).json({ message: 'Failed to fetch cart items.', error: error.message });
   }
 });
+
 
 app.get("/recommendation", (req, res) => {
   res.render("recommendation"); // Render a view named "new-page.ejs"
@@ -277,45 +426,17 @@ const generateAccessToken = async () => {
   }
 };
 
-// Create an order to start the transaction
-const createOrder = async (cartItems) => {
-  try {
-    const accessToken = await generateAccessToken(); // Retrieve PayPal access token
-    const response = await fetch(`${base}/v2/checkout/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        intent: "CAPTURE",
-        purchase_units: [
-          {
-            amount: {
-              currency_code: "PHP",
-              value: calculateTotalAmount(cartItems).toFixed(2), // Calculate total amount from cart items
-            },
-          },
-        ],
-      }),
-    });
 
-    if (!response.ok) {
-      throw new Error(`Failed to create order. Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log("Order created:", data);
-    return data.id; // Return the created order ID
-  } catch (error) {
-    console.error("Failed to create order:", error.message);
-    throw error;
-  }
-};
 
 const captureOrder = async (orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod) => {
   try {
     let order;
+    let totalAmount = 0; // Initialize total amount
+
+    // Calculate total amount
+    for (const item of cartItems) {
+      totalAmount += item.foodItem.price * item.quantity;
+    }
 
     if (paymentMethod === 'PayPal') {
       const accessToken = await generateAccessToken(); // Retrieve PayPal access token
@@ -346,7 +467,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
           userId: userId,
           paypalOrderId: orderId,
           status: 'PENDING', // Set a default status here
-          amount: calculateTotalAmount(cartItems),
+          amount: totalAmount, // Assign total amount here
           paymentMethod: 'PayPal', // Set payment method as PayPal
           shippingAddress: shippingAddress,
           createdAt: new Date(),
@@ -373,7 +494,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
         data: {
           userId: userId,
           status: 'PENDING', // Set a default status here
-          amount: calculateTotalAmount(cartItems),
+          amount: totalAmount, // Assign total amount here
           paymentMethod: 'COD', // Set payment method as Cash On Delivery
           shippingAddress: shippingAddress,
           createdAt: new Date(),
@@ -416,12 +537,20 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
 
 
+// Ensure that wherever you use `userId` in your routes, it's extracted correctly from `req.user.id` after authentication. This means updating your routes to use `req.user.id` whenever you need to reference the authenticated user’s ID.
+
+
+
+
 
 // Helper function to calculate total amount based on items in the cart
 function calculateTotalAmount(cartItems) {
   let totalAmount = 0;
+  console.log("Calculating total amount for cart items:", cartItems); // Debug: Check cart items format
   for (const item of cartItems) {
-    totalAmount += item.foodItem.price * item.quantity; // Access the price from foodItem
+    if (item.foodItem && item.quantity) {
+      totalAmount += item.foodItem.price * item.quantity;
+    }
   }
   return totalAmount;
 }
@@ -472,37 +601,16 @@ const createPayPalOrder = async (cartItems) => {
 };
 
 
-// Route to create a PayPal order
-app.post("/pay", async (req, res) => {
-  try {
-    // Create PayPal order
-    const orderId = await createPayPalOrder(req.session.cartItems);
 
-    // Send response
-    res.status(200).json({ orderId });
-  } catch (error) {
-    console.error("Failed to create PayPal order:", error);
-    res.status(500).json({ error: "Failed to create PayPal order." });
-  }
-});
 
-// Middleware to check if user is authenticated
-function authenticate(req, res, next) {
-  console.log('Session:', req.session);
-  if (!req.session.userId) {
-      return res.redirect('/login');
-  } else {
-      console.log('User authenticated with userId:', req.session.userId);
-      next();
-  }
-}
 
 // Route to capture a PayPal order
-app.post("/capture/:orderId", authenticate, async (req, res) => {
+app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
     const { orderId } = req.params;
     const cartItems = req.session.cartItems || [];
-    const userId = req.session.userId;
+    // Use req.user.id directly from the passport session after authentication
+    const userId = req.user.id;
     const { shippingAddress, contactPerson, contactNumber } = req.body;
 
     if (req.body.paymentMethod !== 'PayPal') {
@@ -511,15 +619,16 @@ app.post("/capture/:orderId", authenticate, async (req, res) => {
 
     const capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'PayPal');
 
-    if (req.session && req.session.userId && req.session.email) {
+    // Check the user information from session for logging purposes
+    if (req.user && req.user.id && req.user.email) {
       await prisma.log.create({
         data: {
           action: `PayPal Payment captured for order ${orderId}`,
-          email: req.session.email,
-          userId: req.session.userId,
+          email: req.user.email, // Use email from user object in session
+          userId: req.user.id,  // Use userId from user object in session
         },
       });
-      res.status(200).json({ message: "PayPal Order captured successfully" });
+      res.status(200).json({ message: "PayPal Order captured successfully", orderDetails: capturedOrder });
     } else {
       res.status(500).json({ error: "User information not found in session" });
     }
@@ -530,36 +639,88 @@ app.post("/capture/:orderId", authenticate, async (req, res) => {
 });
 
 
+
+// Middleware to load cart items into the session if not already loaded
+async function loadCartItemsToSession(req, res, next) {
+  if (!req.session.cartItems) {
+    try {
+      const cartItems = await prisma.cartItem.findMany({
+        where: { userId: req.user.id },
+        include: { foodItem: true },
+      });
+      req.session.cartItems = cartItems;
+      console.log('Loaded cart items into session:', cartItems);
+    } catch (error) {
+      console.error('Failed to load cart items:', error);
+      return res.status(500).json({ message: 'Failed to load cart items', error: error.message });
+    }
+  }
+  next();
+}
+
 // Route to capture a COD order
-app.post("/capture", authenticate, async (req, res) => {
+app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
     const cartItems = req.session.cartItems || [];
-    const userId = req.session.userId;
-    const { shippingAddress, contactPerson, contactNumber } = req.body;
+    const userId = req.user.id;
+    const { shippingAddress, contactPerson, contactNumber, paymentMethod } = req.body;
 
-    if (req.body.paymentMethod !== 'COD') {
-      throw new Error("Invalid payment method for this endpoint");
+    if (paymentMethod !== 'COD') {
+      return res.status(400).json({ error: "Invalid payment method specified." });
     }
+
+    console.log("Attempting to capture order with cart items:", cartItems); // Ensure cart items are logged
+
+    const totalAmount = calculateTotalAmount(cartItems);
+    console.log("Total Amount for Order:", totalAmount); // Confirm total amount is calculated
 
     const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD');
 
-    if (req.session && req.session.userId && req.session.email) {
+    // Log and respond
+    if (req.user && req.user.id && req.user.email) {
       await prisma.log.create({
         data: {
           action: `COD Payment captured for order`,
-          email: req.session.email,
-          userId: req.session.userId,
+          email: req.user.email,
+          userId: req.user.id,
         },
       });
-      res.status(200).json({ message: "COD Order captured successfully" });
+      res.status(200).json({ message: "COD Order captured successfully", orderDetails: capturedOrder });
     } else {
       res.status(500).json({ error: "User information not found in session" });
     }
   } catch (error) {
     console.error("Failed to capture COD order:", error);
-    res.status(500).json({ error: "Failed to capture COD order." });
+    res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
   }
 });
+
+app.post("/contactUs1", async (req, res) => {
+  console.log("Received POST request with data:", req.body);
+  const { fullName, email, phone, subject, message } = req.body;
+
+  try {
+    const newMessage = await prisma.contactMessage.create({
+      data: {
+        fullName,
+        email,
+        phone,
+        subject,
+        message
+      }
+    });
+
+    console.log("Message saved successfully:", newMessage);
+    res.json({ success: true, message: "Message sent successfully!" });
+  } catch (error) {
+    console.error("Failed to save contact message:", error);
+    res.status(500).json({ success: false, message: "Failed to send message." });
+  }
+});
+
+
+
+
 
 
 

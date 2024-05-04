@@ -4,28 +4,25 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 
-// GET request handler for the Profile page
-router.get('/', async (req, res) => {
-  // Check if the user is not logged in
-  if (!req.session.userId) {
-    // Redirect to the login page if not logged in
-    return res.redirect('/login');
+// Middleware to check if the user is authenticated
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
   }
+  res.redirect('/login');
+}
 
+// GET request handler for the Profile page
+router.get('/', ensureAuthenticated, async (req, res) => {
   try {
-    // Find the user by the ID stored in the session
     const user = await prisma.user.findUnique({
-      where: { id: req.session.userId },
+      where: { id: req.user.id },
     });
 
-    // If no user is found, destroy the session and redirect to login
     if (!user) {
-      req.session.destroy(() => {
-        res.clearCookie('connect.sid'); // The name 'connect.sid' is the default session cookie name. Change if different.
-        res.redirect('/login',);
-      });
+      req.logout();
+      res.redirect('/login');
     } else {
-      // Render the profile page and pass the user data to the template
       res.render('profile', { title: 'Profile', userData: user });
     }
   } catch (error) {
@@ -35,43 +32,56 @@ router.get('/', async (req, res) => {
 });
 
 // POST request handler for updating the user profile
-router.post('/', async (req, res) => {
-  const { firstName, lastName,address, phoneNumber, currentPassword, newPassword } = req.body;
-
-  if (!req.session.userId) {
-    return res.status(401).send('User is not logged in.');
-  }
+router.post('/', ensureAuthenticated, async (req, res) => {
+  const { firstName, lastName, address, phoneNumber, currentPassword, newPassword } = req.body;
 
   try {
     const user = await prisma.user.findUnique({
-      where: { id: req.session.userId },
+      where: { id: req.user.id },
     });
 
     if (!user) {
-      return res.status(404).send('User not found.');
+      return res.status(404).json({ success: false, message: 'User not found.' });
     }
 
-    let updateData = { firstName, lastName,address, phoneNumber };
+    let updateData = { firstName, lastName, address, phoneNumber };
 
-    // Check if the current password is provided for password update
-    if (currentPassword && newPassword) {
-      const passwordValid = await bcrypt.compare(currentPassword, user.password);
-      if (!passwordValid) {
-        return res.status(401).send('Current password is incorrect.');
+    // Check if a new password is provided
+    if (newPassword) {
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+      if (!passwordRegex.test(newPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Password must be at least 8 characters long, include a number, a special character, and an uppercase letter.'
+        });
       }
-      updateData.password = await bcrypt.hash(newPassword, 10);
+
+      // If current password exists, validate it; if not, bypass this for OAuth users setting password for the first time
+      if (user.password && currentPassword) {
+        const passwordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!passwordValid) {
+          return res.status(401).json({ success: false, message: 'Current password is incorrect.' });
+        }
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      updateData.password = hashedPassword;
     }
 
     // Update the user profile
     await prisma.user.update({
-      where: { id: req.session.userId },
+      where: { id: req.user.id },
       data: updateData,
     });
 
-    res.redirect('/profile?alert=success');
+    res.json({ success: true, message: 'Profile updated successfully.' });
   } catch (error) {
-    res.status(500).send('An error occurred while updating the profile.');
+    console.error('Error updating profile:', error);
+    res.status(500).json({ success: false, message: 'An error occurred while updating the profile.' });
   }
 });
+
+
+
 
 module.exports = router;

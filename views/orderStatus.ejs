@@ -20,64 +20,121 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
         <link rel="stylesheet" href="stylesheets/menu.css" />
-      <link rel="stylesheet" href="stylesheets/index.css">
         <title>OrderStatus</title>
       </head>
-      
-      
               <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
-                <div class="lblso" style="margin: auto;">
-                   <label class="fpu">Order Status</label>
-                </div>
-            
-                <% const filteredOrders = orders.filter(order => order.status !== 'Completed' && order.status !== 'delivered'); %>
-            
-                <!-- Debugging: Output the filteredOrders array to the console -->
-                <script>
-                    // Escape the JavaScript code properly
-                    var filteredOrders = <%- JSON.stringify(filteredOrders) %>;
-                    console.log("Filtered Orders:", filteredOrders);
-                    // Sort orders in descending order based on order ID
-                    filteredOrders.sort((a, b) => b.id - a.id);
-                </script>
-            
-                <% if (filteredOrders.length > 0) { %>
-                    <div class="grid-container">
-                        <% filteredOrders.forEach(order => { %>
-                            <div class="order-card">
-                                <p><strong>Order ID:</strong> <%= order.id %></p>
-                                <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
-                                <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
-                                <p><strong>Amount:</strong> <%= order.amount %></p>
-                                <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
-                                <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
-                                <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
-                                <p><strong>Order Items:</strong></p>
-                                <strong>Payment Method:</strong> <%= order.paymentMethod %><br> <!-- Display payment method -->
-                                <div class="item-grid">
-                                    <% order.orderItems.forEach(item => { %>
-                                        <div class="item-card">
-                                            <p><b>Item Name:</b> <%= item.itemName %></p>
-                                            <p><strong>Item Size:</strong> <%= item.itemSize %></p>
-                                            <p><strong>Quantity:</strong> <%= item.quantity %></p>
-                                            <p><strong>Price:</strong> <%= item.itemPrice %></p>
-                                            <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
-                                            <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
-                                        </div>
-                                    <% }); %>
-                                </div>
-                            </div>
-                        <% }); %>
+                <div class="topnav">
+                  <div class="menu-toggle">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                  </div>
+                  <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px" /></a>
+                  <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px" /></a>
+                  <div class="menu">
+                    <a class="nav" href="/UserDashboard">Home</a>
+                    <div class="nav" onclick="openProfileModal()"
+                      style="font-size: 22px;cursor: pointer;float: right;margin: 1.3% 3% 0 0;color: #976b35;"> <i
+                        class="fas fa-user-circle fa-2x"></i>
                     </div>
-                    
-                <% } else { %>
-                    <p>No orders found.</p>
-                <% } %>
+                    <!-- Profile Modal -->
+                    <div id="profileModal" class="pmod">
+                      <div class="modal-contents">
+                        <span class="close" onclick="closeProfileModal()">&times;</span>
+                        <a class="prof" href="/profile">My Profile</a>
+                        <a class="prof" href="/recommendations">Recommended</a>
+                        <a class="prof" href="/logout">Logout</a>
+                      </div>
+                    </div>
+                    <!-- <a class="nav" onclick="openCartModal()" style="margin: 0.8% 0 0 0;font-size: 19px;cursor: pointer;color: #976b35;float: right;"><i class="fas fa-shopping-cart fa-2x"></i><span id="cart-counter">0</span> -->
+                      <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;"
+                      onclick="openCartPage()">
+                      <i class="fas fa-shopping-cart fa-2x"></i>
+                      <span id="cart-counter">0</span>
+                  </a>
+              
+                    </a>
+                    <%- include('dietaryPreferences.ejs') %>
+                      <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
+                      <a class="nav" href="/recommendations">Recommended</a>
+                      <a class="nav" href="/contact">Contact Us</a>
+                      <a class="nav" href="/userOrder">Orders</a>
+                      <!-- <a class="nav" href="/order-history">Order History</a>
+                      <a class="nav" href="/order-status">Order Status</a> -->
+                  </div>
+                  <div class="side-menu">
+                    <a href="/UserDashboard">Home</a>
+                    <a href="/confirmorderinfo">Orders</a>
+                    <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+                    <a href="#">Contact</a>
+                    <a href="/about">About</a>
+                    <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
+                    <a href="/profile">My Profile</a>
+                    <a href="/logout">Logout</a>
+                  </div>
+                </div>
+                <div class="dashboard">
+                  <div class="dashboard-banner">
+                    <img src="images/long.jpg" alt="" />
+                    <div class="banner-promo">
+                      <span><img class="logo" src="images/maya.png" alt="" height="330px" /></span>
+                    </div>
+                    <div class="cont">
+                      <div class="log">
+                          <a class="obtns" href="/orderHistory">Order History</a>
+                          <a class="obtns active" href="/orderStatus">Order Status</a>
+                      </div>
+                    </div>
+                      <div class="Olog">
+                        <a class="fbtns" href="/userMenu">Food Menu</a>
+                        <a class="fbtns" href="/userTrays">Party Trays</a>
+                        <a class="fbtns" href="/userMeals">Solo Meals</a>
+                      </div>
+                  </div>
+                </div>
+                <div class="lblso" >
+                  <label class="fpu">Order Status</label>
+              </div>
+          
+              <% if (orders.length > 0) { %>
+                <div class="grid-container">
+                    <% orders.forEach(order => { %>
+                        <div class="order-card">
+                            <p><strong>Order ID:</strong> <%= order.id %></p>
+                            <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
+                            <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
+                            <p><strong>Amount:</strong> <%= order.amount %></p>
+                            <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
+                            <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
+                            <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
+                            <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p> <!-- Display payment method -->
+                            <p><strong>Order Items:</strong></p>
+            
+                            <div class="item-grid">
+                                <% order.orderItems.forEach(item => { %>
+                                    <div class="item-card">
+                                        <p><b>Item Name:</b> <%= item.itemName %></p>
+                                        <p><strong>Item Size:</strong> <%= item.itemSize %></p>
+                                        <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                                        <p><strong>Price:</strong> <%= item.itemPrice %></p>
+                                        <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
+                                        <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <p>No orders found.</p>
+            <% } %>
+            
     <div class="lblso" style="margin:3% 0 0 1%;">
-        <label class="fpu" for="">Menu and Prices</label>s
+        <label class="fpu" for="">Menu and Prices</label>
         </div>
         <div>
-        <div class="gallery">
+        <div class="ogallery">
         <img src="images/m1.jpg" alt="Image 1">
         <img src="images/m4.jpg" alt="Image 1">
         <img src="images/m2.jpg" alt="Image 1">
@@ -225,3 +282,4 @@
 </body>
 
 </html>
+

@@ -5,32 +5,25 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// Middleware to check if user is authenticated
+// Middleware to check if user is authenticated using Passport
 function authenticate(req, res, next) {
-    console.log('Session:', req.session);
-    if (!req.session.userId) {
-        return res.redirect('/login');
-    } else {
-        console.log('User authenticated with userId:', req.session.userId);
+    if (req.isAuthenticated()) {
+        console.log('User authenticated with userId:', req.user.id);
         next();
+    } else {
+        console.log('User not authenticated. Redirecting to login.');
+        res.redirect('/login');
     }
 }
-
 // Fetch Cart Items for a User
 router.get('/items', authenticate, async (req, res) => {
     try {
-        // Ensure user is logged in
-        const userId = req.session.userId;
-        // Fetch cart items for the user
+        const userId = req.user.id; // Use req.user.id which is set by Passport
         const cartItems = await prisma.cartItem.findMany({
             where: { userId: userId },
             include: { foodItem: true },
         });
-        console.log('Cart Items:', cartItems); // Log retrieved cart items
-        
-        // Store cart items in session
-        req.session.cartItems = cartItems;
-
+        console.log('Cart Items:', cartItems);
         res.json(cartItems);
     } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -38,30 +31,23 @@ router.get('/items', authenticate, async (req, res) => {
     }
 });
 
+
 // Add or Update Cart Item
-router.post('/add', async (req, res) => {
-    const userId = req.session && req.session.userId; // Check if session exists and userId is set
+router.post('/add', authenticate, async (req, res) => {
+    const userId = req.user.id; // Use req.user.id which is set by Passport
     const { name, size, price, image, quantity } = req.body;
 
     try {
-        // Ensure user is logged in
-        if (!userId) {
-            return res.status(401).json({ message: 'User not authenticated.' });
-        }
-
-        // Attempt to find the food item
         let foodItem = await prisma.foodItem.findUnique({
             where: { name_size: { name, size } },
         });
 
         if (!foodItem) {
-            // Food item does not exist, create it
             foodItem = await prisma.foodItem.create({
                 data: { name, size, price, imageUrl: image },
             });
         }
 
-        // Check if the item already exists in the cart
         let existingCartItem = await prisma.cartItem.findFirst({
             where: {
                 userId: userId,
@@ -70,15 +56,13 @@ router.post('/add', async (req, res) => {
         });
 
         if (existingCartItem) {
-            // If item already exists, update the quantity
             const updatedCartItem = await prisma.cartItem.update({
                 where: { id: existingCartItem.id },
                 data: { quantity: existingCartItem.quantity + quantity },
                 include: { foodItem: true },
             });
-            return res.status(200).json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
+            res.status(200).json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
         } else {
-            // Create cart item
             const cartItem = await prisma.cartItem.create({
                 data: {
                     userId,
@@ -89,28 +73,23 @@ router.post('/add', async (req, res) => {
                     foodItem: true,
                 },
             });
-            return res.status(200).json({ success: true, message: 'Item added to cart successfully.', cartItem });
+            res.status(200).json({ success: true, message: 'Item added to cart successfully.', cartItem });
         }
     } catch (error) {
         console.error('Failed to add item to cart:', error);
-        return res.status(500).json({ message: 'Could not add item to cart.', error: error.message });
+        res.status(500).json({ message: 'Could not add item to cart.', error: error.message });
     }
 });
 
 // Update Cart Item Quantity
-router.put('/updateQuantity', async (req, res) => {
-    const userId = req.session && req.session.userId; // Check if session exists and userId is set
+router.put('/updateQuantity', authenticate, async (req, res) => {
+    const userId = req.user.id; // Use the user ID from Passport's user object
     const { cartItemId, quantity } = req.body;
 
     try {
-        // Ensure user is logged in
-        if (!userId) {
-            return res.status(401).json({ message: 'User not authenticated.' });
-        }
-
         // Update cart item quantity
         const updatedCartItem = await prisma.cartItem.update({
-            where: { id: cartItemId },
+            where: { id: cartItemId, userId: userId }, // Ensure the item belongs to the logged-in user
             data: { quantity },
             include: { foodItem: true },
         });
@@ -123,16 +102,11 @@ router.put('/updateQuantity', async (req, res) => {
 });
 
 // Delete Cart Item
-router.delete('/delete/:cartItemId', async (req, res) => {
-    const userId = req.session && req.session.userId; // Check if session exists and userId is set
+router.delete('/delete/:cartItemId', authenticate, async (req, res) => {
+    const userId = req.user.id; // Use the user ID from Passport's user object
     const cartItemId = req.params.cartItemId;
 
     try {
-        // Ensure user is logged in
-        if (!userId) {
-            return res.status(401).json({ message: 'User not authenticated.' });
-        }
-
         // Check if the cart item belongs to the current user
         const cartItem = await prisma.cartItem.findFirst({
             where: {
@@ -150,10 +124,8 @@ router.delete('/delete/:cartItemId', async (req, res) => {
             where: { id: cartItemId },
         });
 
-        // Send a success response back to the client
         res.status(200).json({ success: true, message: 'Cart item deleted successfully.' });
     } catch (error) {
-        // Handle any errors that occur during the deletion process
         console.error('Failed to delete cart item:', error);
         res.status(500).json({ success: false, message: 'An error occurred while deleting the cart item.', error: error.message });
     }

@@ -5,46 +5,76 @@ const openai = new OpenAI();
 // Define your menu items with their dietary categorizations
 // ... (existing menuDescription)
 // Define your menu items with their dietary categorizations
-const menuDescription = `1. Afritada (Tray): Chicken stew with vegetables [Omnivore, Gluten-Free, Nut-Free]
-    2. Bacon (Rice Meal): Crispy bacon strips, option with or without egg [Omnivore, Lactose-Free, Gluten-Free]
-    3. Baked Cream Dory w/ Potatoes (Tray): Creamy fish and potato bake [Pescatarian, Gluten-Free, Nut-Free]
-    4. Beef Caldereta (Tray): Spicy beef stew with vegetables [Omnivore, Gluten-Free, Nut-Free]
-    5. Beef Mechado (Tray): Filipino beef stew with tomato sauce [Omnivore, Gluten-Free, Nut-Free]
-    6. Beef Tapa (Rice Meal): Cured beef slices, option with or without egg [Omnivore, Gluten-Free, Lactose-Free]
-    7. Beef w/ Broccoli (Tray): Beef slices with broccoli in a savory sauce [Omnivore, Gluten-Free, Nut-Free]
-    8. Beef Salpicao (Tray): Garlic beef stir-fry [Omnivore, Gluten-Free, Nut-Free]
-    9. Buttered Carrots w/ Chicharo (Tray): Buttered carrots and peas [Vegetarian, Gluten-Free, Nut-Free]
-    10. Buttered Potato Marbles (Tray): Buttered small potatoes [Vegetarian, Gluten-Free, Nut-Free]
-    11. Canton Guisado (Short Order): Stir-fried noodles [Omnivore, Nut-Free]
-    12. Caldereta (Tray): Spicy meat stew with tomato sauce [Omnivore, Gluten-Free, Nut-Free]
-    13. Chami (Short Order): Sweet and spicy fried noodles [Omnivore, Nut-Free]
-    14. Chicken Ala King (Tray): Creamy chicken with vegetables [Omnivore, Nut-Free]
-    15. Chicken Embotido (Tray): Filipino meatloaf with chicken [Omnivore, Nut-Free]
-    16. Chicken Roll (Rice Meal): Rolled chicken cutlet, option with or without egg [Omnivore, Nut-Free]
-    17. Chicken Roll (Tray): Chicken meat roll [Omnivore, Gluten-Free, Nut-Free]
-    18. Creamy Beef w/ Mushroom (Tray): Beef in creamy mushroom sauce [Omnivore, Gluten-Free, Nut-Free]
-    19. Embotido (Tray): Filipino meatloaf [Omnivore, Nut-Free]
-    20. Fresh Lumpiang Ubod: Fresh spring rolls with vegetables [Vegetarian, Gluten-Free, Nut-Free]
-    21. Fried Chicken Fingers: Breaded chicken strips [Omnivore, Nut-Free]
-    22. Fried Fish Filet (Tray): Breaded fish fillets [Pescatarian, Nut-Free]
-    23. Glazed Chicken (Tray): Chicken with sweet glaze [Omnivore, Gluten-Free, Nut-Free]
-    24. Glazed Fish Fillet (Tray): Fish with sweet glaze [Pescatarian, Gluten-Free, Nut-Free]
-    25. Hamonado (Tray): Sweet pork dish [Omnivore, Gluten-Free, Nut-Free]
-    26. Hungarian Sausage (Rice Meal): Spicy sausage, option with or without egg [Omnivore, Gluten-Free, Lactose-Free]
-    27. Kare-Kare (Tray): Peanut-based meat stew [Omnivore, Gluten-Free]
-    28. Korean Beef Stew (Tray): Beef in Korean-style sauce [Omnivore, Nut-Free]
-    29. Longganisa (Rice Meal): Filipino sausage, option with or without egg [Omnivore, Gluten-Free, Lactose-Free]
-    30. Lumpiang Shanghai (Rice Meal): Fried spring rolls [Omnivore, Nut-Free]
-    31. Menudo (Tray): Tomato-based pork and liver stew [Omnivore, Gluten-Free, Nut-Free]
-    32. Mixed Vegies in Cream (Tray): Creamed mixed vegetables [Vegetarian, Gluten-Free, Nut-Free]
-    33. Mongolian Beef (Tray): Spicy beef stir-fry [Omnivore, Gluten-Free, Nut-Free]
-    34. Pork Tocino (Rice Meal): Sweet cured pork, option with or without egg [Omnivore, Gluten-Free, Lactose-Free]
-    35. Pork Pastel (Tray): Pork stew with mixed vegetables [Omnivore, Gluten-Free, Nut-Free]
-    36. Sautéed Fish and Veggies in Chili Garlic Sauce (Tray): Fish with vegetables in a spicy sauce [Pescatarian, Gluten-Free, Nut-Free]
-    37. Sautéed Veggies in Oyster Sauce (Tray): Stir-fried vegetables in oyster sauce [Vegetarian, Gluten-Free, Nut-Free]
-    38. Sisig (Tray): Minced pork head and liver in a sizzling plate [Omnivore, Nut-Free]
-    39. Sweet and Sour Fish Fillet (Tray): Fish fillet in sweet and sour sauce [Pescatarian, Nut-Free]
-    41. Sweet and Sour Pork (Tray): Pork in sweet and sour sauce [Omnivore, Nut-Free] `; // Add all your menu items in this format
+const menuDescription = `
+**Omnivore:**
+1. Afritada (Tray): Chicken stew with vegetables
+2. Bacon (Rice Meal): Crispy bacon strips, option with or without egg
+3. Beef Mechado (Tray): Filipino beef stew with tomato sauce
+4. Beef Tapa (Rice Meal): Cured beef slices, option with or without egg
+5. Beef w/ Broccoli (Tray): Beef slices with broccoli in a savory sauce
+6. Beef Salpicao (Tray): Garlic beef stir-fry
+7. Caldereta (Tray): Spicy meat stew with tomato sauce
+8. Chicken Ala King (Tray): Creamy chicken with vegetables
+9. Chicken Embotido (Tray): Filipino meatloaf with chicken
+10. Chicken Roll (Rice Meal): Rolled chicken cutlet, option with or without egg
+11. Chicken Roll (Tray): Chicken meat roll
+12. Creamy Beef w/ Mushroom (Tray): Beef in creamy mushroom sauce
+13. Fried Chicken Fingers: Breaded chicken strips
+14. Fried Fish Filet (Tray): Breaded fish fillets
+15. Glazed Chicken (Tray): Chicken with sweet glaze
+16. Glazed Fish Fillet (Tray): Fish with sweet glaze
+17. Hamonado (Tray): Sweet pork dish
+18. Hungarian Sausage (Rice Meal): Spicy sausage, option with or without egg
+19. Kare-Kare (Tray): Peanut-based meat stew
+20. Korean Beef Stew (Tray): Beef in Korean-style sauce
+21. Longganisa (Rice Meal): Filipino sausage, option with or without egg
+22. Menudo (Tray): Tomato-based pork and liver stew
+23. Mongolian Beef (Tray): Spicy beef stir-fry
+24. Pork Tocino (Rice Meal): Sweet cured pork, option with or without egg
+25. Pork Pastel (Tray): Pork stew with mixed vegetables
+26. Sweet and Sour Pork (Tray): Pork in sweet and sour sauce
+
+**Gluten-Free:**
+1. Bacon (Rice Meal): Crispy bacon strips, option with or without egg
+2. Baked Cream Dory w/ Potatoes (Tray): Creamy fish and potato bake
+3. Beef Caldereta (Tray): Spicy beef stew with vegetables
+4. Beef Mechado (Tray): Filipino beef stew with tomato sauce
+5. Beef Tapa (Rice Meal): Cured beef slices, option with or without egg
+6. Beef w/ Broccoli (Tray): Beef slices with broccoli in a savory sauce
+7. Beef Salpicao (Tray): Garlic beef stir-fry
+8. Caldereta (Tray): Spicy meat stew with tomato sauce
+9. Chicken Roll (Tray): Chicken meat roll
+10. Creamy Beef w/ Mushroom (Tray): Beef in creamy mushroom sauce
+11. Glazed Chicken (Tray): Chicken with sweet glaze
+12. Glazed Fish Fillet (Tray): Fish with sweet glaze
+13. Hamonado (Tray): Sweet pork dish
+14. Hungarian Sausage (Rice Meal): Spicy sausage, option with or without egg
+15. Kare-Kare (Tray): Peanut-based meat stew
+16. Menudo (Tray): Tomato-based pork and liver stew
+17. Mongolian Beef (Tray): Spicy beef stir-fry
+18. Pork Tocino (Rice Meal): Sweet cured pork, option with or without egg
+19. Pork Pastel (Tray): Pork stew with mixed vegetables
+20. Sautéed Fish and Veggies in Chili Garlic Sauce (Tray): Fish with vegetables in a spicy sauce
+
+**Nut Allergy:**
+1. Canton Guisado (Short Order): Stir-fried noodles
+2. Chami (Short Order): Sweet and spicy fried noodles
+3. Chicken Ala King (Tray): Creamy chicken with vegetables
+4. Chicken Embotido (Tray): Filipino meatloaf with chicken
+5. Chicken Roll (Rice Meal): Rolled chicken cutlet, option with or without egg
+6. Lumpiang Shanghai (Rice Meal): Fried spring rolls
+7. Sisig (Tray): Minced pork head and liver in a sizzling plate
+8. Sweet and Sour Fish Fillet (Tray): Fish fillet in sweet and sour sauce
+9. Sweet and Sour Pork (Tray): Pork in sweet and sour sauce
+
+**Vegetarian:**
+1. Buttered Carrots w/ Chicharo (Tray): Buttered carrots and peas
+2. Buttered Potato Marbles (Tray): Buttered small potatoes
+3. Fresh Lumpiang Ubod (Tray): Fresh spring rolls with vegetables
+4. Mixed Vegies in Cream (Tray): Creamed mixed vegetables
+5. Sautéed Veggies in Oyster Sauce (Tray): Stir-fried vegetables in oyster sauce
+`;
+ // Add all your menu items in this format
 
 async function recommendation1() {
   const completion = await openai.chat.completions.create({
@@ -75,53 +105,102 @@ async function revised_generated_recommendation(dietaryData) {
     .filter(([_, value]) => value)
     .map(([key, _]) => key)
     .join(", ");
-  console.log("CALL5: ", dietaryPreferences);
+  console.log("CALL5: ", dietaryPreferences); // Log the filtered dietary preferences
+
+  // Construct the prompt to send to the OpenAI API
   const prompt = `Given a customer's dietary preferences, suggest suitable menu options from the following list of dishes:
     ${menuDescription}
+    The customer's dietary preferences are: ${dietaryPreferences}. Please provide recommendations for each dietary preference based on the dishes listed.`;
 
-    The customer's dietary preferences are: ${dietaryPreferences}. Please provide recommendations for each dietary preference based on the dishes listed. And please copy the exact text in the list once selected.`;
+  console.log("Sending the following prompt to OpenAI:", prompt);
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo-0125",
-    messages: [
-      {
-        role: "system",
-        content: "You are a helpful assistant designed to output JSON.",
-      },
-      { role: "user", content: prompt },
-    ],
-  });
+  try {
+    // Make the API call to OpenAI with the constructed prompt
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo-0125",
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful assistant designed to output simple text.",
+        },
+        { role: "user", content: prompt },
+      ],
+    });
 
-  const convertedResponse = convertTextToObject(
-    response.choices[0].message.content
-  );
-  return convertedResponse;
-}
+    console.log("API Response:", JSON.stringify(response, null, 2));
 
-function convertTextToObject(text) {
-  // Remove newline characters and escape characters from the text
-  const sanitizedText = text
-    .replace(/\\n|\\/g, "")
-    .trim()
-    .replace(/^```json\s+/, "")
-    .replace(/\s+```$/, "");
-  const obj = JSON.parse(sanitizedText);
-  return extractValues(obj);
-}
-
-function extractValues(obj) {
-  let result = [];
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key) && Array.isArray(obj[key])) {
-      result.push(...obj[key]);
+    // Check for valid response and parse the text
+    if (!response.choices || response.choices.length === 0 || !response.choices[0].message.content) {
+      console.error("No valid response or content available from the API.");
+      return []; // Return an empty array if no data
     }
+
+    // The response is expected as a string of recommendations separated by line breaks
+    const recommendationsText = response.choices[0].message.content;
+    const recommendationsArray = recommendationsText.split("\n").filter(line => line.trim());
+
+    return recommendationsArray;
+  } catch (error) {
+    console.error("Failed to generate recommendations:", error);
+    return []; // Return an empty array or handle the error as needed
   }
-  return result;
 }
+
+
+
+
+// function convertTextToObject(text) {
+//   try {
+//     // Remove potential formatting issues and parse the JSON string directly
+//     const obj = JSON.parse(text);
+
+//     // We need to dynamically extract keys since the dietary preference might change
+//     // This checks for the first property in the object which should correspond to the dietary preference
+//     const firstKey = Object.keys(obj)[0]; // This assumes there is at least one key
+//     if (!firstKey) {
+//       console.error("No dietary preferences found in the response.");
+//       return [];
+//     }
+
+//     // Return the array associated with the first key, typically the dietary preference like "vegetarian"
+//     return obj[firstKey] || [];
+//   } catch (error) {
+//     console.error("Error converting text to JSON object:", error);
+//     return [];
+//   }
+// }
+
+
+
+
+// function extractValues(obj) {
+//   // Check if the input is a valid object
+//   if (typeof obj !== 'object' || obj === null) {
+//     console.error("Invalid input: expected an object");
+//     return [];
+//   }
+
+//   let result = [];
+//   // Loop through each property in the object
+//   for (let key in obj) {
+//     // Ensure the property is actually part of the object, not inherited
+//     if (obj.hasOwnProperty(key)) {
+//       // Check if the property is an array
+//       if (Array.isArray(obj[key])) {
+//         // If it's an array, push all its elements to the result
+//         result.push(...obj[key]);
+//       } else if (typeof obj[key] === 'object') {
+//         // If it's another object, recursively extract values
+//         result.push(...extractValues(obj[key]));
+//       }
+//     }
+//   }
+//   return result;
+// }
 
 module.exports = {
   recommendation1,
   recommendation2,
   revised_generated_recommendation,
-  extractValues,
+  // extractValues,
 };

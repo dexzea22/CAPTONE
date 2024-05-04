@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="website icon" type="png" href="images/maya.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
     <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
@@ -21,10 +22,10 @@
         <div class="bar"></div>
         <div class="bar"></div>
       </div>
-      <a href="/index"><img src="images/logo.png" height="60px" width="60px"></a>
-      <a href="/index"><img src="images/mayame.png" height="60px" width="190px"></a>
+      <a href="/login"><img src="images/logo.png" height="60px" width="60px"></a>
+      <a href="/login"><img src="images/mayame.png" height="60px" width="190px"></a>
       <div class="menu">
-      <a class="nav" href="/index">Home</a>
+      <a class="nav" href="/login">Home</a>
       <a class="nav" href="/contactUs">Contact</a>
       <a class="nav" href="/aboutUs">About</a>
       <a href="/login" class="nav" style="float:right; margin-right: 5%;">Login</a>
@@ -94,17 +95,23 @@
           <div class="action" accesskey="">
           <button class="btns">Login</button>
         </div>
+        <div class="actionss">
+        <label class="lbll" for="">Or</label>
+      </div>
+        <div class="actions">
+          <a href="/auth/google" class="btn btn-primary"><div class="fa-google-wrapper"><span class="fab fa-google"></span></div>&emsp14;Login with Google</i></a>
+        </div>
                 <div>
                   <!-- Simple link -->
                 <label class="dha">Don't Have An Account?</label> <a href="/register"> Register here!</a>
                 </div>
     
               </form>
-    
             </div>
           </div>
         </div>
       </div> 
+      </body>
   <!-- Remove the container if you want to extend the Footer to full width. -->
   <div class="cntr">
 
@@ -194,5 +201,4 @@
   </div>
     <!-- End of .container -->
   <script src="scripts/index.js"></script>
-  </body>
   </html>
