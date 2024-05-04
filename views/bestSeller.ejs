@@ -36,34 +36,33 @@
     <title>Best Sellers</title>
   </head>
   <body>
-    <h1>Top 5 Best Sellers</h1>
-    <div class="cards" id="bestSellerItems">
-      <% bestSellerItems.forEach(item => { %>
-      <div class="cards" id="<%= item.id %>">
-        <img
-          class="card-image"
-          src="<%= item.imageUrl %>"
-          alt="<%= item.name %>"
-        />
-        <div class="card-detail">
-          <h4><%= item.name %></h4>
-          <div class="gallery">
-            <!-- Add sizes dynamically if needed -->
+    <h1 class="text-center">Top 5 Best Sellers</h1>
+    <div class="container">
+      <div class="row">
+        <% bestSellerItems.forEach(item => { %>
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card">
+            <img
+              class="card-img-top"
+              src="<%= item.imageUrl %>"
+              alt="<%= item.name %>"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= item.name %></h5>
+              <p class="card-text">
+                <span class="fas fa-clock"></span>15-30 mins
+              </p>
+              <button
+                onclick="addToCart('<%= item.name %>','<%= item.id %>')"
+                class="btn btn-primary"
+              >
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+              </button>
+            </div>
           </div>
-          <div class="rat">
-            <p>Rating:</p>
-            <!-- Add star rating dynamically if needed -->
-          </div>
-          <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-          <button
-            onclick="addToCart('<%= item.name %>','<%= item.id %>')"
-            class="cbtn"
-          >
-            <i class="fas fa-shopping-cart"></i>
-          </button>
         </div>
+        <% }); %>
       </div>
-      <% }); %>
     </div>
 
     <!-- Lightbox (hidden by default) -->
