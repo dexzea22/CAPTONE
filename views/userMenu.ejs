@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Menu | Maya&Me</title>
-  <link rel="website icon" type="png" href="images/maya.png" />
+  <link rel="website icon" type="png" href="images/maya.png">
   <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700" />
@@ -52,8 +52,8 @@
       <%- include('dietaryPreferences.ejs') %>
         <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
         <a class="nav" href="/recommendations">Recommended</a>
-        <a class="nav" href="/contact">Contact Us</a>
         <a class="nav" href="/userOrder">Orders</a>
+        <a class="nav" href="/contact">Contact Us</a>
         <div class="nav" style="float: right;">
           <div class="search-input">
             <i class="fas fa-search"></i>
@@ -64,9 +64,10 @@
     </div>
     <div class="side-menu">
       <a href="/UserDashboard">Home</a>
-      <a href="/userOrder">Orders</a>
       <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+      <a href="/recommendations">Recommended</a>
       <a href="/contact">Contact Us</a>
+      <a href="/userOrder">Orders</a>
       <a href="/about">About Us</a>
       <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
       <a href="/profile">My Profile</a>
@@ -81,11 +82,15 @@
       </div>
       <div class="cont">
         <div class="log">
+            <a class="obtns" href="/bestSeller">Best Sellers</a>
+            <a class="obtns" href="/featuredItem">New Products</a>
+        </div>
+      </div>
+        <div class="Olog">
           <a class="fbtns active" href="/userMenu">Food Menu</a>
           <a class="fbtns" href="/userTrays">Party Trays</a>
           <a class="fbtns" href="/userMeals">Solo Meals</a>
         </div>
-      </div>
     </div>
   </div>
 
@@ -131,7 +136,6 @@
           </div>
         </div>
         <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        
         <button onclick="addToCart('Pork Afritada','afrtd')" class="cbtn">
           <i class="fas fa-shopping-cart"></i>
         </button>
@@ -144,8 +148,8 @@
         <div style="margin-top: 11%">
           <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('brm')" />
           <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('brm')" />
-          <label for="">Without Egg (₱95.00)</label><br />
+          <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('brm')" />
+          <label for="">W/Out Egg (₱95.00)</label><br />
         </div>
         <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
@@ -311,8 +315,8 @@
         <div style="margin-top: 11%">
           <input type="radio" name="size" value="(With Egg)-110" onchange="updatePriceDisplay('btrm')" />
           <label for="">With Egg (₱110.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-105"  onchange="updatePriceDisplay('btrm')"/>
-          <label for="">Without Egg (₱105.00)</label><br />
+          <input type="radio" name="size" value="(W/Out Egg)-105"  onchange="updatePriceDisplay('btrm')"/>
+          <label for="">W/Out Egg (₱105.00)</label><br />
         </div>
         <div class="quantity-selector" style="margin-top: 28%" >
           <label>Quantity:</label>
@@ -716,8 +720,8 @@
         <div style="margin-top: 11%">
           <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('crrm')" />
           <label for="">With Egg (₱100.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('crrm')" />
-          <label for="">Without Egg (₱95.00)</label><br />
+          <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('crrm')" />
+          <label for="">W/Out Egg (₱95.00)</label><br />
         </div>
         <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
@@ -1143,8 +1147,8 @@
         <div>
           <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('hsr')" />
           <label for="">With Egg (₱85.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('hsr')" />
-          <label for="">Without Egg (₱80.00)</label><br />
+          <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('hsr')" />
+          <label for="">W/Out Egg (₱80.00)</label><br />
           <input type="radio" name="size" value="(Add Sausage)-115" onchange="updatePriceDisplay('hsr')" />
           <label for="">Additional Sausage (₱115.00)</label><br />
         </div>
@@ -1265,8 +1269,8 @@
         <div style="margin-top: 11%">
           <input type="radio" name="size" value="(With Egg)-85" onchange="updatePriceDisplay('lrm')" />
           <label for="">With Egg (₱85.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-80" onchange="updatePriceDisplay('lrm')" />
-          <label for="">Without Egg (₱80.00)</label><br />
+          <input type="radio" name="size" value="(W/Out Egg)-80" onchange="updatePriceDisplay('lrm')" />
+          <label for="">W/Out Egg (₱80.00)</label><br />
         </div>
         <div class="quantity-selector"  style="margin-top: 28%">
           <label>Quantity:</label>
@@ -1296,7 +1300,7 @@
           <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('lsrm')" />
           <label for="">With Egg (₱100.00)</label><br />
           <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('lsrm')" />
-          <label for="">Without Egg (₱95.00)</label><br />
+          <label for="">W/Out Egg (₱95.00)</label><br />
         </div>
         <div class="quantity-selector"  style="margin-top: 28%">
           <label>Quantity:</label>
@@ -1460,8 +1464,8 @@
         <div style="margin-top: 11%">
           <input type="radio" name="size" value="(With Egg)-90" onchange="updatePriceDisplay('ptcrm')" />
           <label for="">With Egg (₱90.00)</label><br />
-          <input type="radio" name="size" value="(Without Egg)-85" onchange="updatePriceDisplay('ptcrm')" />
-          <label for="">Without Egg (₱85.00)</label><br />
+          <input type="radio" name="size" value="(W/Out Egg)-85" onchange="updatePriceDisplay('ptcrm')" />
+          <label for="">W/Out Egg (₱85.00)</label><br />
         </div>
         <div class="quantity-selector" style="margin-top: 28%">
           <label>Quantity:</label>
@@ -2131,13 +2135,13 @@ createStarRating('star-rating43', 5);
     
         <div class="mt-4">
       <!-- Facebook -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+      <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
       <!-- Dribbble -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+      <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
       <!-- Twitter -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+      <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
       <!-- Google + -->
-      <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+      <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
       <!-- Linkedin -->
     </div>
         </div>

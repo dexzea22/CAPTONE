@@ -55,8 +55,8 @@
       <%- include('dietaryPreferences.ejs') %>
       <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
       <a class="nav" href="/recommendations">Recommended</a>
-      <a class="nav" href="/contact">Contact Us</a>
       <a class="nav" href="/userOrder">Orders</a>
+      <a class="nav" href="/contact">Contact Us</a>
       <div class="nav" style="float: right;">
       <div class="search-input">
         <i class="fas fa-search"></i>
@@ -66,9 +66,10 @@
     </div>
      <div class="side-menu">
       <a href="/UserDashboard">Home</a>
-      <a href="/userOrder">Orders</a>
       <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-      <a href="#">Contact</a>
+      <a href="/recommendations">Recommended</a>
+      <a href="/userOrder">Orders</a>
+      <a href="contact">Contact</a>
       <a href="/about">About</a>
       <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
       <a href="/profile">My Profile</a>
@@ -85,11 +86,15 @@
       </div>
       <div class="cont">
         <div class="log">
-          <a class="fbtns" href="/userMenu">Food Menu</a>
-          <a class="fbtns active" href="/userTrays">Party Trays</a>
-          <a class="fbtns" href="/userMeals">Solo Meals</a>           
+            <a class="obtns" href="/bestSeller">Best Sellers</a>
+            <a class="obtns" href="/featuredItem">New Products</a>
         </div>
       </div>
+        <div class="Olog">
+          <a class="fbtns" href="/userMenu">Food Menu</a>
+          <a class="fbtns active" href="/userTrays">Party Trays</a>
+          <a class="fbtns" href="/userMeals">Solo Meals</a>
+        </div>
     </div>
   </div>
     <div class="dashboard-content" id="container">
@@ -1862,7 +1867,7 @@ createStarRating('star-rating41', 5);
     </script>
     <script src="scripts/meals.js"></script>
   </body>
-  <div class="cntr">
+  <div class="cntr" style="margin-top: 100px">
     <footer
       class="text-white text-center text-lg-start"
       style="background-color: #c69b68"
@@ -1885,19 +1890,19 @@ createStarRating('star-rating41', 5);
 
             <div class="mt-4">
               <!-- Facebook -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"
                 ><i class="fab fa-facebook-f"></i
               ></a>
               <!-- Dribbble -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"
                 ><i class="fab fa-dribbble"></i
               ></a>
               <!-- Twitter -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"
                 ><i class="fab fa-twitter"></i
               ></a>
               <!-- Google + -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"
                 ><i class="fab fa-google-plus-g"></i
               ></a>
               <!-- Linkedin -->

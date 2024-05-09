@@ -48,8 +48,8 @@
               <%- include('dietaryPreferences.ejs') %>
               <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
               <a class="nav" href="/recommendations">Recommended</a>
+              <a class="nav" href="/userOrder">Orders</a>
               <a class="nav" href="/contact">Contact Us</a>
-            <a class="nav" href="/userOrder">Orders</a>
             </div>
              <div class="side-menu">
               <a href="/UserDashboard">Home</a>
@@ -70,7 +70,7 @@
             </div>
           </div>
           <div class="container mt-4">
-            <h1 class="display-4 text-center">Your Dietary Recommendations</h1>
+            <h1 class="lbls display-4 text-center">Your Dietary Recommendations</h1>
             <!-- Recommendations container where the list of recommendations will be displayed -->
             <div id="recommendations-container" class="mt-3">
                 <!-- Check if there are any recommendations to display -->
@@ -94,365 +94,454 @@
                 <% } %>
             </div>
             <!-- Link to navigate back to the user dashboard -->
-            <a href="/UserDashboard" class="btn btn-primary mt-3">Back to Dashboard</a>
+            <a href="/UserDashboard" class="btn mt-3">Back to Dashboard</a>
         </div>
     
-
-
-
-
-
-
-
-
-
-        
-        
-        
-
-    <div class="cntr" style="margin-top: 100px;">
-
-        <footer class="text-white text-center text-lg-start" style="background-color: #C69B68;">
-          <!-- Grid container -->
-          <div class="p-5">
-          
-          <!--Grid row-->
-          
-          <div class="row mt-4">
-            <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-            <!--Grid column-->
-            <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-4">About company</h5>
-        
-            <label style="color: white;">
-              Thank you for choosing Maya&Me Services for your food ordering needs. We're here to satisfy your cravings, one delicious meal at a time. Enjoy your meal and have a wonderful day!
-            </label>
-        
-            <div class="mt-4">
-              <!-- Facebook -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
-              <!-- Dribbble -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
-              <!-- Twitter -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
-              <!-- Google + -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
-              <!-- Linkedin -->
+        <div class="cntr">
+            <div class="lbls" style="margin:3% 0 0 1%;">
+            <label class="fpu" for="">Menu and Prices</label>
             </div>
-            </div>
-            <!--Grid column-->
-        <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-            <!--Grid column-->
-            <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
-        
-            <ul class="fa-ul" style="margin-left: 1.65em;">
-              <li class="mb-3">
-              <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
-              </li>
-              <li class="mb-3">
-              <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
-              </li>
-              <li class="mb-3">
-              <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
-              </li>
-           
-            </ul>
-            </div>
-            <!--Grid column-->
-        
-            <!--Grid column-->
-            <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-            <h5 class="text-uppercase mb-4">Opening hours</h5>
-        
-            <table class="table text-center text-white">
-              <tbody class="font-weight-normal">
-              <tr>
-                <td>Mon - Thu:</td>
-                <td>8am - 9pm</td>
-              </tr>
-              <tr>
-                <td>Fri - Sat:</td>
-                <td>8am - 1am</td>
-              </tr>
-              <tr>
-                <td>Sunday:</td>
-                <td>9am - 10pm</td>
-              </tr>
-              </tbody>
-            </table>
-            </div>
-            <!--Grid column-->
-          </div>
-          <!--Grid row-->
-          </div>
-          <!-- Grid container -->
-        
-          <!-- Copyright -->
-          <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
-          © 2023 Copyright:
-          <label  style="color:#976b35 ;">Maya&Me Services</label>
-          </div>
-          <!-- Copyright -->
-        </footer>
-        </div>
-          <!-- End of .container -->
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script>
-      // Function to update the quantity of a cart item
-function updateCartItemQuantity(cartItemId, newQuantity) {
-    fetch('/api/cart/items', {
-        method: 'GET',
-        credentials: 'include', // Important for sessions
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch cart items. Please try again.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-        const itemToUpdate = data.find(item => item._id === cartItemId || item.id === cartItemId);
-        const updatedTotalPrice = itemToUpdate.foodItem.price * newQuantity;
-
-        // Check if adding the updated item exceeds the limit
-        if (totalPrice + updatedTotalPrice > 10000) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Cart Limit Exceeded',
-                text: 'Adding this item will exceed PHP 10,000. Please remove some items.',
-            });
-        } else {
-            // Proceed with updating the item quantity in the cart
-            fetch('/api/cart/updateQuantity', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', // Important for sessions
-                body: JSON.stringify({ cartItemId, quantity: newQuantity }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to update item quantity in cart. Please try again.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Call the function to fetch and display cart items again
-                    displayCartItems();
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: data.message || 'Could not update item quantity in the cart.',
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error updating item quantity in cart:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
-                });
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching cart items:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to fetch cart items. Please try again.',
-        });
-    });
-}
-
-
-       // Function to fetch and display cart items
-function displayCartItems() {
-    fetch('/api/cart/items', {
-        method: 'GET',
-        credentials: 'include', // Important for sessions
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch cart items. Please try again.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const cartItemsContainer = document.getElementById('mod-cart-items');
-            cartItemsContainer.innerHTML = ''; // Clear previous content
-
-            if (data.length > 0) { // Check if data is not empty
-                let totalPrice = 0; // Initialize total price variable
-
-                data.forEach(item => {
-                    const itemElement = document.createElement('div');
-                    itemElement.classList.add('row', 'border-top', 'border-bottom');
-
-                    // Calculate the total price for each item
-                    const itemTotalPrice = item.foodItem.price * item.quantity;
-                    totalPrice += itemTotalPrice; // Add to the total price
-
-                    itemElement.innerHTML = `
-            <div class="col-2"><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
             <div>
-                <div>${item.foodItem.name} (${item.foodItem.size})</div>
-                <div>Price: PHP ${item.foodItem.price.toFixed(2)}</div>
-                <div>Quantity: 
-                    <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
-                    <span>${item.quantity}</span>
-                    <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
-
-                </div>
-                <div>Total Price: PHP ${itemTotalPrice.toFixed(2)}</div> <!-- Display total price for each item -->
-                <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')">Delete</button>
+              <div class="ogallery">
+                <img src="images/m1.jpg" alt="Image 1" onclick="openLightbox('images/m1.jpg')">
+                <img src="images/m4.jpg" alt="Image 1" onclick="openLightbox('images/m4.jpg')">
+                <img src="images/m2.jpg" alt="Image 1" onclick="openLightbox('images/m2.jpg')">
+                <img src="images/m5.jpg" alt="Image 1" onclick="openLightbox('images/m5.jpg')">
+                <img src="images/m3.jpg" alt="Image 1" onclick="openLightbox('images/m3.jpg')">
+                <!-- Add more images as needed -->
+              </div>
+            <!-- Lightbox (hidden by default) -->
+            <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+              <img src="" alt="Enlarged Image" class="lightbox-image">
+              <!-- Add close button or any other content here -->
             </div>
-        `;
-
-                    cartItemsContainer.appendChild(itemElement);
-                });
-
-                // Update the total price displayed in the UI
-                document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
-                document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
-
-                // Check if the total price exceeds the limit
-                if (totalPrice > 10000) {
-                    // Display a warning message
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Cart Limit Exceeded',
-                        text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
-                    });
-                }
-            } else {
-                // Display a message if the cart is empty
-                cartItemsContainer.innerHTML = '<div>No items in cart</div>';
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching cart items:', error);
-            // Display an error message
-            const cartItemsContainer = document.getElementById('mod-cart-items');
-            cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
-        });
-}
-
-
-
-        // Call the function to fetch and display cart items when the page loads
-        document.addEventListener('DOMContentLoaded', displayCartItems);
-
-        document.addEventListener('DOMContentLoaded', (event) => {
-            // Get the modal
-            var modal = document.getElementById("payment-modal");
-
-            // Get the button that opens the modal
-            var btn = document.getElementById("checkoutButton");
-
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close-button")[0];
-
-            if (btn && modal && span) {
-                // When the user clicks the button, open the modal 
-                btn.onclick = function (event) {
-                    event.preventDefault();  // Prevent any default button action
-                    modal.style.display = "block";
-                }
-
-                // When the user clicks on <span> (x), close the modal
-                span.onclick = function (event) {
-                    event.preventDefault();  // Prevent any default span action
-                    modal.style.display = "none";
-                };
-
-                // When the user clicks anywhere outside of the modal, close it
-                window.onclick = function (event) {
-                    if (event.target == modal) {
-                        event.preventDefault();  // Prevent any default window action
-                        modal.style.display = "none";
-                    }
-                }
-
-                // Prevent events inside the modal from closing it and stop propagation
-                modal.children[0].onclick = function (event) {
-                    event.stopPropagation();
-                    event.preventDefault();  // Prevent any default action inside the modal
-                }
-            } else {
-                console.error("Elements not found. Please check the IDs and class names.");
-            }
-        });
-
-        function updateQuantity(cartItemId, newQuantity) {
-            // Ensure the quantity is not negative
-            if (newQuantity < 0) {
-                return;
-            }
-            updateCartItemQuantity(cartItemId, newQuantity);
-        }
-        // Function to update the cart counter and item counter
-        function updateCartCounter() {
-            fetch('/api/cart/items', {
-                method: 'GET',
-                credentials: 'include', // Important for sessions
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch cart items. Please try again.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Calculate total number of items in the cart
-                    const totalItems = data.reduce((total, item) => total + item.quantity, 0);
-                    // Update the cart counter and item counter in the UI
-                    document.getElementById('cart-counter').textContent = totalItems;
-                    document.getElementById('item-counter').textContent = totalItems; // Update item counter
-                })
-                .catch(error => {
-                    console.error('Error fetching cart items:', error);
-                    // Display an error message or handle it as per your requirement
-                });
-        }
-
-        // Call the function to update the cart counter and item counter when the page loads
-        document.addEventListener('DOMContentLoaded', updateCartCounter);
-
-        // Function to delete a cart item
-        function deleteCartItem(cartItemId) {
-            fetch(`/api/cart/delete/${cartItemId}`, {
-                method: 'DELETE',
-                credentials: 'include', // Important for sessions
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to delete item from cart. Please try again.');
-                    }
-                    // If deletion is successful, remove the item from the UI
-                    const deletedItem = document.getElementById(cartItemId);
-                    if (deletedItem) {
-                        deletedItem.remove();
-                    }
-                    // Update the cart counter
-                    updateCartCounter();
-                })
-                .catch(error => {
-                    console.error('Error deleting item from cart:', error);
-                    // Display an error message if deletion fails
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: error.message || 'Failed to delete item from cart. Please try again.',
-                    });
-                });
-        }
-    </script>
+            </div>
+            </div>
+            <div class="container">
+            <div class="lbls" style="margin-top: 5%;">
+              <label class="fpu" for="">Store Location</label>
+             </div>
+            <div class="card-maps">   
+                <div>
+                  <img class="map-img"  src="images/mam.png" alt="">
+                </div>
+                  <div>
+                      <iframe class="gmap" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d15473.095439622592!2d121.50914925672969!3d14.178731599845047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTTCsDEwJzU1LjkiTiAxMjHCsDMwJzM2LjAiRQ!5e0!3m2!1sen!2sus!4v1701578225488!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> 
+                   </div>
+            </div>
+            </div>
+      
+          <!-- Lightbox (hidden by default) -->
+          <div class="lightbox" id="lightbox">
+            <img src="" alt="Enlarged Image" class="lightbox-image" />
+          </div>
+          <script>
+            // Function to open the lightbox and display the clicked image
+      function openLightbox(imageSrc) {
+          const lightbox = document.getElementById('lightbox');
+          const lightboxImage = lightbox.querySelector('.lightbox-image');
+          
+          // Update the source of the lightbox image
+          lightboxImage.src = imageSrc;
+          
+          // Show the lightbox
+          lightbox.style.display = 'flex'; // Assuming the lightbox has a flex display
+          
+          // Add an event listener to close the lightbox when clicked
+          lightbox.addEventListener('click', closeLightbox);
+      }
+      
+      // Function to close the lightbox
+      function closeLightbox() {
+          const lightbox = document.getElementById('lightbox');
+          lightbox.style.display = 'none'; // Hide the lightbox
+      }
+      
+      // Function to initialize the lightbox
+      function initializeLightbox() {
+          // Get the lightbox element
+          const lightbox = document.getElementById('lightbox');
+          
+          // Prevent clicks inside the lightbox from closing it
+          lightbox.addEventListener('click', function(event) {
+              event.stopPropagation();
+          });
+      }
+      
+      // Call the initializeLightbox function when the DOM is loaded
+      document.addEventListener('DOMContentLoaded', initializeLightbox);
+      
+            function updatePriceDisplay(cardId) {
+               const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
+               const quantityInput = document.getElementById('quantity-' + cardId);
+               const totalPriceElement = document.getElementById('total-price-' + cardId);
+           
+               if (selectedSize && quantityInput && totalPriceElement) {
+                   const [size, price] = selectedSize.value.split('-');
+                   const quantity = parseInt(quantityInput.value) || 0;
+                   const total = parseFloat(price) * quantity;
+                   totalPriceElement.textContent = total.toFixed(2);
+               }
+           }
+           
+           function changeQuantity(cardId, delta) {
+               var input = document.getElementById('quantity-' + cardId);
+               var currentValue = parseInt(input.value) || 0;
+               currentValue += delta;
+               if (currentValue < 1) currentValue = 1; // Prevent negative quantities
+               input.value = currentValue;
+               updatePriceDisplay(cardId); // Update the total price whenever the quantity changes
+           }
+               // Get the cards initially
+               var cards = document.querySelectorAll('.cards');
+           
+              
+                 // Example function to read selected size and price
+                 function getSelectedSizeAndPrice(cardId) {
+                 const selected = document.querySelector(`#${cardId} input[name="size"]:checked`);
+                 if (selected) {
+                   const [size, price] = selected.value.split('-');
+                   console.log(`Selected size: ${size}, Price: ${price}`);
+                   // Now you can use size and price for further operations
+                 } else {
+                   console.log('No size selected');
+                 }
+               }
+                // Function to update the quantity of a cart item
+                function updateCartItemQuantity(cartItemId, newQuantity) {
+               fetch('/api/cart/items', {
+                   method: 'GET',
+                   credentials: 'include', // Important for sessions
+               })
+               .then(response => {
+                   if (!response.ok) {
+                       throw new Error('Failed to fetch cart items. Please try again.');
+                   }
+                   return response.json();
+               })
+               .then(data => {
+                   const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
+                   const itemToUpdate = data.find(item => item._id === cartItemId || item.id === cartItemId);
+                   const updatedTotalPrice = itemToUpdate.foodItem.price * newQuantity;
+           
+                   // Check if adding the updated item exceeds the limit
+                   if (totalPrice + updatedTotalPrice > 10000) {
+                       Swal.fire({
+                           icon: 'warning',
+                           title: 'Cart Limit Exceeded',
+                           text: 'Adding this item will exceed PHP 10,000. Please remove some items.',
+                       });
+                   } else {
+                       // Proceed with updating the item quantity in the cart
+                       fetch('/api/cart/updateQuantity', {
+                           method: 'PUT',
+                           headers: { 'Content-Type': 'application/json' },
+                           credentials: 'include', // Important for sessions
+                           body: JSON.stringify({ cartItemId, quantity: newQuantity }),
+                       })
+                       .then(response => {
+                           if (!response.ok) {
+                               throw new Error('Failed to update item quantity in cart. Please try again.');
+                           }
+                           return response.json();
+                       })
+                       .then(data => {
+                           if (data.success) {
+                               // Call the function to fetch and display cart items again
+                               displayCartItems();
+                           } else {
+                               Swal.fire({
+                                   icon: 'error',
+                                   title: 'Error',
+                                   text: data.message || 'Could not update item quantity in the cart.',
+                               });
+                           }
+                       })
+                       .catch(error => {
+                           console.error('Error updating item quantity in cart:', error);
+                           Swal.fire({
+                               icon: 'error',
+                               title: 'Error',
+                               text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
+                           });
+                       });
+                   }
+               })
+               .catch(error => {
+                   console.error('Error fetching cart items:', error);
+                   Swal.fire({
+                       icon: 'error',
+                       title: 'Error',
+                       text: 'Failed to fetch cart items. Please try again.',
+                   });
+               });
+           }
+           
+           
+                  // Function to fetch and display cart items
+           function displayCartItems() {
+               fetch('/api/cart/items', {
+                   method: 'GET',
+                   credentials: 'include', // Important for sessions
+               })
+                   .then(response => {
+                       if (!response.ok) {
+                           throw new Error('Failed to fetch cart items. Please try again.');
+                       }
+                       return response.json();
+                   })
+                   .then(data => {
+                       const cartItemsContainer = document.getElementById('mod-cart-items');
+                       cartItemsContainer.innerHTML = ''; // Clear previous content
+           
+                       if (data.length > 0) { // Check if data is not empty
+                           let totalPrice = 0; // Initialize total price variable
+           
+                           data.forEach(item => {
+                               const itemElement = document.createElement('div');
+                               itemElement.classList.add('row', 'border-top', 'border-bottom');
+           
+                               // Calculate the total price for each item
+                               const itemTotalPrice = item.foodItem.price * item.quantity;
+                               totalPrice += itemTotalPrice; // Add to the total price
+           
+                               itemElement.innerHTML = `
+                       <div class="col-2"><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
+                       <div>
+                           <div>${item.foodItem.name} (${item.foodItem.size})</div>
+                           <div>Price: PHP ${item.foodItem.price.toFixed(2)}</div>
+                           <div>Quantity: 
+                               <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
+                               <span>${item.quantity}</span>
+                               <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
+           
+                           </div>
+                           <div>Total Price: PHP ${itemTotalPrice.toFixed(2)}</div> <!-- Display total price for each item -->
+                           <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')">Delete</button>
+                       </div>
+                   `;
+           
+                               cartItemsContainer.appendChild(itemElement);
+                           });
+           
+                           // Update the total price displayed in the UI
+                           document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
+                           document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
+           
+                           // Check if the total price exceeds the limit
+                           if (totalPrice > 10000) {
+                               // Display a warning message
+                               Swal.fire({
+                                   icon: 'warning',
+                                   title: 'Cart Limit Exceeded',
+                                   text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                               });
+                           }
+                       } else {
+                           // Display a message if the cart is empty
+                           cartItemsContainer.innerHTML = '<div>No items in cart</div>';
+                       }
+                   })
+                   .catch(error => {
+                       console.error('Error fetching cart items:', error);
+                       // Display an error message
+                       const cartItemsContainer = document.getElementById('mod-cart-items');
+                       cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
+                   });
+           }
+           
+           
+           
+                   // Call the function to fetch and display cart items when the page loads
+                   document.addEventListener('DOMContentLoaded', displayCartItems);
+           
+                   document.addEventListener('DOMContentLoaded', (event) => {
+                       // Get the modal
+                       var modal = document.getElementById("payment-modal");
+           
+                       // Get the button that opens the modal
+                       var btn = document.getElementById("checkoutButton");
+           
+                       // Get the <span> element that closes the modal
+                       var span = document.getElementsByClassName("close-button")[0];
+           
+                       if (btn && modal && span) {
+                           // When the user clicks the button, open the modal 
+                           btn.onclick = function (event) {
+                               event.preventDefault();  // Prevent any default button action
+                               modal.style.display = "block";
+                           }
+           
+                           // When the user clicks on <span> (x), close the modal
+                           span.onclick = function (event) {
+                               event.preventDefault();  // Prevent any default span action
+                               modal.style.display = "none";
+                           };
+           
+                           // When the user clicks anywhere outside of the modal, close it
+                           window.onclick = function (event) {
+                               if (event.target == modal) {
+                                   event.preventDefault();  // Prevent any default window action
+                                   modal.style.display = "none";
+                               }
+                           }
+           
+                           // Prevent events inside the modal from closing it and stop propagation
+                           modal.children[0].onclick = function (event) {
+                               event.stopPropagation();
+                               event.preventDefault();  // Prevent any default action inside the modal
+                           }
+                       } else {
+                           console.error("Elements not found. Please check the IDs and class names.");
+                       }
+                   });
+           
+                   function updateQuantity(cartItemId, newQuantity) {
+                           // Ensure the quantity is not negative
+                           if (newQuantity < 0) {
+                               return;
+                           }
+                           updateCartItemQuantity(cartItemId, newQuantity);
+                       }
+                   function updateCartCounter() {
+                           fetch('/api/cart/items', {
+                               method: 'GET',
+                               credentials: 'include', // Important for sessions
+                           })
+                               .then(response => {
+                                   if (!response.ok) {
+                                       throw new Error('Failed to fetch cart items. Please try again.');
+                                   }
+                                   return response.json();
+                               })
+                               .then(data => {
+                                   // Calculate total number of items in the cart
+                                   const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                                   // Update the cart counter and item counter in the UI
+                                   document.getElementById('cart-counter').textContent = totalItems;
+                                   document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                               })
+                               .catch(error => {
+                                   console.error('Error fetching cart items:', error);
+                                   // Display an error message or handle it as per your requirement
+                               });
+                       }
+               
+                       // Call the function to update the cart counter and item counter when the page loads
+                       document.addEventListener('DOMContentLoaded', updateCartCounter);
+           
+           
+           
+                   
+                   function createStarRating(containerId, rating) {
+             const container = document.getElementById(containerId);
+             
+             // Clear any existing content in the container
+             container.innerHTML = '';
+             
+             // Create a loop to generate the stars
+             for (let i = 1; i <= 5; i++) {
+               const star = document.createElement('span');
+               star.classList.add('star', i <= rating ? 'filled' : 'empty');
+               star.innerHTML = '★'; // You can use a star icon here if available
+               container.appendChild(star);
+             }
+           }
+           
+           // Call the function with the desired rating (e.g., 4 out of 5 stars)
+           createStarRating('starrating', 4);
+           createStarRating('starrating2', 4);
+           createStarRating('starrating3', 5);
+           
+           </script>
+          <script src="scripts/meals.js"></script>
+        </body>
+        <div class="cntr" style="margin-top: 100px">
+          <footer class="text-white text-center text-lg-start" style="background-color: #c69b68">
+            <!-- Grid container -->
+            <div class="p-5">
+              <!--Grid row-->
+        
+              <div class="row mt-4">
+                <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
+                  <h5 class="text-uppercase mb-4">About company</h5>
+        
+                  <label style="color: white">
+                    Thank you for choosing Maya&Me Services for your food ordering
+                    needs. We're here to satisfy your cravings, one delicious meal at
+                    a time. Enjoy your meal and have a wonderful day!
+                  </label>
+        
+                  <div class="mt-4">
+                    <!-- Facebook -->
+                    <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+                    <!-- Dribbble -->
+                    <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+                    <!-- Twitter -->
+                    <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+                    <!-- Google + -->
+                    <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+                    <!-- Linkedin -->
+                  </div>
+                </div>
+                <!--Grid column-->
+                <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                  <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
+        
+                  <ul class="fa-ul" style="margin-left: 1.65em">
+                    <li class="mb-3">
+                      <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro
+                        Luisiana,Laguna</span>
+                    </li>
+                    <li class="mb-3">
+                      <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
+                    </li>
+                    <li class="mb-3">
+                      <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
+                    </li>
+                  </ul>
+                </div>
+                <!--Grid column-->
+        
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                  <h5 class="text-uppercase mb-4">Opening hours</h5>
+        
+                  <table class="table text-center text-white">
+                    <tbody class="font-weight-normal">
+                      <tr>
+                        <td>Mon - Thu:</td>
+                        <td>8am - 9pm</td>
+                      </tr>
+                      <tr>
+                        <td>Fri - Sat:</td>
+                        <td>8am - 1am</td>
+                      </tr>
+                      <tr>
+                        <td>Sunday:</td>
+                        <td>9am - 10pm</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!--Grid column-->
+              </div>
+              <!--Grid row-->
+            </div>
+            <!-- Grid container -->
+        
+            <!-- Copyright -->
+            <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #c69b68">
+              © 2023 Copyright:
+              <label style="color: #976b35">Maya&Me Services</label>
+            </div>
+            <!-- Copyright -->
+          </footer>
+        </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

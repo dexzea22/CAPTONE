@@ -111,33 +111,6 @@
         transform: scale(1.1); /* Zoom effect on hover */
       }
       
-      /* Lightbox styles (hidden by default) */
-      .lightbox {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        z-index: 999;
-      
-      }
-   
-      /* Lightbox image styles */
-      .lightbox img {
-        display: block;
-        width: 30%;
-        height: 90%;
-        margin: auto;
-        margin-top: 2%;
-      }
-      @media(max-width:900px){
-        .lightbox img{
-          width: 300px;
-          height: 400px;
-        }
-      }
     #message{
         height: 150px;
     }
@@ -183,6 +156,68 @@
       color: #000;
       text-decoration: none;
       cursor: pointer;
+    }
+    .fbtns:hover,.obtns:hover{
+      background-color:rgb(243, 185, 113);
+      color: rgb(0, 0, 0);
+      text-decoration: none;
+      }
+      .fbtns.active,.obtns.active{
+      background-color:rgb(243, 185, 113);
+      color: rgb(0, 0, 0);
+      text-decoration: none;
+      }
+      .fbtns,.obtns {
+        padding: 10px 20px;
+            margin: 0 10px 0 10px;
+            text-decoration: none;
+            color: white;
+            background-color:#C69B68;
+            border-radius: 5px;
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+      }
+      
+      .Olog {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 2500px; /* Adjust the max-width as needed */
+        width: 100%;
+      }
+    @media (max-width: 900px) {
+      .log,.Olog {
+        flex-direction: row;
+        justify-content: center;
+      }
+      
+      .fbtn, .fbtns  {
+        margin-bottom: 110px;
+        width: 100px;
+        font-size: 11px;
+        font-weight: bold;
+        height: 35px;
+        text-align: center;
+      }
+    .obtns{
+      width: 128px;
+      font-size: 13px;
+      font-weight: bold;
+      height: 35px;
+      text-align: center;
+    }
+      
+    }
+    .fbtn:hover{
+    background-color:rgb(243, 185, 113);
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    }
+    .fbtn.active{
+    background-color:rgb(243, 185, 113);
+    color: rgb(0, 0, 0);
+    text-decoration: none;
     }
     .bar {
     width: 30px;
@@ -336,7 +371,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 150px;
+        height: 80px;
         }
       .log {
         display: flex;
@@ -357,6 +392,54 @@
           margin-top:70px ;
         }
       }
+      .ogallery{
+display: grid;
+grid-template-columns: repeat(5,1fr); 
+gap:10px;
+margin-left:15px;
+}
+.ogallery img{
+  max-width: 87%;
+height: auto;
+cursor: pointer;
+transition: transform 0.2s;
+align-items: center;
+margin: auto;
+width: 950px;
+}
+/* Individual image styles */
+.gallery img, .gllry img{
+max-width: 87%;
+height: 100px;
+cursor: pointer;
+transition: transform 0.2s;
+align-items: center;
+margin: auto;
+width: 950px;
+}
+/* Hover effect on images */
+.gallery img:hover, .gllry img:hover,.ogallery img:hover {
+transform: scale(1.1); /* Zoom effect on hover */
+}
+
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+}
+
+.lightbox-image {
+  display: block;
+  margin: auto;
+  max-width: 80%;
+  max-height: 80%;
+  padding: 20px;
+}
       .fpu{
         color: #C69B68;
         position: relative; 

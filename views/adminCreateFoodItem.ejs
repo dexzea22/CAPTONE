@@ -45,7 +45,6 @@
         position: fixed; /* Stay in place */
         z-index: 1; /* Sit on top */
         left: 0;
-        top: 0;
         width: 100%; /* Full width */
         height: 100%; /* Full height */
         overflow: auto; /* Enable scroll if needed */
@@ -56,10 +55,10 @@
       /* Modal Content/Box */
       .modal-content {
         background-color: #fefefe;
-        margin: 15% auto; /* 15% from the top and centered */
+        margin: 5% auto; /* 15% from the top and centered */
         padding: 20px;
         border: 1px solid #888;
-        width: 80%; /* Could be more or less, depending on screen size */
+        width: 20%; /* Could be more or less, depending on screen size */
       }
 
       /* Close Button */
@@ -76,32 +75,47 @@
         text-decoration: none;
         cursor: pointer;
       }
+
+  @media(max-width:789px){
+        table{
+          width: 20px;
+        }
+      }
     </style>
   </head>
-  <body>
-    <div class="sidenav">
-      <a href="/adminDashboard">Dashboard</a>
-      <a href="/adminUserTable">User Table</a>
-      <a href="/logs">Logs</a>
-      <a href="/logout">Logout</a>
-      <a href="/adminOrderStatus">Transaction History</a>
-      <a href="/adminOrderNotifications">Order Notifications</a>
-      <a href="/adminCreateFoodItem">Manage Food Item</a>
+  <body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
+    <div class="menu-toggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
     </div>
-    <div class="side-menu">
-      <a href="/adminDashboard">Dashboard</a>
-      <a href="/adminUserTable">User Table</a>
-      <a href="/adminOrderStatus">Transaction History</a>
-      <a href="/adminOrderNotifications">Order Notifications</a>
-      <a href="/adminCreateFoodItem">Manage Food Item</a>
-      <a href="/logs">Logs</a>
-      <a href="/logout">Logout</a>
-    </div>
-    <div class="container mt-5">
-      <h1>Manage Food Item</h1>
+    <div>
+      <div class="menu">
+        <a href="/adminDashboard">Dashboard</a>
+        <a href="/adminUserTable">User Table</a>
+        <a href="/logs">Logs</a>
+        <a href="/adminOrderStatus">Transaction History</a>
+        <a href="/adminOrderNotifications">Order Notifications</a>
+        <a href="/adminCreateFoodItem">Add Food Item</a>
+        <a href="/logout">Logout</a>
+      </div>
+      
+        
+        <div class="side-menu">
+          <a href="/adminDashboard">Dashboard</a>
+          <a href="/adminUserTable">User Table</a>
+          <a href="/adminOrderStatus">Transaction History</a>
+          <a href="/adminOrderNotifications">Order Notifications</a>
+          <a href="/adminCreateFoodItem">Add Food Item</a>
+          <a href="/logs">Logs</a>
+          <a href="/logout">Logout</a>
+        </div>
+    <div class="main-content">
+      <h1 class="admn">Manage Food Item</h1>
+      <h1 style="margin-top: 50px; font-size: 40px;">Food Items</h1>
       <button onclick="openAddModal()">Add Food Item</button>
-      <h1>Food Items</h1>
-      <table>
+      <table class="table" style="background-color: white;">
         <thead>
           <tr>
             <th>Name</th>

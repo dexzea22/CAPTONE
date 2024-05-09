@@ -24,7 +24,7 @@
   }
 
   input[type="checkbox"] {
-    margin-right: 5px;
+    margin-left: 10px;
   }
 
   /* Style for the error display */
@@ -32,6 +32,13 @@
     color: red;
     display: none;
     margin-top: 10px;
+  }
+  
+  @media(max-width:789px)
+  {
+    #dietaryPreferencesNav {
+      display: block !important;
+    }
   }
 </style>
 
@@ -48,7 +55,7 @@
           onsubmit="return handleSubmit(event);">
           <!-- Diet Type -->
           <div>
-            <input type="checkbox" id="vegetarian" name="vegetarian" value="true" />
+            <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
             <label for="vegetarian">Vegetarian</label>
 
           
