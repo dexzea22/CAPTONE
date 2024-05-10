@@ -242,7 +242,7 @@
       padding: 15px;
       color: rgb(0, 0, 0);
       margin-right: 50px;
-      margin-top: 15px;
+      margin-top: 7px;
       font-weight: bold;
     }
     .menu.show {
@@ -923,5 +923,54 @@ transform: scale(1.1); /* Zoom effect on hover */
       cursor: pointer;
     }
 
-
+    .lbld,
+    h2 {
+      color: black;
+    }
+  
+    /* Style for the form */
+    #dietaryForm {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    /* Style for form labels and checkboxes */
+    .lbld {
+      margin-bottom: 5px;
+    }
+  
+    input[type="checkbox"] {
+      margin-left: 10px;
+    }
+  
+    /* Style for the error display */
+    #errorDisplay {
+      color: red;
+      display: none;
+      margin-top: 10px;
+    }
+    #dietaryPreferencesModal{
+      margin: auto;
+      width: 80%;
+    }
+    .mod-content {
+      background-color: #fefefe;
+      margin: 6% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 35%;
+      height: auto;
+      border-radius:5px;
+    }
+    @media(max-width: 768px) {
+      #dietaryPreferencesModal {
+        width: 100%; /* Adjust as needed */
+        margin: auto; /* Center the modal */
+        border: #000 1px solid;
+      }
+      .mod-content{
+        width: 100%;
+        margin: 20% auto;
+      }
+    }
 

@@ -7,7 +7,7 @@
   <title>Document</title>
 </head>
 <style>
-  label,
+  .lbld,
   h2 {
     color: black;
   }
@@ -19,7 +19,7 @@
   }
 
   /* Style for form labels and checkboxes */
-  label {
+  .lbld {
     margin-bottom: 5px;
   }
 
@@ -33,11 +33,18 @@
     display: none;
     margin-top: 10px;
   }
-  
+  #dietaryPreferencesModal{
+    margin: auto;
+    width: 100%;
+  }
   @media(max-width:789px)
   {
-    #dietaryPreferencesNav {
-      display: block !important;
+    #dietaryPreferencesModal{
+      width: 100px;
+      z-index: 999;
+    }
+    #dietaryPreferencesModal.show{
+      display: block;
     }
   }
 </style>
@@ -56,28 +63,28 @@
           <!-- Diet Type -->
           <div>
             <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
-            <label for="vegetarian">Vegetarian</label>
+            <label class="lbld" for="vegetarian">Vegetarian</label>
 
           
 
 
             <input type="checkbox" id="omnivore" name="omnivore" value="true" />
-            <label for="omnivore">Omnivore</label>
+            <label class="lbld" for="omnivore">Omnivore</label>
 
 
             <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
-            <label for="glutenFree">Gluten-Free</label>
+            <label class="lbld" for="glutenFree">Gluten-Free</label>
 
           </div>
 
           <!-- Allergies -->
           <div>
-            <label>Allergies:</label>
+            <label class="lbld">Allergies:</label>
            
 
 
             <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
-            <label for="nutAllergy">Nut Allergy</label>
+            <label class="lbld" for="nutAllergy">Nut Allergy</label>
 
           </div>
 
