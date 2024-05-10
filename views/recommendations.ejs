@@ -78,7 +78,17 @@
                     <ul class="list-group">
                         <!-- Iterate over each recommendation and display it as a list item -->
                         <% recommendations.forEach(function(rec) { %>
-                            <li class="list-group-item"><%= rec %></li>
+                            <li class="list-group-item">
+                                <!-- Check if the recommendation contains an image source -->
+                                <% var imgSrc = rec.match(/src="(.*?)"/); %>
+                                <!-- Render the image only if an image source is found -->
+                                <% if (imgSrc && imgSrc.length > 1) { %>
+                                    <!-- Render the image with the extracted source -->
+                                    <img class="img-fluid" src="<%= imgSrc[1] %>" alt="Food Image">
+                                <% } %>
+                                <!-- Render the textual description -->
+                                <%= rec.replace(/<img.*?>/g, '') %> <!-- Exclude the <img> tag from the recommendation -->
+                            </li>
                         <% }); %>
                     </ul>
                 <% } else { %>
@@ -96,7 +106,7 @@
             <!-- Link to navigate back to the user dashboard -->
             <a href="/UserDashboard" class="btn btn-primary mt-3">Back to Dashboard</a>
         </div>
-    
+        
 
 
 
