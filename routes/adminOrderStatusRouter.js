@@ -8,9 +8,7 @@ const router = express.Router();
 
 // Define routes
 router.get('/', async (req, res) => {
-    const { page = 1, orderId = '', statusTerm = '' } = req.query;
-    const pageSize = 10; // Display 10 orders per page
-    const skip = (page - 1) * pageSize;
+    const { orderId = '', statusTerm = '' } = req.query;
 
     try {
         const filterOptions = {
@@ -20,25 +18,15 @@ router.get('/', async (req, res) => {
             ]
         };
 
-        const totalOrders = await prisma.order.count({
-            where: filterOptions
-        });
-
         const orders = await prisma.order.findMany({
             where: filterOptions,
-            skip: skip,
-            take: pageSize,
             orderBy: {
                 createdAt: 'desc'
             }
         });
 
-        const totalPages = Math.ceil(totalOrders / pageSize);
-
         res.render('adminOrderStatus', {
             orders,
-            currentPage: parseInt(page),
-            totalPages,
             orderId, // Pass orderId back to the view for persistent search value
             statusTerm, // Pass statusTerm back to the view for selection persistence
             successMsg: req.flash('success'),
@@ -53,30 +41,25 @@ router.get('/', async (req, res) => {
 
 // Delete an order and its related items
 router.post('/delete/:orderId', async (req, res) => {
-    const { orderId } = req.params;
-    try {
-        // First, delete related order items
-        await prisma.orderItem.deleteMany({
-            where: {
-                orderId: orderId
-            }
-        });
+  const { orderId } = req.params;
+  try {
+    // First, delete related order items
+    await prisma.orderItem.deleteMany({
+      where: { orderId: orderId }
+    });
 
-        // Then, delete the order
-        await prisma.order.delete({
-            where: {
-                id: orderId
-            }
-        });
+    // Then, delete the order
+    await prisma.order.delete({
+      where: { id: orderId }
+    });
 
-        req.flash('success', 'Order and related items deleted successfully.');
-        res.redirect('/adminOrderStatus');
-    } catch (error) {
-        console.error('Error deleting order:', error);
-        req.flash('error', 'Failed to delete order.');
-        res.redirect('/adminOrderStatus');
-    }
+    res.json({ success: true, message: 'Order and related items deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete order.' });
+  }
 });
+
 
 // Fetch order details for viewing
 router.get('/details/:orderId', async (req, res) => {

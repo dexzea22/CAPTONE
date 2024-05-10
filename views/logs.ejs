@@ -20,6 +20,15 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
   <link rel="stylesheet" href="stylesheets/admin.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+  
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+
 </head>
 
 <body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
@@ -53,7 +62,7 @@
       
        <div class="main-content">
       <h1 class="admn">Logs</h1>
-      <table class="table table-striped" style="background-color: white;">
+      <table id="logsTable" class="table table-striped" style="background-color: white;">
         <thead>
           <tr>
             <th>Timestamp</th>
@@ -62,24 +71,25 @@
           </tr>
         </thead>
         <tbody>
-          <% logs.reverse().forEach(log=> { %>
-            <tr>
-              <td>
-                <%= log.timestamp %>
-              </td>
-              <td>
-                <%= log.action %>
-              </td>
-              <td>
-                <%= log.email %>
-              </td>
-            </tr>
-            <% }); %>
+          <% logs.reverse().forEach(log => { %>
+          <tr>
+            <td><%= log.timestamp %></td>
+            <td><%= log.action %></td>
+            <td><%= log.email %></td>
+          </tr>
+          <% }); %>
         </tbody>
       </table>
+      
     </div>
 
     <!-- Add Bootstrap JS -->
+    <script>
+      $(document).ready( function () {
+        $('#logsTable').DataTable();
+      });
+    </script>
+    
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 

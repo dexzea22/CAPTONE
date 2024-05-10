@@ -6,45 +6,23 @@ const prisma = new PrismaClient();
 // Create router
 const router = express.Router();
 
-// Define routes for fetching orders with pagination
+// Define routes for fetching all orders not delivered
 router.get('/', async (req, res) => {
-    const { page = 1 } = req.query;
-    const pageSize = 10; // Display 10 orders per page
-    const skip = (page - 1) * pageSize;
-
     try {
-        const totalOrders = await prisma.order.count({
-            where: {
-                NOT: [
-                    { status: 'delivered' }
-                ]
-            }
-        });
-
         const orders = await prisma.order.findMany({
             where: {
-                NOT: [
-                    { status: 'delivered' }
-                ]
+                NOT: [{ status: 'delivered' }]
             },
             include: {
                 user: true, // Include user details
                 orderItems: true // Include order items
             },
-            skip: skip,
-            take: pageSize,
             orderBy: {
                 createdAt: 'desc'
             }
         });
 
-        const totalPages = Math.ceil(totalOrders / pageSize);
-
-        res.render('adminOrderNotifications', {
-            orders,
-            currentPage: parseInt(page),
-            totalPages
-        });
+        res.render('adminOrderNotifications', { orders });
     } catch (error) {
         console.error('Error fetching orders:', error);
         req.flash('error', 'Error fetching orders.');
@@ -68,7 +46,6 @@ router.get('/details/:orderId', async (req, res) => {
         });
 
         if (order) {
-            console.log("Sending order data:", order); // Add this line to log the data
             res.json(order);
         } else {
             res.status(404).json({ success: false, message: 'Order not found.' });
@@ -79,21 +56,11 @@ router.get('/details/:orderId', async (req, res) => {
     }
 });
 
-
+// Update an order status
 router.post('/update/:orderId', async (req, res) => {
     const { newStatus } = req.body;
 
     try {
-        // First, check if the order exists
-        const order = await prisma.order.findUnique({
-            where: { id: req.params.orderId }
-        });
-
-        if (!order) {
-            return res.status(404).json({ success: false, message: 'Order not found.' });
-        }
-
-        // Update the order status if the order exists
         const updatedOrder = await prisma.order.update({
             where: { id: req.params.orderId },
             data: { status: newStatus }
@@ -106,19 +73,17 @@ router.post('/update/:orderId', async (req, res) => {
     }
 });
 
-
 // Delete an order
 router.post('/delete/:orderId', async (req, res) => {
-    const orderId = req.params.orderId;
     try {
-        // First, delete all associated order items
+        // Delete all associated order items
         await prisma.orderItem.deleteMany({
-            where: { orderId: orderId }
+            where: { orderId: req.params.orderId }
         });
 
-        // Then, delete the order
+        // Delete the order
         await prisma.order.delete({
-            where: { id: orderId }
+            where: { id: req.params.orderId }
         });
 
         res.json({ success: true, message: 'Order deleted successfully.' });
@@ -127,6 +92,5 @@ router.post('/delete/:orderId', async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to delete order.' });
     }
 });
-
 
 module.exports = router;
