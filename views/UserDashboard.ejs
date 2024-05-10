@@ -53,17 +53,16 @@
      <%- include('dietaryPreferences.ejs') %>
       <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
       <a class="nav" href="/recommendations">Recommended</a>
-      <a class="nav" href="/bestSeller">Best Seller</a>
-      <a class="nav" href="/featuredItem">New Item</a>
+      <a class="nav" href="/userOrder">Orders</a>
       <a class="nav" href="/contact">Contact Us</a>
-      <a class="nav" href="/about">About Us</a>
       <span class="nav welcome-message" style="font-size: 24px; cursor:pointer; float: right; margin:1.4% 0 0 0;color:#976b35;"><%= welcomeMessage %></span>
     </div>
     <div class="side-menu">
       <a style="color: black;" href="/UserDashboard">Home</a>
-      <a style="color: black;" href="/userOrder">Orders</a>
       <a style="color: black;" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-      <a style="color: black;" href="#">Contact Us</a>
+      <a style="color: black;" href="/recommendations">Recommended</a>
+      <a style="color: black;" href="/userOrder">Orders</a>
+      <a style="color: black;" href="contact">Contact Us</a>
       <a style="color: black;" href="/about">About Us</a>
       <a style="color: black;"class="nav" onclick="openCartPage()">My Cart</i></a>
       <a style="color: black;" href="/profile">My Profile</a>
@@ -82,11 +81,13 @@
 </div>
 <img class="ban" src="images/nav-bg.png" alt="">
 <div class="cont">
+  <img class="logo" src="images/logo.png" alt="">
 <div class="log">
-<img class="logo" src="images/logo.png" alt="">
+<a class="fbtns" href="/bestSeller">Best Sellers</a>
 <a class="fbtns" href="/userMenu">Food Menu</a>
 <a class="fbtns" href="/userTrays">Party Trays</a>
-<a class="fbtns" href="/userMeals">Solo Meals</a>
+<a class="fbtnsu" href="/userMeals">Solo Meals</a>
+<a class="fbtnsuf" href="/featuredItem">New Products</a>
 </div>
 </div>
 <img class="ban"  src="images/nav-bg-footer.png" alt="">
@@ -253,18 +254,18 @@
 <label class="fpu" for="">Menu and Prices</label>
 </div>
 <div>
-<div class="gallery">
-<img src="images/m1.jpg" alt="Image 1">
-<img src="images/m4.jpg" alt="Image 1">
-<img src="images/m2.jpg" alt="Image 1">
-<img src="images/m5.jpg" alt="Image 1">
-<img src="images/m3.jpg" alt="Image 1">
-<!-- Add more images as needed -->
-</div>
-
+  <div class="gallery">
+    <img src="images/m1.jpg" alt="Image 1" onclick="openLightbox('images/m1.jpg')">
+    <img src="images/m4.jpg" alt="Image 1" onclick="openLightbox('images/m4.jpg')">
+    <img src="images/m2.jpg" alt="Image 1" onclick="openLightbox('images/m2.jpg')">
+    <img src="images/m5.jpg" alt="Image 1" onclick="openLightbox('images/m5.jpg')">
+    <img src="images/m3.jpg" alt="Image 1" onclick="openLightbox('images/m3.jpg')">
+    <!-- Add more images as needed -->
+  </div>
 <!-- Lightbox (hidden by default) -->
-<div class="lightbox" id="lightbox">
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <img src="" alt="Enlarged Image" class="lightbox-image">
+  <!-- Add close button or any other content here -->
 </div>
 </div>
 </div>
@@ -368,6 +369,42 @@
 </footer>
 </div>
 <script>
+  // Function to open the lightbox and display the clicked image
+function openLightbox(imageSrc) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = lightbox.querySelector('.lightbox-image');
+    
+    // Update the source of the lightbox image
+    lightboxImage.src = imageSrc;
+    
+    // Show the lightbox
+    lightbox.style.display = 'flex'; // Assuming the lightbox has a flex display
+    
+    // Add an event listener to close the lightbox when clicked
+    lightbox.addEventListener('click', closeLightbox);
+}
+
+// Function to close the lightbox
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.style.display = 'none'; // Hide the lightbox
+}
+
+// Function to initialize the lightbox
+function initializeLightbox() {
+    // Get the lightbox element
+    const lightbox = document.getElementById('lightbox');
+    
+    // Prevent clicks inside the lightbox from closing it
+    lightbox.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+}
+
+// Call the initializeLightbox function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeLightbox);
+
+
  function updatePriceDisplay(cardId) {
     const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
     const quantityInput = document.getElementById('quantity-' + cardId);

@@ -20,6 +20,9 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
   <link rel="stylesheet" href="stylesheets/menu.css" />
   <title>Meals | Maya&Me</title>
+  <style>
+    @media(max-width:789px){#brm{margin-top: 25%;}}
+  </style>
 </head>
 
 <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
@@ -58,8 +61,8 @@
       <%- include('dietaryPreferences.ejs') %>
         <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
         <a class="nav" href="/recommendations">Recommended</a>
-        <a class="nav" href="/contact">Contact Us</a>
         <a class="nav" href="/userOrder">Orders</a>
+        <a class="nav" href="/contact">Contact Us</a>
         <div class="nav" style="float: right;">
           <div class="search-input">
             <i class="fas fa-search"></i>
@@ -70,9 +73,10 @@
     </div>
     <div class="side-menu">
       <a href="/UserDashboard">Home</a>
-      <a href="/confirmorderinfo">Orders</a>
       <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-      <a href="#">Contact</a>
+      <a href="/recommendations">Recommended</a>
+      <a href="contact">Contact</a>
+      <a href="/userOrder">Orders</a>
       <a href="/about">About</a>
       <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
       <a href="/profile">My Profile</a>
@@ -86,13 +90,17 @@
       <div class="banner-promo">
         <span><img class="logo" src="images/maya.png" alt="" height="330px" /></span>
       </div>
-      <div class="cont">
+     <div class="cont">
         <div class="log">
+            <a class="obtns" href="/bestSeller">Best Sellers</a>
+            <a class="obtns" href="/featuredItem">New Products</a>
+        </div>
+      </div>
+        <div class="Olog">
           <a class="fbtns" href="/userMenu">Food Menu</a>
           <a class="fbtns" href="/userTrays">Party Trays</a>
           <a class="fbtns active" href="/userMeals">Solo Meals</a>
         </div>
-      </div>
     </div>
   </div>
   <div class="dashboard-content" id="container">
@@ -103,10 +111,10 @@
           <div>
               <input type="radio" name="size" value="With Egg &emsp14; -100" onchange="updatePriceDisplay('brm')" />
               <label for="">With Egg (₱100.00)</label><br />
-              <input type="radio" name="size" value="Without Egg-95" onchange="updatePriceDisplay('brm')" />
-              <label for="">Without Egg (₱95.00)</label><br />
+              <input type="radio" name="size" value="W/Out Egg-95" onchange="updatePriceDisplay('brm')" />
+              <label for="">W/Out Egg (₱95.00)</label><br />
           </div>
-          <div class="quantity-selector"  style="margin-top: 33%;">
+          <div class="quantity-selector"  style="margin-top: 18%;">
               <label>Quantity:</label>
               <button onclick="changeQuantity('brm', -1)">-</button>
               <input type="text" id="quantity-brm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('brm')">
@@ -133,10 +141,10 @@
       <div>
         <input type="radio" name="size" value="With Egg-110" onchange="updatePriceDisplay('btrm')" />
         <label for="">With Egg (₱110.00)</label><br />
-        <input type="radio" name="size" value="Without Egg-105" onchange="updatePriceDisplay('btrm')" />
-        <label for="">Without Egg (₱105.00)</label><br />
+        <input type="radio" name="size" value="W/Out Egg-105" onchange="updatePriceDisplay('btrm')" />
+        <label for="">W/Out Egg (₱105.00)</label><br />
       </div>
-      <div class="quantity-selector" style="margin-top: 33%;">
+      <div class="quantity-selector" style="margin-top: 18%;">
         <label>Quantity:</label>
         <button onclick="changeQuantity('btrm', -1)">-</button>
         <input type="text" id="quantity-btrm" value="1" style="width: 35px; text-align: center;" onchange="updatePriceDisplay('btrm')">
@@ -163,10 +171,10 @@
           <div>
               <input type="radio" name="size" value="With Egg-100" onchange="updatePriceDisplay('crrm')" />
               <label for="">With Egg (₱100.00)</label><br />
-              <input type="radio" name="size" value="Without Egg-95" onchange="updatePriceDisplay('crrm')" />
-              <label for="">Without Egg (₱95.00)</label><br />
+              <input type="radio" name="size" value="W/Out Egg-95" onchange="updatePriceDisplay('crrm')" />
+              <label for="">W/Out Egg (₱95.00)</label><br />
           </div>
-          <div class="quantity-selector" style="margin-top: 33%;">
+          <div class="quantity-selector" style="margin-top: 18%;">
               <label>Quantity:</label>
               <button onclick="changeQuantity('crrm', -1)">-</button>
               <input type="text" id="quantity-crrm" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('crrm')">
@@ -193,12 +201,12 @@
       <div>
         <input type="radio" name="size" value="(With Egg)-100" onchange="updatePriceDisplay('hsr')" />
         <label for="">With Egg (₱85.00)</label><br />
-        <input type="radio" name="size" value="(Without Egg)-95" onchange="updatePriceDisplay('hsr')" />
-        <label for="">Without Egg (₱80.00)</label><br />
+        <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('hsr')" />
+        <label for="">W/Out Egg (₱80.00)</label><br />
         <input type="radio" name="size" value="(Add Sausage)-115" onchange="updatePriceDisplay('hsr')" />
-        <label for="">Additional Sausage (₱115.00)</label><br />
+        <label for="">Add Sasge (₱115.00)</label><br />
       </div>
-      <div class="quantity-selector" style="margin-top: 24%">
+      <div class="quantity-selector" style="margin-top: 9%">
         <label>Quantity:</label>
         <button onclick="changeQuantity('hsr', -1)">-</button>
         <input type="text" id="quantity-hsr" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('hsr')">
@@ -226,10 +234,10 @@
       <div>
         <input type="radio" name="size" value="With Egg-85" onchange="updatePriceDisplay('lrm')" />
         <label for="">With Egg (₱85.00)</label><br />
-        <input type="radio" name="size" value="Without Egg-80" onchange="updatePriceDisplay('lrm')" />
-        <label for="">Without Egg (₱80.00)</label><br />
+        <input type="radio" name="size" value="W/Out Egg-80" onchange="updatePriceDisplay('lrm')" />
+        <label for="">W/Out Egg (₱80.00)</label><br />
       </div>
-      <div class="quantity-selector" style="margin-top: 33%;" >
+      <div class="quantity-selector" style="margin-top: 18%;" >
         <label>Quantity:</label>
         <button onclick="changeQuantity('lrm', -1)">-</button>
         <input type="text" id="quantity-lrm" value="1" style="width: 35px; text-align: center;" onchange="updatePriceDisplay('lrm')">
@@ -259,7 +267,7 @@
       <input type="radio" name="size" value="(W/Egg)-100" onchange="updatePriceDisplay('lsrm')" />
       <label for="">With Egg (₱100.00)</label><br />
       <input type="radio" name="size" value="(W/Out Egg)-95" onchange="updatePriceDisplay('lsrm')" />
-      <label for="">Without Egg (₱95.00)</label><br />
+      <label for="">W/Out Egg (₱95.00)</label><br />
     </div> 
     <div class="quantity-selector" style="margin-top: 18%;">
       <label>Quantity:</label>
@@ -290,8 +298,8 @@
     <div>
       <input type="radio" name="size" value="With Egg-90" onchange="updatePriceDisplay('ptcrm')" />
       <label for="">With Egg (₱90.00)</label><br />
-      <input type="radio" name="size" value="Without Egg-85" onchange="updatePriceDisplay('ptcrm')" />
-      <label for="">Without Egg (₱85.00)</label><br />
+      <input type="radio" name="size" value="W/Out Egg-85" onchange="updatePriceDisplay('ptcrm')" />
+      <label for="">W/Out Egg (₱85.00)</label><br />
     </div>
     <div class="quantity-selector" style="margin-top: 18%;">
       <label>Quantity:</label>
@@ -348,13 +356,13 @@
 
             <div class="mt-4">
               <!-- Facebook -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
               <!-- Dribbble -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
               <!-- Twitter -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
               <!-- Google + -->
-              <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+              <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
               <!-- Linkedin -->
             </div>
           </div>

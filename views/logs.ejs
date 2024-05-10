@@ -22,20 +22,38 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
-
-  <body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
-    <div class="menu-toggle">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </div>
-      <div>
+<body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
+  <div class="menu-toggle">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+  <div>
+    <div class="menu">
+      <a href="/adminDashboard">Dashboard</a>
+      <a href="/adminUserTable">User Table</a>
+      <a href="/logs">Logs</a>
+      <a href="/adminOrderStatus">Transaction History</a>
+      <a href="/adminOrderNotifications">Order Notifications</a>
+      <a href="/adminCreateFoodItem">Add Food Item</a>
+      <a href="/logout">Logout</a>
+    </div>
+    
       
-       
-      <h1 style="font-family: kreon,open-sans;font-weight: bold;font-size: 50px;color: black;">Logs</h1>
-      <table class="table table-striped">
+      <div class="side-menu">
+        <a href="/adminDashboard">Dashboard</a>
+        <a href="/adminUserTable">User Table</a>
+        <a href="/adminOrderStatus">Transaction History</a>
+        <a href="/adminOrderNotifications">Order Notifications</a>
+        <a href="/adminCreateFoodItem">Add Food Item</a>
+        <a href="/logs">Logs</a>
+        <a href="/logout">Logout</a>
+      </div>
+      
+       <div class="main-content">
+      <h1 class="admn">Logs</h1>
+      <table class="table table-striped" style="background-color: white;">
         <thead>
           <tr>
             <th>Timestamp</th>
