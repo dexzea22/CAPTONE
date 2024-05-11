@@ -607,3 +607,66 @@ overflow-y: auto; /* Enable vertical scrolling if the content exceeds the contai
         height: 120px;
       }
     }
+    .lbld,
+    h2 {
+      color: black;
+    }
+  
+    /* Style for the form */
+    #dietaryForm {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    /* Style for form labels and checkboxes */
+    .lbld {
+      margin-bottom: 5px;
+    }
+  
+    input[type="checkbox"] {
+      margin-left: 10px;
+    }
+  
+    /* Style for the error display */
+    #errorDisplay {
+      color: red;
+      display: none;
+      margin-top: 10px;
+    }
+    #dietaryPreferencesModal{
+      margin: auto;
+      width: 80%;
+    }
+    .mod-content {
+      background-color: #fefefe;
+      margin: 6% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 35%;
+      height: auto;
+      border-radius:5px;
+    }
+    @media(max-width: 768px) {
+      #dietaryPreferencesModal {
+        width: 100%; /* Adjust as needed */
+        margin: auto; /* Center the modal */
+        border: #000 1px solid;
+      }
+      .mod-content{
+        width: 100%;
+        margin: 20% auto;
+      }
+    }
+    .close-button {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .close-button:hover,
+    .close-button:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
