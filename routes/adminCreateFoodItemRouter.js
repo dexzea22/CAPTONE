@@ -46,7 +46,8 @@ router.post('/', async (req, res) => {
                 size,
                 category,
                 dietaryRestrictions: dietaryArray,
-                imageUrl: `/images/${imageName}`
+                imageUrl: `/images/${imageName}`,
+                createdAt: new Date()
             }
         });
 

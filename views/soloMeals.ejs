@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solo Meals</title>
+    <style>
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .card img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+      .card p {
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Solo Meals</h1>
+    <div class="grid-container">
+      <% foodItems.forEach(item => { %>
+      <div class="card">
+        <img src="<%= item.imageUrl %>" alt="<%= item.name %>" />
+        <h2><%= item.name %></h2>
+        <p><%= item.description %></p>
+        <p>Price: $<%= item.price.toFixed(2) %></p>
+        <p>
+          Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %>
+          <%= diet %> <% }); %>
+        </p>
+      </div>
+      <% }); %>
+    </div>
+  </body>
+</html>

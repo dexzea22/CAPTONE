@@ -190,8 +190,14 @@
           <label for="size">Size:</label><br />
           <input type="text" id="size" name="size" /><br />
 
+
           <label for="category">Category:</label><br />
-          <input type="text" id="category" name="category" /><br />
+          <select id="category" name="category" required>
+            <option value="">Select Category:</option>
+            <option value="Solo Meals">Solo Meals</option>
+            <option value="Party Trays">Party Trays</option>
+          </select
+          ><br />
 
           <label for="dietaryRestrictions">Dietary Restrictions:</label><br />
           <select id="dietaryRestrictions" name="dietaryRestrictions" required>
