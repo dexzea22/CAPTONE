@@ -55,12 +55,12 @@
                 <i class="fas fa-shopping-cart fa-2x"></i>
                 <span id="cart-counter">0</span>
             </a>
+            <%- include('dietaryPreferences.ejs') %>
                 <!-- <a class="nav" id="openDietaryModal" href="#">Dietary Preferences</a> -->
                 <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
                 <a class="nav" href="/recommendations">Recommended</a>
-                <a class="nav" href="/userOrder">Orders</a>
                 <a class="nav" href="/contact">Contact Us</a>
-                
+                <a class="nav" href="/userOrder">Orders</a>
         </div>
         <div class="side-menu">
             <a href="/UserDashboard">Home</a>
@@ -81,15 +81,11 @@
         </div>
         <div class="cont">
             <div class="log">
-                <a class="obtns" href="/bestSeller">Best Sellers</a>
-                <a class="obtns" href="/featuredItem">New Products</a>
+                <a class="fbtn" href="/userMenu">Food Menu</a>
+                <a class="fbtn" href="/userTrays">Party Trays</a>
+                <a class="fbtn" href="/userMeals">Solo Meals</a>
             </div>
-          </div>
-            <div class="Olog">
-              <a class="fbtns" href="/userMenu">Food Menu</a>
-              <a class="fbtns" href="/userTrays">Party Trays</a>
-              <a class="fbtns" href="/userMeals">Solo Meals</a>
-            </div>
+        </div>
     </div>
     <div class="card" id="cart-mod">
         <!-- Add the empty cart message div here -->
@@ -169,156 +165,7 @@
         </div>
     </div>
     </form>
-    <!-- Dietary Preferences Modal -->
-  <div id="dietaryPreferencesModal" class="modal">
-    <div class="mod-content">
-      <span class="close-button" onclick="closeDietaryModal()">&times;</span>
-      <h2>Dietary Preferences</h2>
 
-      <!-- Start of the Dietary Preferences Form -->
-      <div class="container">
-        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST"
-          onsubmit="return handleSubmit(event);">
-          <!-- Diet Type -->
-          <div>
-            <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
-            <label class="lbld" for="vegetarian">Vegetarian</label>
-
-          
-
-
-            <input type="checkbox" id="omnivore" name="omnivore" value="true" />
-            <label class="lbld" for="omnivore">Omnivore</label>
-
-
-            <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
-            <label class="lbld" for="glutenFree">Gluten-Free</label>
-
-          </div>
-
-          <!-- Allergies -->
-          <div>
-            <label class="lbld">Allergies:</label>
-           
-
-
-            <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
-            <label class="lbld" for="nutAllergy">Nut Allergy</label>
-
-          </div>
-
-          <input type="submit" value="Submit" />
-        </form>
-        <!-- Removed the confirmationMessage div -->
-        <!-- Add this div to display errors -->
-        <div id="errorDisplay" style="color: red; display: none"></div>
-      </div>
-      <!-- End of the Dietary Preferences Form -->
-    </div>
-  </div>
-
-  <script>
-    var modal = document.getElementById("dietaryPreferencesModal");
-    var btn = document.getElementById("dietaryPreferencesNav");
-
-    function openDietaryModal() {
-      modal.style.display = "block";
-    }
-
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    };
-
-    function closeDietaryModal() {
-      modal.style.display = "none";
-    }
-    // ...other code...
-
-    async function handleSubmit(event) {
-      event.preventDefault();
-      const errorDisplay = document.getElementById("errorDisplay");
-
-      // Reset the error display
-      errorDisplay.style.display = "none";
-      errorDisplay.textContent = "";
-
-      const form = document.getElementById("dietaryForm");
-      const dietaryPreferences = {
-        vegetarian: form["vegetarian"].checked,
-        // vegan: form["vegan"].checked,
-        omnivore: form["omnivore"].checked,
-        // halal: form["halal"].checked,
-        // kosher: form["kosher"].checked,
-        // lactoseFree: form["lactoseFree"].checked,
-        glutenFree: form["glutenFree"].checked,
-        nutAllergy: form["nutAllergy"].checked,
-        // otherRestrictions: form["otherRestrictions"].value.trim(),
-      };
-
-      console.log("CALL 1", dietaryPreferences);
-
-      // Check if at least one dietary choice is selected
-      const isAnyChoiceSelected = Object.values(dietaryPreferences).some(
-        (choice) => choice
-      );
-      if (!isAnyChoiceSelected) {
-        errorDisplay.textContent =
-          "Please select at least one dietary preference.";
-        errorDisplay.style.display = "block";
-        return; // Don't proceed with the submission
-      }
-
-      // Proceed with submission
-      try {
-        const response = await fetch("/submit-dietary-preferences", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dietaryPreferences),
-        });
-
-        if (response.ok) {
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const data = await response.json();
-            if (data.success) {
-              // Show the success message using SweetAlert
-              Swal.fire({
-                icon: "success",
-                title: "Success!",
-                text: "Your dietary preferences have been submitted successfully!",
-                showConfirmButton: true,
-              }).then(() => {
-                window.location.href = "/recommendations";
-              });
-            } else {
-              throw new Error(data.message || "An error occurred.");
-            }
-          } else {
-            throw new Error("Received non-JSON response from server");
-          }
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        errorDisplay.textContent = error.message;
-        errorDisplay.style.display = "block";
-      }
-    }
-
-    function displayRecommendations(recommendations) {
-      const recommendationsContainer = document.getElementById(
-        "recommendations-container"
-      );
-      if (recommendationsContainer) {
-        recommendationsContainer.innerHTML = recommendations
-          .map((rec) => `<li>${rec}</li>`)
-          .join("");
-      }
-    }
-  </script>
     <script>
 
 
@@ -361,34 +208,34 @@
 
         // Function to fetch and display cart items
         function displayCartItems() {
-    fetch('/api/cart/items', {
-        method: 'GET',
-        credentials: 'include', // Important for sessions
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch cart items. Please try again.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        const cartItemsContainer = document.getElementById('mod-cart-items');
-        cartItemsContainer.innerHTML = ''; // Clear previous content
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const cartItemsContainer = document.getElementById('mod-cart-items');
+                    cartItemsContainer.innerHTML = ''; // Clear previous content
 
-        if (data.length > 0) { // Check if data is not empty
-            let totalPrice = 0; // Initialize total price variable
+                    if (data.length > 0) { // Check if data is not empty
+                        let totalPrice = 0; // Initialize total price variable
 
-            // Iterate through data in reverse order to display latest item first
-            for (let i = data.length - 1; i >= 0; i--) {
-                const item = data[i];
-                const itemElement = document.createElement('div');
-                itemElement.classList.add('row', 'border-top', 'border-bottom');
+                        // Iterate through data in reverse order to display latest item first
+                        for (let i = data.length - 1; i >= 0; i--) {
+                            const item = data[i];
+                            const itemElement = document.createElement('div');
+                            itemElement.classList.add('row', 'border-top', 'border-bottom');
 
-                // Calculate the total price for each item
-                const itemTotalPrice = item.foodItem.price * item.quantity;
-                totalPrice += itemTotalPrice; // Add to the total price
+                            // Calculate the total price for each item
+                            const itemTotalPrice = item.foodItem.price * item.quantity;
+                            totalPrice += itemTotalPrice; // Add to the total price
 
-                itemElement.innerHTML = `
+                            itemElement.innerHTML = `
                     <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
                     <div class="Itm">${item.foodItem.name} ${item.foodItem.size}<br>
                     Price:PHP${item.foodItem.price.toFixed(2)}<br>
@@ -400,38 +247,38 @@
                     <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')"><i class="fa fa-trash" aria-hidden="true"></i></button>
                     </div>`;
 
-                // Append item element to the beginning of the container
-                cartItemsContainer.appendChild(itemElement);
-            }
+                            // Append item element to the beginning of the container
+                            cartItemsContainer.appendChild(itemElement);
+                        }
 
-            // Update the total price displayed in the UI
-            document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
-            document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
+                        // Update the total price displayed in the UI
+                        document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
+                        document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
 
-            // Check if the total price exceeds the limit
-            if (totalPrice > 10000) {
-                // Display a warning message
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Cart Limit Exceeded',
-                    text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                        // Check if the total price exceeds the limit
+                        if (totalPrice > 10000) {
+                            // Display a warning message
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Cart Limit Exceeded',
+                                text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                            });
+                        }
+                    } else {
+                        // Display a message if the cart is empty
+                        cartItemsContainer.innerHTML = '<div>No items in cart</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message
+                    const cartItemsContainer = document.getElementById('mod-cart-items');
+                    cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
                 });
-            }
-        } else {
-            // Display a message if the cart is empty
-            cartItemsContainer.innerHTML = '<div>No items in cart</div>';
         }
-    })
-    .catch(error => {
-        console.error('Error fetching cart items:', error);
-        // Display an error message
-        const cartItemsContainer = document.getElementById('mod-cart-items');
-        cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
-    });
-}
 
-// Call the function to fetch and display cart items when the page loads
-document.addEventListener('DOMContentLoaded', displayCartItems);
+        // Call the function to fetch and display cart items when the page loads
+        document.addEventListener('DOMContentLoaded', displayCartItems);
 
 
 

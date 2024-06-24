@@ -36,7 +36,7 @@ var userinfoRouter = require("./routes/userinfo");
 
 var dietaryRouter = require("./routes/dietaryPreferences");
 const profileRouter = require("./routes/profile");
-const recommendationsRoute = require("./routes/recommendations");
+const recommendationsRouter = require("./routes/recommendations");
 const cartRouter = require("./routes/cart");
 const orderRouter = require('./routes/orderRoutes');
 
@@ -389,7 +389,7 @@ app.use("/", userinfoRouter);
 
 app.use("/", dietaryRouter); // Use the dietary routes
 app.use("/profile", profileRouter);
-app.use("/recommendations", recommendationsRoute);
+app.use("/recommendations", recommendationsRouter);
 app.use("/api/cart", cartRouter);
 app.use('/orders', orderRouter);
 
