@@ -398,6 +398,9 @@ app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
 
 app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
 app.use('/featuredItem', featuredItemRouter);
+app.use('/soloMeals', featuredItemRouter);
+app.use('/partyTrays', featuredItemRouter);
+app.use('/foodMenu', featuredItemRouter);
 app.use('/bestSeller', bestSellerRouter); 
 
 const generateAccessToken = async () => {

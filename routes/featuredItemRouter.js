@@ -1,20 +1,85 @@
-// featuredItemRouter.js
-
 const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+// Route for featured items with descending order by createdAt
 router.get('/', async (req, res) => {
     try {
-        // Fetch only 3 food items from the database using Prisma
+        // Fetch featured food items from the database using Prisma, limited to 3 items and in descending order by createdAt
         const foodItems = await prisma.addFoodItem.findMany({
-            take: 3 // Limit to 3 items
+            take: 3, // Limit to 3 items
+            orderBy: {
+                createdAt: 'desc'
+            }
         });
 
         // Render the featured items view and pass the foodItems data
         res.render('featuredItem', { foodItems });
+    } catch (error) {
+        console.error('Error fetching food items:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+// Route for all food items in descending order by createdAt
+router.get('/foodMenu', async (req, res) => {
+    try {
+        // Fetch all food items from the database using Prisma in descending order by createdAt
+        const foodItems = await prisma.addFoodItem.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        // Render the food menu view and pass the foodItems data
+        res.render('foodMenu', { foodItems });
+    } catch (error) {
+        console.error('Error fetching food items:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Route for Solo Meals in descending order by createdAt
+router.get('/soloMeals', async (req, res) => {
+    const category = 'Solo Meals';
+    try {
+        console.log(`Fetching items for category: ${category}`);
+        
+        // Fetching food items filtered by category using Prisma, in descending order by createdAt
+        const foodItems = await prisma.addFoodItem.findMany({
+            where: { category },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        console.log('Fetched items:', foodItems);
+        res.render('soloMeals', { foodItems });
+    } catch (error) {
+        console.error('Error fetching food items:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Route for Party Trays in descending order by createdAt
+router.get('/partyTrays', async (req, res) => {
+    const category = 'Party Trays';
+    try {
+        console.log(`Fetching items for category: ${category}`);
+        
+        // Fetching food items filtered by category using Prisma, in descending order by createdAt
+        const foodItems = await prisma.addFoodItem.findMany({
+            where: { category },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        console.log('Fetched items:', foodItems);
+        res.render('partyTrays', { foodItems });
     } catch (error) {
         console.error('Error fetching food items:', error);
         res.status(500).send('Internal Server Error');
