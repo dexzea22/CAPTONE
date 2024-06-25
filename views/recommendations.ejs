@@ -6,6 +6,8 @@
     <title>Menu Recommendations</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         .food-image {
             width: 100%;
@@ -18,7 +20,7 @@
     <div class="container mt-5 text-center">
         <h1>Menu Recommendations</h1>
         <p>Dietary Preferences: <%= recommendations.dietaryPreferences %></p>
-
+    
         <% if (recommendations.menuDescription) { %>
             <h2 class="mt-4">Menu Description:</h2>
             <div class="row justify-content-center">
@@ -35,34 +37,31 @@
                         const price = parseFloat(line.replace('Price: $', '').trim());
                         const description = lines[index - 1].split(':')[1].trim();
                         const imageUrl = lines[index + 1].match(/\(([^)]+)\)/)[1];
-                        %>
-                        <div class="col-md-4 col-sm-6 my-3">
-                            <div class="card">
-                                <img src="<%= imageUrl %>" alt="Food Image" class="card-img-top food-image">
-                                <div class="card-body">
-                                    <h5 class="card-title"><%= currentItemName %></h5>
-                                    <h6 class="card-subtitle mb-2 text-muted"><%= currentDietaryRestriction %></h6>
-                                    <p class="card-text"><%= description %></p>
-                                    <p>Price: $<%= price.toFixed(2) %></p>
-                                    <!-- Add to Cart Form -->
-                                    <form action="/add-to-cart" method="post" class="add-to-cart-form">
-                                        <div class="form-group">
-                                            <label for="quantity-<%= currentItemName.replace(/\s+/g, '-') %>">Quantity:</label>
-                                            <input type="number" name="quantity" id="quantity-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-control quantity-input" min="1" value="1" data-price="<%= price %>">
-                                        </div>
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" name="withEgg" id="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-input">
-                                            <label for="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-label">With Egg</label>
-                                        </div>
-                                        <input type="hidden" name="foodName" value="<%= currentItemName %>">
-                                        <input type="hidden" name="price" value="<%= price %>">
-                                        <p>Total Price: $<span class="total-price"><%= price.toFixed(2) %></span></p>
-                                        <button type="submit" class="btn btn-primary">Add to Cart</button>
-                                    </form>
+                %>
+                    <div class="col-md-4 col-sm-6 my-3">
+                        <div class="card" id="card-<%= currentItemName.replace(/\s+/g, '-') %>">
+                            <img src="<%= imageUrl %>" alt="Food Image" class="card-img-top food-image">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= currentItemName %></h5>
+                                <h6 class="card-subtitle mb-2 text-muted"><%= currentDietaryRestriction %></h6>
+                                <p class="card-text"><%= description %></p>
+                                <!-- Add to Cart Form -->
+                                <div class="form-group">
+                                    <label for="quantity-<%= currentItemName.replace(/\s+/g, '-') %>">Quantity:</label>
+                                    <input type="number" name="quantity" id="quantity-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-control quantity-input" min="1" value="1" data-price="<%= price %>" data-egg-price="5">
                                 </div>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" name="withEgg" id="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-input">
+                                    <label for="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-label">With Egg (₱5)</label>
+                                </div>
+                                <input type="hidden" name="foodName" value="<%= currentItemName %>">
+                                <input type="hidden" name="price" value="<%= price %>">
+                                <p>Total Price: ₱<span class="total-price"><%= price.toFixed(2) %></span></p>
+                                <button type="button" class="btn btn-primary" onclick="addToCart('card-<%= currentItemName.replace(/\s+/g, '-') %>')">Add to Cart</button>
                             </div>
                         </div>
-                        <%
+                    </div>
+                <%
                     }
                 });
                 %>
@@ -70,17 +69,23 @@
         <% } else { %>
             <p>No menu description available.</p>
         <% } %>
-
+    
         <!-- Add a script tag to log the recommendations -->
         <script>
             console.log('Recommendations:', <%= JSON.stringify(recommendations.recommendations) %>);
         </script>
     </div>
+    
+    
+    
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- JavaScript for dynamic total price calculation -->
     <script>
@@ -89,12 +94,15 @@
 
             quantityInputs.forEach(input => {
                 const price = parseFloat(input.getAttribute('data-price'));
+                const eggPrice = parseFloat(input.getAttribute('data-egg-price'));
                 const totalPriceElement = input.closest('.card-body').querySelector('.total-price');
+                const withEggCheckbox = input.closest('.card-body').querySelector('.form-check-input');
 
                 // Function to calculate total price
                 const calculateTotalPrice = () => {
                     const quantity = parseInt(input.value);
-                    const totalPrice = price * quantity;
+                    const isWithEgg = withEggCheckbox.checked;
+                    const totalPrice = (price + (isWithEgg ? eggPrice : 0)) * quantity;
                     totalPriceElement.textContent = totalPrice.toFixed(2);
                 };
 
@@ -103,8 +111,12 @@
 
                 // Update total price on input change
                 input.addEventListener('input', calculateTotalPrice);
+                withEggCheckbox.addEventListener('change', calculateTotalPrice);
             });
         });
     </script>
+
+    <!-- Your meals.js script -->
+    <script src="scripts/meals.js"></script>
 </body>
 </html>

@@ -12,35 +12,46 @@ function authenticate(req, res, next) {
         next();
     } else {
         console.log('User not authenticated. Redirecting to login.');
-        res.redirect('/login');
+        res.redirect('/login'); // Redirect to your login route
     }
 }
+
 // Fetch Cart Items for a User
-router.get('/items', authenticate, async (req, res) => {
+router.get('/items', authenticate, async (req, res, next) => {
     try {
         const userId = req.user.id; // Use req.user.id which is set by Passport
         const cartItems = await prisma.cartItem.findMany({
-            where: { userId: userId },
+            where: { userId },
             include: { foodItem: true },
         });
         console.log('Cart Items:', cartItems);
         res.json(cartItems);
     } catch (error) {
         console.error('Error fetching cart items:', error);
-        res.status(500).json({ message: 'Failed to fetch cart items.', error: error.message });
+        next(createError(500, 'Failed to fetch cart items.', error));
     }
 });
 
-
 // Add or Update Cart Item
-router.post('/add', authenticate, async (req, res) => {
+router.post('/add', authenticate, async (req, res, next) => {
     const userId = req.user.id; // Use req.user.id which is set by Passport
-    const { name, size, price, image, quantity } = req.body;
+    const { name, price, image, quantity, size } = req.body;
 
     try {
-        let foodItem = await prisma.foodItem.findUnique({
-            where: { name_size: { name, size } },
-        });
+        if (!name || !price || !image || !quantity) {
+            throw new Error('Required fields are missing.'); // Validate required fields
+        }
+
+        let foodItem;
+        if (size) {
+            foodItem = await prisma.foodItem.findUnique({
+                where: { name_size: { name, size } },
+            });
+        } else {
+            foodItem = await prisma.foodItem.findFirst({
+                where: { name },
+            });
+        }
 
         if (!foodItem) {
             foodItem = await prisma.foodItem.create({
@@ -49,10 +60,7 @@ router.post('/add', authenticate, async (req, res) => {
         }
 
         let existingCartItem = await prisma.cartItem.findFirst({
-            where: {
-                userId: userId,
-                itemId: foodItem.id,
-            },
+            where: { userId, itemId: foodItem.id },
         });
 
         if (existingCartItem) {
@@ -61,58 +69,49 @@ router.post('/add', authenticate, async (req, res) => {
                 data: { quantity: existingCartItem.quantity + quantity },
                 include: { foodItem: true },
             });
-            res.status(200).json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
+            res.json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
         } else {
             const cartItem = await prisma.cartItem.create({
-                data: {
-                    userId,
-                    itemId: foodItem.id,
-                    quantity,
-                },
-                include: {
-                    foodItem: true,
-                },
+                data: { userId, itemId: foodItem.id, quantity },
+                include: { foodItem: true },
             });
-            res.status(200).json({ success: true, message: 'Item added to cart successfully.', cartItem });
+            res.json({ success: true, message: 'Item added to cart successfully.', cartItem });
         }
     } catch (error) {
         console.error('Failed to add item to cart:', error);
-        res.status(500).json({ message: 'Could not add item to cart.', error: error.message });
+        next(createError(500, 'Could not add item to cart.', error));
     }
 });
 
 // Update Cart Item Quantity
-router.put('/updateQuantity', authenticate, async (req, res) => {
+router.put('/updateQuantity', authenticate, async (req, res, next) => {
     const userId = req.user.id; // Use the user ID from Passport's user object
     const { cartItemId, quantity } = req.body;
 
     try {
         // Update cart item quantity
         const updatedCartItem = await prisma.cartItem.update({
-            where: { id: cartItemId, userId: userId }, // Ensure the item belongs to the logged-in user
+            where: { id: cartItemId, userId }, // Ensure the item belongs to the logged-in user
             data: { quantity },
             include: { foodItem: true },
         });
 
-        res.status(200).json({ success: true, message: 'Item quantity updated successfully.', updatedCartItem });
+        res.json({ success: true, message: 'Item quantity updated successfully.', updatedCartItem });
     } catch (error) {
         console.error('Failed to update item quantity:', error);
-        res.status(500).json({ message: 'Could not update item quantity.', error: error.message });
+        next(createError(500, 'Could not update item quantity.', error));
     }
 });
 
 // Delete Cart Item
-router.delete('/delete/:cartItemId', authenticate, async (req, res) => {
+router.delete('/delete/:cartItemId', authenticate, async (req, res, next) => {
     const userId = req.user.id; // Use the user ID from Passport's user object
     const cartItemId = req.params.cartItemId;
 
     try {
         // Check if the cart item belongs to the current user
         const cartItem = await prisma.cartItem.findFirst({
-            where: {
-                id: cartItemId,
-                userId: userId,
-            },
+            where: { id: cartItemId, userId },
         });
 
         if (!cartItem) {
@@ -124,12 +123,11 @@ router.delete('/delete/:cartItemId', authenticate, async (req, res) => {
             where: { id: cartItemId },
         });
 
-        res.status(200).json({ success: true, message: 'Cart item deleted successfully.' });
+        res.json({ success: true, message: 'Cart item deleted successfully.' });
     } catch (error) {
         console.error('Failed to delete cart item:', error);
-        res.status(500).json({ success: false, message: 'An error occurred while deleting the cart item.', error: error.message });
+        next(createError(500, 'An error occurred while deleting the cart item.', error));
     }
 });
-
 
 module.exports = router;
