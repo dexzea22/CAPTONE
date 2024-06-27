@@ -145,83 +145,67 @@ function addToCart(cardId) {
   const withEggCheckbox = cardElement.querySelector(`#withEgg-${cardId.replace('card-', '')}`);
   const imageUrl = cardElement.querySelector('img').getAttribute('src');
 
-  if (!quantityInput || !withEggCheckbox) {
-      console.error('Required input elements not found for card:', cardId);
+  if (!quantityInput) {
+      console.error('Quantity input not found for card:', cardId);
       return;
   }
 
   const quantity = parseInt(quantityInput.value);
-  const eggPrice = withEggCheckbox.checked ? parseFloat(withEggCheckbox.dataset.eggPrice) : 0;
   const itemPrice = parseFloat(quantityInput.getAttribute('data-price'));
-  const itemTotalPrice = (itemPrice + eggPrice) * quantity;
+  const withEgg = withEggCheckbox ? withEggCheckbox.checked : false; // Check if withEggCheckbox exists and if it's checked
 
-  fetch('/api/cart/items', {
-      method: 'GET',
+  const requestData = {
+      name: cardId, // Assuming cardId is the name of the food item
+      price: itemPrice,
+      image: imageUrl,
+      quantity: quantity,
+      withEgg: withEgg, // Include withEgg if checked
+  };
+
+  fetch('/api/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
+      body: JSON.stringify(requestData),
   })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Failed to fetch cart items. Please try again.');
-      }
-      return response.json();
-  })
-  .then(data => {
-      const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-      const newTotalPrice = totalPrice + itemTotalPrice;
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Failed to add item to cart. Please try again.');
+          }
+          return response.json();
+      })
+      .then(data => {
+          if (data.success) {
+              // Extract the item name from cardId and format the message
+              const itemName = cardId.replace('card-', ''); // Remove the 'card-' prefix
+              const eggStatus = withEgg ? 'W/ Egg' : 'W/Out Egg'; // Determine if withEgg is true or false
 
-      if (newTotalPrice > 10000) {
-          Swal.fire({
-              icon: 'warning',
-              title: 'Cart Limit Exceeded',
-              text: 'Adding this item will exceed PHP 10,000. You cannot add to your cart anymore.',
-          });
-      } else {
-          fetch('/api/cart/add', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({ name: cardId, price: itemPrice + eggPrice, image: imageUrl, quantity: quantity }),
-          })
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error('Failed to add item to cart. Please try again.');
-              }
-              return response.json();
-          })
-          .then(data => {
-              if (data.success) {
-                  Swal.fire({
-                      icon: 'success',
-                      title: 'Item Added to Cart',
-                      text: `${cardId} has been added to your cart.`,
-                  });
-              } else {
-                  Swal.fire({
-                      icon: 'error',
-                      title: 'Error',
-                      text: data.message || 'Could not add item to the cart.',
-                  });
-              }
-          })
-          .catch(error => {
-              console.error('Error adding item to cart:', error);
+              Swal.fire({
+                  icon: 'success',
+                  title: 'Item Added to Cart',
+                  text: `${itemName} ${eggStatus} has been added to your cart.`,
+              }).then(() => {
+                  window.location.reload(); // Reload the window after the alert
+              });
+          } else {
               Swal.fire({
                   icon: 'error',
                   title: 'Error',
-                  text: error.message || 'An unexpected error occurred.',
+                  text: data.message || 'Could not add item to the cart.',
               });
+          }
+      })
+      .catch(error => {
+          console.error('Error adding item to cart:', error);
+          Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.message || 'An unexpected error occurred.',
           });
-      }
-  })
-  .catch(error => {
-      console.error('Error fetching cart items:', error);
-      Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to fetch cart items. Please try again.',
       });
-  });
 }
+
+
 
 
 

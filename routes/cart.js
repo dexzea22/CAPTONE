@@ -35,7 +35,7 @@ router.get('/items', authenticate, async (req, res, next) => {
 // Add or Update Cart Item
 router.post('/add', authenticate, async (req, res, next) => {
     const userId = req.user.id; // Use req.user.id which is set by Passport
-    const { name, price, image, quantity, size } = req.body;
+    const { name, price, image, quantity, withEgg } = req.body;
 
     try {
         if (!name || !price || !image || !quantity) {
@@ -43,27 +43,30 @@ router.post('/add', authenticate, async (req, res, next) => {
         }
 
         let foodItem;
-        if (size) {
-            foodItem = await prisma.foodItem.findUnique({
-                where: { name_size: { name, size } },
-            });
-        } else {
-            foodItem = await prisma.foodItem.findFirst({
-                where: { name },
-            });
-        }
+
+        // Find the food item based on name only (FoodItem doesn't have withEgg attribute)
+        foodItem = await prisma.foodItem.findFirst({
+            where: { name: name },
+        });
 
         if (!foodItem) {
+            // If the food item doesn't exist, create it with the provided details
             foodItem = await prisma.foodItem.create({
-                data: { name, size, price, imageUrl: image },
+                data: { name, price, imageUrl: image },
             });
         }
 
+        // Check if the cart item already exists for the user with the same withEgg status
         let existingCartItem = await prisma.cartItem.findFirst({
-            where: { userId, itemId: foodItem.id },
+            where: {
+                userId,
+                itemId: foodItem.id,
+                withEgg: withEgg,
+            },
         });
 
         if (existingCartItem) {
+            // If the cart item exists, update its quantity
             const updatedCartItem = await prisma.cartItem.update({
                 where: { id: existingCartItem.id },
                 data: { quantity: existingCartItem.quantity + quantity },
@@ -71,8 +74,16 @@ router.post('/add', authenticate, async (req, res, next) => {
             });
             res.json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
         } else {
+            // If the cart item doesn't exist, create a new cart item
+            const cartItemData = {
+                userId,
+                itemId: foodItem.id,
+                quantity,
+                withEgg, // Include withEgg in cartItemData
+            };
+
             const cartItem = await prisma.cartItem.create({
-                data: { userId, itemId: foodItem.id, quantity },
+                data: cartItemData,
                 include: { foodItem: true },
             });
             res.json({ success: true, message: 'Item added to cart successfully.', cartItem });

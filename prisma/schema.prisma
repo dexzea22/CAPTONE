@@ -61,6 +61,7 @@ model FoodItem {
   imageUrl            String?
   cartItems           CartItem[]  // Define the relation to CartItem
   orderItems          OrderItem[] // Define the relation to OrderItem
+    createdAt DateTime @default(now())
   @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
 }
 
@@ -69,9 +70,11 @@ model CartItem {
   userId   String
   itemId   String
   quantity Int
+  withEgg  Boolean?  // Check if withEgg field is correctly defined
   user     User     @relation(fields: [userId], references: [id])
-  foodItem FoodItem @relation(fields: [itemId], references: [id]) // Define the relation to FoodItem
+  foodItem FoodItem @relation(fields: [itemId], references: [id])
 }
+
 
 model Order {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
@@ -83,15 +86,11 @@ model Order {
   amount          Float
   orderItems      OrderItem[]   // Define the relation to OrderItem
   user            User          @relation(name: "UserToOrder", fields: [userId], references: [id]) // Define the opposite relation to User
-  // New fields for shipping information
-  shippingAddress String?
-  contactPerson   String?
-  contactNumber   String?
-
-  // New field for payment method
-  paymentMethod   String?       // Add field for payment method (e.g., "PayPal", "COD", etc.)
+  shippingAddress String?       // New fields for shipping information
+  contactPerson   String?       // New fields for shipping information
+  contactNumber   String?       // New fields for shipping information
+  paymentMethod   String?       // New field for payment method (e.g., "PayPal", "COD", etc.)
 }
-
 
 model OrderItem {
   id                  String      @id @default(auto()) @map("_id") @db.ObjectId
@@ -103,24 +102,15 @@ model OrderItem {
   itemSize            String?     // Add field for the size of the item
   itemImageUrl        String?     // Add field for the image URL of the item
   quantity            Int
+  withEgg             Boolean?    // Ensure withEgg is correctly defined
   totalPrice          Float
-  order               Order       @relation(fields: [orderId], references: [id]) // Define the opposite relation to Order
-  foodItem            FoodItem    @relation(fields: [itemId], references: [id]) // Define the opposite relation to FoodItem
-  createdAt       DateTime      @default(now())
+  dietaryRestrictions String[]    // Array of strings for dietary restrictions
+  order               Order       @relation(fields: [orderId], references: [id])
+  foodItem            FoodItem    @relation(fields: [itemId], references: [id])
+  createdAt           DateTime    @default(now())
 }
-// AddFoodItem model
 
-model AddFoodItem {
-  id                  String      @id @default(auto()) @map("_id") @db.ObjectId
-  name                String
-  description         String?
-  price               Float
-  size                String?
-  category            String?
-  dietaryRestrictions String[]
-  imageUrl            String?
-  createdAt           DateTime?    @default(now())
-}
+
 
 
 
@@ -133,6 +123,3 @@ model ContactMessage {
   message   String
   createdAt DateTime @default(now())
 }
-
-
-

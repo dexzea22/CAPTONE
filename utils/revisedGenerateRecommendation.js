@@ -8,7 +8,7 @@ const openai = new OpenAIApi(process.env.OPENAI_API_KEY);
 async function revised_generated_recommendation(dietaryData) {
   try {
     // Fetch all food items from the database
-    const foodItems = await prisma.addFoodItem.findMany();
+    const foodItems = await prisma.foodItem.findMany();
 
     // Filter food items based on dietary preferences
     const filteredItems = foodItems.filter(item => {

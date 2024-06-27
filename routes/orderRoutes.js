@@ -31,6 +31,13 @@ router.get('/orderStatus', authenticate, async (req, res) => {
             }
         });
 
+        // Modify the order items to include the necessary data for rendering
+        orders.forEach(order => {
+            order.orderItems.forEach(item => {
+                item.itemName = item.itemName.replace('card-', '');
+            });
+        });
+
         console.log('Sorted Orders:', orders.map(order => `${order.id}: ${order.status}`));
 
         res.render('orderStatus', { orders });
@@ -39,8 +46,6 @@ router.get('/orderStatus', authenticate, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
 
 // Route to display user order history
 router.get('/orderHistory', authenticate, async (req, res) => {
@@ -58,6 +63,13 @@ router.get('/orderHistory', authenticate, async (req, res) => {
             }
         });
 
+        // Modify the order items to include the necessary data for rendering
+        orders.forEach(order => {
+            order.orderItems.forEach(item => {
+                item.itemName = item.itemName.replace('card-', '');
+            });
+        });
+
         // Log the order history data for debugging
         console.log('Order history data:', orders);
 
@@ -65,7 +77,7 @@ router.get('/orderHistory', authenticate, async (req, res) => {
         res.render('orderHistory', { orders });
     } catch (error) {
         console.error('Error fetching order history:', error);
-        res.status(500). send('Internal Server Error');
+        res.status(500).send('Internal Server Error');
     }
 });
 

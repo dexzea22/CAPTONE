@@ -433,10 +433,10 @@ const generateAccessToken = async () => {
 
 
 
-const captureOrder = async (orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod) => {
+const captureOrder = async (orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, paymentMethod, req) => {
   try {
     let order;
-    let totalAmount = 0; // Initialize total amount
+    let totalAmount = 0;
 
     // Calculate total amount
     for (const item of cartItems) {
@@ -444,7 +444,7 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
     }
 
     if (paymentMethod === 'PayPal') {
-      const accessToken = await generateAccessToken(); // Retrieve PayPal access token
+      const accessToken = await generateAccessToken();
       const url = `${base}/v2/checkout/orders/${orderId}/capture`;
       const response = await fetch(url, {
         method: "POST",
@@ -466,14 +466,13 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
       const data = await response.json();
       console.log("PayPal Order captured:", data);
 
-      // Save order details to the database for PayPal order
       order = await prisma.order.create({
         data: {
           userId: userId,
           paypalOrderId: orderId,
-          status: 'PENDING', // Set a default status here
-          amount: totalAmount, // Assign total amount here
-          paymentMethod: 'PayPal', // Set payment method as PayPal
+          status: 'PENDING',
+          amount: totalAmount,
+          paymentMethod: 'PayPal',
           shippingAddress: shippingAddress,
           createdAt: new Date(),
           contactPerson: contactPerson,
@@ -488,19 +487,20 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
               itemImageUrl: item.foodItem.imageUrl,
               quantity: item.quantity,
               totalPrice: item.quantity * item.foodItem.price,
-              // createdAt: new Date(),
+              withEgg: item.withEgg, // Ensure withEgg is included
+              dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
             }))
           }
+          
         },
       });
     } else if (paymentMethod === 'COD') {
-      // Save order details to the database for Cash On Delivery (COD) order
       order = await prisma.order.create({
         data: {
           userId: userId,
-          status: 'PENDING', // Set a default status here
-          amount: totalAmount, // Assign total amount here
-          paymentMethod: 'COD', // Set payment method as Cash On Delivery
+          status: 'PENDING',
+          amount: totalAmount,
+          paymentMethod: 'COD',
           shippingAddress: shippingAddress,
           createdAt: new Date(),
           contactPerson: contactPerson,
@@ -515,9 +515,11 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
               itemImageUrl: item.foodItem.imageUrl,
               quantity: item.quantity,
               totalPrice: item.quantity * item.foodItem.price,
-              // createdAt: new Date(),
+              withEgg: item.withEgg, // Ensure withEgg is included
+              dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
             }))
           }
+          
         },
       });
     } else {
@@ -526,7 +528,9 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
     console.log("Order and OrderItems saved to database:", order);
 
-     // Optionally, you can remove the cart items after the order is captured
+    // Clear cart items from session after order is captured
+    req.session.cartItems = [];
+
     await prisma.cartItem.deleteMany({
       where: {
         userId: userId,
@@ -542,6 +546,9 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
 
 
+
+
+
 // Ensure that wherever you use `userId` in your routes, it's extracted correctly from `req.user.id` after authentication. This means updating your routes to use `req.user.id` whenever you need to reference the authenticated user’s ID.
 
 
@@ -549,16 +556,14 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
 
 // Helper function to calculate total amount based on items in the cart
-function calculateTotalAmount(cartItems) {
+const calculateTotalAmount = (cartItems) => {
   let totalAmount = 0;
-  console.log("Calculating total amount for cart items:", cartItems); // Debug: Check cart items format
   for (const item of cartItems) {
-    if (item.foodItem && item.quantity) {
-      totalAmount += item.foodItem.price * item.quantity;
-    }
+    totalAmount += item.foodItem.price * item.quantity;
   }
   return totalAmount;
-}
+};
+
 
 
 // Function to create a PayPal order with intent set to "AUTHORIZE"
@@ -609,12 +614,28 @@ const createPayPalOrder = async (cartItems) => {
 
 
 
+// Middleware to load cart items into the session if not already loaded
+async function loadCartItemsToSession(req, res, next) {
+  try {
+    const cartItems = await prisma.cartItem.findMany({
+      where: { userId: req.user.id },
+      include: { foodItem: true },
+    });
+    req.session.cartItems = cartItems;
+    console.log('Loaded cart items into session:', cartItems);
+  } catch (error) {
+    console.error('Failed to load cart items:', error);
+    return res.status(500).json({ message: 'Failed to load cart items', error: error.message });
+  }
+  next();
+}
+
+
 // Route to capture a PayPal order
 app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
     const { orderId } = req.params;
     const cartItems = req.session.cartItems || [];
-    // Use req.user.id directly from the passport session after authentication
     const userId = req.user.id;
     const { shippingAddress, contactPerson, contactNumber } = req.body;
 
@@ -622,15 +643,17 @@ app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, 
       throw new Error("Invalid payment method for this endpoint");
     }
 
-    const capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'PayPal');
+    const capturedOrder = await captureOrder(orderId, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'PayPal', req);
 
-    // Check the user information from session for logging purposes
+    // Clear session cart items
+    req.session.cartItems = [];
+
     if (req.user && req.user.id && req.user.email) {
       await prisma.log.create({
         data: {
           action: `PayPal Payment captured for order ${orderId}`,
-          email: req.user.email, // Use email from user object in session
-          userId: req.user.id,  // Use userId from user object in session
+          email: req.user.email,
+          userId: req.user.id,
         },
       });
       res.status(200).json({ message: "PayPal Order captured successfully", orderDetails: capturedOrder });
@@ -645,24 +668,6 @@ app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, 
 
 
 
-// Middleware to load cart items into the session if not already loaded
-async function loadCartItemsToSession(req, res, next) {
-  if (!req.session.cartItems) {
-    try {
-      const cartItems = await prisma.cartItem.findMany({
-        where: { userId: req.user.id },
-        include: { foodItem: true },
-      });
-      req.session.cartItems = cartItems;
-      console.log('Loaded cart items into session:', cartItems);
-    } catch (error) {
-      console.error('Failed to load cart items:', error);
-      return res.status(500).json({ message: 'Failed to load cart items', error: error.message });
-    }
-  }
-  next();
-}
-
 // Route to capture a COD order
 app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
@@ -674,14 +679,15 @@ app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
       return res.status(400).json({ error: "Invalid payment method specified." });
     }
 
-    console.log("Attempting to capture order with cart items:", cartItems); // Ensure cart items are logged
-
+    console.log("Attempting to capture order with cart items:", cartItems);
     const totalAmount = calculateTotalAmount(cartItems);
-    console.log("Total Amount for Order:", totalAmount); // Confirm total amount is calculated
+    console.log("Total Amount for Order:", totalAmount);
 
-    const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD');
+    const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD', req);
 
-    // Log and respond
+    // Clear session cart items
+    req.session.cartItems = [];
+
     if (req.user && req.user.id && req.user.email) {
       await prisma.log.create({
         data: {
@@ -699,6 +705,11 @@ app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
     res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
   }
 });
+
+
+
+
+
 
 app.post("/contactUs1", async (req, res) => {
   console.log("Received POST request with data:", req.body);

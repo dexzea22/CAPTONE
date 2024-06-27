@@ -10,7 +10,7 @@ router.use(fileUpload());
 router.get('/', async (req, res) => {
     try {
         // Fetch food items from the database
-        const foodItems = await prisma.addFoodItem.findMany();
+        const foodItems = await prisma.foodItem.findMany();
 
         // Render the adminCreateFoodItem page and pass the foodItems data
         res.render('adminCreateFoodItem', { foodItems });
@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
         await imageFile.mv(imagePath);
 
         // Create the food item in the database
-        const newFoodItem = await prisma.addFoodItem.create({
+        const newFoodItem = await prisma.foodItem.create({
             data: {
                 name,
                 description,
@@ -64,61 +64,60 @@ router.post('/', async (req, res) => {
 // Route to get food item details for edit
 router.get('/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-      // Fetch food item details from the database
-      const foodItem = await prisma.addFoodItem.findUnique({
-        where: { id }
-      });
-      // Send the food item details as JSON response
-      res.json({ success: true, foodItem }); // Update to include success status
+        const { id } = req.params;
+        // Fetch food item details from the database
+        const foodItem = await prisma.foodItem.findUnique({
+            where: { id }
+        });
+        // Send the food item details as JSON response
+        res.json({ success: true, foodItem });
     } catch (error) {
-      console.error('Error fetching food item details for edit:', error);
-      res.status(500).json({ success: false, message: 'Internal Server Error' });
+        console.error('Error fetching food item details for edit:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
-  });
-  
+});
+
 // Route to update food item
 router.put('/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-      const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions } = req.body;
-      // Convert editDietaryRestrictions to an array if it exists and is not an array
-      const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
-      // Update the food item in the database
-      const updatedFoodItem = await prisma.addFoodItem.update({
-        where: { id },
-        data: {
-          name: editName,
-          description: editDescription,
-          price: parseFloat(editPrice),
-          size: editSize,
-          category: editCategory,
-          dietaryRestrictions: dietaryArray
-        }
-      });
-      // Send success response with updated food item details
-      res.json({ success: true, message: 'Food item updated successfully', foodItem: updatedFoodItem });
+        const { id } = req.params;
+        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions } = req.body;
+        // Convert editDietaryRestrictions to an array if it exists and is not an array
+        const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
+        // Update the food item in the database
+        const updatedFoodItem = await prisma.foodItem.update({
+            where: { id },
+            data: {
+                name: editName,
+                description: editDescription,
+                price: parseFloat(editPrice),
+                size: editSize,
+                category: editCategory,
+                dietaryRestrictions: dietaryArray
+            }
+        });
+        // Send success response with updated food item details
+        res.json({ success: true, message: 'Food item updated successfully', foodItem: updatedFoodItem });
     } catch (error) {
-      console.error('Failed to update food item:', error);
-      // Send error response
-      res.status(500).json({ success: false, message: 'Failed to update food item.' });
+        console.error('Failed to update food item:', error);
+        // Send error response
+        res.status(500).json({ success: false, message: 'Failed to update food item.' });
     }
-  });
-  
-  // Route to delete food item
+});
+
+// Route to delete food item
 router.delete('/:id', async (req, res) => {
     try {
-      const { id } = req.params;
-      // Delete the food item from the database
-      const deletedFoodItem = await prisma.addFoodItem.delete({ where: { id } });
-      // Send success response
-      res.json({ success: true, message: 'Food item deleted successfully', deletedFoodItem });
+        const { id } = req.params;
+        // Delete the food item from the database
+        const deletedFoodItem = await prisma.foodItem.delete({ where: { id } });
+        // Send success response
+        res.json({ success: true, message: 'Food item deleted successfully', deletedFoodItem });
     } catch (error) {
-      console.error('Failed to delete food item:', error);
-      // Send error response
-      res.status(500).json({ success: false, message: 'Failed to delete food item.' });
+        console.error('Failed to delete food item:', error);
+        // Send error response
+        res.status(500).json({ success: false, message: 'Failed to delete food item.' });
     }
-  });
-
+});
 
 module.exports = router;
