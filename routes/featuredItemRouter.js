@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 router.get('/', async (req, res) => {
     try {
         // Fetch featured food items from the database using Prisma, limited to 3 items and in descending order by createdAt
-        const foodItems = await prisma.addFoodItem.findMany({
+        const foodItems = await prisma.foodItem.findMany({
             take: 3, // Limit to 3 items
             orderBy: {
                 createdAt: 'desc'
@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
 router.get('/foodMenu', async (req, res) => {
     try {
         // Fetch all food items from the database using Prisma in descending order by createdAt
-        const foodItems = await prisma.addFoodItem.findMany({
+        const foodItems = await prisma.foodItem.findMany({
             orderBy: {
                 createdAt: 'desc'
             }
@@ -49,7 +49,7 @@ router.get('/soloMeals', async (req, res) => {
         console.log(`Fetching items for category: ${category}`);
         
         // Fetching food items filtered by category using Prisma, in descending order by createdAt
-        const foodItems = await prisma.addFoodItem.findMany({
+        const foodItems = await prisma.foodItem.findMany({
             where: { category },
             orderBy: {
                 createdAt: 'desc'
@@ -71,7 +71,7 @@ router.get('/partyTrays', async (req, res) => {
         console.log(`Fetching items for category: ${category}`);
         
         // Fetching food items filtered by category using Prisma, in descending order by createdAt
-        const foodItems = await prisma.addFoodItem.findMany({
+        const foodItems = await prisma.foodItem.findMany({
             where: { category },
             orderBy: {
                 createdAt: 'desc'
