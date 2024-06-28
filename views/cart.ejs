@@ -206,7 +206,7 @@
                 });
         }
 
-       // Function to fetch and display cart items
+   // Function to fetch and display cart items
 function displayCartItems() {
     fetch('/api/cart/items', {
         method: 'GET',
@@ -241,10 +241,14 @@ function displayCartItems() {
                 // Determine if the item is with or without egg
                 const eggStatus = item.withEgg ? 'With Egg' : 'Without Egg';
 
+                // Construct dietary restrictions string
+                const dietaryRestrictions = item.foodItem.dietaryRestrictions.length > 0 ? `Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}` : '';
+
                 itemElement.innerHTML = `
                     <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
                     <div class="Itm">
-                        <span>${itemName} ${item.foodItem.size || ''} ${eggStatus}</span><br>
+                        <span>${itemName} ${eggStatus}</span><br>
+                        ${dietaryRestrictions ? `<span>${dietaryRestrictions}</span><br>` : ''}
                         <span>Price: PHP ${item.foodItem.price.toFixed(2)}</span><br>
                         <span>Quantity: 
                             <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item.id}', ${item.quantity - 1})">-</button>
@@ -289,6 +293,8 @@ function displayCartItems() {
 
 // Call the function to fetch and display cart items when the page loads
 document.addEventListener('DOMContentLoaded', displayCartItems);
+
+
 
 
 

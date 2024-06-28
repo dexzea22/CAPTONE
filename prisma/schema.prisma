@@ -56,6 +56,9 @@ model FoodItem {
   description         String?
   price               Float
   size                String?     // Added size field here
+  price10_12          Float?      // For party trays
+  price25_30          Float?      // For party trays
+  price45_50          Float?      // For party trays
   category            String?     // Assuming simple string categories
   dietaryRestrictions String[]    // Array of strings
   imageUrl            String?

@@ -117,13 +117,14 @@
                           <div class="item-card">
               
                             <p><b>Item Name:</b> <%= item.itemName.replace('card-', '') %> <%= item.withEgg ? '(with egg)' : '(without egg)' %></p>
-                          
+                            
                             <p><strong>Item Size:</strong> <%= item.itemSize %></p>
                             <p><strong>Quantity:</strong> <%= item.quantity %></p>
                             <p><strong>Price:</strong> <%= item.itemPrice %></p>
                             <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
                             <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions %></p>
                             <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
+                            
                           </div>
 
                         <% }); %>

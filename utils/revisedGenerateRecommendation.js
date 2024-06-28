@@ -17,7 +17,7 @@ async function revised_generated_recommendation(dietaryData) {
 
     // Construct the menu description dynamically with price
     const menuDescription = filteredItems.map(item => {
-      const dietaryRestrictions = item.dietaryRestrictions.join(', ');
+      const dietaryRestrictions = item.dietaryRestrictions.map(r => r.replace('**', '')).join(', ');
       return `**${dietaryRestrictions}:**
       ${item.name}: ${item.description}
       Price: $${item.price.toFixed(2)}
