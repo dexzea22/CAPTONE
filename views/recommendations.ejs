@@ -20,7 +20,7 @@
     <div class="container mt-5 text-center">
         <h1>Menu Recommendations</h1>
         <p>Dietary Preferences: <%= recommendations.dietaryPreferences %></p>
-    
+
         <% if (recommendations.menuDescription) { %>
             <h2 class="mt-4">Menu Description:</h2>
             <div class="row justify-content-center">
@@ -29,8 +29,8 @@
                 let currentDietaryRestriction = '';
                 let currentItemName = '';
                 lines.forEach((line, index) => {
-                    if (line.startsWith('**')) {
-                        currentDietaryRestriction = line.replace('**', '').replace(':', '').trim();
+                    if (line.startsWith('Dietary Restrictions:')) {
+                        currentDietaryRestriction = line.replace('Dietary Restrictions:', '').trim();
                     } else if (line.includes(':') && !line.trim().startsWith('Price')) {
                         currentItemName = line.split(':')[0].trim();
                     } else if (line.trim().startsWith('Price')) {
@@ -45,8 +45,9 @@
                         <img src="<%= imageUrl %>" alt="Food Image" class="card-img-top food-image">
                         <div class="card-body">
                             <h5 class="card-title"><%= currentItemName %></h5>
-                            <h6 class="card-subtitle mb-2 text-muted"><%= currentDietaryRestriction %></h6>
-                
+                            <% if (currentDietaryRestriction) { %>
+                                <h6 class="card-subtitle mb-2 text-muted"><%= currentDietaryRestriction %></h6>
+                            <% } %>
                             <!-- Add to Cart Form -->
                             <div class="form-group">
                                 <label for="quantity-<%= currentItemName.replace(/\s+/g, '-') %>">Quantity:</label>
@@ -63,7 +64,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <%
                     }
                 });
@@ -72,15 +72,12 @@
         <% } else { %>
             <p>No menu description available.</p>
         <% } %>
-    
+
         <!-- Add a script tag to log the recommendations -->
         <script>
             console.log('Recommendations:', <%= JSON.stringify(recommendations.recommendations) %>);
         </script>
     </div>
-    
-    
-    
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

@@ -22,44 +22,76 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { name, description, price, size, category, dietaryRestrictions } = req.body;
-        
-        // Convert dietaryRestrictions to an array if it exists and is not an array
-        const dietaryArray = Array.isArray(dietaryRestrictions) ? dietaryRestrictions : dietaryRestrictions ? [dietaryRestrictions] : [];
-        
-        // Handle file upload
-        if (!req.files || !req.files.imageUpload) {
-            return res.status(400).json({ success: false, message: 'No image uploaded' });
-        }
-
-        const imageFile = req.files.imageUpload;
-        const imageName = Date.now() + '-' + imageFile.name;
-        const imagePath = path.join(__dirname, '../public/images', imageName);
-        await imageFile.mv(imagePath);
-
-        // Create the food item in the database
-        const newFoodItem = await prisma.foodItem.create({
-            data: {
-                name,
-                description,
-                price: parseFloat(price),
-                size,
-                category,
-                dietaryRestrictions: dietaryArray,
-                imageUrl: `/images/${imageName}`,
-                createdAt: new Date()
-            }
-        });
-
-        // Send success response with new food item details
-        res.status(201).json({ success: true, message: 'Food item created successfully', foodItem: newFoodItem });
+      const {
+        name,
+        description,
+        price,
+        size,
+        category,
+        dietaryRestrictions,
+        price25_30,
+        price45_50,
+      } = req.body;
+  
+      // Convert dietaryRestrictions to an array if it exists and is not an array
+      const dietaryArray = Array.isArray(dietaryRestrictions)
+        ? dietaryRestrictions
+        : dietaryRestrictions
+        ? [dietaryRestrictions]
+        : [];
+  
+      // Handle file upload
+      if (!req.files || !req.files.imageUpload) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'No image uploaded' });
+      }
+  
+      const imageFile = req.files.imageUpload;
+      const imageName = Date.now() + '-' + imageFile.name;
+      const imagePath = path.join(__dirname, '../public/images', imageName);
+      await imageFile.mv(imagePath);
+  
+      // Determine which fields to save based on category
+      let newData = {
+        name,
+        description,
+        category,
+        dietaryRestrictions: dietaryArray,
+        imageUrl: `/images/${imageName}`,
+        createdAt: new Date(),
+      };
+  
+      if (category === 'Solo Meals') {
+        newData = {
+          ...newData,
+          price: parseFloat(price),
+        };
+      } else if (category === 'Party Trays') {
+        newData = {
+          ...newData,
+          size,
+          price: parseFloat(price),
+          price25_30: parseFloat(price25_30),
+          price45_50: parseFloat(price45_50),
+        };
+      }
+  
+      // Create the food item in the database
+      const newFoodItem = await prisma.foodItem.create({
+        data: newData,
+      });
+  
+      // Send success response with new food item details
+      res
+        .status(201)
+        .json({ success: true, message: 'Food item created successfully', foodItem: newFoodItem });
     } catch (error) {
-        console.error('Failed to create food item:', error);
-        // Send error response
-        res.status(500).json({ success: false, message: 'Failed to create food item.' });
+      console.error('Failed to create food item:', error);
+      // Send error response
+      res.status(500).json({ success: false, message: 'Failed to create food item.' });
     }
-});
-
+  });
 
 // edit & delete
 // Route to get food item details for edit
@@ -82,21 +114,41 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions } = req.body;
+        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50 } = req.body;
+
         // Convert editDietaryRestrictions to an array if it exists and is not an array
         const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
+
         // Update the food item in the database
-        const updatedFoodItem = await prisma.foodItem.update({
-            where: { id },
-            data: {
-                name: editName,
-                description: editDescription,
-                price: parseFloat(editPrice),
-                size: editSize,
-                category: editCategory,
-                dietaryRestrictions: dietaryArray
-            }
-        });
+        let updatedFoodItem;
+        if (editCategory === "Party Trays") {
+            updatedFoodItem = await prisma.foodItem.update({
+                where: { id },
+                data: {
+                    name: editName,
+                    description: editDescription,
+                    price: parseFloat(editPrice),
+                    size: editSize,
+                    category: editCategory,
+                    dietaryRestrictions: dietaryArray,
+                    price25_30: parseFloat(editPax25_30) || null,
+                    price45_50: parseFloat(editPax45_50) || null,
+                }
+            });
+        } else {
+            updatedFoodItem = await prisma.foodItem.update({
+                where: { id },
+                data: {
+                    name: editName,
+                    description: editDescription,
+                    price: parseFloat(editPrice),
+                    size: editSize,
+                    category: editCategory,
+                    dietaryRestrictions: dietaryArray,
+                }
+            });
+        }
+
         // Send success response with updated food item details
         res.json({ success: true, message: 'Food item updated successfully', foodItem: updatedFoodItem });
     } catch (error) {
