@@ -81,13 +81,10 @@
                     type="radio"
                     class="form-check-input"
                     name="price<%= item.id %>"
-                    value="<%= item.price10_12 %>"
+                    value="<%= item.price %>"
                     id="price<%= item.id %>"
                   />
-                  <label
-                    class="form-check-label"
-                    for="price10_12<%= item.id %>"
-                  >
+                  <label class="form-check-label" for="price<%= item.id %>">
                     <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12
                     Pax: ₱<%= item.price.toFixed(2) %>
                   </label>

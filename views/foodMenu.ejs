@@ -1,55 +1,211 @@
-<!-- foodMenu.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Food Menu</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-      .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 20px;
-      }
-      .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 10px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
       .card img {
         max-width: 100%;
         height: auto;
         border-radius: 8px;
         margin-bottom: 10px;
       }
-      .card h2 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-      }
-      .card p {
-        margin-bottom: 5px;
+      .price-radio-group img {
+        width: 30px;
+        height: 30px;
+        margin-right: 5px;
+        vertical-align: middle;
       }
     </style>
   </head>
   <body>
-    <h1>Food Menu</h1>
-    <div class="grid-container">
-      <% foodItems.forEach(item => { %>
-      <div class="card">
-        <img src="<%= item.imageUrl %>" alt="<%= item.name %>" />
-        <h2><%= item.name %></h2>
-        <p><%= item.description %></p>
-        <p>Price: $<%= item.price.toFixed(2) %></p>
-        <p>
-          Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %>
-          <%= diet %> <% }); %>
-        </p>
+    <div class="container">
+      <h1 class="my-4">Solo Meals</h1>
+      <div class="row">
+        <% soloMeals.forEach(item => { %>
+        <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+          <div class="card h-100">
+            <img
+              src="<%= item.imageUrl %>"
+              class="card-img-top"
+              alt="<%= item.name %>"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= item.name %></h5>
+              <p class="card-text"><%= item.description %></p>
+              <p class="card-text">
+                Price: $<span class="item-price"
+                  ><%= item.price.toFixed(2) %></span
+                >
+              </p>
+              <p class="card-text">
+                Dietary Preferences: <% item.dietaryRestrictions.forEach(diet =>
+                { %> <%= diet %><% if (diet !==
+                item.dietaryRestrictions[item.dietaryRestrictions.length - 1]) {
+                %>, <% } %> <% }); %>
+              </p>
+              <div class="form-group">
+                <label for="quantity-<%= item.id %>">Quantity:</label>
+                <input
+                  type="number"
+                  class="form-control quantity-input"
+                  id="quantity-<%= item.id %>"
+                  value="1"
+                  min="1"
+                  data-price="<%= item.price %>"
+                />
+              </div>
+              <div class="form-group form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input add-egg"
+                  id="add-egg-<%= item.id %>"
+                  data-egg-price="5"
+                />
+                <label class="form-check-label" for="add-egg-<%= item.id %>"
+                  >Add Egg ($5)</label
+                >
+              </div>
+              <p class="card-text">
+                Total Price: $<span class="total-price"
+                  ><%= item.price.toFixed(2) %></span
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+        <% }); %>
       </div>
-      <% }); %>
+
+      <h1 class="mb-4">Party Trays</h1>
+      <div class="row">
+        <% partyTrays.forEach(item => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img
+              src="<%= item.imageUrl %>"
+              alt="<%= item.name %>"
+              class="card-img-top"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= item.name %></h5>
+              <p class="card-text"><%= item.description %></p>
+              <p class="card-text">
+                Dietary Preferences: <% item.dietaryRestrictions.forEach(diet =>
+                { %> <%= diet %> <% }); %>
+              </p>
+              <!-- Radio buttons for different prices with images -->
+              <div class="price-radio-group">
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="price<%= item.id %>"
+                    value="<%= item.price %>"
+                    id="price<%= item.id %>"
+                  />
+                  <label class="form-check-label" for="price<%= item.id %>">
+                    <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12
+                    Pax: ₱<%= item.price.toFixed(2) %>
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="price<%= item.id %>"
+                    value="<%= item.price25_30 %>"
+                    id="price25_30<%= item.id %>"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="price25_30<%= item.id %>"
+                  >
+                    <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30
+                    Pax: ₱<%= item.price25_30.toFixed(2) %>
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="price<%= item.id %>"
+                    value="<%= item.price45_50 %>"
+                    id="price45_50<%= item.id %>"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="price45_50<%= item.id %>"
+                  >
+                    <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50
+                    Pax: ₱<%= item.price45_50.toFixed(2) %>
+                  </label>
+                </div>
+              </div>
+              <!-- Add to Cart button -->
+              <button
+                class="btn btn-primary mt-3"
+                onclick="addToCart('<%= item.id %>')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        <% }); %>
+      </div>
     </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const quantityInputs = document.querySelectorAll(".quantity-input");
+        const eggCheckboxes = document.querySelectorAll(".add-egg");
+
+        function updateTotalPrice(cardBody) {
+          const price = parseFloat(
+            cardBody.querySelector(".quantity-input").getAttribute("data-price")
+          );
+          const quantity = parseInt(
+            cardBody.querySelector(".quantity-input").value
+          );
+          const eggPrice = cardBody.querySelector(".add-egg").checked
+            ? parseFloat(
+                cardBody
+                  .querySelector(".add-egg")
+                  .getAttribute("data-egg-price")
+              )
+            : 0;
+          const totalPriceElement = cardBody.querySelector(".total-price");
+          const newTotalPrice = (
+            price * quantity +
+            eggPrice * quantity
+          ).toFixed(2);
+          totalPriceElement.textContent = newTotalPrice;
+        }
+
+        quantityInputs.forEach((input) => {
+          input.addEventListener("input", function () {
+            const cardBody = this.closest(".card-body");
+            updateTotalPrice(cardBody);
+          });
+        });
+
+        eggCheckboxes.forEach((checkbox) => {
+          checkbox.addEventListener("change", function () {
+            const cardBody = this.closest(".card-body");
+            updateTotalPrice(cardBody);
+          });
+        });
+      });
+    </script>
   </body>
 </html>

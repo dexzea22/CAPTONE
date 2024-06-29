@@ -13,7 +13,7 @@ router.get('/', async (req, res) => { // Changed the path to '/partyTrays' for c
         // Fetching food items filtered by category using Prisma, in descending order by createdAt
         const foodItems = await prisma.foodItem.findMany({
             where: {
-                category,
+                category: 'Party Trays',
                 deleted: false // Only fetch non-deleted items
             },
             orderBy: {
