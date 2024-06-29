@@ -47,6 +47,8 @@ const featuredItemRouter = require('./routes/featuredItemRouter');
 const bestSellerRouter = require('./routes/bestSellerRouter');
 const soloMealsRouter = require('./routes/soloMealsRouter');
 const partyTraysRouter = require('./routes/partyTraysRouter');
+const foodMenuRouter = require('./routes/foodMenuRouter');
+
 
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
@@ -403,7 +405,7 @@ app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
 app.use('/featuredItem', featuredItemRouter);
 app.use('/soloMeals', soloMealsRouter);
 app.use('/PartyTrays', partyTraysRouter);
-app.use('/foodMenu', featuredItemRouter);
+app.use('/foodMenu', foodMenuRouter);
 app.use('/bestSeller', bestSellerRouter); 
 
 const generateAccessToken = async () => {
