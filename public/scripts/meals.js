@@ -131,7 +131,6 @@ function QTY(operation, outputId) {
 
 // Function to update cart counter
 
-  // Updated addToCart function to include quantity and "With Egg" option
 function addToCart(cardId) {
   console.log('Adding to cart:', cardId); // Log to track function execution
 
@@ -144,6 +143,7 @@ function addToCart(cardId) {
   const quantityInput = cardElement.querySelector(`#quantity-${cardId.replace('card-', '')}`);
   const withEggCheckbox = cardElement.querySelector(`#withEgg-${cardId.replace('card-', '')}`);
   const imageUrl = cardElement.querySelector('img').getAttribute('src');
+  const dietaryRestrictions = cardElement.getAttribute('data-dietary-restrictions').split(',');
 
   if (!quantityInput) {
       console.error('Quantity input not found for card:', cardId);
@@ -153,14 +153,18 @@ function addToCart(cardId) {
   const quantity = parseInt(quantityInput.value);
   const itemPrice = parseFloat(quantityInput.getAttribute('data-price'));
   const withEgg = withEggCheckbox ? withEggCheckbox.checked : false; // Check if withEggCheckbox exists and if it's checked
+  const itemName = cardId.replace('card-', ''); // Remove 'card-' prefix
 
   const requestData = {
-      name: cardId, // Assuming cardId is the name of the food item
+      name: itemName, // Use the item name without the 'card-' prefix
       price: itemPrice,
       image: imageUrl,
       quantity: quantity,
       withEgg: withEgg, // Include withEgg if checked
+      dietaryRestrictions: dietaryRestrictions, // Include dietaryRestrictions
   };
+
+  console.log('Request Data:', requestData);
 
   fetch('/api/cart/add', {
       method: 'POST',
@@ -168,42 +172,42 @@ function addToCart(cardId) {
       credentials: 'include',
       body: JSON.stringify(requestData),
   })
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Failed to add item to cart. Please try again.');
-          }
-          return response.json();
-      })
-      .then(data => {
-          if (data.success) {
-              // Extract the item name from cardId and format the message
-              const itemName = cardId.replace('card-', ''); // Remove the 'card-' prefix
-              const eggStatus = withEgg ? 'W/ Egg' : 'W/Out Egg'; // Determine if withEgg is true or false
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to add item to cart. Please try again.');
+      }
+      return response.json();
+  })
+  .then(data => {
+      if (data.success) {
+          // Extract the item name from cardId and format the message
+          const eggStatus = withEgg ? 'W/ Egg' : 'W/Out Egg'; // Determine if withEgg is true or false
 
-              Swal.fire({
-                  icon: 'success',
-                  title: 'Item Added to Cart',
-                  text: `${itemName} ${eggStatus} has been added to your cart.`,
-              }).then(() => {
-                  window.location.reload(); // Reload the window after the alert
-              });
-          } else {
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: data.message || 'Could not add item to the cart.',
-              });
-          }
-      })
-      .catch(error => {
-          console.error('Error adding item to cart:', error);
+          Swal.fire({
+              icon: 'success',
+              title: 'Item Added to Cart',
+              text: `${itemName} (${eggStatus}) has been added to your cart.`,
+          }).then(() => {
+              window.location.reload(); // Reload the window after the alert
+          });
+      } else {
           Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: error.message || 'An unexpected error occurred.',
+              text: data.message || 'Could not add item to the cart.',
           });
+      }
+  })
+  .catch(error => {
+      console.error('Error adding item to cart:', error);
+      Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message || 'An unexpected error occurred.',
       });
+  });
 }
+
 
 
 

@@ -20,7 +20,7 @@
     <div class="container mt-5 text-center">
         <h1>Menu Recommendations</h1>
         <p>Dietary Preferences: <%= recommendations.dietaryPreferences %></p>
-    
+
         <% if (recommendations.menuDescription) { %>
             <h2 class="mt-4">Menu Description:</h2>
             <div class="row justify-content-center">
@@ -29,8 +29,8 @@
                 let currentDietaryRestriction = '';
                 let currentItemName = '';
                 lines.forEach((line, index) => {
-                    if (line.startsWith('**')) {
-                        currentDietaryRestriction = line.replace('**', '').replace(':', '').trim();
+                    if (line.startsWith('Dietary Restrictions:')) {
+                        currentDietaryRestriction = line.replace('Dietary Restrictions:', '').trim();
                     } else if (line.includes(':') && !line.trim().startsWith('Price')) {
                         currentItemName = line.split(':')[0].trim();
                     } else if (line.trim().startsWith('Price')) {
@@ -38,29 +38,32 @@
                         const description = lines[index - 1].split(':')[1].trim();
                         const imageUrl = lines[index + 1].match(/\(([^)]+)\)/)[1];
                 %>
-                    <div class="col-md-4 col-sm-6 my-3">
-                        <div class="card" id="card-<%= currentItemName.replace(/\s+/g, '-') %>">
-                            <img src="<%= imageUrl %>" alt="Food Image" class="card-img-top food-image">
-                            <div class="card-body">
-                                <h5 class="card-title"><%= currentItemName %></h5>
+                <div class="col-md-4 col-sm-6 my-3">
+                    <div class="card" 
+                         id="card-<%= currentItemName.replace(/\s+/g, '-') %>"
+                         data-dietary-restrictions="<%= currentDietaryRestriction %>">
+                        <img src="<%= imageUrl %>" alt="Food Image" class="card-img-top food-image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= currentItemName %></h5>
+                            <% if (currentDietaryRestriction) { %>
                                 <h6 class="card-subtitle mb-2 text-muted"><%= currentDietaryRestriction %></h6>
-
-                                <!-- Add to Cart Form -->
-                                <div class="form-group">
-                                    <label for="quantity-<%= currentItemName.replace(/\s+/g, '-') %>">Quantity:</label>
-                                    <input type="number" name="quantity" id="quantity-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-control quantity-input" min="1" value="1" data-price="<%= price %>" data-egg-price="5">
-                                </div>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" name="withEgg" id="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-input">
-                                    <label for="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-label">With Egg (₱5)</label>
-                                </div>
-                                <input type="hidden" name="foodName" value="<%= currentItemName %>">
-                                <input type="hidden" name="price" value="<%= price %>">
-                                <p>Total Price: ₱<span class="total-price"><%= price.toFixed(2) %></span></p>
-                                <button type="button" class="btn btn-primary" onclick="addToCart('card-<%= currentItemName.replace(/\s+/g, '-') %>')">Add to Cart</button>
+                            <% } %>
+                            <!-- Add to Cart Form -->
+                            <div class="form-group">
+                                <label for="quantity-<%= currentItemName.replace(/\s+/g, '-') %>">Quantity:</label>
+                                <input type="number" name="quantity" id="quantity-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-control quantity-input" min="1" value="1" data-price="<%= price %>" data-egg-price="5">
                             </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" name="withEgg" id="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-input">
+                                <label for="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-label">With Egg (₱5)</label>
+                            </div>
+                            <input type="hidden" name="foodName" value="<%= currentItemName %>">
+                            <input type="hidden" name="price" value="<%= price %>">
+                            <p>Total Price: ₱<span class="total-price"><%= price.toFixed(2) %></span></p>
+                            <button type="button" class="btn btn-primary" onclick="addToCart('card-<%= currentItemName.replace(/\s+/g, '-') %>')">Add to Cart</button>
                         </div>
                     </div>
+                </div>
                 <%
                     }
                 });
@@ -69,15 +72,12 @@
         <% } else { %>
             <p>No menu description available.</p>
         <% } %>
-    
+
         <!-- Add a script tag to log the recommendations -->
         <script>
             console.log('Recommendations:', <%= JSON.stringify(recommendations.recommendations) %>);
         </script>
     </div>
-    
-    
-    
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

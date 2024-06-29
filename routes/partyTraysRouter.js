@@ -5,14 +5,17 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 // Route for Party Trays in descending order by createdAt
-router.get('/', async (req, res) => {
+router.get('/', async (req, res) => { // Changed the path to '/partyTrays' for clarity and uniqueness
     const category = 'Party Trays';
     try {
         console.log(`Fetching items for category: ${category}`);
         
         // Fetching food items filtered by category using Prisma, in descending order by createdAt
         const foodItems = await prisma.foodItem.findMany({
-            where: { category },
+            where: {
+                category,
+                deleted: false // Only fetch non-deleted items
+            },
             orderBy: {
                 createdAt: 'desc'
             }
