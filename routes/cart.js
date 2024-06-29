@@ -22,38 +22,47 @@ router.get('/items', authenticate, async (req, res, next) => {
         const userId = req.user.id; // Use req.user.id which is set by Passport
         const cartItems = await prisma.cartItem.findMany({
             where: { userId },
-            include: { foodItem: true },
+            include: {
+                foodItem: true // Ensure that foodItem is included
+            },
         });
-        console.log('Cart Items:', cartItems);
-        res.json(cartItems);
+
+        // Filter out any cart items where foodItem is null
+        const validCartItems = cartItems.filter(item => item.foodItem !== null);
+
+        // Log the cart items to check dietaryRestrictions
+        console.log('Cart Items:', validCartItems);
+
+        res.json(validCartItems);
     } catch (error) {
         console.error('Error fetching cart items:', error);
         next(createError(500, 'Failed to fetch cart items.', error));
     }
 });
 
-// Add or Update Cart Item
+
 router.post('/add', authenticate, async (req, res, next) => {
-    const userId = req.user.id; // Use req.user.id which is set by Passport
-    const { name, price, image, quantity, withEgg } = req.body;
+    const userId = req.user.id;
+    const { name, price, image, quantity, withEgg, dietaryRestrictions } = req.body;
 
     try {
-        if (!name || !price || !image || !quantity) {
-            throw new Error('Required fields are missing.'); // Validate required fields
+        if (!name || !price || !image || !quantity || !dietaryRestrictions) {
+            throw new Error('Required fields are missing.');
         }
 
         let foodItem;
 
-        // Find the food item based on name only (FoodItem doesn't have withEgg attribute)
+        // Find or create the food item based on name
         foodItem = await prisma.foodItem.findFirst({
             where: { name: name },
         });
 
         if (!foodItem) {
-            // If the food item doesn't exist, create it with the provided details
+            // Create the food item if it doesn't exist
             foodItem = await prisma.foodItem.create({
-                data: { name, price, imageUrl: image },
+                data: { name, price, imageUrl: image, dietaryRestrictions: dietaryRestrictions },
             });
+            console.log('New food item created:', foodItem); // Log newly created food item
         }
 
         // Check if the cart item already exists for the user with the same withEgg status
@@ -63,29 +72,32 @@ router.post('/add', authenticate, async (req, res, next) => {
                 itemId: foodItem.id,
                 withEgg: withEgg,
             },
+            include: { foodItem: true }, // Ensure foodItem is included
         });
 
         if (existingCartItem) {
-            // If the cart item exists, update its quantity
+            // Update the quantity if the cart item exists
             const updatedCartItem = await prisma.cartItem.update({
                 where: { id: existingCartItem.id },
                 data: { quantity: existingCartItem.quantity + quantity },
                 include: { foodItem: true },
             });
+            console.log('Updated cart item:', updatedCartItem); // Log updated cart item
             res.json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
         } else {
-            // If the cart item doesn't exist, create a new cart item
+            // Create a new cart item if it doesn't exist
             const cartItemData = {
                 userId,
                 itemId: foodItem.id,
                 quantity,
-                withEgg, // Include withEgg in cartItemData
+                withEgg,
             };
 
             const cartItem = await prisma.cartItem.create({
                 data: cartItemData,
-                include: { foodItem: true },
+                include: { foodItem: true }, // Ensure foodItem is included
             });
+            console.log('New cart item added:', cartItem); // Log newly added cart item
             res.json({ success: true, message: 'Item added to cart successfully.', cartItem });
         }
     } catch (error) {
@@ -93,6 +105,7 @@ router.post('/add', authenticate, async (req, res, next) => {
         next(createError(500, 'Could not add item to cart.', error));
     }
 });
+
 
 // Update Cart Item Quantity
 router.put('/updateQuantity', authenticate, async (req, res, next) => {

@@ -63,7 +63,8 @@ model FoodItem {
   imageUrl            String?
   cartItems           CartItem[]  // Define the relation to CartItem
   orderItems          OrderItem[] // Define the relation to OrderItem
-    createdAt DateTime @default(now())
+  createdAt           DateTime    @default(now())
+  deleted             Boolean     @default(false) // New field for soft delete
   @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
 }
 
