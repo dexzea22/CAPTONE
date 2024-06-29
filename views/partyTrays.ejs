@@ -31,6 +31,12 @@
       .card p {
         margin-bottom: 5px;
       }
+      .price-radio-group {
+        margin-top: 10px;
+      }
+      .price-radio-group label {
+        margin-right: 10px;
+      }
     </style>
   </head>
   <body>
@@ -41,11 +47,38 @@
         <img src="<%= item.imageUrl %>" alt="<%= item.name %>" />
         <h2><%= item.name %></h2>
         <p><%= item.description %></p>
-        <p>Price: $<%= item.price.toFixed(2) %></p>
+        <p>Price: ₱<%= item.price.toFixed(2) %></p>
         <p>
           Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %>
           <%= diet %> <% }); %>
         </p>
+        <!-- Radio buttons for different prices -->
+        <div class="price-radio-group">
+          <label>
+            <input
+              type="radio"
+              name="price<%= item.id %>"
+              value="<%= item.price10_12 %>"
+            />
+            10-12 Pax: ₱<%= item.price.toFixed(2) %>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="price<%= item.id %>"
+              value="<%= item.price25_30 %>"
+            />
+            25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="price<%= item.id %>"
+              value="<%= item.price45_50 %>"
+            />
+            45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
+          </label>
+        </div>
       </div>
       <% }); %>
     </div>
