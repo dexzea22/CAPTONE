@@ -45,9 +45,6 @@ const adminOrderNotificationsRouter = require('./routes/adminOrderNotificationsR
 const adminCreateFoodItemRouter = require('./routes/adminCreateFoodItemRouter');
 const featuredItemRouter = require('./routes/featuredItemRouter');
 const bestSellerRouter = require('./routes/bestSellerRouter');
-const soloMealsRouter = require('./routes/soloMealsRouter');
-const partyTraysRouter = require('./routes/partyTraysRouter');
-
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
@@ -401,8 +398,8 @@ app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
 
 app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
 app.use('/featuredItem', featuredItemRouter);
-app.use('/soloMeals', soloMealsRouter);
-app.use('/PartyTrays', partyTraysRouter);
+app.use('/soloMeals', featuredItemRouter);
+app.use('/partyTrays', featuredItemRouter);
 app.use('/foodMenu', featuredItemRouter);
 app.use('/bestSeller', bestSellerRouter); 
 
