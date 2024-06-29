@@ -112,50 +112,61 @@ router.get('/:id', async (req, res) => {
 
 // Route to update food item
 router.put('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50 } = req.body;
+  try {
+      const { id } = req.params;
+      const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50 } = req.body;
 
-        // Convert editDietaryRestrictions to an array if it exists and is not an array
-        const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
+      // Convert editDietaryRestrictions to an array if it exists and is not an array
+      const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
 
-        // Update the food item in the database
-        let updatedFoodItem;
-        if (editCategory === "Party Trays") {
-            updatedFoodItem = await prisma.foodItem.update({
-                where: { id },
-                data: {
-                    name: editName,
-                    description: editDescription,
-                    price: parseFloat(editPrice),
-                    size: editSize,
-                    category: editCategory,
-                    dietaryRestrictions: dietaryArray,
-                    price25_30: parseFloat(editPax25_30) || null,
-                    price45_50: parseFloat(editPax45_50) || null,
-                }
-            });
-        } else {
-            updatedFoodItem = await prisma.foodItem.update({
-                where: { id },
-                data: {
-                    name: editName,
-                    description: editDescription,
-                    price: parseFloat(editPrice),
-                    size: editSize,
-                    category: editCategory,
-                    dietaryRestrictions: dietaryArray,
-                }
-            });
-        }
+      // Handle file upload
+      let imageUrl;
+      if (req.files && req.files.editImageUpload) {
+          const imageFile = req.files.editImageUpload;
+          const imageName = Date.now() + '-' + imageFile.name;
+          const imagePath = path.join(__dirname, '../public/images', imageName);
+          await imageFile.mv(imagePath);
+          imageUrl = `/images/${imageName}`;
+      }
 
-        // Send success response with updated food item details
-        res.json({ success: true, message: 'Food item updated successfully', foodItem: updatedFoodItem });
-    } catch (error) {
-        console.error('Failed to update food item:', error);
-        // Send error response
-        res.status(500).json({ success: false, message: 'Failed to update food item.' });
-    }
+      // Update the food item in the database
+      let updatedFoodItem;
+      if (editCategory === "Party Trays") {
+          updatedFoodItem = await prisma.foodItem.update({
+              where: { id },
+              data: {
+                  name: editName,
+                  description: editDescription,
+                  price: parseFloat(editPrice),
+                  size: editSize,
+                  category: editCategory,
+                  dietaryRestrictions: dietaryArray,
+                  price25_30: parseFloat(editPax25_30) || null,
+                  price45_50: parseFloat(editPax45_50) || null,
+                  imageUrl: imageUrl || undefined, // Only update if new image is uploaded
+              }
+          });
+      } else {
+        updatedFoodItem = await prisma.foodItem.update({
+          where: { id },
+          data: {
+              name: editName,
+              description: editDescription,
+              price: parseFloat(editPrice),
+              size: editSize,
+              category: editCategory,
+              dietaryRestrictions: dietaryArray,
+              imageUrl: imageUrl,
+          }
+      });
+      }
+
+      // Send success response
+      res.json({ success: true, message: "Food item updated successfully", foodItem: updatedFoodItem });
+  } catch (error) {
+      console.error('Error updating food item:', error);
+      res.status(500).json({ success: false, message: 'Failed to update food item.' });
+  }
 });
 
 // Route to delete food item
