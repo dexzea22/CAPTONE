@@ -42,48 +42,4 @@ router.get('/foodMenu', async (req, res) => {
     }
 });
 
-// Route for Solo Meals in descending order by createdAt
-router.get('/soloMeals', async (req, res) => {
-    const category = 'Solo Meals';
-    try {
-        console.log(`Fetching items for category: ${category}`);
-        
-        // Fetching food items filtered by category using Prisma, in descending order by createdAt
-        const foodItems = await prisma.foodItem.findMany({
-            where: { category },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-
-        console.log('Fetched items:', foodItems);
-        res.render('soloMeals', { foodItems });
-    } catch (error) {
-        console.error('Error fetching food items:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-// Route for Party Trays in descending order by createdAt
-router.get('/partyTrays', async (req, res) => {
-    const category = 'Party Trays';
-    try {
-        console.log(`Fetching items for category: ${category}`);
-        
-        // Fetching food items filtered by category using Prisma, in descending order by createdAt
-        const foodItems = await prisma.foodItem.findMany({
-            where: { category },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
-
-        console.log('Fetched items:', foodItems);
-        res.render('partyTrays', { foodItems });
-    } catch (error) {
-        console.error('Error fetching food items:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
 module.exports = router;
