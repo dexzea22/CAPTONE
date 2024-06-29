@@ -4,8 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Party Trays</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-      .grid-container {
+      /* .grid-container {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 20px;
@@ -36,51 +40,103 @@
       }
       .price-radio-group label {
         margin-right: 10px;
+      } */
+      .card img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .price-radio-group img {
+        width: 30px;
+        height: 30px;
+        margin-right: 5px;
+        vertical-align: middle;
       }
     </style>
   </head>
   <body>
-    <h1>Party Trays</h1>
-    <div class="grid-container">
-      <% foodItems.forEach(item => { %>
-      <div class="card">
-        <img src="<%= item.imageUrl %>" alt="<%= item.name %>" />
-        <h2><%= item.name %></h2>
-        <p><%= item.description %></p>
-        <p>Price: ₱<%= item.price.toFixed(2) %></p>
-        <p>
-          Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %>
-          <%= diet %> <% }); %>
-        </p>
-        <!-- Radio buttons for different prices -->
-        <div class="price-radio-group">
-          <label>
-            <input
-              type="radio"
-              name="price<%= item.id %>"
-              value="<%= item.price10_12 %>"
+    <div class="container mt-4">
+      <h1 class="mb-4">Party Trays</h1>
+      <div class="row">
+        <% foodItems.forEach(item => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <img
+              src="<%= item.imageUrl %>"
+              alt="<%= item.name %>"
+              class="card-img-top"
             />
-            10-12 Pax: ₱<%= item.price.toFixed(2) %>
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="price<%= item.id %>"
-              value="<%= item.price25_30 %>"
-            />
-            25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="price<%= item.id %>"
-              value="<%= item.price45_50 %>"
-            />
-            45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
-          </label>
+            <div class="card-body">
+              <h5 class="card-title"><%= item.name %></h5>
+              <p class="card-text"><%= item.description %></p>
+              <p class="card-text">
+                Dietary Preferences: <% item.dietaryRestrictions.forEach(diet =>
+                { %> <%= diet %> <% }); %>
+              </p>
+              <!-- Radio buttons for different prices with images -->
+              <div class="price-radio-group">
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="price<%= item.id %>"
+                    value="<%= item.price10_12 %>"
+                    id="price<%= item.id %>"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="price10_12<%= item.id %>"
+                  >
+                    <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12
+                    Pax: ₱<%= item.price.toFixed(2) %>
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="price<%= item.id %>"
+                    value="<%= item.price25_30 %>"
+                    id="price25_30<%= item.id %>"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="price25_30<%= item.id %>"
+                  >
+                    <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30
+                    Pax: ₱<%= item.price25_30.toFixed(2) %>
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    name="price<%= item.id %>"
+                    value="<%= item.price45_50 %>"
+                    id="price45_50<%= item.id %>"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="price45_50<%= item.id %>"
+                  >
+                    <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50
+                    Pax: ₱<%= item.price45_50.toFixed(2) %>
+                  </label>
+                </div>
+              </div>
+              <!-- Add to Cart button -->
+              <button
+                class="btn btn-primary mt-3"
+                onclick="addToCart('<%= item.id %>')"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
         </div>
+        <% }); %>
       </div>
-      <% }); %>
     </div>
   </body>
 </html>
