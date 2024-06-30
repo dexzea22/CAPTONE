@@ -69,7 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% orders.forEach(order=> { %>
+                    <% orders.forEach(order => { %>
                     <tr>
                         <td><%= order.id %></td>
                         <td><%= order.status %></td>
@@ -85,9 +85,10 @@
                 </tbody>
             </table>
         </div>
-
+        
         <!-- Modal for Viewing and Updating Order Status -->
-        <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -115,79 +116,86 @@
                 </div>
             </div>
         </div>
+        
+          <!-- Modal for Image Viewer -->
+    <div class="modal fade" id="imageViewerModal" tabindex="-1" role="dialog" aria-labelledby="imageViewerModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageViewerModalLabel">Image Viewer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImageViewer" src="" alt="Food Image"
+                    style="max-width: 100%; max-height: 80vh;">
+            </div>
+        </div>
     </div>
+</div>
+        
+      <script>
+    function viewOrderDetails(orderId) {
+    fetch(`/adminOrderNotifications/details/${orderId}`, {
+        headers: {
+            'Cache-Control': 'no-cache', // This forces the request to bypass the cache
+            'Pragma': 'no-cache'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error(`Failed to fetch order details: ${response.statusText}`);
+        }
+    })
+    .then(data => {
+        if (!data || Object.keys(data).length === 0) {
+            throw new Error("No data returned from server");
+        }
 
-    <script>
+        const orderItemsHtml = data.orderItems.map(item => `
+            <li>
+                <div class="d-flex align-items-center">
+                    <img src="${item.foodItem.imageUrl}" alt="Food Image"
+                        class="mr-3 clickable-image"
+                        style="max-width: 150px; max-height: 150px; border-radius: 0; cursor: pointer;"
+                        onclick="openImageViewer('${item.foodItem.imageUrl}', '${item.foodItem.name}', '${item.withEgg ? 'With Egg' : 'Without Egg'}', '${item.foodItem.dietaryRestrictions.join(', ')}')">
+                    <div>
+                        <p><strong>${item.foodItem.name} ${item.withEgg ? 'With Egg' : 'Without Egg'}</strong></p>
+                        <p>Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}</p>
+                        <p>Quantity: ${item.quantity} pcs</p>
+                        <p>Price: ₱${item.itemPrice} each</p>
+                    </div>
+                </div>
+            </li>
+        `).join('');
 
-
-        function viewOrderDetails(orderId) {
-            fetch(`/adminOrderNotifications/details/${orderId}`, {
-                headers: {
-                    'Cache-Control': 'no-cache', // This forces the request to bypass the cache
-                    'Pragma': 'no-cache'
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error(`Failed to fetch order details: ${response.statusText}`);
-                    }
-                })
-                .then(data => {
-                    if (!data || Object.keys(data).length === 0) {
-                        throw new Error("No data returned from server");
-                    }
-
-                    const orderInfo = `
+        const orderInfo = `
             <p><strong>Order ID:</strong> ${data.id}</p>
             <p><strong>Customer:</strong> ${data.user.firstName} ${data.user.lastName}</p>
             <p><strong>Contact:</strong> ${data.contactNumber}</p>
             <p><strong>Address:</strong> ${data.shippingAddress}</p>
             <p><strong>Ordered Items:</strong></p>
-            <ul>
-                ${data.orderItems.map(item => `<li>${item.foodItem.name} (${item.itemSize}) - ${item.quantity} pcs at ₱${item.itemPrice} each</li>`).join('')}
-
+            <ul class="list-unstyled">
+                ${orderItemsHtml}
             </ul>
         `;
-                    $('#orderInfo').html(orderInfo);
-                    $('#newStatus').val(data.status);
-                    $('#updateOrderStatusForm').attr('action', `/adminOrderNotifications/update/${data.id}`);
-                    $('#orderDetailsModal').modal('show');
-                })
-                .catch(error => {
-                    console.error('Error fetching order details:', error);
-                    Swal.fire('Error', error.toString(), 'error');
-                });
-        }
+        
+        $('#orderInfo').html(orderInfo);
+        $('#newStatus').val(data.status);
+        $('#updateOrderStatusForm').attr('action', `/adminOrderNotifications/update/${data.id}`);
+        $('#orderDetailsModal').modal('show');
+    })
+    .catch(error => {
+        console.error('Error fetching order details:', error);
+        Swal.fire('Error', error.toString(), 'error');
+    });
+}
 
 
-        function deleteOrder(orderId) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.value) {
-                    fetch(`/adminOrderNotifications/delete/${orderId}`, { method: 'POST' })
-                        .then(response => {
-                            if (response.ok) {
-                                Swal.fire('Deleted!', 'The order has been deleted.', 'success');
-                                location.reload();
-                            } else {
-                                throw new Error('Failed to delete the order.');
-                            }
-                        })
-                        .catch(error => {
-                            Swal.fire('Error', error.toString(), 'error');
-                        });
-                }
-            });
-        }
 
         $('#updateOrderStatusForm').on('submit', function (event) {
             event.preventDefault();

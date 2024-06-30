@@ -22,10 +22,18 @@ async function revised_generated_recommendation(dietaryData) {
     // Generate formatted menu description based on filtered food items
     const menuDescription = filteredItems.map(item => {
       const dietaryRestrictions = item.dietaryRestrictions.join(', '); // Join dietary restrictions into a string
-      return `${item.name}:
+      let itemDescription = `${item.name}:
 Dietary Restrictions: ${dietaryRestrictions}
-Price: $${item.price.toFixed(2)}
-![${item.name}](${item.imageUrl})`; // Format each item's description with name, restrictions, price, and image
+Price: $${item.price.toFixed(2)}`;
+      if (item.category === 'Party Trays') {
+        itemDescription += `
+Price25_30: $${item.price25_30 ? item.price25_30.toFixed(2) : 'N/A'}
+Price45_50: $${item.price45_50 ? item.price45_50.toFixed(2) : 'N/A'}`;
+      }
+      itemDescription += `
+Category: ${item.category} 
+![${item.name}](${item.imageUrl})`;
+      return itemDescription;
     }).join('\n\n'); // Join all descriptions with double new lines
 
     console.log('Generated menuDescription:', menuDescription); // Log generated menu description
@@ -47,12 +55,18 @@ Title: <Title>
 Description: <Description>
 Image URL: <ImageURL>
 Price: $<Price>
+Price25_30: $<Price25_30>
+Price45_50: $<Price45_50>
+Category: <Category>
 
 Example:
 Title: TEST RECOMMENDATION
 Description: TEST DESCRIPTION
 Image URL: /images/1717050435060-image_2024-05-30_142713526.png
-Price: $<Price>`;
+Price: $<Price>
+Price25_30: $<Price25_30>
+Price45_50: $<Price45_50>
+Category: <Category>`;
 
     console.log('Sending the following prompt to OpenAI:', prompt); // Log prompt sent to OpenAI API
 
@@ -75,16 +89,22 @@ Price: $<Price>`;
 
     // Transform parsed recommendations array into structured objects
     const recommendations = [];
-    for (let i = 0; i < recommendationsArray.length; i += 4) {
+    for (let i = 0; i < recommendationsArray.length; i += 6) {
       const title = recommendationsArray[i].replace('Title: ', '').trim(); // Extract and clean title
       const description = recommendationsArray[i + 1].replace('Description: ', '').trim(); // Extract and clean description
       const imageUrl = recommendationsArray[i + 2].replace('Image URL: ', '').trim(); // Extract and clean image URL
       const price = parseFloat(recommendationsArray[i + 3].replace('Price: $', '').trim()); // Extract and clean price
+      const price25_30 = parseFloat(recommendationsArray[i + 4].replace('Price25_30: $', '').trim()); // Extract and clean price25_30
+      const price45_50 = parseFloat(recommendationsArray[i + 5].replace('Price45_50: $', '').trim()); // Extract and clean price45_50
+      const category = recommendationsArray[i + 6].replace('Category: ', '').trim(); // Extract and clean category
       recommendations.push({ // Push formatted recommendation object to recommendations array
         title: title,
         description: description,
         imageUrl: imageUrl,
-        price: price
+        price: price,
+        price25_30: price25_30,
+        price45_50: price45_50,
+        category: category
       });
     }
 

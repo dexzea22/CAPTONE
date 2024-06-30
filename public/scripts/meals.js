@@ -130,7 +130,6 @@ function QTY(operation, outputId) {
 }
 
 // Function to update cart counter
-
 function addToCart(cardId) {
   console.log('Adding to cart:', cardId); // Log to track function execution
 
@@ -141,9 +140,9 @@ function addToCart(cardId) {
   }
 
   const quantityInput = cardElement.querySelector(`#quantity-${cardId.replace('card-', '')}`);
-  const withEggCheckbox = cardElement.querySelector(`#withEgg-${cardId.replace('card-', '')}`);
   const imageUrl = cardElement.querySelector('img').getAttribute('src');
   const dietaryRestrictions = cardElement.getAttribute('data-dietary-restrictions').split(',');
+  const category = cardElement.getAttribute('data-category');
 
   if (!quantityInput) {
       console.error('Quantity input not found for card:', cardId);
@@ -151,7 +150,8 @@ function addToCart(cardId) {
   }
 
   const quantity = parseInt(quantityInput.value);
-  const itemPrice = parseFloat(quantityInput.getAttribute('data-price'));
+  const itemPrice = parseFloat(quantityInput.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || quantityInput.getAttribute('data-price'));
+  const withEggCheckbox = cardElement.querySelector(`#withEgg-${cardId.replace('card-', '')}`);
   const withEgg = withEggCheckbox ? withEggCheckbox.checked : false; // Check if withEggCheckbox exists and if it's checked
   const itemName = cardId.replace('card-', ''); // Remove 'card-' prefix
 
@@ -162,6 +162,7 @@ function addToCart(cardId) {
       quantity: quantity,
       withEgg: withEgg, // Include withEgg if checked
       dietaryRestrictions: dietaryRestrictions, // Include dietaryRestrictions
+      category: category // Include category
   };
 
   console.log('Request Data:', requestData);
@@ -180,13 +181,23 @@ function addToCart(cardId) {
   })
   .then(data => {
       if (data.success) {
-          // Extract the item name from cardId and format the message
-          const eggStatus = withEgg ? 'W/ Egg' : 'W/Out Egg'; // Determine if withEgg is true or false
-
+          let cartMessage = `${itemName}`;
+          if (category === 'Party Trays') {
+              const sizeRadioChecked = cardElement.querySelector('.price-radio-group input[type="radio"]:checked');
+              if (sizeRadioChecked) {
+                  const sizeLabel = sizeRadioChecked.nextSibling.textContent.trim().split(':')[0].trim();
+                  cartMessage += ` - ${sizeLabel} Party Trays`;
+              } else {
+                  cartMessage += ` Party Trays`;
+              }
+          } else {
+              const eggStatus = withEgg ? 'W/ Egg' : 'W/Out Egg'; // Determine if withEgg is true or false
+              cartMessage += ` (${eggStatus})`;
+          }
           Swal.fire({
               icon: 'success',
               title: 'Item Added to Cart',
-              text: `${itemName} (${eggStatus}) has been added to your cart.`,
+              text: `${cartMessage} has been added to your cart.`,
           }).then(() => {
               window.location.reload(); // Reload the window after the alert
           });
@@ -207,6 +218,9 @@ function addToCart(cardId) {
       });
   });
 }
+
+
+
 
 
 
