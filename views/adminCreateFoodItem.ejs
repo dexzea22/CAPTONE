@@ -120,10 +120,13 @@
           <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Price</th>
+            <th>Price (Solo Meals/Small 10-12 Pax)</th>
+            <th>Price (Meduim 25-30 Pax)</th>
+            <th>Price (Large 45-50 Pax)</th>
             <th>Size</th>
             <th>Category</th>
             <th>Dietary Restrictions</th>
+            <th>Image</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -133,10 +136,25 @@
           <tr>
             <td><%= item.name %></td>
             <td><%= item.description %></td>
-            <td>₱<%= item.price.toFixed(2) %></td>
+            <td><%= item.price.toFixed(2) %></td>
+            <td>
+              <% if (item.category === 'Solo Meals') { %>
+                N/A
+              <% } else { %>
+                ₱<%= item.price25_30 ? item.price25_30.toFixed(2) : '' %>
+              <% } %>
+            </td>
+            <td>
+              <% if (item.category === 'Solo Meals') { %>
+                N/A
+              <% } else { %>
+                ₱<%= item.price45_50 ? item.price45_50.toFixed(2) : '' %>
+              <% } %>
+            </td>
             <td><%= item.size %></td>
             <td><%= item.category %></td>
             <td><%= item.dietaryRestrictions.join(', ') %></td>
+            <td><img src="<%= item.imageUrl %>" alt="Image Preview" style="max-width: 100px; max-height: 100px;"></td>
             <td>
               <!-- Pass item details to openEditModal function -->
               <button onclick="openEditModal(
@@ -268,7 +286,8 @@
           </select><br />
 
           <label for="editImageUpload">Upload Image:</label><br />
-          <input type="file" id="editImageUpload" name="editImageUpload" accept="image/*" required /><br />
+          <input type="file" id="editImageUpload" name="editImageUpload" accept="image/*">
+
 
           <input type="hidden" id="editItemId" name="editItemId" />
 
@@ -380,7 +399,7 @@
       //Edit & delete
       
       // Function to open the edit modal and populate fields
-    function openEditModal(id, name, description, price, size, category, dietaryRestrictions, pax25_30, pax45_50) {
+    function openEditModal(id, name, description, price, size, category, dietaryRestrictions, pax25_30, pax45_50, imageUrl) {
         document.getElementById("editName").value = name || "";
         document.getElementById("editDescription").value = description || "";
         document.getElementById("editPrice").value = price || "";
@@ -389,6 +408,7 @@
         document.getElementById("editDietaryRestrictions").value = dietaryRestrictions || [];
         document.getElementById("editPax25_30").value = pax25_30 || "";
         document.getElementById("editPax45_50").value = pax45_50 || "";
+        document.getElementById("editImageUpload").value = imageUrl || "";
         document.getElementById("editItemId").value = id || "";
         document.getElementById("editModal").style.display = "block";
 

@@ -16,7 +16,57 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="stylesheets/recommendations.css">
-
+<style>
+     .food-image {
+            width: 100%;
+            height: 200px; /* Fixed height for uniformity */
+            object-fit: cover; /* Ensure images cover the area without distortion */
+        }
+    
+        .card img.food-image {
+            width: 100%;
+            height: 200px; /* Fixed height for uniformity */
+            object-fit: cover; /* Ensure images cover the area without distortion */
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    
+        .price-radio-group img {
+            width: 30px; /* Ensure consistent width */
+            height: 30px; /* Ensure consistent height */
+            margin-right: 5px;
+            vertical-align: middle;
+            object-fit: contain; /* Maintain aspect ratio within the given dimensions */
+            border-radius: 50%; /* Optional: Makes the image circular */
+        }
+    
+        /* Ensure both solo meals and party trays cards are the same size */
+        .card {
+            width: 100%; /* Full width for responsiveness */
+            max-width: 350px; /* Maximum width for uniformity */
+            margin: 0 auto; /* Center the card horizontally */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+    
+        .card-body {
+            padding: 15px; /* Consistent padding */
+        }
+    
+        .card-title {
+            font-size: 1.25rem; /* Uniform font size for titles */
+            margin-bottom: 10px; /* Space below the title */
+        }
+    
+        .card-subtitle {
+            font-size: 1rem; /* Uniform font size for subtitles */
+            margin-bottom: 10px; /* Space below the subtitle */
+        }
+    
+        .price-radio-group .form-check {
+            margin-bottom: 10px; /* Space below each radio button group */
+        }
+</style>
   </head>
   <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
     <div class="topnav">
@@ -298,54 +348,113 @@
             <h2>Menu Description:</h2>
             <div class="row justify-content-center">
                 <% 
-                const lines = recommendations.menuDescription.split('\n');
-                let currentDietaryRestriction = '';
-                let currentItemName = '';
-                lines.forEach((line, index) => {
-                    if (line.startsWith('Dietary Restrictions:')) {
-                        currentDietaryRestriction = line.replace('Dietary Restrictions:', '').trim();
-                    } else if (line.includes(':') && !line.trim().startsWith('Price')) {
-                        currentItemName = line.split(':')[0].trim();
-                    } else if (line.trim().startsWith('Price')) {
-                        const price = parseFloat(line.replace('Price: $', '').trim());
-                        const description = lines[index - 1].split(':')[1].trim();
-                        const imageUrl = lines[index + 1].match(/\(([^)]+)\)/)[1];
-                %>
-                <div class="col-md-4 col-sm-6 my-3">
-                    <div class="card" 
-                         id="card-<%= currentItemName.replace(/\s+/g, '-') %>"
-                         data-dietary-restrictions="<%= currentDietaryRestriction %>">
-                        <img src="<%= imageUrl %>" alt="Food Image" class="card-img-top food-image">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= currentItemName %></h5>
-                            <% if (currentDietaryRestriction) { %>
-                                <h6 class="card-subtitle mb-2 text-muted"><%= currentDietaryRestriction %></h6>
-                            <% } %>
-                            <!-- Add to Cart Form -->
-                            <div class="form-group">
-                                <label for="quantity-<%= currentItemName.replace(/\s+/g, '-') %>">Quantity:</label>
-                                <input type="number" name="quantity" style="width: 45px;" id="quantity-<%= currentItemName.replace(/\s+/g, '-') %>" class="quantity-input" min="1" value="1" data-price="<%= price %>" data-egg-price="5">
+                const items = recommendations.menuDescription.split('\n\n');
+                items.forEach(item => {
+                    const lines = item.split('\n');
+                    let currentItem = {
+                        name: '',
+                        dietaryRestrictions: '',
+                        price: 0,
+                        price25_30: 0,
+                        price45_50: 0,
+                        category: '',
+                        imageUrl: ''
+                    };
+                    lines.forEach((line, index) => {
+                        if (index === 0) {
+                            currentItem.name = line.split(':')[0].trim();
+                        } else if (line.startsWith('Dietary Restrictions:')) {
+                            currentItem.dietaryRestrictions = line.replace('Dietary Restrictions:', '').trim();
+                        } else if (line.includes('Price: $')) {
+                            currentItem.price = parseFloat(line.replace('Price: $', '').trim());
+                        } else if (line.includes('Price25_30: $')) {
+                            currentItem.price25_30 = parseFloat(line.replace('Price25_30: $', '').trim());
+                        } else if (line.includes('Price45_50: $')) {
+                            currentItem.price45_50 = parseFloat(line.replace('Price45_50: $', '').trim());
+                        } else if (line.includes('Category:')) {
+                            currentItem.category = line.replace('Category:', '').trim();
+                        } else if (line.includes('![')) {
+                            currentItem.imageUrl = line.match(/\(([^)]+)\)/)[1];
+                        }
+                    });
+    
+                    // Render each item card based on category
+                    %>
+                    <div class="col-md-4 col-sm-6 my-3">
+                        <div class="card" 
+                             id="card-<%= currentItem.name.replace(/\s+/g, '-') %>"
+                             data-dietary-restrictions="<%= currentItem.dietaryRestrictions %>"
+                             data-category="<%= currentItem.category %>">
+                            <img src="<%= currentItem.imageUrl %>" alt="Food Image" class="card-img-top food-image">
+                            <div class="card-body">
+                                <h5 class="card-title"><%= currentItem.name %></h5>
+                                <% if (currentItem.dietaryRestrictions) { %>
+                                    <h6 class="card-subtitle mb-2 text-muted"><%= currentItem.dietaryRestrictions %></h6>
+                                <% } %>
+                                <!-- Add category display -->
+                                <p>Category: <%= currentItem.category %></p>
+                                <% if (currentItem.category === 'Party Trays') { %>
+                                    <!-- Radio buttons for different prices with images -->
+                                    <div class="price-radio-group">
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12" checked>
+                                            <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12">
+                                                <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax: ₱<%= currentItem.price.toFixed(2) %>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price25_30 %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
+                                            <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
+                                                <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax: ₱<%= currentItem.price25_30.toFixed(2) %>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price45_50 %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
+                                            <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
+                                                <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax: ₱<%= currentItem.price45_50.toFixed(2) %>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Quantity input for Party Trays -->
+                                    <div class="form-group mt-3">
+                                        <label for="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                                        <input type="number" name="quantity" id="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>" class="form-control quantity-input" min="1" value="1" data-price="<%= currentItem.price %>" data-price25_30="<%= currentItem.price25_30 %>" data-price45_50="<%= currentItem.price45_50 %>">
+                                    </div>
+                                <% } else { %>
+                                    <!-- Quantity input for Solo Meals -->
+                                    <div class="form-group">
+                                        <label for="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                                        <input type="number" name="quantity" id="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>" class="form-control quantity-input" min="1" value="1" data-price="<%= currentItem.price %>">
+                                    </div>
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" name="withEgg" id="withEgg-<%= currentItem.name.replace(/\s+/g, '-') %>" class="form-check-input" data-egg-price="5">
+                                        <label for="withEgg-<%= currentItem.name.replace(/\s+/g, '-') %>" class="form-check-label">With Egg (₱5)</label>
+                                    </div>
+                                <% } %>
+                                <!-- Add to Cart Form -->
+                                <input type="hidden" name="foodName" value="<%= currentItem.name %>">
+                                <input type="hidden" name="price" value="<%= currentItem.price %>">
+                                <p>Total Price: ₱<span class="total-price"><%= currentItem.price.toFixed(2) %></span></p>
+                                <button type="button" class="btn btn-primary" onclick="addToCart('card-<%= currentItem.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
                             </div>
-                            <div class="form-group form-check d-flex justify-content-center">
-                              <input type="checkbox" class="form-check-input " name="withEgg" id="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>">
-                              <label for="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-label">With Egg (₱5)</label>
-                          </div>
-                          
-                            <input type="hidden" name="foodName" value="<%= currentItemName %>">
-                            <input type="hidden" name="price" value="<%= price %>">
-                            <p>Total Price: ₱<span class="total-price"><%= price.toFixed(2) %></span></p>
-                            <button type="button" class="cbtn" onclick="addToCart('card-<%= currentItemName.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
                         </div>
                     </div>
-                </div>
-                <%
-                    }
-                });
-                %>
+                <% }); %>
             </div>
         <% } else { %>
             <p>No menu description available.</p>
         <% } %>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
         <!-- Add a script tag to log the recommendations -->
         <script>
@@ -363,31 +472,47 @@
 
     <!-- JavaScript for dynamic total price calculation -->
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const quantityInputs = document.querySelectorAll('.quantity-input');
+       document.addEventListener('DOMContentLoaded', (event) => {
+        const quantityInputs = document.querySelectorAll('.quantity-input');
 
-            quantityInputs.forEach(input => {
-                const price = parseFloat(input.getAttribute('data-price'));
-                const eggPrice = parseFloat(input.getAttribute('data-egg-price'));
-                const totalPriceElement = input.closest('.card-body').querySelector('.total-price');
-                const withEggCheckbox = input.closest('.card-body').querySelector('.form-check-input');
+        quantityInputs.forEach(input => {
+            const price = parseFloat(input.getAttribute('data-price'));
+            const price25_30 = parseFloat(input.getAttribute('data-price25_30'));
+            const price45_50 = parseFloat(input.getAttribute('data-price45_50'));
+            const totalPriceElement = input.closest('.card-body').querySelector('.total-price');
+            const withEggCheckbox = input.closest('.card-body').querySelector('.form-check-input');
+            const radioButtons = input.closest('.card-body').querySelectorAll('.price-radio-group input[type="radio"]');
 
-                // Function to calculate total price
-                const calculateTotalPrice = () => {
-                    const quantity = parseInt(input.value);
-                    const isWithEgg = withEggCheckbox.checked;
-                    const totalPrice = (price + (isWithEgg ? eggPrice : 0)) * quantity;
-                    totalPriceElement.textContent = totalPrice.toFixed(2);
-                };
+            // Function to calculate total price
+            const calculateTotalPrice = () => {
+                const quantity = parseInt(input.value);
+                let selectedPrice = parseFloat(input.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || price);
+                const isWithEgg = withEggCheckbox && withEggCheckbox.checked;
+                const eggPrice = isWithEgg ? parseFloat(withEggCheckbox.getAttribute('data-egg-price')) : 0;
 
-                // Initialize total price on page load
-                calculateTotalPrice();
+                // Adjust price calculation for solo meals if withEgg is checked
+                if (!input.closest('.card-body').querySelector('.price-radio-group')) {
+                    selectedPrice = price + eggPrice;
+                }
 
-                // Update total price on input change
-                input.addEventListener('input', calculateTotalPrice);
+                const totalPrice = selectedPrice * quantity;
+                totalPriceElement.textContent = totalPrice.toFixed(2);
+            };
+
+            // Initialize total price display
+            calculateTotalPrice();
+
+            // Event listeners for quantity change and withEgg checkbox change
+            input.addEventListener('change', calculateTotalPrice);
+            if (withEggCheckbox) {
                 withEggCheckbox.addEventListener('change', calculateTotalPrice);
+            }
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', calculateTotalPrice);
             });
         });
+    });
+
     </script>
 
     <!-- Your meals.js script -->

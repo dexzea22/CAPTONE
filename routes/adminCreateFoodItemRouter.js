@@ -9,8 +9,10 @@ router.use(fileUpload());
 
 router.get('/', async (req, res) => {
     try {
-        // Fetch food items from the database
-        const foodItems = await prisma.foodItem.findMany();
+        // Fetch food items that are not deleted from the database
+        const foodItems = await prisma.foodItem.findMany({
+            where: { deleted: false }
+        });
 
         // Render the adminCreateFoodItem page and pass the foodItems data
         res.render('adminCreateFoodItem', { foodItems });
@@ -22,76 +24,76 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-      const {
-        name,
-        description,
-        price,
-        size,
-        category,
-        dietaryRestrictions,
-        price25_30,
-        price45_50,
-      } = req.body;
-  
-      // Convert dietaryRestrictions to an array if it exists and is not an array
-      const dietaryArray = Array.isArray(dietaryRestrictions)
-        ? dietaryRestrictions
-        : dietaryRestrictions
-        ? [dietaryRestrictions]
-        : [];
-  
-      // Handle file upload
-      if (!req.files || !req.files.imageUpload) {
-        return res
-          .status(400)
-          .json({ success: false, message: 'No image uploaded' });
-      }
-  
-      const imageFile = req.files.imageUpload;
-      const imageName = Date.now() + '-' + imageFile.name;
-      const imagePath = path.join(__dirname, '../public/images', imageName);
-      await imageFile.mv(imagePath);
-  
-      // Determine which fields to save based on category
-      let newData = {
-        name,
-        description,
-        category,
-        dietaryRestrictions: dietaryArray,
-        imageUrl: `/images/${imageName}`,
-        createdAt: new Date(),
-      };
-  
-      if (category === 'Solo Meals') {
-        newData = {
-          ...newData,
-          price: parseFloat(price),
+        const {
+            name,
+            description,
+            price,
+            size,
+            category,
+            dietaryRestrictions,
+            price25_30,
+            price45_50,
+        } = req.body;
+
+        // Convert dietaryRestrictions to an array if it exists and is not an array
+        const dietaryArray = Array.isArray(dietaryRestrictions)
+            ? dietaryRestrictions
+            : dietaryRestrictions
+                ? [dietaryRestrictions]
+                : [];
+
+        // Handle file upload
+        if (!req.files || !req.files.imageUpload) {
+            return res
+                .status(400)
+                .json({ success: false, message: 'No image uploaded' });
+        }
+
+        const imageFile = req.files.imageUpload;
+        const imageName = Date.now() + '-' + imageFile.name;
+        const imagePath = path.join(__dirname, '../public/images', imageName);
+        await imageFile.mv(imagePath);
+
+        // Determine which fields to save based on category
+        let newData = {
+            name,
+            description,
+            category,
+            dietaryRestrictions: dietaryArray,
+            imageUrl: `/images/${imageName}`,
+            createdAt: new Date(),
         };
-      } else if (category === 'Party Trays') {
-        newData = {
-          ...newData,
-          size,
-          price: parseFloat(price),
-          price25_30: parseFloat(price25_30),
-          price45_50: parseFloat(price45_50),
-        };
-      }
-  
-      // Create the food item in the database
-      const newFoodItem = await prisma.foodItem.create({
-        data: newData,
-      });
-  
-      // Send success response with new food item details
-      res
-        .status(201)
-        .json({ success: true, message: 'Food item created successfully', foodItem: newFoodItem });
+
+        if (category === 'Solo Meals') {
+            newData = {
+                ...newData,
+                price: parseFloat(price),
+            };
+        } else if (category === 'Party Trays') {
+            newData = {
+                ...newData,
+                size,
+                price: parseFloat(price),
+                price25_30: parseFloat(price25_30),
+                price45_50: parseFloat(price45_50),
+            };
+        }
+
+        // Create the food item in the database
+        const newFoodItem = await prisma.foodItem.create({
+            data: newData,
+        });
+
+        // Send success response with new food item details
+        res
+            .status(201)
+            .json({ success: true, message: 'Food item created successfully', foodItem: newFoodItem });
     } catch (error) {
-      console.error('Failed to create food item:', error);
-      // Send error response
-      res.status(500).json({ success: false, message: 'Failed to create food item.' });
+        console.error('Failed to create food item:', error);
+        // Send error response
+        res.status(500).json({ success: false, message: 'Failed to create food item.' });
     }
-  });
+});
 
 // edit & delete
 // Route to get food item details for edit
@@ -119,6 +121,16 @@ router.put('/:id', async (req, res) => {
         // Convert editDietaryRestrictions to an array if it exists and is not an array
         const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
 
+        // Handle file upload
+        let imageUrl;
+        if (req.files && req.files.editImageUpload) {
+            const imageFile = req.files.editImageUpload;
+            const imageName = Date.now() + '-' + imageFile.name;
+            const imagePath = path.join(__dirname, '../public/images', imageName);
+            await imageFile.mv(imagePath);
+            imageUrl = `/images/${imageName}`;
+        }
+
         // Update the food item in the database
         let updatedFoodItem;
         if (editCategory === "Party Trays") {
@@ -133,6 +145,7 @@ router.put('/:id', async (req, res) => {
                     dietaryRestrictions: dietaryArray,
                     price25_30: parseFloat(editPax25_30) || null,
                     price45_50: parseFloat(editPax45_50) || null,
+                    imageUrl: imageUrl || undefined, // Only update if new image is uploaded
                 }
             });
         } else {
@@ -145,25 +158,28 @@ router.put('/:id', async (req, res) => {
                     size: editSize,
                     category: editCategory,
                     dietaryRestrictions: dietaryArray,
+                    imageUrl: imageUrl,
                 }
             });
         }
 
-        // Send success response with updated food item details
-        res.json({ success: true, message: 'Food item updated successfully', foodItem: updatedFoodItem });
+        // Send success response
+        res.json({ success: true, message: "Food item updated successfully", foodItem: updatedFoodItem });
     } catch (error) {
-        console.error('Failed to update food item:', error);
-        // Send error response
+        console.error('Error updating food item:', error);
         res.status(500).json({ success: false, message: 'Failed to update food item.' });
     }
 });
 
-// Route to delete food item
+// Route to delete food item (soft delete)
 router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        // Delete the food item from the database
-        const deletedFoodItem = await prisma.foodItem.delete({ where: { id } });
+        // Soft delete the food item by setting the deleted field to true
+        const deletedFoodItem = await prisma.foodItem.update({
+            where: { id },
+            data: { deleted: true }
+        });
         // Send success response
         res.json({ success: true, message: 'Food item deleted successfully', deletedFoodItem });
     } catch (error) {
