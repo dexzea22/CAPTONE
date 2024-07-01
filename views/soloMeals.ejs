@@ -16,6 +16,19 @@
         border-radius: 8px;
         margin-bottom: 10px;
       }
+      .unavailable-card {
+        opacity: 0.5; /* Adjust opacity for grayed-out effect */
+        position: relative;
+      }
+      .unavailable-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: red; /* Example color for unavailable text */
+      }
     </style>
   </head>
   <body>
@@ -24,12 +37,18 @@
       <div class="row">
         <% foodItems.forEach(item => { %>
         <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-          <div class="card h-100">
+          <div
+            class="card h-100 <% if (!item.available) { %>unavailable-card<% } %>"
+          >
+            <% if (!item.available) { %>
+            <div class="unavailable-text">Unavailable</div>
+            <% } %>
             <img
               src="<%= item.imageUrl %>"
               class="card-img-top"
               alt="<%= item.name %>"
             />
+
             <div class="card-body">
               <h5 class="card-title"><%= item.name %></h5>
               <p class="card-text"><%= item.description %></p>
@@ -44,6 +63,7 @@
                 item.dietaryRestrictions[item.dietaryRestrictions.length - 1]) {
                 %>, <% } %> <% }); %>
               </p>
+              <% if (item.available) { %>
               <div class="form-group">
                 <label for="quantity-<%= item.id %>">Quantity:</label>
                 <input
@@ -71,6 +91,11 @@
                   ><%= item.price.toFixed(2) %></span
                 >
               </p>
+              <!-- Add to Cart button -->
+              <button class="btn btn-primary mt-3">Add to Cart</button>
+              <% } else { %>
+              <p class="card-text text-center text-muted">Unavailable</p>
+              <% } %>
             </div>
           </div>
         </div>

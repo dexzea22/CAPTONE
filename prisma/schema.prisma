@@ -65,6 +65,8 @@ model FoodItem {
   orderItems          OrderItem[] // Define the relation to OrderItem
   createdAt           DateTime    @default(now())
   deleted             Boolean     @default(false) // New field for soft delete
+  available           Boolean  @default(true)
+  totalPrice          Float?
   @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
 }
 

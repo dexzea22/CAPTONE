@@ -4,48 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Party Trays</title>
+    <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <style>
-      /* .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 20px;
-      }
-      .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 10px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
       .card img {
         max-width: 100%;
         height: auto;
         border-radius: 8px;
         margin-bottom: 10px;
       }
-      .card h2 {
+      .unavailable-card {
+        opacity: 0.5; /* Adjust opacity for grayed-out effect */
+        position: relative;
+        background-color: #e0e0e0; /* Gray background */
+      }
+      .unavailable-card .unavailable-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: red; /* Red color for unavailable text */
         font-size: 1.5rem;
-        margin-bottom: 10px;
+        font-weight: bold;
+        text-align: center;
+        width: 100%;
       }
-      .card p {
-        margin-bottom: 5px;
+      .unavailable-card .card-body {
+        opacity: 0.5;
       }
-      .price-radio-group {
-        margin-top: 10px;
-      }
-      .price-radio-group label {
-        margin-right: 10px;
-      } */
-      .card img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin-bottom: 10px;
+      .unavailable-card .card-body input,
+      .unavailable-card .card-body .form-check-label,
+      .unavailable-card .card-body button {
+        display: none;
       }
       .price-radio-group img {
         width: 30px;
@@ -61,12 +54,15 @@
       <div class="row">
         <% foodItems.forEach(item => { %>
         <div class="col-md-4 mb-4">
-          <div class="card">
+          <div class="card <% if (!item.available) { %>unavailable-card<% } %>">
             <img
               src="<%= item.imageUrl %>"
               alt="<%= item.name %>"
               class="card-img-top"
             />
+            <% if (!item.available) { %>
+            <div class="unavailable-text">Unavailable</div>
+            <% } %>
             <div class="card-body">
               <h5 class="card-title"><%= item.name %></h5>
               <p class="card-text"><%= item.description %></p>
@@ -74,15 +70,19 @@
                 Dietary Preferences: <% item.dietaryRestrictions.forEach(diet =>
                 { %> <%= diet %> <% }); %>
               </p>
-              <!-- Radio buttons for different prices with images -->
+
+              <% if (item.available) { %>
+              <!-- Radio buttons for different sizes and prices -->
               <div class="price-radio-group">
                 <div class="form-check">
                   <input
                     type="radio"
-                    class="form-check-input"
+                    class="form-check-input price-radio"
                     name="price<%= item.id %>"
                     value="<%= item.price %>"
                     id="price<%= item.id %>"
+                    data-price="<%= item.price %>"
+                    onchange="updateTotalPrice('<%= item.id %>')"
                   />
                   <label class="form-check-label" for="price<%= item.id %>">
                     <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12
@@ -92,10 +92,12 @@
                 <div class="form-check">
                   <input
                     type="radio"
-                    class="form-check-input"
+                    class="form-check-input price-radio"
                     name="price<%= item.id %>"
                     value="<%= item.price25_30 %>"
                     id="price25_30<%= item.id %>"
+                    data-price="<%= item.price25_30 %>"
+                    onchange="updateTotalPrice('<%= item.id %>')"
                   />
                   <label
                     class="form-check-label"
@@ -108,10 +110,12 @@
                 <div class="form-check">
                   <input
                     type="radio"
-                    class="form-check-input"
+                    class="form-check-input price-radio"
                     name="price<%= item.id %>"
                     value="<%= item.price45_50 %>"
                     id="price45_50<%= item.id %>"
+                    data-price="<%= item.price45_50 %>"
+                    onchange="updateTotalPrice('<%= item.id %>')"
                   />
                   <label
                     class="form-check-label"
@@ -122,6 +126,29 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Quantity selector -->
+              <div class="form-group mt-3">
+                <label for="quantity<%= item.id %>">Quantity:</label>
+                <input
+                  type="number"
+                  class="form-control quantity-input"
+                  id="quantity<%= item.id %>"
+                  value="1"
+                  min="1"
+                  data-price="<%= item.price %>"
+                  onchange="updateTotalPrice('<%= item.id %>')"
+                />
+              </div>
+
+              <!-- Total price display -->
+              <div class="form-group">
+                <label for="totalPrice<%= item.id %>">Total Price:</label>
+                <span id="totalPrice<%= item.id %>"
+                  >₱<%= item.price.toFixed(2) %></span
+                >
+              </div>
+
               <!-- Add to Cart button -->
               <button
                 class="btn btn-primary mt-3"
@@ -129,11 +156,64 @@
               >
                 Add to Cart
               </button>
+              <% } else { %>
+              <!-- Display for unavailable items -->
+              <div class="unavailable-text">Unavailable</div>
+              <% } %>
             </div>
           </div>
         </div>
         <% }); %>
       </div>
     </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const priceRadios = document.querySelectorAll(".price-radio");
+        const quantityInputs = document.querySelectorAll(".quantity-input");
+
+        function updateTotalPrice(itemId) {
+          const selectedPriceRadio = document.querySelector(
+            'input[name="price' + itemId + '"]:checked'
+          );
+          if (!selectedPriceRadio) return;
+
+          const price = parseFloat(
+            selectedPriceRadio.getAttribute("data-price")
+          );
+          const quantity = parseInt(
+            document.getElementById("quantity" + itemId).value
+          );
+          const totalPriceElement = document.getElementById(
+            "totalPrice" + itemId
+          );
+          const newTotalPrice = (price * quantity).toFixed(2);
+          totalPriceElement.textContent = "₱" + newTotalPrice;
+        }
+
+        function addToCart(itemId) {
+          // Implement your add to cart logic here
+          console.log("Adding item with ID " + itemId + " to cart...");
+        }
+
+        priceRadios.forEach((radio) => {
+          radio.addEventListener("change", function () {
+            const itemId = this.getAttribute("name").split("price")[1];
+            updateTotalPrice(itemId);
+          });
+        });
+
+        quantityInputs.forEach((input) => {
+          input.addEventListener("input", function () {
+            const itemId = this.getAttribute("id").split("quantity")[1];
+            updateTotalPrice(itemId);
+          });
+        });
+      });
+    </script>
   </body>
 </html>

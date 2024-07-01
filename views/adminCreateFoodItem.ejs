@@ -136,6 +136,7 @@
             <th>Category</th>
             <th>Dietary Restrictions</th>
             <th>Image</th>
+            <th>Availability</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -162,8 +163,16 @@
             </td>
             <td><%= item.size %></td>
             <td><%= item.category %></td>
-            <td><%= item.dietaryRestrictions.join(', ') %></td>
+            <!-- make it a dropdown -->
+            <td>
+              <% if (item.dietaryRestrictions && Array.isArray(item.dietaryRestrictions) && item.dietaryRestrictions.length > 0) { %>
+                <%= item.dietaryRestrictions.join(', ') %>
+              <% } else { %>
+                None
+              <% } %>
+            </td>
             <td><img src="<%= item.imageUrl %>" alt="Image Preview" style="max-width: 100px; max-height: 100px;"></td>
+            <td><%= item.available ? 'Available' : 'Unavailable' %></td>
             <td>
               <!-- Pass item details to openEditModal function -->
               <button onclick="openEditModal(
@@ -173,9 +182,11 @@
                 '<%= item.price %>',
                 '<%= item.size %>',
                 '<%= item.category %>',
-                '<%= item.dietaryRestrictions.join(', ') %>',
+                '<%= item.available %>',
                 '<%= item.price25_30 %>',
-                '<%= item.price45_50 %>'
+                '<%= item.price45_50 %>',
+                '<%= item.dietaryRestrictions.join(', ') %>',
+                '<%= item.imageUrl %>'
               )">
                 Edit
               </button>
@@ -199,6 +210,13 @@
               <option value="">Select Category:</option>
               <option value="Solo Meals">Solo Meals</option>
               <option value="Party Trays">Party Trays</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="available">Availability:</label>
+            <select class="form-control" id="available" name="available" required>
+              <option value="true">Available</option>
+              <option value="false">Unavailable</option>
             </select>
           </div>
           <div class="form-group">
@@ -261,7 +279,11 @@
           <label for="editDescription">Description:</label><br />
           <textarea id="editDescription" name="editDescription"></textarea><br />
 
-          
+          <label for="editAvailability">Availability:</label><br />
+          <select id="editAvailability" name="editAvailability" required>
+            <option value="true">Available</option>
+            <option value="false">Unavailable</option>
+          </select><br />
 
           <label for="editSize">Size:</label><br />
           <input type="text" id="editSize" name="editSize" /><br />
@@ -286,15 +308,19 @@
               <input type="number" id="editPax45_50" name="editPax45_50" step="0.01" /><br />
           </div>
 
-          <label for="editDietaryRestrictions">Dietary Restrictions:</label><br />
-          <select id="editDietaryRestrictions" name="editDietaryRestrictions" required multiple>
-              <option value="vegetarian">Vegetarian</option>
-              <option value="omnivore">Omnivore</option>
-              <option value="glutenFree">Gluten Free</option>
-              <option value="nutAllergy">Nut Allergy</option>
-          </select><br />
-
-          <label for="editImageUpload">Upload Image:</label><br />
+          <div class="form-group">
+            <label for="editDietaryRestrictions">Dietary Restrictions:</label><br />
+              <select id="editDietaryRestrictions" name="editDietaryRestrictions" required multiple>
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="omnivore">Omnivore</option>
+                  <option value="glutenFree">Gluten Free</option>
+                  <option value="nutAllergy">Nut Allergy</option>
+              </select><br />
+          </div>
+          
+          <label for="editImageUpload">Current Image:</label><br />
+          <img id="editImagePreview" src="#" alt="Current Image" style="max-width: 200px; max-height: 200px;"><br />
+          <label for="editImageUpload">Upload New Image:</label><br />
           <input type="file" id="editImageUpload" name="editImageUpload" accept="image/*">
 
 
@@ -363,6 +389,7 @@
                     <p><strong>Price:</strong> ${foodItem.price}</p>
                     <p><strong>Size:</strong> ${foodItem.size}</p>
                     <p><strong>Category:</strong> ${foodItem.category}</p>
+                    <p><strong>Availability:</strong> ${foodItem.available ? 'Available' : 'Unavailable'}</p>
                     <p><strong>Dietary Restrictions:</strong> ${foodItem.dietaryRestrictions.join(", ")}</p>
                     <img src="${foodItem.imageUrl}" alt="${foodItem.name}" style="max-width: 200px; max-height: 200px;">
                 </div>
@@ -408,16 +435,21 @@
       //Edit & delete
       
       // Function to open the edit modal and populate fields
-    function openEditModal(id, name, description, price, size, category, dietaryRestrictions, pax25_30, pax45_50, imageUrl) {
+    function openEditModal(id, name, description, price, size, category, dietaryRestrictions, pax25_30, pax45_50, imageUrl, available) {
         document.getElementById("editName").value = name || "";
         document.getElementById("editDescription").value = description || "";
+        document.getElementById("editAvailability").value = available;
         document.getElementById("editPrice").value = price || "";
         document.getElementById("editSize").value = size || "";
         document.getElementById("editCategory").value = category || "";
         document.getElementById("editDietaryRestrictions").value = dietaryRestrictions || [];
         document.getElementById("editPax25_30").value = pax25_30 || "";
         document.getElementById("editPax45_50").value = pax45_50 || "";
-        document.getElementById("editImageUpload").value = imageUrl || "";
+        // Set image preview if imageUrl is available
+    if (imageUrl) {
+        var imagePreview = document.getElementById("editImagePreview");
+        imagePreview.src = imageUrl;
+    }
         document.getElementById("editItemId").value = id || "";
         document.getElementById("editModal").style.display = "block";
 

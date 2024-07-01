@@ -33,6 +33,7 @@ router.post('/', async (req, res) => {
             dietaryRestrictions,
             price25_30,
             price45_50,
+            available,
         } = req.body;
 
         // Convert dietaryRestrictions to an array if it exists and is not an array
@@ -61,6 +62,7 @@ router.post('/', async (req, res) => {
             category,
             dietaryRestrictions: dietaryArray,
             imageUrl: `/images/${imageName}`,
+            available: available === 'true',
             createdAt: new Date(),
         };
 
@@ -116,7 +118,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50 } = req.body;
+        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50, editAvailability, editImageUpload } = req.body;
 
         // Convert editDietaryRestrictions to an array if it exists and is not an array
         const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
@@ -129,6 +131,7 @@ router.put('/:id', async (req, res) => {
             const imagePath = path.join(__dirname, '../public/images', imageName);
             await imageFile.mv(imagePath);
             imageUrl = `/images/${imageName}`;
+            
         }
 
         // Update the food item in the database
@@ -146,6 +149,7 @@ router.put('/:id', async (req, res) => {
                     price25_30: parseFloat(editPax25_30) || null,
                     price45_50: parseFloat(editPax45_50) || null,
                     imageUrl: imageUrl || undefined, // Only update if new image is uploaded
+                    available: editAvailability === 'true',
                 }
             });
         } else {
@@ -157,8 +161,9 @@ router.put('/:id', async (req, res) => {
                     price: parseFloat(editPrice),
                     size: editSize,
                     category: editCategory,
-                    dietaryRestrictions: dietaryArray,
+                    dietaryRestrictions: dietaryArray, // has problem
                     imageUrl: imageUrl,
+                    available: editAvailability === 'true',
                 }
             });
         }
