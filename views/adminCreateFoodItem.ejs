@@ -132,11 +132,11 @@
             <th>Price (Solo Meals/Small 10-12 Pax)</th>
             <th>Price (Meduim 25-30 Pax)</th>
             <th>Price (Large 45-50 Pax)</th>
-            <th>Size</th>
             <th>Category</th>
             <th>Dietary Restrictions</th>
             <th>Image</th>
             <th>Availability</th>
+            <th>Date</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -146,24 +146,22 @@
           <tr>
             <td><%= item.name %></td>
             <td><%= item.description %></td>
-            <td><%= item.price.toFixed(2) %></td>
+            <td>₱<%= item.price.toFixed(2) %><br/><%= item.size10_12 %></td>
             <td>
               <% if (item.category === 'Solo Meals') { %>
                 N/A
               <% } else { %>
-                ₱<%= item.price25_30 ? item.price25_30.toFixed(2) : '' %>
+                ₱<%= item.price25_30 ? item.price25_30.toFixed(2) : '' %><br/><%= item.size25_30 %>
               <% } %>
             </td>
             <td>
               <% if (item.category === 'Solo Meals') { %>
                 N/A
               <% } else { %>
-                ₱<%= item.price45_50 ? item.price45_50.toFixed(2) : '' %>
+                ₱<%= item.price45_50 ? item.price45_50.toFixed(2) : '' %><br/><%= item.size45_50 %>
               <% } %>
             </td>
-            <td><%= item.size %></td>
             <td><%= item.category %></td>
-            <!-- make it a dropdown -->
             <td>
               <% if (item.dietaryRestrictions && Array.isArray(item.dietaryRestrictions) && item.dietaryRestrictions.length > 0) { %>
                 <%= item.dietaryRestrictions.join(', ') %>
@@ -173,6 +171,7 @@
             </td>
             <td><img src="<%= item.imageUrl %>" alt="Image Preview" style="max-width: 100px; max-height: 100px;"></td>
             <td><%= item.available ? 'Available' : 'Unavailable' %></td>
+            <td><%= item.createdAt.toLocaleString() %></td>
             <td>
               <!-- Pass item details to openEditModal function -->
               <button onclick="openEditModal(
@@ -186,7 +185,10 @@
                 '<%= item.price25_30 %>',
                 '<%= item.price45_50 %>',
                 '<%= item.dietaryRestrictions.join(', ') %>',
-                '<%= item.imageUrl %>'
+                '<%= item.imageUrl %>',
+                '<%= item.size10_12 %>',
+                '<%= item.size25_30 %>',
+                '<%= item.size45_50 %>',
               )">
                 Edit
               </button>
@@ -231,6 +233,10 @@
             <label for="price">Price:</label>
             <input type="number" class="form-control" id="price" name="price" step="0.01" required>
           </div>
+          <select id="size10_12" name="size10_12" hidden>
+            <option value="Small 10-12 Pax">Small</option>
+            <!-- Add other sizes as needed -->
+          </select><br />
           <div id="soloMealFields">
             
           </div>
@@ -240,10 +246,18 @@
               <label for="price25_30">Price for 25-30 Pax:</label>
               <input type="number" class="form-control" id="price25_30" name="price25_30" step="0.01">
             </div>
+            <select id="size25_30" name="size25_30" hidden>
+              <option value="Medium 25-30 Pax">Medium</option>
+              <!-- Add other sizes as needed -->
+            </select><br />
             <div class="form-group">
               <label for="price45_50">Price for 45-50 Pax:</label>
               <input type="number" class="form-control" id="price45_50" name="price45_50" step="0.01">
             </div>
+            <select id="size45_50" name="size45_50" hidden>
+              <option value="Large 45-50 Pax">Large</option>
+              <!-- Add other sizes as needed -->
+            </select><br />
           </div>
           
           <div class="form-group">
@@ -297,15 +311,27 @@
 
           <label for="editPrice">Price:</label><br />
           <input type="number" id="editPrice" name="editPrice" step="0.01" required /><br />
+          <select id="editSize10_12" name="editSize25_30" hidden>
+            <option value="Small 10-12 Pax">Small</option>
+            <!-- Add other sizes as needed -->
+          </select><br />
 
           <!-- Pax sizes for Party Trays -->
           <div id="paxSizes" style="display: none;">
 
               <label for="editPax25_30">25-30 Pax Price:</label><br />
               <input type="number" id="editPax25_30" name="editPax25_30" step="0.01" /><br />
+              <select id="editSize25_30" name="editSize25_30" hidden>
+                <option value="Medium 25-30 Pax">Medium</option>
+                <!-- Add other sizes as needed -->
+              </select><br />
 
               <label for="editPax45_50">45-50 Pax Price:</label><br />
               <input type="number" id="editPax45_50" name="editPax45_50" step="0.01" /><br />
+              <select id="editSize45_50" name="editSize25_30" hidden>
+                <option value="Large 45-50 Pax">Large</option>
+                <!-- Add other sizes as needed -->
+              </select><br />
           </div>
 
           <div class="form-group">
@@ -435,16 +461,19 @@
       //Edit & delete
       
       // Function to open the edit modal and populate fields
-    function openEditModal(id, name, description, price, size, category, dietaryRestrictions, pax25_30, pax45_50, imageUrl, available) {
+    function openEditModal(id, name, description, price, size, category, dietaryRestrictions, pax25_30, pax45_50, imageUrl, available,size10_12,size25_30,size45_50) {
         document.getElementById("editName").value = name || "";
         document.getElementById("editDescription").value = description || "";
         document.getElementById("editAvailability").value = available;
         document.getElementById("editPrice").value = price || "";
+        document.getElementById("editSize10_12").value = size10_12 || "";
         document.getElementById("editSize").value = size || "";
         document.getElementById("editCategory").value = category || "";
         document.getElementById("editDietaryRestrictions").value = dietaryRestrictions || [];
         document.getElementById("editPax25_30").value = pax25_30 || "";
+        document.getElementById("editSize25_30").value = size25_30 || "";
         document.getElementById("editPax45_50").value = pax45_50 || "";
+        document.getElementById("editSize45_50").value = size45_50 || "";
         // Set image preview if imageUrl is available
     if (imageUrl) {
         var imagePreview = document.getElementById("editImagePreview");

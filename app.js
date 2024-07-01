@@ -179,14 +179,27 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
         console.error('User not found with ID:', req.user.id);
         return res.status(404).send('User not found');
       }
-  
+      const foodItems = await prisma.foodItem.findMany({
+        where: {
+          deleted: false // Only fetch non-deleted items
+        },
+        take: 3, // Limit to 3 items
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
       // Check if all expected properties are available and non-null if required by the view
+      console.log("Food items fetched:", foodItems);
       console.log('User data to be sent to dashboard:', user);
-  
+      
+      // Fetch featured food items
+    
+
       // Attempt to render the UserDashboard with the user data
       res.render('UserDashboard', { 
         title: 'User Dashboard', 
-        user: user, 
+        user: user,
+        foodItems: foodItems, 
         welcomeMessage: `Welcome ${user.firstName || 'User'}!`  // Safe fallback if firstName is not set
       });
     } catch (error) {

@@ -34,6 +34,9 @@ router.post('/', async (req, res) => {
             price25_30,
             price45_50,
             available,
+            size10_12,
+            size25_30,
+            size45_50,
         } = req.body;
 
         // Convert dietaryRestrictions to an array if it exists and is not an array
@@ -78,6 +81,9 @@ router.post('/', async (req, res) => {
                 price: parseFloat(price),
                 price25_30: parseFloat(price25_30),
                 price45_50: parseFloat(price45_50),
+                size10_12,
+                size25_30,
+                size45_50,
             };
         }
 
@@ -118,7 +124,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50, editAvailability, editImageUpload } = req.body;
+        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50, editAvailability, editImageUpload, editSize10_12, editSize25_30, editSize45_50 } = req.body;
 
         // Convert editDietaryRestrictions to an array if it exists and is not an array
         const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
@@ -150,6 +156,9 @@ router.put('/:id', async (req, res) => {
                     price45_50: parseFloat(editPax45_50) || null,
                     imageUrl: imageUrl || undefined, // Only update if new image is uploaded
                     available: editAvailability === 'true',
+                    size10_12: editSize10_12,
+                    size25_30: editSize25_30,
+                    size45_50: editSize45_50,
                 }
             });
         } else {

@@ -100,145 +100,67 @@
 </div>
 <!-- End Jumbotron -->
 <section class="feature-food">
-  <div class="dashboard-content">
-    <div class="cards" id="chkr">
-      <img class="card-image" src="images/f1.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Chicken Roll (Tray)</h4>
-        <p> Delectable and savory dish that combines the flavors of tender chicken, smoky ham, and creamy cheese into a mouthwatering culinary masterpiece. </p>
-        <div class="gallerys" style="margin-top: 11%">
-          <label>
-            <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax) &emsp14; -400"  onchange="updatePriceDisplay('chkr')" />
-            S (₱400) (10-12 pax)
-          </label>          
-          <label>
-            <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1000" onchange="updatePriceDisplay('chkr')" />
-            M (₱1,000) (25-30 pax)
-          </label>
-          <label>
-            <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1500" onchange="updatePriceDisplay('chkr')" />
-            L (₱1,500) (45-50 pax)
-          </label>
+  <div class="grid-container">
+    <% foodItems.forEach(item => { %>
+      <div class="card h-100">
+        <div class="card-body <%= item.category === 'Solo Meal' ? 'solo-meal' : 'party-tray' %>" data-item-id="<%= item.id %>">
+          <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
+          <h5 class="card-title"><%= item.name %></h5>
+          <p class="card-text"><%= item.description %></p>
+          <p class="card-text"><%= item.category %></p>
+          
+          <% if (item.category === 'Solo Meals') { %>
+            <div class="form-group">
+              <label for="quantity-<%= item.id %>">Quantity:</label>
+              <input type="number" class="form-control quantity-input" id="quantity-<%= item.id %>" value="1" min="1" data-price="<%= item.price %>">
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input add-egg" id="add-egg-<%= item.id %>" data-egg-price="5">
+              <label class="form-check-label" for="add-egg-<%= item.id %>">Add Egg (₱5)</label>
+            </div>
+            <p class="card-text">Total Price: ₱<span class="total-price"><%= item.price.toFixed(2) %></span></p>
+          
+          <% } else if (item.category === 'Party Trays') { %>
+            <!-- Radio buttons for different sizes and prices -->
+            <div class="price-radio-group">
+              <div class="form-check">
+                <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.id %>')">
+                <label class="form-check-label" for="price<%= item.id %>">
+                  <img src="/images/sTray.png" alt="10-12 Pax" /> Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
+                </label>
+              </div>
+              <div class="form-check">
+                <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price25_30<%= item.id %>" data-price="<%= item.price25_30 %>" onchange="updateTotalPrice('<%= item.id %>')">
+                <label class="form-check-label" for="price25_30<%= item.id %>">
+                  <img src="/images/mTray.png" alt="25-30 Pax" /> Medium 25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
+                </label>
+              </div>
+              <div class="form-check">
+                <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price45_50 %>" id="price45_50<%= item.id %>" data-price="<%= item.price45_50 %>" onchange="updateTotalPrice('<%= item.id %>')">
+                <label class="form-check-label" for="price45_50<%= item.id %>">
+                  <img src="/images/lTray.png" alt="45-50 Pax" /> Large 45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
+                </label>
+              </div>
+            </div>
+            <!-- Quantity selector -->
+            <div class="form-group mt-3">
+              <label for="quantity<%= item.id %>">Quantity:</label>
+              <input type="number" class="form-control quantity-input" id="quantity<%= item.id %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.id %>')">
+            </div>
+            <!-- Total price display -->
+            <div class="form-group">
+              <label for="totalPrice<%= item.id %>">Total Price:</label>
+              <span id="totalPrice<%= item.id %>">₱<%= item.price.toFixed(2) %></span>
+            </div>
+          
+          <% } %>
+          
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button class="btnsss" onclick="changeQuantity('chkr', -1)">-</button>
-          <input type="text" id="quantity-chkr" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('chkr')">
-          <button class="btnsss" onclick="changeQuantity('chkr', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-chkr">0.00</span></div>
-        <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
-          <img src="" alt="Enlarged Image" class="lightbox-image" />
-        </div>
-        <div class="rat">
-          <p>Rating:</p>
-          <div class="star-rating" id="starrating">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        <button onclick="addToCart('Chicken Roll','chkr')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
       </div>
-    </div>
-    <div class="cards" id="fff">
-      <img class="card-image" src="images/f5.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Fried Fish Filet (Tray)</h4>
-        <p>Our "Fried Fish Filet" is a culinary masterpiece. Each fillet is meticulously seasoned with a blend of aromatic herbs and spices, ensuring a burst of taste with every bite.</p>
-        <div class="gallerys" style="margin-top: 11%">
-          <label>
-            <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-300" onchange="updatePriceDisplay('fff')" />
-            S (₱300) (10-12 pax)
-            
-          </label>
-          <label>
-            <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25  to 30 pax)-900" onchange="updatePriceDisplay('fff')" />
-            M (₱900) (25-30 pax)
-          </label>
-          <label>
-            <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1400" onchange="updatePriceDisplay('fff')" />
-            L (₱1,400) (45-50 pax)
-          </label>
-        </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button class="btnsss" onclick="changeQuantity('fff', -1)">-</button>
-          <input type="text" id="quantity-fff" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('fff')">
-          <button class="btnsss" onclick="changeQuantity('fff', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-fff">0.00</span></div>
-        <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
-          <img src="" alt="Enlarged Image" class="lightbox-image" />
-        </div>
-        <div class="rat">
-          <p>Rating:</p>
-          <div class="star-rating" id="starrating2">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        <button onclick="addToCart('Fried Fish Fillet','fff')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
-      </div>
-    </div>
-    <div class="cards" id="ssg">
-      <img class="card-image" src="images/sisig.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Pork Sisig (Tray)</h4>
-        <p>Savor the sizzle, indulge in the flavor. Our sisig is not just a dish; it's a culinary masterpiece that elevates your taste buds to new heights.</p>
-        <div class="gallerys" style="margin-top: 11%">
-          <label>
-            <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-600" onchange="updatePriceDisplay('ssg')" />
-            S (₱600) (10-12 pax)
-          </label>
-          <label>
-            <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1450" onchange="updatePriceDisplay('ssg')" />
-            M (₱1,450) (25-30 pax)
-          </label>
-          <label>
-            <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2800" onchange="updatePriceDisplay('ssg')" />
-            L (₱2,800) (45-50 pax)
-          </label>
-        </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button class="btnsss" onclick="changeQuantity('ssg', -1)">-</button>
-          <input type="text" id="quantity-ssg" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ssg')">
-          <button class="btnsss" onclick="changeQuantity('ssg', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-ssg">0.00</span></div>
-        <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
-          <img src="" alt="Enlarged Image" class="lightbox-image" />
-        </div>
-        <div class="rat">
-          <p>Rating:</p>
-          <div class="star-rating" id="starrating3">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        <button onclick="addToCart('Sizzling Sisig','ssg')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
-      </div>
-    </div>
+    <% }); %>
   </div>
 </section>
+
 <!-- Dietary Preferences Modal -->
 <div id="dietaryPreferencesModal" class="modal">
   <div class="mod-content">
@@ -837,7 +759,15 @@ createStarRating('starrating', 4);
 createStarRating('starrating2', 4);
 createStarRating('starrating3', 5);
 
+//FOR FEATURED ITEM
+
+// JavaScript for UserDashboard.ejs
+
+
+
+
 </script>
+<script src="script/featureItem.js"></script>
 <script src="scripts/meals.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </body>
