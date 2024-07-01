@@ -43,9 +43,17 @@ router.get('/items', authenticate, async (req, res, next) => {
                 if (item.withEgg) {
                     itemPrice += 5; // Add price for egg if applicable
                 }
+                // Append withEgg status to itemName for Solo Meals
+                item.itemName += item.withEgg ? ' (W/ Egg)' : ' (W/Out Egg)';
             } else if (foodItem.category === 'Party Trays') {
                 // Determine the correct price based on user selection
-                itemPrice = item.price; // Use the user-selected price from cartItem
+                if (item.size10_12) {
+                    itemPrice = parseFloat(foodItem.price); // Use size10_12 price for small
+                } else if (item.size25_30) {
+                    itemPrice = parseFloat(foodItem.price25_30); // Use size25_30 price for medium
+                } else if (item.size45_50) {
+                    itemPrice = parseFloat(foodItem.price45_50); // Use size45_50 price for large
+                }
             }
 
             return {
@@ -65,18 +73,12 @@ router.get('/items', authenticate, async (req, res, next) => {
 
 
 
-
-
-
-
-
-
-router.post('/add', authenticate, async (req, res, next) => {
+router.post('/add', async (req, res, next) => {
     const userId = req.user.id;
-    const { name, price, price25_30, price45_50, image, quantity, withEgg, dietaryRestrictions, category } = req.body;
+    const { name, price, quantity, withEgg, category } = req.body;
 
     try {
-        if (!name || !image || !quantity || !dietaryRestrictions) {
+        if (!name || !price || !quantity || !category) {
             throw new Error('Required fields are missing.');
         }
 
@@ -85,29 +87,21 @@ router.post('/add', authenticate, async (req, res, next) => {
         });
 
         if (!foodItem) {
-            const foodItemData = {
-                name,
-                imageUrl: image,
-                dietaryRestrictions,
-                category,
-                price: category !== 'Party Trays' ? price : undefined,
-                price25_30: category === 'Party Trays' ? price25_30 : undefined,
-                price45_50: category === 'Party Trays' ? price45_50 : undefined,
-            };
-
-            foodItem = await prisma.foodItem.create({
-                data: foodItemData,
-            });
-            console.log('New food item created:', foodItem);
+            throw new Error('Food item not found.');
         }
 
-        let selectedPrice = price;
+        let size10_12 = null;
+        let size25_30 = null;
+        let size45_50 = null;
 
         if (category === 'Party Trays') {
-            if (price25_30) {
-                selectedPrice = price25_30;
-            } else if (price45_50) {
-                selectedPrice = price45_50;
+            // Determine the size based on the price for Party Trays
+            if (price === foodItem.price) {
+                size10_12 = foodItem.size10_12;
+            } else if (price === foodItem.price25_30) {
+                size25_30 = foodItem.size25_30;
+            } else if (price === foodItem.price45_50) {
+                size45_50 = foodItem.size45_50;
             }
         }
 
@@ -117,7 +111,10 @@ router.post('/add', authenticate, async (req, res, next) => {
                 userId,
                 itemId: foodItem.id,
                 withEgg: withEgg,
-                price: selectedPrice,
+                price: price, // Ensure to match the correct price from req.body
+                size10_12,
+                size25_30,
+                size45_50,
             },
             include: { foodItem: true },
         });
@@ -130,15 +127,18 @@ router.post('/add', authenticate, async (req, res, next) => {
                 include: { foodItem: true },
             });
             console.log('Updated cart item quantity:', updatedCartItem);
-            res.json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
+            res.json({ success: true, message: `Item ${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${price.toFixed(2)} ${category} has been added to your cart.` });
         } else {
-            // Create a new cart item with the selected price
+            // Create a new cart item with the selected price and size or withEgg for Solo Meals
             const cartItemData = {
                 userId,
                 itemId: foodItem.id,
                 quantity,
-                withEgg,
-                price: selectedPrice,
+                withEgg: category === 'Solo Meals' ? withEgg : false, // Ensure withEgg is only true for Solo Meals
+                price,
+                size10_12: category === 'Party Trays' ? size10_12 : null,
+                size25_30: category === 'Party Trays' ? size25_30 : null,
+                size45_50: category === 'Party Trays' ? size45_50 : null,
             };
 
             const cartItem = await prisma.cartItem.create({
@@ -146,15 +146,13 @@ router.post('/add', authenticate, async (req, res, next) => {
                 include: { foodItem: true },
             });
             console.log('New cart item added:', cartItem);
-            res.json({ success: true, message: 'Item added to cart successfully.', cartItem });
+            res.json({ success: true, message: `${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${price.toFixed(2)} ${category} has been added to your cart.` });
         }
     } catch (error) {
         console.error('Failed to add item to cart:', error);
         next(createError(500, 'Could not add item to cart.', error));
     }
 });
-
-  
 
 
 

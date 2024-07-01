@@ -238,12 +238,27 @@
                 totalPrice += itemTotalPrice; // Add to the total price
 
                 // Determine if the item is with or without egg
-                const eggStatus = item.foodItem.category === 'Party Trays' ? '' : (item.withEgg ? 'With Egg' : 'Without Egg');
+                let eggStatus = '';
+                if (item.foodItem.category === 'Solo Meals') {
+                    eggStatus = item.withEgg ? 'With Egg' : 'Without Egg';
+                }
+
+                // Determine the size for Party Trays
+                let sizeDisplay = '';
+                if (item.foodItem.category === 'Party Trays') {
+                    if (item.size10_12) {
+                        sizeDisplay = item.size10_12;
+                    } else if (item.size25_30) {
+                        sizeDisplay = item.size25_30;
+                    } else if (item.size45_50) {
+                        sizeDisplay = item.size45_50;
+                    }
+                }
 
                 itemElement.innerHTML = `
                     <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
                     <div class="Itm">
-                        <span>${itemName} ${item.foodItem.category} ${eggStatus}</span><br>
+                        <span>${itemName} ${sizeDisplay} ${item.foodItem.category} ${eggStatus}</span><br>
                         <span>Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}</span><br>
                         <span>Price: PHP ${item.itemPrice}</span><br>
                         <span>Quantity: 
@@ -289,6 +304,7 @@
 
 // Call the function to fetch and display cart items when the page loads
 document.addEventListener('DOMContentLoaded', displayCartItems);
+
 
 
 

@@ -74,15 +74,19 @@ model FoodItem {
 }
 
 model CartItem {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String
-  itemId   String
-  quantity Int
-  withEgg  Boolean?  // Check if withEgg field is correctly defined
-  price    Float     // Add the price field
-  user     User     @relation(name: "UserCartItems", fields: [userId], references: [id])
-  foodItem FoodItem @relation(name: "FoodItemCartItems", fields: [itemId], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  itemId     String
+  quantity   Int
+  withEgg    Boolean? // Check if withEgg field is correctly defined
+  price      Float    // Add the price field
+  size10_12  String?  // Size for small
+  size25_30  String?  // Size for medium
+  size45_50  String?  // Size for large
+  user       User     @relation(name: "UserCartItems", fields: [userId], references: [id])
+  foodItem   FoodItem @relation(name: "FoodItemCartItems", fields: [itemId], references: [id])
 }
+
 
 model Order {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
