@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Log {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  action        String
+  email         String
+  userId        String  // Explicitly define userId as String
+  timestamp     DateTime @default(now())
+  orderId       String?  // Add a field to store the PayPal order ID
+  amount        Float?   // Add a field to store the payment amount
+  currency      String?  // Add a field to store the currency code
+  paymentStatus String?  // Add a field to store the payment status (e.g., "captured", "pending", etc.)
+}
+
 model User {
   id                String              @id @default(auto()) @map("_id") @db.ObjectId
   email             String              @unique
@@ -19,20 +31,8 @@ model User {
   dateOfBirth       DateTime?
   phoneNumber       String?
   dietaryPreference DietaryPreference?
-  cartItems         CartItem[]          // Define the relation to CartItem
+  cartItems         CartItem[]          @relation("UserCartItems") // Define the relation to CartItem
   orders            Order[]             @relation(name: "UserToOrder") // Define the relation to Order
-}
-
-model Log {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  action        String
-  email         String
-  userId        String  // Explicitly define userId as String
-  timestamp     DateTime @default(now())
-  orderId       String?  // Add a field to store the PayPal order ID
-  amount        Float?   // Add a field to store the payment amount
-  currency      String?  // Add a field to store the currency code
-  paymentStatus String?  // Add a field to store the payment status (e.g., "captured", "pending", etc.)
 }
 
 model DietaryPreference {
@@ -61,7 +61,7 @@ model FoodItem {
   category            String?     // Assuming simple string categories
   dietaryRestrictions String[]    // Array of strings
   imageUrl            String?
-  cartItems           CartItem[]  // Define the relation to CartItem
+  cartItems           CartItem[]  @relation("FoodItemCartItems") // Define the relation to CartItem
   orderItems          OrderItem[] // Define the relation to OrderItem
   createdAt           DateTime    @default(now())
   deleted             Boolean     @default(false) // New field for soft delete
@@ -74,10 +74,10 @@ model CartItem {
   itemId   String
   quantity Int
   withEgg  Boolean?  // Check if withEgg field is correctly defined
-  user     User     @relation(fields: [userId], references: [id])
-  foodItem FoodItem @relation(fields: [itemId], references: [id])
+  price    Float     // Add the price field
+  user     User     @relation(name: "UserCartItems", fields: [userId], references: [id])
+  foodItem FoodItem @relation(name: "FoodItemCartItems", fields: [itemId], references: [id])
 }
-
 
 model Order {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
@@ -112,6 +112,7 @@ model OrderItem {
   foodItem            FoodItem    @relation(fields: [itemId], references: [id])
   createdAt           DateTime    @default(now())
 }
+
 
 
 

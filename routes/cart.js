@@ -23,17 +23,38 @@ router.get('/items', authenticate, async (req, res, next) => {
         const cartItems = await prisma.cartItem.findMany({
             where: { userId },
             include: {
-                foodItem: true // Ensure that foodItem is included
+                foodItem: true // Include the related foodItem data
             },
         });
 
         // Filter out any cart items where foodItem is null
         const validCartItems = cartItems.filter(item => item.foodItem !== null);
 
-        // Log the cart items to check dietaryRestrictions
-        console.log('Cart Items:', validCartItems);
+        // Log the cart items to check dietaryRestrictions (optional)
+        console.log('Fetched Cart Items:', validCartItems);
 
-        res.json(validCartItems);
+        // Modify each cart item to include the correct itemPrice for Party Trays items
+        const enhancedCartItems = validCartItems.map(item => {
+            const foodItem = item.foodItem;
+            let itemPrice = 0;
+
+            if (foodItem.category === 'Solo Meals') {
+                itemPrice = foodItem.price;
+                if (item.withEgg) {
+                    itemPrice += 5; // Add price for egg if applicable
+                }
+            } else if (foodItem.category === 'Party Trays') {
+                // Determine the correct price based on user selection
+                itemPrice = item.price; // Use the user-selected price from cartItem
+            }
+
+            return {
+                ...item,
+                itemPrice: itemPrice.toFixed(2), // Format price to two decimal places
+            };
+        });
+
+        res.json(enhancedCartItems);
     } catch (error) {
         console.error('Error fetching cart items:', error);
         next(createError(500, 'Failed to fetch cart items.', error));
@@ -41,63 +62,90 @@ router.get('/items', authenticate, async (req, res, next) => {
 });
 
 
+
+
+
+
+
+
+
+
+
 router.post('/add', authenticate, async (req, res, next) => {
     const userId = req.user.id;
-    const { name, price, image, quantity, withEgg, dietaryRestrictions } = req.body;
+    const { name, price, price25_30, price45_50, image, quantity, withEgg, dietaryRestrictions, category } = req.body;
 
     try {
-        if (!name || !price || !image || !quantity || !dietaryRestrictions) {
+        if (!name || !image || !quantity || !dietaryRestrictions) {
             throw new Error('Required fields are missing.');
         }
 
-        let foodItem;
-
-        // Find or create the food item based on name
-        foodItem = await prisma.foodItem.findFirst({
+        let foodItem = await prisma.foodItem.findFirst({
             where: { name: name },
         });
 
         if (!foodItem) {
-            // Create the food item if it doesn't exist
+            const foodItemData = {
+                name,
+                imageUrl: image,
+                dietaryRestrictions,
+                category,
+                price: category !== 'Party Trays' ? price : undefined,
+                price25_30: category === 'Party Trays' ? price25_30 : undefined,
+                price45_50: category === 'Party Trays' ? price45_50 : undefined,
+            };
+
             foodItem = await prisma.foodItem.create({
-                data: { name, price, imageUrl: image, dietaryRestrictions: dietaryRestrictions },
+                data: foodItemData,
             });
-            console.log('New food item created:', foodItem); // Log newly created food item
+            console.log('New food item created:', foodItem);
         }
 
-        // Check if the cart item already exists for the user with the same withEgg status
+        let selectedPrice = price;
+
+        if (category === 'Party Trays') {
+            if (price25_30) {
+                selectedPrice = price25_30;
+            } else if (price45_50) {
+                selectedPrice = price45_50;
+            }
+        }
+
+        // Check if there's an existing cart item with the same user, item, price, and options
         let existingCartItem = await prisma.cartItem.findFirst({
             where: {
                 userId,
                 itemId: foodItem.id,
                 withEgg: withEgg,
+                price: selectedPrice,
             },
-            include: { foodItem: true }, // Ensure foodItem is included
+            include: { foodItem: true },
         });
 
         if (existingCartItem) {
-            // Update the quantity if the cart item exists
+            // If an existing cart item is found, update its quantity
             const updatedCartItem = await prisma.cartItem.update({
                 where: { id: existingCartItem.id },
                 data: { quantity: existingCartItem.quantity + quantity },
                 include: { foodItem: true },
             });
-            console.log('Updated cart item:', updatedCartItem); // Log updated cart item
+            console.log('Updated cart item quantity:', updatedCartItem);
             res.json({ success: true, message: 'Item quantity updated in cart successfully.', cartItem: updatedCartItem });
         } else {
-            // Create a new cart item if it doesn't exist
+            // Create a new cart item with the selected price
             const cartItemData = {
                 userId,
                 itemId: foodItem.id,
                 quantity,
                 withEgg,
+                price: selectedPrice,
             };
 
             const cartItem = await prisma.cartItem.create({
                 data: cartItemData,
-                include: { foodItem: true }, // Ensure foodItem is included
+                include: { foodItem: true },
             });
-            console.log('New cart item added:', cartItem); // Log newly added cart item
+            console.log('New cart item added:', cartItem);
             res.json({ success: true, message: 'Item added to cart successfully.', cartItem });
         }
     } catch (error) {
@@ -105,6 +153,11 @@ router.post('/add', authenticate, async (req, res, next) => {
         next(createError(500, 'Could not add item to cart.', error));
     }
 });
+
+  
+
+
+
 
 
 // Update Cart Item Quantity

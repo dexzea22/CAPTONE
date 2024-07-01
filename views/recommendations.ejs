@@ -118,27 +118,28 @@
                                 <!-- Add category display -->
                                 <p>Category: <%= currentItem.category %></p>
                                 <% if (currentItem.category === 'Party Trays') { %>
-                                    <!-- Radio buttons for different prices with images -->
-                                    <div class="price-radio-group">
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12" checked>
-                                            <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12">
-                                                <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax: ₱<%= currentItem.price.toFixed(2) %>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price25_30 %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
-                                            <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
-                                                <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax: ₱<%= currentItem.price25_30.toFixed(2) %>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price45_50 %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
-                                            <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
-                                                <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax: ₱<%= currentItem.price45_50.toFixed(2) %>
-                                            </label>
-                                        </div>
-                                    </div>
+                                   <!-- Radio buttons for different prices with images -->
+<div class="price-radio-group">
+    <div class="form-check">
+        <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12" checked>
+        <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12">
+            <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax: ₱<%= currentItem.price.toFixed(2) %>
+        </label>
+    </div>
+    <div class="form-check">
+        <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price25_30 %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
+        <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
+            <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax: ₱<%= currentItem.price25_30.toFixed(2) %>
+        </label>
+    </div>
+    <div class="form-check">
+        <input type="radio" class="form-check-input" name="price<%= currentItem.name.replace(/\s+/g, '-') %>" value="<%= currentItem.price45_50 %>" id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
+        <label class="form-check-label" for="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
+            <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax: ₱<%= currentItem.price45_50.toFixed(2) %>
+        </label>
+    </div>
+</div>
+
                                     <!-- Quantity input for Party Trays -->
                                     <div class="form-group mt-3">
                                         <label for="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>">Quantity:</label>
@@ -159,7 +160,10 @@
                                 <input type="hidden" name="foodName" value="<%= currentItem.name %>">
                                 <input type="hidden" name="price" value="<%= currentItem.price %>">
                                 <p>Total Price: ₱<span class="total-price"><%= currentItem.price.toFixed(2) %></span></p>
+
+                              
                                 <button type="button" class="btn btn-primary" onclick="addToCart('card-<%= currentItem.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+
                             </div>
                         </div>
                     </div>
