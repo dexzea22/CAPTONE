@@ -107,13 +107,18 @@ model OrderItem {
   itemSize            String?     // Add field for the size of the item
   itemImageUrl        String?     // Add field for the image URL of the item
   quantity            Int
+  category            String?     // Add field for the category of the item
   withEgg             Boolean?    // Ensure withEgg is correctly defined
   totalPrice          Float
   dietaryRestrictions String[]    // Array of strings for dietary restrictions
   order               Order       @relation(fields: [orderId], references: [id])
   foodItem            FoodItem    @relation(fields: [itemId], references: [id])
   createdAt           DateTime    @default(now())
+
+  // Define a relation to FoodItem if necessary
+  // foodItem            FoodItem    @relation(fields: [itemId], references: [id])
 }
+
 
 
 
