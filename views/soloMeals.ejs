@@ -30,117 +30,94 @@
         color: red; /* Example color for unavailable text */
       }
     </style>
+    <!-- SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
   </head>
   <body>
+  
     <div class="container">
       <h1 class="my-4">Solo Meals</h1>
       <div class="row">
         <% foodItems.forEach(item => { %>
-        <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
-          <div
-            class="card h-100 <% if (!item.available) { %>unavailable-card<% } %>"
-          >
-            <% if (!item.available) { %>
-            <div class="unavailable-text">Unavailable</div>
-            <% } %>
-            <img
-              src="<%= item.imageUrl %>"
-              class="card-img-top"
-              alt="<%= item.name %>"
-            />
-
-            <div class="card-body">
-              <h5 class="card-title"><%= item.name %></h5>
-              <p class="card-text"><%= item.description %></p>
-              <p class="card-text">
-                Price: ₱<span class="item-price"
-                  ><%= item.price.toFixed(2) %></span
-                >
-              </p>
-              <p class="card-text">
-                Dietary Preferences: <% item.dietaryRestrictions.forEach(diet =>
-                { %> <%= diet %><% if (diet !==
-                item.dietaryRestrictions[item.dietaryRestrictions.length - 1]) {
-                %>, <% } %> <% }); %>
-              </p>
-              <% if (item.available) { %>
-              <div class="form-group">
-                <label for="quantity-<%= item.id %>">Quantity:</label>
-                <input
-                  type="number"
-                  class="form-control quantity-input"
-                  id="quantity-<%= item.id %>"
-                  value="1"
-                  min="1"
-                  data-price="<%= item.price %>"
-                />
-              </div>
-              <div class="form-group form-check">
-                <input
-                  type="checkbox"
-                  class="form-check-input add-egg"
-                  id="add-egg-<%= item.id %>"
-                  data-egg-price="5"
-                />
-                <label class="form-check-label" for="add-egg-<%= item.id %>"
-                  >Add Egg (₱5)</label
-                >
-              </div>
-              <p class="card-text">
-                Total Price: ₱<span class="total-price"
-                  ><%= item.price.toFixed(2) %></span
-                >
-              </p>
-              <!-- Add to Cart button -->
-              <button class="btn btn-primary mt-3">Add to Cart</button>
-              <% } else { %>
-              <p class="card-text text-center text-muted">Unavailable</p>
+          <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 <% if (!item.available) { %>unavailable-card<% } %>" id="card-<%= item.name.replace(/\s+/g, '-') %>"
+              data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>"
+              data-category="Solo Meals">
+              <% if (!item.available) { %>
+                <div class="unavailable-text">Unavailable</div>
               <% } %>
+              <div class="card-body">
+                <!-- Image -->
+                <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
+                <!-- Food Item Name -->
+                <h5 class="card-title"><%= item.name %></h5>
+                <!-- Dietary Restrictions -->
+                <p class="card-text">
+                  <% item.dietaryRestrictions.forEach((diet, index) => { %>
+                    <%= diet %><% if (index !== item.dietaryRestrictions.length - 1) { %>, <% } %>
+                  <% }); %>
+                </p>
+                <!-- Category -->
+                <p>Category: <%= item.category %></p>
+                <% if (item.available) { %>
+                  <!-- Quantity input -->
+                  <div class="form-group">
+                    <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                    <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>"
+                      value="1" min="1" data-price="<%= item.price %>">
+                  </div>
+                  <!-- Add Egg checkbox -->
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input add-egg"
+                      id="withEgg-<%= item.name.replace(/\s+/g, '-') %>" data-egg-price="5">
+                    <label class="form-check-label" for="withEgg-<%= item.name.replace(/\s+/g, '-') %>">Add Egg (₱5)</label>
+                  </div>
+                  <!-- Total Price -->
+                  <p class="card-text">Total Price: ₱<span class="total-price"><%= item.price.toFixed(2) %></span></p>
+                  <!-- Add to Cart button -->
+                  <button type="button" class="btn btn-primary add-to-cart-btn"
+                    onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+                <% } else { %>
+                  <p class="card-text text-center text-muted">Unavailable</p>
+                <% } %>
+              </div>
             </div>
           </div>
-        </div>
         <% }); %>
       </div>
     </div>
+  
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+    <!-- Your meals.js script -->
+    <script src="scripts/meals.js"></script>
+  
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const quantityInputs = document.querySelectorAll(".quantity-input");
         const eggCheckboxes = document.querySelectorAll(".add-egg");
-
+  
         function updateTotalPrice(cardBody) {
-          const price = parseFloat(
-            cardBody.querySelector(".quantity-input").getAttribute("data-price")
-          );
-          const quantity = parseInt(
-            cardBody.querySelector(".quantity-input").value
-          );
-          const eggPrice = cardBody.querySelector(".add-egg").checked
-            ? parseFloat(
-                cardBody
-                  .querySelector(".add-egg")
-                  .getAttribute("data-egg-price")
-              )
-            : 0;
+          const price = parseFloat(cardBody.querySelector(".quantity-input").getAttribute("data-price"));
+          const quantity = parseInt(cardBody.querySelector(".quantity-input").value);
+          const eggPrice = cardBody.querySelector(".add-egg").checked ? parseFloat(cardBody.querySelector(".add-egg").getAttribute("data-egg-price")) : 0;
           const totalPriceElement = cardBody.querySelector(".total-price");
-          const newTotalPrice = (
-            price * quantity +
-            eggPrice * quantity
-          ).toFixed(2);
+          const newTotalPrice = (price * quantity + eggPrice * quantity).toFixed(2);
           totalPriceElement.textContent = newTotalPrice;
         }
-
-        quantityInputs.forEach((input) => {
+  
+        quantityInputs.forEach(input => {
           input.addEventListener("input", function () {
             const cardBody = this.closest(".card-body");
             updateTotalPrice(cardBody);
           });
         });
-
-        eggCheckboxes.forEach((checkbox) => {
+  
+        eggCheckboxes.forEach(checkbox => {
           checkbox.addEventListener("change", function () {
             const cardBody = this.closest(".card-body");
             updateTotalPrice(cardBody);
@@ -148,5 +125,9 @@
         });
       });
     </script>
-  </body>
+  
+  
+  
+    
+    </body>
 </html>

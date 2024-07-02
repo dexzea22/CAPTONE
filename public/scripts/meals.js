@@ -175,6 +175,13 @@ function addToCart(cardId) {
   console.log('Item Price Chosen by Customer:', selectedPrice);
   console.log('Selected Size:', selectedSize);
 
+  // Adjust price if withEgg is checked
+  if (withEgg) {
+    selectedPrice += 5; // Add ₱5 if withEgg is checked
+  }
+
+  console.log('Adjusted Price:', selectedPrice);
+
   let requestData = {
     name: itemName,
     image: imageUrl,
@@ -230,10 +237,6 @@ function addToCart(cardId) {
     });
   });
 }
-
-
-
-
 
 
 

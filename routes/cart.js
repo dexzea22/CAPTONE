@@ -82,9 +82,13 @@ router.post('/add', async (req, res, next) => {
             throw new Error('Required fields are missing.');
         }
 
+        console.log('Adding item to cart:', name, price, quantity, withEgg, category);
+
         let foodItem = await prisma.foodItem.findFirst({
             where: { name: name },
         });
+
+        console.log('Found food item:', foodItem);
 
         if (!foodItem) {
             throw new Error('Food item not found.');
@@ -150,9 +154,11 @@ router.post('/add', async (req, res, next) => {
         }
     } catch (error) {
         console.error('Failed to add item to cart:', error);
+        // Log the error and send an appropriate response
         next(createError(500, 'Could not add item to cart.', error));
     }
 });
+
 
 
 
