@@ -129,6 +129,7 @@
                           <p><strong>Quantity:</strong> <%= item.quantity %></p>
                           <p><strong>Price:</strong> <%= item.itemPrice %></p>
                           <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
+                          <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions.join(', ') %></p>
                           <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
                       </div>
                   <% }); %>
