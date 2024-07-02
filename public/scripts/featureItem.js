@@ -1,61 +1,47 @@
-// JavaScript for UserDashboard.ejs
-
 document.addEventListener("DOMContentLoaded", function () {
-    const soloMealCards = document.querySelectorAll('.card-body.solo-meal');
-    const partyTrayCards = document.querySelectorAll('.card-body.party-tray');
-  
-    // Function to update total price for Solo Meals
-    function updateSoloMealTotalPrice(cardBody) {
-      const price = parseFloat(cardBody.querySelector(".quantity-input").getAttribute("data-price"));
-      const quantity = parseInt(cardBody.querySelector(".quantity-input").value);
-      const addEggPrice = cardBody.querySelector(".add-egg").checked ? parseFloat(cardBody.querySelector(".add-egg").getAttribute("data-egg-price")) : 0;
-      const totalPriceElement = cardBody.querySelector(".total-price");
-      const newTotalPrice = (price * quantity + addEggPrice).toFixed(2);
-      totalPriceElement.textContent = "₱" + newTotalPrice;
-    }
-  
-    // Function to update total price for Party Trays
-    function updatePartyTrayTotalPrice(itemId) {
-      const selectedRadio = document.querySelector(`input[name="price${itemId}"]:checked`);
-      if (!selectedRadio) return;
-      
-      const price = parseFloat(selectedRadio.getAttribute("data-price"));
-      const quantity = parseInt(document.getElementById(`quantity${itemId}`).value);
-      const totalPriceElement = document.getElementById(`totalPrice${itemId}`);
-      const newTotalPrice = (price * quantity).toFixed(2);
-      totalPriceElement.textContent = "₱" + newTotalPrice;
-    }
-  
-    // Attach event listeners for Solo Meals
-    soloMealCards.forEach(cardBody => {
-      const quantityInput = cardBody.querySelector(".quantity-input");
+  const cards = document.querySelectorAll('.card-body');
+
+  function updateTotalPrice(cardBody) {
+    const isSoloMeal = cardBody.classList.contains('solo-meal');
+    const priceElement = cardBody.querySelector(".quantity-input");
+    const price = parseFloat(priceElement.getAttribute("data-price"));
+    const quantity = parseInt(priceElement.value);
+    let newTotalPrice = 0;
+
+    if (isSoloMeal) {
       const addEggCheckbox = cardBody.querySelector(".add-egg");
-  
-      quantityInput.addEventListener("input", function () {
-        updateSoloMealTotalPrice(cardBody);
-      });
-  
-      addEggCheckbox.addEventListener("change", function () {
-        updateSoloMealTotalPrice(cardBody);
-      });
+      const addEggPrice = addEggCheckbox.checked ? parseFloat(addEggCheckbox.getAttribute("data-egg-price")) : 0;
+      newTotalPrice = (price * quantity + addEggPrice).toFixed(2);
+      const totalPriceElement = cardBody.querySelector(".total-price");
+      totalPriceElement.textContent = "₱" + newTotalPrice;
+    } else {
+      const selectedRadio = cardBody.querySelector(`input[name="price${cardBody.dataset.itemId}"]:checked`);
+      if (!selectedRadio) return;
+      const radioPrice = parseFloat(selectedRadio.getAttribute("data-price"));
+      newTotalPrice = (radioPrice * quantity).toFixed(2);
+      const totalPriceElement = cardBody.querySelector(`#totalPrice${cardBody.dataset.itemId}`);
+      totalPriceElement.textContent = "₱" + newTotalPrice;
+    }
+  }
+
+  cards.forEach(cardBody => {
+    const quantityInput = cardBody.querySelector(".quantity-input");
+    quantityInput.addEventListener("input", function () {
+      updateTotalPrice(cardBody);
     });
-  
-    // Attach event listeners for Party Trays
-    partyTrayCards.forEach(cardBody => {
+
+    if (cardBody.classList.contains('solo-meal')) {
+      const addEggCheckbox = cardBody.querySelector(".add-egg");
+      addEggCheckbox.addEventListener("change", function () {
+        updateTotalPrice(cardBody);
+      });
+    } else if (cardBody.classList.contains('party-tray')) {
       const priceRadios = cardBody.querySelectorAll(".price-radio");
-      const quantityInput = cardBody.querySelector(".quantity-input");
-  
       priceRadios.forEach(radio => {
         radio.addEventListener("change", function () {
-          const itemId = radio.getAttribute("name").replace("price", "");
-          updatePartyTrayTotalPrice(itemId);
+          updateTotalPrice(cardBody);
         });
       });
-  
-      quantityInput.addEventListener("input", function () {
-        const itemId = quantityInput.getAttribute("id").replace("quantity", "");
-        updatePartyTrayTotalPrice(itemId);
-      });
-    });
+    }
   });
-  
+});
