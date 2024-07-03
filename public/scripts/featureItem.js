@@ -1,17 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const cards = document.querySelectorAll('.card-body');
+  const cards = document.querySelectorAll('.card');
 
   function updateTotalPrice(cardBody) {
     const isSoloMeal = cardBody.classList.contains('solo-meal');
-    const priceElement = cardBody.querySelector(".quantity-input");
-    const price = parseFloat(priceElement.getAttribute("data-price"));
-    const quantity = parseInt(priceElement.value);
+    const quantityInput = cardBody.querySelector(".quantity-input");
+    const quantity = parseInt(quantityInput.value);
     let newTotalPrice = 0;
 
     if (isSoloMeal) {
+      const price = parseFloat(quantityInput.getAttribute("data-price"));
       const addEggCheckbox = cardBody.querySelector(".add-egg");
       const addEggPrice = addEggCheckbox.checked ? parseFloat(addEggCheckbox.getAttribute("data-egg-price")) : 0;
-      newTotalPrice = (price * quantity + addEggPrice).toFixed(2);
+      newTotalPrice = ((price + addEggPrice) * quantity).toFixed(2);
       const totalPriceElement = cardBody.querySelector(".total-price");
       totalPriceElement.textContent = "₱" + newTotalPrice;
     } else {
@@ -26,15 +26,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
   cards.forEach(cardBody => {
     const quantityInput = cardBody.querySelector(".quantity-input");
-    quantityInput.addEventListener("input", function () {
-      updateTotalPrice(cardBody);
-    });
+    if (quantityInput) {
+      quantityInput.addEventListener("input", function () {
+        updateTotalPrice(cardBody);
+      });
+    }
 
     if (cardBody.classList.contains('solo-meal')) {
       const addEggCheckbox = cardBody.querySelector(".add-egg");
-      addEggCheckbox.addEventListener("change", function () {
-        updateTotalPrice(cardBody);
-      });
+      if (addEggCheckbox) {
+        addEggCheckbox.addEventListener("change", function () {
+          updateTotalPrice(cardBody);
+        });
+      }
     } else if (cardBody.classList.contains('party-tray')) {
       const priceRadios = cardBody.querySelectorAll(".price-radio");
       priceRadios.forEach(radio => {
