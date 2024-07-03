@@ -151,53 +151,66 @@
 <section class="feature-food">
   <div class="grid-container">
     <% foodItems.forEach(item => { %>
-      <div class="card h-100 <%= item.category === 'Solo Meal' ? 'solo-meal' : 'party-tray' %> <%= !item.available ? 'unavailable' : '' %>" data-item-id="<%= item.id %>">
+      <div class="card h-100 <%= item.category === 'Solo Meals' ? 'solo-meal' : 'party-tray' %> <%= !item.available ? 'unavailable' : '' %>" data-item-id="<%= item.id %>">
         
         <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
         <h5 class="card-title"><%= item.name %></h5>
-        <p class="card-text"><%= item.description %></p>
-        <p class="card-text"><%= item.category %></p>
+        <p class="card-text">
+          <% item.dietaryRestrictions.forEach((diet, index) => { %>
+            <%= diet %><% if (index !== item.dietaryRestrictions.length - 1) { %>, <% } %>
+          <% }); %>
+        </p>
+        <p class="card-text">Category: <%= item.category %></p>
         
         <% if (item.category === 'Solo Meals') { %>
           <div class="card-body solo-meal" data-item-id="<%= item.id %>">
-            <input type="number" class="form-control quantity-input" id="quantity-<%= item.id %>" value="1" min="1" data-price="<%= item.price %>">
-            <input type="checkbox" class="form-check-input add-egg" id="add-egg-<%= item.id %>" data-egg-price="5">with Egg(₱5.00)<br>
-            <span class="total-price">₱<%= item.price.toFixed(2) %></span>
+            <div class="form-group">
+              <label for="quantity-<%= item.id %>">Quantity:</label>
+              <input type="number" class="form-control quantity-input" id="quantity-<%= item.id %>" value="1" min="1" data-price="<%= item.price %>">
+            </div>
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input add-egg" id="add-egg-<%= item.id %>" data-egg-price="5"> with Egg (₱5.00)<br>
+            </div>
+            <div class="form-group">
+              <label>Total Price:</label>
+              <span class="total-price">₱<%= item.price.toFixed(2) %></span>
+            </div>
           </div>
         
         <% } else if (item.category === 'Party Trays') { %>
-          <!-- Radio buttons for different sizes and prices -->
-          <div class="price-radio-group">
-            <div class="form-check">
-              <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.id %>')" <%= !item.available ? 'disabled' : '' %>>
-              <label class="form-check-label" for="price<%= item.id %>">
-                <img src="/images/sTray.png" alt="10-12 Pax" /> Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
-              </label>
+          <div class="card-body party-tray" data-item-id="<%= item.id %>">
+            <!-- Radio buttons for different sizes and prices -->
+            <div class="price-radio-group">
+              <div class="form-check">
+                <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>" data-price="<%= item.price %>" checked <%= !item.available ? 'disabled' : '' %>>
+                <label class="form-check-label" for="price<%= item.id %>">
+                  <img src="/images/sTray.png" alt="10-12 Pax" /> Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
+                </label>
+              </div>
+              <div class="form-check">
+                <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price25_30<%= item.id %>" data-price="<%= item.price25_30 %>" <%= !item.available ? 'disabled' : '' %>>
+                <label class="form-check-label" for="price25_30<%= item.id %>">
+                  <img src="/images/mTray.png" alt="25-30 Pax" /> Medium 25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
+                </label>
+              </div>
+              <div class="form-check">
+                <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price45_50 %>" id="price45_50<%= item.id %>" data-price="<%= item.price45_50 %>" <%= !item.available ? 'disabled' : '' %>>
+                <label class="form-check-label" for="price45_50<%= item.id %>">
+                  <img src="/images/lTray.png" alt="45-50 Pax" /> Large 45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
+                </label>
+              </div>
             </div>
-            <div class="form-check">
-              <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price25_30<%= item.id %>" data-price="<%= item.price25_30 %>" onchange="updateTotalPrice('<%= item.id %>')" <%= !item.available ? 'disabled' : '' %>>
-              <label class="form-check-label" for="price25_30<%= item.id %>">
-                <img src="/images/mTray.png" alt="25-30 Pax" /> Medium 25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
-              </label>
+            <!-- Quantity selector -->
+            <div class="form-group mt-3">
+              <label for="quantity<%= item.id %>">Quantity:</label>
+              <input type="number" class="form-control quantity-input" id="quantity<%= item.id %>" value="1" min="1" data-price="<%= item.price %>" <%= !item.available ? 'disabled' : '' %>>
             </div>
-            <div class="form-check">
-              <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price45_50 %>" id="price45_50<%= item.id %>" data-price="<%= item.price45_50 %>" onchange="updateTotalPrice('<%= item.id %>')" <%= !item.available ? 'disabled' : '' %>>
-              <label class="form-check-label" for="price45_50<%= item.id %>">
-                <img src="/images/lTray.png" alt="45-50 Pax" /> Large 45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
-              </label>
+            <!-- Total price display -->
+            <div class="form-group">
+              <label>Total Price:</label>
+              <span id="totalPrice<%= item.id %>">₱<%= item.price.toFixed(2) %></span>
             </div>
           </div>
-          <!-- Quantity selector -->
-          <div class="form-group mt-3">
-            <label for="quantity<%= item.id %>">Quantity:</label>
-            <input type="number" class="form-control quantity-input" id="quantity<%= item.id %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.id %>')" <%= !item.available ? 'disabled' : '' %>>
-          </div>
-          <!-- Total price display -->
-          <div class="form-group">
-            <label for="totalPrice<%= item.id %>">Total Price:</label>
-            <span id="totalPrice<%= item.id %>">₱<%= item.price.toFixed(2) %></span>
-          </div>
-        
         <% } %>
         
         <% if (!item.available) { %>
