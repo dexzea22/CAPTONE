@@ -131,7 +131,7 @@ router.post('/add', async (req, res, next) => {
                 include: { foodItem: true },
             });
             console.log('Updated cart item quantity:', updatedCartItem);
-            res.json({ success: true, message: `Item ${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${price.toFixed(2)} ${category} has been added to your cart.` });
+            res.json({ success: true, message: `${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${price.toFixed(2)} ${category} has been added to your cart.` });
         } else {
             // Create a new cart item with the selected price and size or withEgg for Solo Meals
             const cartItemData = {
