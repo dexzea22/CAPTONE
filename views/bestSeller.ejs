@@ -157,7 +157,7 @@
                   <% } else if (item.category === 'Party Trays') { %>
                     <div class="price-radio-group">
                       <div class="form-check">
-                        <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>" data-price="<%= item.price %>">
+                        <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>" data-price="<%= item.price %>" checked>
                         <label class="form-check-label" for="price<%= item.id %>">
                           <img src="/images/sTray.png" alt="10-12 Pax" /> Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
                         </label>
