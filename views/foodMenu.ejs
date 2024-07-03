@@ -90,15 +90,14 @@
       </div>
     </div>
     
-      </div>
-      <!-- PARTY TRAYS -->
+    <div class="container">
       <h1 class="mb-4">Party Trays</h1>
       <div class="row">
         <% partyTrays.forEach(item => { %>
           <div class="col-md-4 mb-4">
-            <div class="card <% if (!item.available) { %>unavailable-card<% } %>" 
-                 id="card-<%= item.name.replace(/\s+/g, '-') %>" 
-                 data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" 
+            <div class="card <% if (!item.available) { %>unavailable-card<% } %>"
+                 id="card-<%= item.name.replace(/\s+/g, '-') %>"
+                 data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>"
                  data-category="Party Trays">
               <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="card-img-top" />
               <% if (!item.available) { %>
@@ -109,7 +108,7 @@
                 <p class="card-text">
                   Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %> <%= diet %> <% }); %>
                 </p>
-      
+    
                 <% if (item.available) { %>
                 <!-- Radio buttons for different sizes and prices -->
                 <div class="price-radio-group">
@@ -132,19 +131,19 @@
                     </label>
                   </div>
                 </div>
-      
+    
                 <!-- Quantity selector -->
                 <div class="form-group mt-3">
                   <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
                   <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.name.replace(/\s+/g, '-') %>')">
                 </div>
-      
+    
                 <!-- Total price display -->
                 <div class="form-group">
                   <label for="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">Total Price:</label>
                   <span id="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">₱<%= item.price.toFixed(2) %></span>
                 </div>
-      
+    
                 <!-- Add to Cart button -->
                 <button class="btn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
                 <% } else { %>
@@ -154,68 +153,78 @@
               </div>
             </div>
           </div>
-          <% }); %>
-        </div>
+        <% }); %>
       </div>
+    </div>
     
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <!-- Your meals.js script -->
-        <script src="scripts/meals.js"></script>
-
-            <!-- SweetAlert2 JS -->
+    <!-- Your meals.js script -->
+    <script src="scripts/meals.js"></script>
+    <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-     document.addEventListener('DOMContentLoaded', function() {
-  const priceRadios = document.querySelectorAll('.price-radio');
-  const quantityInputs = document.querySelectorAll('.quantity-input');
-  const eggCheckboxes = document.querySelectorAll('.add-egg');
-
-  function updateTotalPrice(itemId) {
-    const selectedPriceRadio = document.querySelector('input[name="price' + itemId + '"]:checked');
-    if (selectedPriceRadio) {
-      const price = parseFloat(selectedPriceRadio.getAttribute('data-price'));
-      const quantity = parseInt(document.getElementById('quantity-' + itemId).value);
-      const totalPriceElement = document.getElementById('totalPrice-' + itemId);
-      const newTotalPrice = (price * quantity).toFixed(2);
-      totalPriceElement.textContent = '₱' + newTotalPrice;
-    }
-  }
-
-  function updateTotalPriceWithEgg(cardBody) {
-    const price = parseFloat(cardBody.querySelector('.quantity-input').getAttribute('data-price'));
-    const quantity = parseInt(cardBody.querySelector('.quantity-input').value);
-    const eggPrice = cardBody.querySelector('.add-egg').checked ? parseFloat(cardBody.querySelector('.add-egg').getAttribute('data-egg-price')) : 0;
-    const totalPriceElement = cardBody.querySelector('.total-price');
-    const newTotalPrice = (price * quantity + eggPrice * quantity).toFixed(2);
-    totalPriceElement.textContent = '₱' + newTotalPrice;
-  }
-
-  priceRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
-      const itemId = this.getAttribute('name').split('price')[1];
-      updateTotalPrice(itemId);
-    });
-  });
-
-  quantityInputs.forEach(input => {
-    input.addEventListener('input', function() {
-      const cardBody = this.closest('.card-body');
-      updateTotalPriceWithEgg(cardBody);
-    });
-  });
-
-  eggCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-      const cardBody = this.closest('.card-body');
-      updateTotalPriceWithEgg(cardBody);
-    });
-  });
-});
-
+      document.addEventListener("DOMContentLoaded", function () {
+        const quantityInputs = document.querySelectorAll(".quantity-input");
+        const eggCheckboxes = document.querySelectorAll(".add-egg");
+    
+        function updateTotalPrice(cardBody) {
+          const price = parseFloat(cardBody.querySelector(".quantity-input").getAttribute("data-price"));
+          const quantity = parseInt(cardBody.querySelector(".quantity-input").value);
+          const eggPrice = cardBody.querySelector(".add-egg").checked ? parseFloat(cardBody.querySelector(".add-egg").getAttribute("data-egg-price")) : 0;
+          const totalPriceElement = cardBody.querySelector(".total-price");
+          const newTotalPrice = (price * quantity + eggPrice * quantity).toFixed(2);
+          totalPriceElement.textContent = newTotalPrice;
+        }
+    
+        quantityInputs.forEach(input => {
+          input.addEventListener("input", function () {
+            const cardBody = this.closest(".card-body");
+            updateTotalPrice(cardBody);
+          });
+        });
+    
+        eggCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener("change", function () {
+            const cardBody = this.closest(".card-body");
+            updateTotalPrice(cardBody);
+          });
+        });
+      });
+    
+      document.addEventListener('DOMContentLoaded', function() {
+        const priceRadios = document.querySelectorAll('.price-radio');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+    
+        function updateTotalPrice(itemId) {
+          const selectedPriceRadio = document.querySelector('input[name="price' + itemId + '"]:checked');
+          if (!selectedPriceRadio) return;
+    
+          const price = parseFloat(selectedPriceRadio.getAttribute('data-price'));
+          const quantity = parseInt(document.getElementById('quantity-' + itemId).value);
+          const totalPriceElement = document.getElementById('totalPrice-' + itemId);
+          const newTotalPrice = (price * quantity).toFixed(2);
+          totalPriceElement.textContent = '₱' + newTotalPrice;
+        }
+    
+        priceRadios.forEach(radio => {
+          radio.addEventListener('change', function() {
+            const itemId = this.getAttribute('name').split('price')[1];
+            updateTotalPrice(itemId);
+          });
+        });
+    
+        quantityInputs.forEach(input => {
+          input.addEventListener('input', function() {
+            const itemId = this.getAttribute('id').split('quantity-')[1];
+            updateTotalPrice(itemId);
+          });
+        });
+      });
     </script>
+    
     
   </body>
 </html>
