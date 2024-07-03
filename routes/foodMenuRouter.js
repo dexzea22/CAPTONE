@@ -23,9 +23,12 @@ router.get('/', async (req, res) => {
 
         // Render the food menu view and pass the separated data
         res.render('foodMenu', { soloMeals, partyTrays });
+
     } catch (error) {
         console.error('Error fetching food items:', error);
         res.status(500).send('Internal Server Error');
+    } finally {
+        await prisma.$disconnect(); // Disconnect Prisma client
     }
 });
 
