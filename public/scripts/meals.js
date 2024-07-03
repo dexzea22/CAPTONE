@@ -160,7 +160,7 @@ function addToCart(cardId) {
   if (category === 'Party Trays') {
     const sizeRadioChecked = cardElement.querySelector('.price-radio-group input[type="radio"]:checked');
     if (sizeRadioChecked) {
-      selectedPrice = parseFloat(sizeRadioChecked.value);
+      selectedPrice = parseFloat(sizeRadioChecked.value) * quantity; // Calculate total price for Party Trays
       selectedSize = sizeRadioChecked.nextSibling.textContent.trim(); // Get the size label text
     } else {
       console.error('Please select a size for Party Trays.');
@@ -168,19 +168,19 @@ function addToCart(cardId) {
     }
   } else {
     // For other categories, use the selected quantity price
-    selectedPrice = parseFloat(quantityInput.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || quantityInput.getAttribute('data-price'));
+    selectedPrice = parseFloat(quantityInput.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || quantityInput.getAttribute('data-price')) * quantity;
   }
 
   console.log('Quantity:', quantity);
-  console.log('Item Price Chosen by Customer:', selectedPrice);
+  console.log('Total Price Chosen by Customer:', selectedPrice);
   console.log('Selected Size:', selectedSize);
 
   // Adjust price if withEgg is checked
   if (withEgg) {
-    selectedPrice += 5; // Add ₱5 if withEgg is checked
+    selectedPrice += 5 * quantity; // Add ₱5 per item if withEgg is checked
   }
 
-  console.log('Adjusted Price:', selectedPrice);
+  console.log('Adjusted Total Price:', selectedPrice);
 
   let requestData = {
     name: itemName,
@@ -191,9 +191,9 @@ function addToCart(cardId) {
     category: category,
     price: selectedPrice,
     // Add the selectedSize to requestData based on selectedPrice
-    size10_12: selectedPrice === 215 ? 'Small 10-12 Pax' : null,
-    size25_30: selectedPrice === 315 ? 'Medium 25-30 Pax' : null,
-    size45_50: selectedPrice === 415 ? 'Large 45-50 Pax' : null,
+    size10_12: selectedSize === 'Small 10-12 Pax' ? 'Small 10-12 Pax' : null,
+    size25_30: selectedSize === 'Medium 25-30 Pax' ? 'Medium 25-30 Pax' : null,
+    size45_50: selectedSize === 'Large 45-50 Pax' ? 'Large 45-50 Pax' : null,
   };
 
   console.log('Request Data:', requestData);
@@ -216,7 +216,7 @@ function addToCart(cardId) {
       Swal.fire({
         icon: 'success',
         title: 'Item Added to Cart',
-        text: data.message, // Use the message from the server
+        html: `${data.message} `, // Update to show the message from the server
       }).then(() => {
         window.location.reload(); // Optionally reload the page after adding to cart
       });
@@ -237,6 +237,11 @@ function addToCart(cardId) {
     });
   });
 }
+
+
+
+
+
 
 
 
