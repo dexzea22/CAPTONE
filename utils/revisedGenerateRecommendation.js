@@ -32,6 +32,7 @@ Price45_50: $${item.price45_50 ? item.price45_50.toFixed(2) : 'N/A'}`;
       }
       itemDescription += `
 Category: ${item.category} 
+Available: ${item.available}
 ![${item.name}](${item.imageUrl})`;
       return itemDescription;
     }).join('\n\n'); // Join all descriptions with double new lines
@@ -97,6 +98,7 @@ Category: <Category>`;
       const price25_30 = parseFloat(recommendationsArray[i + 4].replace('Price25_30: $', '').trim()); // Extract and clean price25_30
       const price45_50 = parseFloat(recommendationsArray[i + 5].replace('Price45_50: $', '').trim()); // Extract and clean price45_50
       const category = recommendationsArray[i + 6].replace('Category: ', '').trim(); // Extract and clean category
+      const available = recommendationsArray[i + 7].replace('Available: ', '').trim() === 'true'; // Extract and clean availability
       recommendations.push({ // Push formatted recommendation object to recommendations array
         title: title,
         description: description,
@@ -104,7 +106,8 @@ Category: <Category>`;
         price: price,
         price25_30: price25_30,
         price45_50: price45_50,
-        category: category
+        category: category,
+        available: available
       });
     }
 

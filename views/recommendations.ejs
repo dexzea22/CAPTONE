@@ -58,6 +58,26 @@
         .price-radio-group .form-check {
             margin-bottom: 10px; /* Space below each radio button group */
         }
+        .Unavailable {
+            background-color: #f0f0f0; /* Gray background for unavailable items */
+            color: #999; /* Lighter text color */
+            position: relative;
+        }
+
+        .unavailable-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            color: #ff0000; /* Red text color */
+            font-size: 1.2rem; /* Slightly larger font size */
+            font-weight: bold; /* Bold text */
+            padding: 5px 10px; /* Padding around the text */
+            border-radius: 5px; /* Rounded corners */
+            z-index: 1;
+            pointer-events: none;
+        }
     </style>
     
     
@@ -81,7 +101,8 @@
                     price25_30: 0,
                     price45_50: 0,
                     category: '',
-                    imageUrl: ''
+                    imageUrl: '',
+                    available: true // default to true if not provided
                     };
                     lines.forEach((line, index) => {
                     if (index === 0) {
@@ -96,6 +117,8 @@
                     currentItem.price45_50 = parseFloat(line.replace('Price45_50: $', '').trim());
                     } else if (line.includes('Category:')) {
                     currentItem.category = line.replace('Category:', '').trim();
+                    } else if (line.includes('Available:')) {
+                        currentItem.available = line.replace('Available:', '').trim() === 'true';
                     } else if (line.includes('![')) {
                     currentItem.imageUrl = line.match(/\(([^)]+)\)/)[1];
                     }
@@ -104,7 +127,7 @@
                     // Render each item card based on category
                     %>
                     <div class="col-md-4 col-sm-6 my-3">
-                        <div class="card" id="card-<%= currentItem.name.replace(/\s+/g, '-') %>"
+                        <div class="card <%= currentItem.available ? '' : 'Unavailable' %>" id="card-<%= currentItem.name.replace(/\s+/g, '-') %>"
                             data-dietary-restrictions="<%= currentItem.dietaryRestrictions %>"
                             data-category="<%= currentItem.category %>">
                             <img src="<%= currentItem.imageUrl %>" alt="Food Image" class="card-img-top food-image">
@@ -128,7 +151,7 @@
                                                         name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
                                                         value="<%= currentItem.price %>"
                                                         id="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12"
-                                                        checked>
+                                                        checked <%= !currentItem.available ? 'disabled' : '' %>>
                                                     <label class="form-check-label"
                                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12">
                                                         <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax:
@@ -139,7 +162,7 @@
                                                     <input type="radio" class="form-check-input"
                                                         name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
                                                         value="<%= currentItem.price25_30 %>"
-                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
+                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30" <%= !currentItem.available ? 'disabled' : '' %>>
                                                     <label class="form-check-label"
                                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
                                                         <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax:
@@ -150,7 +173,7 @@
                                                     <input type="radio" class="form-check-input"
                                                         name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
                                                         value="<%= currentItem.price45_50 %>"
-                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
+                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50" <%= !currentItem.available ? 'disabled' : '' %>>
                                                     <label class="form-check-label"
                                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
                                                         <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax:
@@ -168,7 +191,7 @@
                                                     class="form-control quantity-input" min="1" value="1"
                                                     data-price="<%= currentItem.price %>"
                                                     data-price25_30="<%= currentItem.price25_30 %>"
-                                                    data-price45_50="<%= currentItem.price45_50 %>">
+                                                    data-price45_50="<%= currentItem.price45_50 %>" <%= !currentItem.available ? 'disabled' : '' %>>
                                             </div>
                                             <% } else { %>
                                                 <!-- Quantity input for Solo Meals -->
@@ -178,12 +201,12 @@
                                                     <input type="number" name="quantity"
                                                         id="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>"
                                                         class="form-control quantity-input" min="1" value="1"
-                                                        data-price="<%= currentItem.price %>">
+                                                        data-price="<%= currentItem.price %>" <%= !currentItem.available ? 'disabled' : '' %>>
                                                 </div>
                                                 <div class="form-group form-check">
                                                     <input type="checkbox" name="withEgg"
                                                         id="withEgg-<%= currentItem.name.replace(/\s+/g, '-') %>"
-                                                        class="form-check-input" data-egg-price="5">
+                                                        class="form-check-input" data-egg-price="5" <%= !currentItem.available ? 'disabled' : '' %>>
                                                     <label for="withEgg-<%= currentItem.name.replace(/\s+/g, '-') %>"
                                                         class="form-check-label">With Egg (₱5)</label>
                                                 </div>
@@ -198,10 +221,13 @@
 
 
                                                     <button type="button" class="btn btn-primary"
-                                                        onclick="addToCart('card-<%= currentItem.name.replace(/\s+/g, '-') %>')">Add
+                                                        onclick="addToCart('card-<%= currentItem.name.replace(/\s+/g, '-') %>')"<%= !currentItem.available ? 'disabled' : '' %>>Add
                                                         to Cart</button>
 
                             </div>
+                            <% if (!currentItem.available) { %>
+                                <div class="unavailable-overlay">Unavailable</div>
+                            <% } %>
                         </div>
                     </div>
                     <% }); %>
