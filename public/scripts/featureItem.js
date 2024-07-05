@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isSoloMeal) {
       const price = parseFloat(quantityInput.getAttribute("data-price"));
       const addEggCheckbox = cardBody.querySelector(".add-egg");
-      const addEggPrice = addEggCheckbox.checked ? parseFloat(addEggCheckbox.getAttribute("data-egg-price")) : 0;
+      const addEggPrice = addEggCheckbox && addEggCheckbox.checked ? parseFloat(addEggCheckbox.getAttribute("data-egg-price")) : 0;
       newTotalPrice = ((price + addEggPrice) * quantity).toFixed(2);
       const totalPriceElement = cardBody.querySelector(".total-price");
       totalPriceElement.textContent = "₱" + newTotalPrice;
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!selectedRadio) return;
       const radioPrice = parseFloat(selectedRadio.getAttribute("data-price"));
       newTotalPrice = (radioPrice * quantity).toFixed(2);
-      const totalPriceElement = cardBody.querySelector(`#totalPrice${cardBody.dataset.itemId}`);
+      const totalPriceElement = cardBody.querySelector(`#totalPrice-${cardBody.dataset.itemId}`);
       totalPriceElement.textContent = "₱" + newTotalPrice;
     }
   }
