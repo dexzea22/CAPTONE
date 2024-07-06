@@ -103,12 +103,25 @@ router.post('/add', async (req, res, next) => {
 
         if (category === 'Party Trays') {
             // Determine the size based on the price for Party Trays
-            if (price === foodItem.price) {
+            if (price == foodItem.price10_12) {
                 size10_12 = foodItem.size10_12;
-            } else if (price === foodItem.price25_30) {
+            } else if (price == foodItem.price25_30) {
                 size25_30 = foodItem.size25_30;
-            } else if (price === foodItem.price45_50) {
+            } else if (price == foodItem.price45_50) {
                 size45_50 = foodItem.size45_50;
+            }
+        }
+
+        // Calculate totalPrice based on quantity and additional options
+        let totalPrice = price * quantity;
+        if (category === 'Party Trays') {
+            // Adjust price for Party Trays based on selected size
+            if (size10_12) {
+                totalPrice = foodItem.price10_12 * quantity;
+            } else if (size25_30) {
+                totalPrice = foodItem.price25_30 * quantity;
+            } else if (size45_50) {
+                totalPrice = foodItem.price45_50 * quantity;
             }
         }
 
@@ -134,7 +147,10 @@ router.post('/add', async (req, res, next) => {
                 include: { foodItem: true },
             });
             console.log('Updated cart item quantity:', updatedCartItem);
-            res.json({ success: true, message: ` ${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${price.toFixed(2)} ${category} has been added to your cart.` });
+            res.json({
+                success: true,
+                message: `${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${totalPrice.toFixed(2)} ${category} has been added to your cart.`
+            });
         } else {
             // Create a new cart item with the selected price and size or withEgg for Solo Meals
             const cartItemData = {
@@ -146,6 +162,7 @@ router.post('/add', async (req, res, next) => {
                 size10_12: category === 'Party Trays' ? size10_12 : null,
                 size25_30: category === 'Party Trays' ? size25_30 : null,
                 size45_50: category === 'Party Trays' ? size45_50 : null,
+                totalPrice: totalPrice, // Ensure to set totalPrice correctly
             };
 
             const cartItem = await prisma.cartItem.create({
@@ -153,7 +170,10 @@ router.post('/add', async (req, res, next) => {
                 include: { foodItem: true },
             });
             console.log('New cart item added:', cartItem);
-            res.json({ success: true, message: `${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${price.toFixed(2)} ${category} has been added to your cart.` });
+            res.json({
+                success: true,
+                message: `${foodItem.name} - ${size10_12 ?? size25_30 ?? size45_50 ?? (withEgg ? 'with egg' : 'without egg')} ₱${totalPrice.toFixed(2)} ${category} has been added to your cart.`
+            });
         }
     } catch (error) {
         console.error('Failed to add item to cart:', error);
@@ -161,6 +181,7 @@ router.post('/add', async (req, res, next) => {
         next(createError(500, 'Could not add item to cart.', error));
     }
 });
+
 
 
 
