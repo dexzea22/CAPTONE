@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maya&Me | Recommendations</title>
     <link rel="website icon" type="png" href="images/maya.png">
     <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
@@ -14,8 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylesheets/recommendations.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+   <link rel="stylesheet" href="stylesheets/recommendations.css">
   </head>
   <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
     <div class="topnav">
@@ -118,7 +118,24 @@
         <!-- End of the Dietary Preferences Form -->
       </div>
     </div>
-  
+  </div>
+  <div class="dashboard-banner">
+    <img src="images/long.jpg" alt="" />
+    <div class="banner-promo">
+      <span><img class="logo" src="images/maya.png" alt="" height="330px" /></span>
+    </div>
+    <div class="cont">
+      <div class="log">
+          <a class="obtns" href="/bestSeller">Best Sellers</a>
+          <a class="obtns" href="/featuredItem">New Products</a>
+      </div>
+    </div>
+      <div class="Olog">
+        <a class="fbtns" href="/userMenu">Food Menu</a>
+        <a class="fbtns" href="/partyTrays">Party Trays</a>
+        <a class="fbtns" href="/userMeals">Solo Meals</a>
+      </div>
+    </div>
     <script>
       var modal = document.getElementById("dietaryPreferencesModal");
       var btn = document.getElementById("dietaryPreferencesNav");
@@ -270,44 +287,17 @@
         // Call the function to update the cart counter and item counter when the page loads
         document.addEventListener('DOMContentLoaded', updateCartCounter);
     </script>
-    
-    <style>
-    .price-radio-group .form-check {
-            margin-bottom: 10px; /* Space below each radio button group */
-        }
-        .Unavailable {
-            background-color: #f0f0f0; /* Gray background for unavailable items */
-            color: #999; /* Lighter text color */
-            position: relative;
-        }
 
-        .unavailable-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
-            color: #ff0000; /* Red text color */
-            font-size: 1.2rem; /* Slightly larger font size */
-            font-weight: bold; /* Bold text */
-            padding: 5px 10px; /* Padding around the text */
-            border-radius: 5px; /* Rounded corners */
-            z-index: 1;
-            pointer-events: none;
-        }
-    </style>
-    
-    
-    
-</head>
-<body>
+  <h1 class="ttl">Menu Recommendations</h1>
+
     <div class="container mt-5 text-center">
-        <h1>Menu Recommendations</h1>
         <p>Dietary Preferences: <%= recommendations.dietaryPreferences %>
         </p>
-
         <% if (recommendations.menuDescription) { %>
-            <h2>Menu Description:</h2>
+          <h2>Menu Description:</h2>
+        </div>
+
+        
             <div class="row justify-content-center">
                 <% const items=recommendations.menuDescription.split('\n\n'); items.forEach(item=> {
                     const lines = item.split('\n');
@@ -343,6 +333,7 @@
 
                     // Render each item card based on category
                     %>
+                    </div>
                     <div class="col-md-4 col-sm-6 my-3">
                         <div class="card <%= currentItem.available ? '' : 'Unavailable' %>" id="card-<%= currentItem.name.replace(/\s+/g, '-') %>"
                             data-dietary-restrictions="<%= currentItem.dietaryRestrictions %>"
@@ -363,39 +354,39 @@
                                         <% if (currentItem.category==='Party Trays' ) { %>
                                             <!-- Radio buttons for different prices with images -->
                                             <div class="price-radio-group">
-                                                <div class="form-check">
-                                                    <input type="radio" class="form-check-input"
-                                                        name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
-                                                        value="<%= currentItem.price %>"
-                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12"
-                                                        checked <%= !currentItem.available ? 'disabled' : '' %>>
+                                                <div class="form-check">                                                   
                                                     <label class="form-check-label"
                                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12">
                                                         <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax:
                                                         ₱<%= currentItem.price.toFixed(2) %>
                                                     </label>
-                                                </div>
-                                                <div class="form-check">
                                                     <input type="radio" class="form-check-input"
-                                                        name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
-                                                        value="<%= currentItem.price25_30 %>"
-                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30" <%= !currentItem.available ? 'disabled' : '' %>>
+                                                    name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                                    value="<%= currentItem.price %>"
+                                                    id="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12"
+                                                    checked <%= !currentItem.available ? 'disabled' : '' %>>
+                                                </div>
+                                                <div class="form-check">                                                    
                                                     <label class="form-check-label"
                                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
                                                         <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax:
                                                         ₱<%= currentItem.price25_30.toFixed(2) %>
                                                     </label>
-                                                </div>
-                                                <div class="form-check">
                                                     <input type="radio" class="form-check-input"
                                                         name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
-                                                        value="<%= currentItem.price45_50 %>"
-                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50" <%= !currentItem.available ? 'disabled' : '' %>>
+                                                        value="<%= currentItem.price25_30 %>"
+                                                        id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30" <%= !currentItem.available ? 'disabled' : '' %>>
+                                                </div>
+                                                <div class="form-check">                                                   
                                                     <label class="form-check-label"
                                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
                                                         <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax:
                                                         ₱<%= currentItem.price45_50.toFixed(2) %>
                                                     </label>
+                                                    <input type="radio" class="form-check-input"
+                                                    name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                                    value="<%= currentItem.price45_50 %>"
+                                                    id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50" <%= !currentItem.available ? 'disabled' : '' %>>
                                                 </div>
                                             </div>
 
@@ -437,9 +428,8 @@
                                                         </span></p>
 
 
-                                                    <button type="button" class="btn btn-primary"
-                                                        onclick="addToCart('card-<%= currentItem.name.replace(/\s+/g, '-') %>')"<%= !currentItem.available ? 'disabled' : '' %>>Add
-                                                        to Cart</button>
+                                                    <button type="button" class="cbtn"
+                                                        onclick="addToCart('card-<%= currentItem.name.replace(/\s+/g, '-') %>')"<%= !currentItem.available ? 'disabled' : '' %>><i class="fas fa-shopping-cart"></i></button>
 
                             </div>
                             <% if (!currentItem.available) { %>

@@ -1,35 +1,83 @@
-body{
-    background-color: aqua;
-  }
-  .grid-container {
+.grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
     padding: 20px;
   }
-  .card {
+  .cards {
     background-color:rgba(255, 255, 255, 0.497);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     border-radius: 15px;
     position: relative;
     max-width:370px;
     cursor: pointer;
-    max-height: 800px; /* Set the desired height for the search result container */
+    max-height: 700px; /* Set the desired height for the search result container */
     overflow-y: auto; /* Enable vertical scrolling if the content exceeds the container height */
     }
-  .card img {
+    .qty{
+      width: 240px;
+      text-align: center;
+    }
+   
+    .cbtn{
+      padding: 5px;
+      width: 20%;
+      background-color: #C69B68;
+      color: white;
+      margin: 0 3% 5% 0;
+      border: none;
+      border-radius: 5px;
+      float: right;
+      font-weight: bold;
+      }
+      .cbtn:hover{
+      background-color: rgb(243, 185, 113);
+      color: black;
+      margin: 0 3% 5% 0;
+      border: none;
+      border-radius: 5px;
+      }
+    .cards:hover {
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+  .cards img {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
     margin-bottom: 10px;
   }
-  .card h2 {
+  .cards h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
   }
-  .card p {
+  .cards p {
     margin-bottom: 5px;
   }
+  .unavailable-card {
+    opacity: 0.5; /* Adjust opacity for grayed-out effect */
+    position: relative;
+    pointer-events:none; /* Disable pointer events so the card cannot be interacted with */
+
+  }
+.card-body{
+  text-align: center;
+}
+
+  .unavailable-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+  }
+
+  .unavailable-text {
+    color: red; /* Red text color for the "Unavailable" message */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    font-weight: bold; /* Optionally, make the text bold */
+  }
+  
   .ttl{
     margin: auto;
     width: 320px;
@@ -60,29 +108,29 @@ body{
       position: relative; /* Add this line */
     }
     .nav:hover{
-    color: #000000;
-    }
-    .topnav .nav::before {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 3px;
-    bottom: 0;
-    left: 0;
-    background-color: #000000;
-    visibility: hidden;
-    transition: all 0.3s ease-in-out;
-    }
-    
-    .topnav a:hover::before {
-    width: 100%;
-    visibility: visible;
-    }
-    .nav{
-    margin-right: 50px;
-    margin-top: 18px;
-    font-weight: bold;
-    }
+      color: #000000;
+      }
+      .topnav .nav::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: 0;
+      left: 0;
+      background-color: #000000;
+      visibility: hidden;
+      transition: all 0.3s ease-in-out;
+      }
+      
+      .topnav a:hover::before {
+      width: 100%;
+      visibility: visible;
+      }
+      .nav{
+      margin-right: 50px;
+      margin-top: 18px;
+      font-weight: bold;
+      }
     .topnav {
     color: white;
     }
@@ -364,29 +412,29 @@ body{
       position: relative; /* Add this line */
     }
     .nav:hover{
-    color: #000000;
-    }
-    .topnav .nav::before {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 3px;
-    bottom: 0;
-    left: 0;
-    background-color: #000000;
-    visibility: hidden;
-    transition: all 0.3s ease-in-out;
-    }
-    
-    .topnav a:hover::before {
-    width: 100%;
-    visibility: visible;
-    }
-    .nav{
-    margin-right: 50px;
-    margin-top: 15px;
-    font-weight: bold;
-    }
+      color: #000000;
+      }
+      .topnav .nav::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: 0;
+      left: 0;
+      background-color: #000000;
+      visibility: hidden;
+      transition: all 0.3s ease-in-out;
+      }
+      
+      .topnav a:hover::before {
+      width: 100%;
+      visibility: visible;
+      }
+      .nav{
+      margin-right: 50px;
+      margin-top: 15px;
+      font-weight: bold;
+      }
     .topnav {
     color: white;
     }

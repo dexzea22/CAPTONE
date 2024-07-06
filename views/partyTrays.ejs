@@ -284,7 +284,7 @@
       </div>
     </div>
       <div class="Olog">
-        <a class="fbtns" href="/userMenu">Food Menu</a>
+        <a class="fbtns" href="/foodMenu">Food Menu</a>
         <a class="fbtns active" href="/partyTrays">Party Trays</a>
         <a class="fbtns" href="/soloMeals">Solo Meals</a>
       </div>
@@ -292,15 +292,11 @@
       <h1 class="ttl">Party Trays</h1>
       <div class="grid-container">
         <% foodItems.forEach(item => { %>
-        <div class="col-md-4 mb-4">
-          <div class="card <% if (!item.available) { %>unavailable-card<% } %>" 
-               id="card-<%= item.name.replace(/\s+/g, '-') %>" 
-               data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" 
-               data-category="Party Trays">
+          <div class="card h-100 <% if (!item.available) { %>unavailable-card<% } %>" id="card-<%= item.name.replace(/\s+/g, '-') %>" data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" data-category="Party Trays">
             <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="card-img-top" />
             <% if (!item.available) { %>
-            <div class="unavailable-text">Unavailable</div>
-            <% } %>
+            <% } %> 
+
             <div class="card-body">
               <h5 class="card-title"><%= item.name %></h5>
               <p class="card-text">
@@ -311,32 +307,29 @@
               <!-- Radio buttons for different sizes and prices -->
               <div class="price-radio-group">
                 <div class="form-check">
-                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price %>" id="price<%= item.name.replace(/\s+/g, '-') %>10_12" data-price="<%= item.price %>" checked>
                   <label class="form-check-label" for="price<%= item.name.replace(/\s+/g, '-') %>10_12">
-                    <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
+                    <img src="/images/sTray.png" alt="10-12 Pax" />S (10-12)  ₱<%= item.price.toFixed(2) %>
                   </label>
-                  <input type="radio" class="form-check-input" name="price<%= item.id %>" value="<%= item.price10_12 %>" id="price10_12<%= item.id %>"/>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price %>" id="price<%= item.name.replace(/\s+/g, '-') %>10_12" data-price="<%= item.price %>" checked>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price25_30 %>" id="price25_30<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price25_30 %>">
                   <label class="form-check-label" for="price25_30<%= item.name.replace(/\s+/g, '-') %>">
-                    <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
+                    <img src="/images/mTray.png" alt="25-30 Pax" />M (25-30) ₱<%= item.price25_30.toFixed(2) %>
                   </label>
-                  <input type="radio" class="form-check-input" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price25_30<%= item.id %>" />
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price25_30 %>" id="price25_30<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price25_30 %>">
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price45_50 %>" id="price45_50<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price45_50 %>">
                   <label class="form-check-label" for="price45_50<%= item.name.replace(/\s+/g, '-') %>">
-                    <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
+                    <img src="/images/lTray.png" alt="45-50 Pax" />L (45-50) ₱<%= item.price45_50.toFixed(2) %>
                   </label>
-                  <input type="radio" class="form-check-input" name="price<%= item.id %>" value="<%= item.price45_50 %>"id="price45_50<%= item.id %>"/>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price45_50 %>" id="price45_50<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price45_50 %>">
                 </div>
               </div>
     
               <!-- Quantity selector -->
               <div class="form-group mt-3">
                 <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
-                <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.name.replace(/\s+/g, '-') %>')">
+                <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.name.replace(/\s+/g, '-') %>')">
               </div>
     
               <!-- Total price display -->
@@ -346,16 +339,14 @@
               </div>
     
               <!-- Add to Cart button -->
-              <button class="btn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+              <button class="cbtn" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
               <% } else { %>
               <!-- Display for unavailable items -->
               <div class="unavailable-text">Unavailable</div>
               <% } %>
             </div>
           </div>
-        
         <% }); %>
-      </div>
     </div>
     
     <!-- Bootstrap JS and dependencies -->

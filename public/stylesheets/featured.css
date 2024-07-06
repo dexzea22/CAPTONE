@@ -11,7 +11,7 @@
     position: relative;
     max-width:370px;
     cursor: pointer;
-    max-height: 800px; /* Set the desired height for the search result container */
+    max-height: 600px; /* Set the desired height for the search result container */
     overflow-y: auto; /* Enable vertical scrolling if the content exceeds the container height */
     }
   .card img {

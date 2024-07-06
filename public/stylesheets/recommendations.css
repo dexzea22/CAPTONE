@@ -4,6 +4,34 @@
     gap: 20px;
     padding: 20px;
   }
+.Unavailable {
+    background-color: #f0f0f0; /* Gray background for unavailable items */
+    color: #999; /* Lighter text color */
+    position: relative;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+.card:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.unavailable-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    color: #ff0000; /* Red text color */
+    font-size: 1.2rem; /* Slightly larger font size */
+    font-weight: bold; /* Bold text */
+    padding: 5px 10px; /* Padding around the text */
+    border-radius: 5px; /* Rounded corners */
+    z-index: 1;
+    pointer-events: none;
+}
   .card {
     background-color:rgba(255, 255, 255, 0.497);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
@@ -11,7 +39,7 @@
     position: relative;
     max-width:370px;
     cursor: pointer;
-    max-height: 800px; /* Set the desired height for the search result container */
+    max-height: 700px; /* Set the desired height for the search result container */
     overflow-y: auto; /* Enable vertical scrolling if the content exceeds the container height */
     }
   .card img {
@@ -29,7 +57,7 @@
   }
   .ttl{
   margin: auto;
-  width: 600px;
+  width: 695px;
   margin-top: 150px;
   font-family: Caveat, open-sans; 
   font-size: 85px;
@@ -41,7 +69,7 @@
   }
   @media(max-width:867px){
     .ttl{
-        font-size: 60px;
+        font-size: 50px;
         width: 100%;
     }
   }
@@ -1108,14 +1136,7 @@
       grid-template-columns: repeat(3,1fr); 
       margin-right: 20px;
       }
-/* Individual image styles */
-.price-radio-group img{
-width: 90px;
-height: 115px;
-cursor: pointer;
-transition: transform 0.2s;
-margin: auto;
-}
+
 /* Hover effect on images */
 .price-radio-group img:hover{
 transform: scale(1.1); /* Zoom effect on hover */
