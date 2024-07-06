@@ -53,7 +53,7 @@
           <thead class="thead-dark">
           <tr>
             <th>Email</th>
-            <th>Password</th>
+            <!-- <th>Password</th> -->
             <th>User Type</th>
             <th class="action-th">Action</th>
           </tr>
@@ -63,12 +63,12 @@
           <% users.forEach(function(user) { %>
           <tr>
             <td><%= user.email %></td>
-            <td><%= user.password %></td>
+            <!-- <td><%= user.password %></td> -->
             <td><%= user.usertype %></td>
             <td colspan="3">
               <div class="btn-group">
                 <a href="#" class="btn btn-primary view-btn" data-id="<%= user.id %>">View</a>
-                <a href="#" class="btn btn-warning update-btn" data-id="<%= user.id %>">Edit</a>
+                <!-- <a href="#" class="btn btn-warning update-btn" data-id="<%= user.id %>">Edit</a> -->
                 <a href="#" class="btn btn-danger delete-btn" data-email="<%= user.email %>">Delete</a>
                 
 

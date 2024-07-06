@@ -160,27 +160,39 @@ function addToCart(cardId) {
   if (category === 'Party Trays') {
     const sizeRadioChecked = cardElement.querySelector('.price-radio-group input[type="radio"]:checked');
     if (sizeRadioChecked) {
-      selectedPrice = parseFloat(sizeRadioChecked.value) * quantity; // Calculate total price for Party Trays
+      selectedPrice = parseFloat(sizeRadioChecked.value);
       selectedSize = sizeRadioChecked.nextSibling.textContent.trim(); // Get the size label text
+
+      // Adjust selectedSize to match the format "Large 45-50 Pax"
+      switch (selectedSize) {
+        case '215':
+          selectedSize = 'Small 10-12 Pax';
+          break;
+        case '315':
+          selectedSize = 'Medium 25-30 Pax';
+          break;
+        case '415':
+          selectedSize = 'Large 45-50 Pax';
+          break;
+        default:
+          selectedSize = '';
+          break;
+      }
     } else {
       console.error('Please select a size for Party Trays.');
       return;
     }
   } else {
     // For other categories, use the selected quantity price
-    selectedPrice = parseFloat(quantityInput.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || quantityInput.getAttribute('data-price')) * quantity;
+    selectedPrice = parseFloat(quantityInput.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || quantityInput.getAttribute('data-price'));
   }
 
   console.log('Quantity:', quantity);
-  console.log('Total Price Chosen by Customer:', selectedPrice);
+  console.log('Item Price Chosen by Customer:', selectedPrice);
   console.log('Selected Size:', selectedSize);
 
-  // Adjust price if withEgg is checked
-  if (withEgg) {
-    selectedPrice += 5 * quantity; // Add ₱5 per item if withEgg is checked
-  }
-
-  console.log('Adjusted Total Price:', selectedPrice);
+  // Calculate total price
+  const totalPrice = selectedPrice * quantity;
 
   let requestData = {
     name: itemName,
@@ -191,9 +203,9 @@ function addToCart(cardId) {
     category: category,
     price: selectedPrice,
     // Add the selectedSize to requestData based on selectedPrice
-    size10_12: selectedSize === 'Small 10-12 Pax' ? 'Small 10-12 Pax' : null,
-    size25_30: selectedSize === 'Medium 25-30 Pax' ? 'Medium 25-30 Pax' : null,
-    size45_50: selectedSize === 'Large 45-50 Pax' ? 'Large 45-50 Pax' : null,
+    size10_12: selectedPrice === 215 ? 'Small 10-12 Pax' : null,
+    size25_30: selectedPrice === 315 ? 'Medium 25-30 Pax' : null,
+    size45_50: selectedPrice === 415 ? 'Large 45-50 Pax' : null,
   };
 
   console.log('Request Data:', requestData);
@@ -213,10 +225,22 @@ function addToCart(cardId) {
   .then(data => {
     console.log('Response Data:', data);
     if (data.success) {
+      let cartMessage = `${itemName}`;
+      if (category === 'Party Trays') {
+        // Format the message for Party Trays items based on the selected size label and price
+        cartMessage += ` ${selectedSize} - ₱${selectedPrice.toFixed(2)} Party Trays`;
+      } else if (category === 'Solo Meals') {
+        // Format the message for Solo Meals with or without egg
+        const eggStatus = withEgg ? 'With Egg' : 'Without Egg';
+        cartMessage += ` (${eggStatus})`;
+      }
+      // Append total price to cart message
+      cartMessage += `<br>Total Price: ₱${totalPrice.toFixed(2)}`;
+
       Swal.fire({
         icon: 'success',
         title: 'Item Added to Cart',
-        html: `${data.message} `, // Update to show the message from the server
+        html: `<p>${cartMessage} has been added to your cart.</p>`,
       }).then(() => {
         window.location.reload(); // Optionally reload the page after adding to cart
       });
