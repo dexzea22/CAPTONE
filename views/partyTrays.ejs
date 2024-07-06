@@ -67,7 +67,8 @@
               <p class="card-text">
                 Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %> <%= diet %> <% }); %>
               </p>
-    
+         <!-- Category -->
+         <p>Category: <%= item.category %></p>
               <% if (item.available) { %>
               <!-- Radio buttons for different sizes and prices -->
               <div class="price-radio-group">

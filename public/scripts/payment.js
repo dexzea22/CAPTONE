@@ -50,53 +50,59 @@ function handleCOD() {
 
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    // Get the modal
     var modal = document.getElementById("payment-modal");
-
-    // Get the button that opens the modal
     var btn = document.getElementById("checkoutButton");
-
-    // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("closebtn")[0];
 
-    if (btn && modal && span) {
-        // When the user clicks the button, open the modal 
-        btn.onclick = function(event) {
-            event.preventDefault(); // Prevent any default button action
+    // Function to update button state based on total amount
+    function updateButtonState(totalAmount) {
+        if (totalAmount > 10000) {
+            btn.disabled = true;
+        } else {
+            btn.disabled = false;
+        }
+    }
 
-            // Get the values of the input boxes
+    if (btn && modal && span) {
+        btn.onclick = function(event) {
+            event.preventDefault();
             var shippingAddress = document.getElementById('adrss').value.trim();
             var contactPerson = document.getElementById('cntct').value.trim();
             var contactNumber = document.getElementById('num').value.trim();
 
-            // Check if any of the input boxes are empty
             if (shippingAddress === '' || contactPerson === '' || contactNumber === '') {
-                // If any input box is empty, show an error message
                 Swal.fire({
                     icon: 'error',
                     title: 'Incomplete Information',
                     text: 'Please fill out all the required fields before proceeding to checkout.',
                 });
             } else {
-                // If all input boxes are filled, proceed to checkout
                 var totalAmount = getTotalPriceFromCart();
-                initializePayPalButton(totalAmount, shippingAddress, contactPerson, contactNumber); // Pass shipping address, contact person, and contact number
+                initializePayPalButton(totalAmount, shippingAddress, contactPerson, contactNumber);
                 openPaymentModal();
             }
         }
 
-        // When the user clicks on <span> (x), close the modal
         span.onclick = function(event) {
-            event.preventDefault(); // Prevent any default span action
+            event.preventDefault();
             modal.style.display = "none";
-            location.reload(); // Refresh the window
+            // Do not reload here
         };
 
-        // Prevent events inside the modal from closing it and stop propagation
         modal.children[0].onclick = function(event) {
             event.stopPropagation();
-            event.preventDefault(); // Prevent any default action inside the modal
+            event.preventDefault();
         }
+
+        // Check and update on page load
+        var totalAmountOnLoad = getTotalPriceFromCart();
+        updateButtonState(totalAmountOnLoad);
+
+        // Listen for changes in total amount (if applicable)
+        setInterval(function() {
+            var newTotalAmount = getTotalPriceFromCart();
+            updateButtonState(newTotalAmount);
+        }, 1000); // Check every second for changes in total amount
     } else {
         console.error("Elements not found. Please check the IDs and class names.");
     }
