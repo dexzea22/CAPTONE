@@ -162,22 +162,6 @@ function addToCart(cardId) {
     if (sizeRadioChecked) {
       selectedPrice = parseFloat(sizeRadioChecked.value);
       selectedSize = sizeRadioChecked.nextSibling.textContent.trim(); // Get the size label text
-
-      // Adjust selectedSize to match the format "Large 45-50 Pax"
-      switch (selectedSize) {
-        case '215':
-          selectedSize = 'Small 10-12 Pax';
-          break;
-        case '315':
-          selectedSize = 'Medium 25-30 Pax';
-          break;
-        case '415':
-          selectedSize = 'Large 45-50 Pax';
-          break;
-        default:
-          selectedSize = '';
-          break;
-      }
     } else {
       console.error('Please select a size for Party Trays.');
       return;
@@ -185,6 +169,11 @@ function addToCart(cardId) {
   } else {
     // For other categories, use the selected quantity price
     selectedPrice = parseFloat(quantityInput.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || quantityInput.getAttribute('data-price'));
+  }
+
+  // Adjust price if withEgg is selected
+  if (withEgg) {
+    selectedPrice += 5; // Add 5 to selectedPrice if withEgg is checked
   }
 
   console.log('Quantity:', quantity);
@@ -228,7 +217,7 @@ function addToCart(cardId) {
       let cartMessage = `${itemName}`;
       if (category === 'Party Trays') {
         // Format the message for Party Trays items based on the selected size label and price
-        cartMessage += ` ${selectedSize} - ₱${selectedPrice.toFixed(2)} Party Trays`;
+        cartMessage += ` - ${selectedSize} ₱${selectedPrice.toFixed(2)} Party Trays`;
       } else if (category === 'Solo Meals') {
         // Format the message for Solo Meals with or without egg
         const eggStatus = withEgg ? 'With Egg' : 'Without Egg';
@@ -261,6 +250,8 @@ function addToCart(cardId) {
     });
   });
 }
+
+
 
 
 
