@@ -80,6 +80,7 @@ model CartItem {
   quantity   Int
   withEgg    Boolean? // Check if withEgg field is correctly defined
   price      Float    // Add the price field
+  totalPrice          Float?
   size10_12  String?  // Size for small
   size25_30  String?  // Size for medium
   size45_50  String?  // Size for large

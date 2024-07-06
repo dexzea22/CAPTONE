@@ -180,8 +180,21 @@ function addToCart(cardId) {
   console.log('Item Price Chosen by Customer:', selectedPrice);
   console.log('Selected Size:', selectedSize);
 
-  // Calculate total price
-  const totalPrice = selectedPrice * quantity;
+  // Determine the sizes to send based on selectedSize
+  let size10_12 = null;
+  let size25_30 = null;
+  let size45_50 = null;
+
+  // Map selectedSize to corresponding size variable
+  if (category === 'Party Trays') {
+    if (selectedSize === 'Small 10-12 Pax') {
+      size10_12 = selectedSize;
+    } else if (selectedSize === 'Medium 25-30 Pax') {
+      size25_30 = selectedSize;
+    } else if (selectedSize === 'Large 45-50 Pax') {
+      size45_50 = selectedSize;
+    }
+  }
 
   let requestData = {
     name: itemName,
@@ -190,11 +203,10 @@ function addToCart(cardId) {
     withEgg: withEgg,
     dietaryRestrictions: dietaryRestrictions,
     category: category,
-    price: selectedPrice,
-    // Add the selectedSize to requestData based on selectedPrice
-    size10_12: selectedPrice === 215 ? 'Small 10-12 Pax' : null,
-    size25_30: selectedPrice === 315 ? 'Medium 25-30 Pax' : null,
-    size45_50: selectedPrice === 415 ? 'Large 45-50 Pax' : null,
+    price: selectedPrice, // Send selectedPrice to backend
+    size10_12: size10_12,
+    size25_30: size25_30,
+    size45_50: size45_50,
   };
 
   console.log('Request Data:', requestData);
@@ -214,22 +226,10 @@ function addToCart(cardId) {
   .then(data => {
     console.log('Response Data:', data);
     if (data.success) {
-      let cartMessage = `${itemName}`;
-      if (category === 'Party Trays') {
-        // Format the message for Party Trays items based on the selected size label and price
-        cartMessage += ` - ${selectedSize} ₱${selectedPrice.toFixed(2)} Party Trays`;
-      } else if (category === 'Solo Meals') {
-        // Format the message for Solo Meals with or without egg
-        const eggStatus = withEgg ? 'With Egg' : 'Without Egg';
-        cartMessage += ` (${eggStatus})`;
-      }
-      // Append total price to cart message
-      cartMessage += `<br>Total Price: ₱${totalPrice.toFixed(2)}`;
-
       Swal.fire({
         icon: 'success',
         title: 'Item Added to Cart',
-        html: `<p>${cartMessage} has been added to your cart.</p>`,
+        text: data.message, // Use the message from the server
       }).then(() => {
         window.location.reload(); // Optionally reload the page after adding to cart
       });
