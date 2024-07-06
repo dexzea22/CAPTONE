@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Log {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  action        String
+  email         String
+  userId        String  // Explicitly define userId as String
+  timestamp     DateTime @default(now())
+  orderId       String?  // Add a field to store the PayPal order ID
+  amount        Float?   // Add a field to store the payment amount
+  currency      String?  // Add a field to store the currency code
+  paymentStatus String?  // Add a field to store the payment status (e.g., "captured", "pending", etc.)
+}
+
 model User {
   id                String              @id @default(auto()) @map("_id") @db.ObjectId
   email             String              @unique
@@ -19,20 +31,8 @@ model User {
   dateOfBirth       DateTime?
   phoneNumber       String?
   dietaryPreference DietaryPreference?
-  cartItems         CartItem[]          // Define the relation to CartItem
+  cartItems         CartItem[]          @relation("UserCartItems") // Define the relation to CartItem
   orders            Order[]             @relation(name: "UserToOrder") // Define the relation to Order
-}
-
-model Log {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  action        String
-  email         String
-  userId        String  // Explicitly define userId as String
-  timestamp     DateTime @default(now())
-  orderId       String?  // Add a field to store the PayPal order ID
-  amount        Float?   // Add a field to store the payment amount
-  currency      String?  // Add a field to store the currency code
-  paymentStatus String?  // Add a field to store the payment status (e.g., "captured", "pending", etc.)
 }
 
 model DietaryPreference {
@@ -61,21 +61,30 @@ model FoodItem {
   category            String?     // Assuming simple string categories
   dietaryRestrictions String[]    // Array of strings
   imageUrl            String?
-  cartItems           CartItem[]  // Define the relation to CartItem
+  cartItems           CartItem[]  @relation("FoodItemCartItems") // Define the relation to CartItem
   orderItems          OrderItem[] // Define the relation to OrderItem
   createdAt           DateTime    @default(now())
   deleted             Boolean     @default(false) // New field for soft delete
+  available           Boolean  @default(true)
+  totalPrice          Float?
+  size10_12           String?
+  size25_30           String?
+  size45_50           String?
   @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
 }
 
 model CartItem {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String
-  itemId   String
-  quantity Int
-  withEgg  Boolean?  // Check if withEgg field is correctly defined
-  user     User     @relation(fields: [userId], references: [id])
-  foodItem FoodItem @relation(fields: [itemId], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  itemId     String
+  quantity   Int
+  withEgg    Boolean? // Check if withEgg field is correctly defined
+  price      Float    // Add the price field
+  size10_12  String?  // Size for small
+  size25_30  String?  // Size for medium
+  size45_50  String?  // Size for large
+  user       User     @relation(name: "UserCartItems", fields: [userId], references: [id])
+  foodItem   FoodItem @relation(name: "FoodItemCartItems", fields: [itemId], references: [id])
 }
 
 
@@ -105,13 +114,19 @@ model OrderItem {
   itemSize            String?     // Add field for the size of the item
   itemImageUrl        String?     // Add field for the image URL of the item
   quantity            Int
+  category            String?     // Add field for the category of the item
   withEgg             Boolean?    // Ensure withEgg is correctly defined
   totalPrice          Float
   dietaryRestrictions String[]    // Array of strings for dietary restrictions
   order               Order       @relation(fields: [orderId], references: [id])
   foodItem            FoodItem    @relation(fields: [itemId], references: [id])
   createdAt           DateTime    @default(now())
+
+  // Define a relation to FoodItem if necessary
+  // foodItem            FoodItem    @relation(fields: [itemId], references: [id])
 }
+
+
 
 
 

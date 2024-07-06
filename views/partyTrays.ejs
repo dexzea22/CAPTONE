@@ -292,46 +292,115 @@
       <h1 class="ttl">Party Trays</h1>
       <div class="grid-container">
         <% foodItems.forEach(item => { %>
-       
-          <div class="card">
+        <div class="col-md-4 mb-4">
+          <div class="card <% if (!item.available) { %>unavailable-card<% } %>" 
+               id="card-<%= item.name.replace(/\s+/g, '-') %>" 
+               data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" 
+               data-category="Party Trays">
             <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="card-img-top" />
+            <% if (!item.available) { %>
+            <div class="unavailable-text">Unavailable</div>
+            <% } %>
             <div class="card-body">
               <h5 class="card-title"><%= item.name %></h5>
-              <p class="card-text"><%= item.description %></p>
               <p class="card-text">
-                Dietary Preferences: <% item.dietaryRestrictions.forEach(diet =>
-                { %> <%= diet %> <% }); %>
+                Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %> <%= diet %> <% }); %>
               </p>
-              <!-- Radio buttons for different prices with images -->
+    
+              <% if (item.available) { %>
+              <!-- Radio buttons for different sizes and prices -->
               <div class="price-radio-group">
                 <div class="form-check">
-                  <label for="price10_12<%= item.id %>">
-                    <img class="pimg" src="/images/sTray.png" alt="10-12 Pax" />S (10-12) ₱<%= item.price.toFixed(2) %>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price %>" id="price<%= item.name.replace(/\s+/g, '-') %>10_12" data-price="<%= item.price %>" checked>
+                  <label class="form-check-label" for="price<%= item.name.replace(/\s+/g, '-') %>10_12">
+                    <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
                   </label>
                   <input type="radio" class="form-check-input" name="price<%= item.id %>" value="<%= item.price10_12 %>" id="price10_12<%= item.id %>"/>
                 </div>
                 <div class="form-check">
-                  <label for="price25_30<%= item.id %>">
-                    <img class="pimg" src="/images/mTray.png" alt="25-30 Pax" />M (25-30) ₱<%= item.price25_30.toFixed(2) %>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price25_30 %>" id="price25_30<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price25_30 %>">
+                  <label class="form-check-label" for="price25_30<%= item.name.replace(/\s+/g, '-') %>">
+                    <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
                   </label>
                   <input type="radio" class="form-check-input" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price25_30<%= item.id %>" />
                 </div>
                 <div class="form-check">
-                  <label for="price45_50<%= item.id %>">
-                    <img class="pimg" src="/images/lTray.png" alt="45-50 Pax" />L (45-50) ₱<%= item.price45_50.toFixed(2) %>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price45_50 %>" id="price45_50<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price45_50 %>">
+                  <label class="form-check-label" for="price45_50<%= item.name.replace(/\s+/g, '-') %>">
+                    <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
                   </label>
                   <input type="radio" class="form-check-input" name="price<%= item.id %>" value="<%= item.price45_50 %>"id="price45_50<%= item.id %>"/>
                 </div>
               </div>
+    
+              <!-- Quantity selector -->
+              <div class="form-group mt-3">
+                <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.name.replace(/\s+/g, '-') %>')">
+              </div>
+    
+              <!-- Total price display -->
+              <div class="form-group">
+                <label for="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">Total Price:</label>
+                <span id="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">₱<%= item.price.toFixed(2) %></span>
+              </div>
+    
               <!-- Add to Cart button -->
-              <button onclick="addToCart('<%= item.id %>')" class="cbtn">
-                <i class="fas fa-shopping-cart"></i>
-              </button>
+              <button class="btn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+              <% } else { %>
+              <!-- Display for unavailable items -->
+              <div class="unavailable-text">Unavailable</div>
+              <% } %>
             </div>
           </div>
         
         <% }); %>
       </div>
-    <script src="scripts/meals.js"></script>
+    </div>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- Your meals.js script -->
+        <script src="scripts/meals.js"></script>
+    
+    <!-- JavaScript for dynamic total price calculation and add to cart functionality -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const priceRadios = document.querySelectorAll('.price-radio');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+    
+        function updateTotalPrice(itemId) {
+          const selectedPriceRadio = document.querySelector('input[name="price' + itemId + '"]:checked');
+          if (!selectedPriceRadio) return;
+    
+          const price = parseFloat(selectedPriceRadio.getAttribute('data-price'));
+          const quantity = parseInt(document.getElementById('quantity-' + itemId).value);
+          const totalPriceElement = document.getElementById('totalPrice-' + itemId);
+          const newTotalPrice = (price * quantity).toFixed(2);
+          totalPriceElement.textContent = '₱' + newTotalPrice;
+        }
+    
+        priceRadios.forEach(radio => {
+          radio.addEventListener('change', function() {
+            const itemId = this.getAttribute('name').split('price')[1];
+            updateTotalPrice(itemId);
+          });
+        });
+    
+        quantityInputs.forEach(input => {
+          input.addEventListener('input', function() {
+            const itemId = this.getAttribute('id').split('quantity-')[1];
+            updateTotalPrice(itemId);
+          });
+        });
+      });
+    </script>
+    
   </body>
 </html>

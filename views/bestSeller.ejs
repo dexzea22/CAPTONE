@@ -18,6 +18,36 @@
     <link rel="stylesheet" href="stylesheets/bestSeller.css" />
     <title>Best Sellers | Maya&Me</title>
     <link rel="website icon" type="png" href="images/maya.png" />
+    <style>
+      .card-body {
+  position: relative; /* Ensure positioning context for absolute centering */
+}
+
+.unavailable-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.unavailable-text {
+  color: red;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.card-body.unavailable {
+  filter: grayscale(100%);
+  opacity: 0.7; /* Adjust opacity to visually indicate disabled state */
+}
+
+    </style>
   </head>
   <body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
     <div class="topnav">
@@ -84,28 +114,128 @@
           </div>
       </div>
     </div>
+    
     <div class="txt">
     <label class="text">Top 5 Best Sellers</label>
-  </div>
+    </div>
     <div class="container">
-      <div class="row"><% bestSellerItems.forEach(item => { %>
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card">
-            <img class="card-img-top" src="<%= item.imageUrl %>" alt="<%= item.name %>" />
-            <div class="card-body">
-              <h4><%= item.name %></h4>
-              <p class="card-text">
-                <span class="fas fa-clock"></span>15-30 mins
-              </p>
-              <button onclick="addToCart('<%= item.name %>','<%= item.id %>')" class="cbtn">
-                <i class="fas fa-shopping-cart"></i>
-              </button>
+      <h1 class="my-4">Best Sellers</h1>
+      <div class="row">
+        <% bestSellerItems.forEach(item => { %>
+          <% if (item.available) { %>
+            <% if (item.category === 'Solo Meals') { %>
+              <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100" id="card-<%= item.name.replace(/\s+/g, '-') %>"
+                  data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>"
+                  data-category="Solo Meals">
+                  <div class="card-body">
+                    <!-- Image -->
+                    <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
+                    <!-- Food Item Name -->
+                    <h5 class="card-title"><%= item.name %></h5>
+                    <!-- Dietary Restrictions -->
+                    <p class="card-text">
+                      <% item.dietaryRestrictions.forEach((diet, index) => { %>
+                        <%= diet %><% if (index !== item.dietaryRestrictions.length - 1) { %>, <% } %>
+                      <% }); %>
+                    </p>
+                    <!-- Category -->
+                    <p>Category: <%= item.category %></p>
+                    <!-- Quantity input -->
+                    <div class="form-group">
+                      <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                      <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>"
+                        value="1" min="1" data-price="<%= item.price %>">
+                    </div>
+                    <!-- Add Egg checkbox -->
+                    <div class="form-group form-check">
+                      <input type="checkbox" class="form-check-input add-egg"
+                        id="withEgg-<%= item.name.replace(/\s+/g, '-') %>" data-egg-price="5">
+                      <label class="form-check-label" for="withEgg-<%= item.name.replace(/\s+/g, '-') %>">Add Egg (₱5)</label>
+                    </div>
+                    <!-- Total Price -->
+                    <p class="card-text">Total Price: ₱<span class="total-price"><%= item.price.toFixed(2) %></span></p>
+                    <!-- Add to Cart button -->
+                    <button type="button" class="btn btn-primary add-to-cart-btn"
+                      onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+            <% } else if (item.category === 'Party Trays') { %>
+              <div class="col-md-4 mb-4">
+                <div class="card" id="card-<%= item.name.replace(/\s+/g, '-') %>"
+                     data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>"
+                     data-category="Party Trays">
+                  <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="card-img-top" />
+                  <div class="card-body">
+                    <h5 class="card-title"><%= item.name %></h5>
+                    <p class="card-text">
+                      Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %> <%= diet %> <% }); %>
+                    </p>
+                    <!-- Radio buttons for different sizes and prices -->
+                    <div class="price-radio-group">
+                      <div class="form-check">
+                        <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price %>" id="price<%= item.name.replace(/\s+/g, '-') %>10_12" data-price="<%= item.price %>" checked>
+                        <label class="form-check-label" for="price<%= item.name.replace(/\s+/g, '-') %>10_12">
+                          <img src="/images/sTray.png" alt="10-12 Pax" />Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price25_30 %>" id="price25_30<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price25_30 %>">
+                        <label class="form-check-label" for="price25_30<%= item.name.replace(/\s+/g, '-') %>">
+                          <img src="/images/mTray.png" alt="25-30 Pax" />Medium 25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price45_50 %>" id="price45_50<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price45_50 %>">
+                        <label class="form-check-label" for="price45_50<%= item.name.replace(/\s+/g, '-') %>">
+                          <img src="/images/lTray.png" alt="45-50 Pax" />Large 45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
+                        </label>
+                      </div>
+                    </div>
+                    <!-- Quantity selector -->
+                    <div class="form-group mt-3">
+                      <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                      <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.name.replace(/\s+/g, '-') %>')">
+                    </div>
+                    <!-- Total price display -->
+                    <div class="form-group">
+                      <label for="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">Total Price:</label>
+                      <span id="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">₱<%= item.price.toFixed(2) %></span>
+                    </div>
+                    <!-- Add to Cart button -->
+                    <button class="btn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          <% } else { %>
+            <div class="col-md-4 mb-4">
+              <div class="card unavailable-card" id="card-<%= item.name.replace(/\s+/g, '-') %>"
+                   data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>"
+                   data-category="<%= item.category %>">
+                <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="card-img-top" />
+                <div class="card-body">
+                  <h5 class="card-title"><%= item.name %></h5>
+                  <p class="card-text text-center text-muted">Unavailable</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          <% } %>
         <% }); %>
       </div>
     </div>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    
+
     <!-- Dietary Preferences Modal -->
   <div id="dietaryPreferencesModal" class="modal">
     <div class="mod-content">
@@ -614,6 +744,7 @@ document.addEventListener('DOMContentLoaded', initializeLightbox);
      
      </script>
     <script src="scripts/meals.js"></script>
+    <script src="scripts/bestsellers.js"></script>
   </body>
   <div class="cntr" style="margin-top: 100px">
     <footer class="text-white text-center text-lg-start" style="background-color: #c69b68">

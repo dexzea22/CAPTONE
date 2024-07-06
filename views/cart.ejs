@@ -206,8 +206,7 @@
                 });
         }
 
-   // Function to fetch and display cart items
-function displayCartItems() {
+        function displayCartItems() {
     fetch('/api/cart/items', {
         method: 'GET',
         credentials: 'include', // Important for sessions
@@ -235,11 +234,26 @@ function displayCartItems() {
                 const itemName = item.foodItem.name.replace('card-', '');
 
                 // Calculate the total price for each item
-                const itemTotalPrice = item.foodItem.price * item.quantity;
+                const itemTotalPrice = parseFloat(item.itemPrice) * item.quantity;
                 totalPrice += itemTotalPrice; // Add to the total price
 
                 // Determine if the item is with or without egg
-                const eggStatus = item.withEgg ? 'With Egg' : 'Without Egg';
+                let eggStatus = '';
+                if (item.foodItem.category === 'Solo Meals') {
+                    eggStatus = item.withEgg ? 'With Egg' : 'Without Egg';
+                }
+
+                // Determine the size for Party Trays
+                let sizeDisplay = '';
+                if (item.foodItem.category === 'Party Trays') {
+                    if (item.size10_12) {
+                        sizeDisplay = item.size10_12;
+                    } else if (item.size25_30) {
+                        sizeDisplay = item.size25_30;
+                    } else if (item.size45_50) {
+                        sizeDisplay = item.size45_50;
+                    }
+                }
 
                 // Construct dietary restrictions string
                 const dietaryRestrictions = item.foodItem.dietaryRestrictions.length > 0 ? `Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}` : '';
@@ -247,9 +261,9 @@ function displayCartItems() {
                 itemElement.innerHTML = `
                     <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
                     <div class="Itm">
-                        <span>${itemName} ${eggStatus}</span><br>
-                        ${dietaryRestrictions ? `<span>${dietaryRestrictions}</span><br>` : ''}
-                        <span>Price: PHP ${item.foodItem.price.toFixed(2)}</span><br>
+                        <span>${itemName} ${sizeDisplay} ${item.foodItem.category} ${eggStatus}</span><br>
+                        <span>Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}</span><br>
+                        <span>Price: PHP ${item.itemPrice}</span><br>
                         <span>Quantity: 
                             <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item.id}', ${item.quantity - 1})">-</button>
                             <span>${item.quantity}</span>
@@ -285,7 +299,7 @@ function displayCartItems() {
     })
     .catch(error => {
         console.error('Error fetching cart items:', error);
-        // Display an error message
+        // Display an error message or handle it as per your requirement
         const cartItemsContainer = document.getElementById('mod-cart-items');
         cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
     });
@@ -293,6 +307,12 @@ function displayCartItems() {
 
 // Call the function to fetch and display cart items when the page loads
 document.addEventListener('DOMContentLoaded', displayCartItems);
+
+
+
+
+
+
 
 
 
@@ -389,29 +409,63 @@ document.addEventListener('DOMContentLoaded', displayCartItems);
         }
 
 
-        // Function to update the total amount displayed in the UI
-        function updateTotalAmount() {
-            fetch('/api/cart/items', {
-                method: 'GET',
-                credentials: 'include', // Important for sessions
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch cart items. Please try again.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Calculate total amount
-                    const totalAmount = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-                    // Update the total amount displayed in the UI
-                    document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
-                })
-                .catch(error => {
-                    console.error('Error fetching cart items:', error);
-                    // Display an error message or handle it as per your requirement
-                });
+       // Function to update the total amount displayed in the UI
+function updateTotalAmount() {
+    fetch('/api/cart/items', {
+        method: 'GET',
+        credentials: 'include', // Important for sessions
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch cart items. Please try again.');
         }
+        return response.json();
+    })
+    .then(data => {
+        // Calculate total amount
+        let totalAmount = 0;
+
+        data.forEach(item => {
+            let itemPrice = 0;
+
+            if (item.foodItem.category === 'Solo Meals') {
+                itemPrice = item.foodItem.price;
+                if (item.withEgg) {
+                    itemPrice += 5; // Add price for egg if applicable
+                }
+            } else if (item.foodItem.category === 'Party Trays') {
+                if (item.foodItem.size === 'Small') {
+                    itemPrice = item.foodItem.price;
+                } else if (item.foodItem.size === 'Medium') {
+                    itemPrice = item.foodItem.price25_30;
+                } else if (item.foodItem.size === 'Large') {
+                    itemPrice = item.foodItem.price45_50;
+                }
+            }
+
+            totalAmount += itemPrice * item.quantity;
+        });
+
+        // Update the total amount displayed in the UI
+        document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+        document.getElementById('total-amounthidden').textContent = totalAmount.toFixed(2);
+
+        // Check if the total price exceeds the limit
+        if (totalAmount > 10000) {
+            // Display a warning message
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cart Limit Exceeded',
+                text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching cart items:', error);
+        // Display an error message or handle it as per your requirement
+    });
+}
+
 
     </script>
 

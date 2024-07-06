@@ -40,13 +40,15 @@ const recommendationsRouter = require("./routes/recommendations");
 const cartRouter = require("./routes/cart");
 const orderRouter = require('./routes/orderRoutes');
 
-const adminOrderStatusRouter = require('./routes/adminOrderStatusRouter');
+const adminTransactionHistoryRouter = require('./routes/adminTransactionHistory');
 const adminOrderNotificationsRouter = require('./routes/adminOrderNotificationsRouter');
 const adminCreateFoodItemRouter = require('./routes/adminCreateFoodItemRouter');
 const featuredItemRouter = require('./routes/featuredItemRouter');
 const bestSellerRouter = require('./routes/bestSellerRouter');
 const soloMealsRouter = require('./routes/soloMealsRouter');
 const partyTraysRouter = require('./routes/partyTraysRouter');
+const foodMenuRouter = require('./routes/foodMenuRouter');
+
 
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
@@ -177,14 +179,27 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
         console.error('User not found with ID:', req.user.id);
         return res.status(404).send('User not found');
       }
-  
+      const foodItems = await prisma.foodItem.findMany({
+        where: {
+          deleted: false // Only fetch non-deleted items
+        },
+        take: 3, // Limit to 3 items
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
       // Check if all expected properties are available and non-null if required by the view
+      console.log("Food items fetched:", foodItems);
       console.log('User data to be sent to dashboard:', user);
-  
+      
+      // Fetch featured food items
+    
+
       // Attempt to render the UserDashboard with the user data
       res.render('UserDashboard', { 
         title: 'User Dashboard', 
-        user: user, 
+        user: user,
+        foodItems: foodItems, 
         welcomeMessage: `Welcome ${user.firstName || 'User'}!`  // Safe fallback if firstName is not set
       });
     } catch (error) {
@@ -259,59 +274,127 @@ app.get("/userMeals", (req, res) => {
 app.get("/aboutUs", (req, res) => {
   res.render("aboutUs"); // Render a view named "new-page.ejs"
 });
-// Route to display user order history
 app.get('/orderHistory', authenticate, async (req, res) => {
   try {
-    // Fetch order history data from the database based on the logged-in user
-    const orders = await prisma.order.findMany({
-      where: {
-        userId: req.user.id  // Use the user ID from the user object provided by Passport
-      },
-      include: {
-        orderItems: true,
-      },
-      orderBy: {
-        createdAt: 'desc'  // Orders are sorted by creation date in descending order
-      }
-    });
+      // Fetch order history data from the database based on the logged-in user
+      const orders = await prisma.order.findMany({
+          where: {
+              userId: req.user.id,  // Use the user ID from the user object provided by Passport
+          },
+          include: {
+              orderItems: {
+                  include: {
+                      foodItem: true // Include the associated FoodItem to get category
+                  }
+              }
+          },
+          orderBy: {
+              createdAt: 'desc'  // Sorting order history by creation date in descending order
+          }
+      });
 
-    // Render EJS template with order history data
-    res.render('orderHistory', { orders });
+      // Modify the order items to include the necessary data for rendering
+      orders.forEach(order => {
+          order.orderItems.forEach(item => {
+              item.itemName = item.foodItem.name.replace('card-', ''); // Use foodItem.name for itemName
+              item.category = item.foodItem.category; // Set category from foodItem
+
+              // Add logic to display "with egg" or "without egg" for Solo Meals
+              if (item.category === 'Solo Meals' && !item.foodItem.price25_30 && !item.foodItem.price45_50) {
+                  item.withEggText = item.withEgg ? '(with egg)' : '(without egg)';
+              } else {
+                  item.withEggText = '';
+              }
+          });
+      });
+
+      // Log the order history data for debugging
+      console.log('Order history data:', orders);
+
+      // Render EJS template with order history data
+      res.render('orderHistory', { orders });
   } catch (error) {
-    console.error('Error fetching order history:', error);
-    res.status(500).send('Internal Server Error');
+      console.error('Error fetching order history:', error);
+      res.status(500).send('Internal Server Error');
   }
 });
 
-// Define route handler to render orderStatus.ejs template
+
+// Define route handler to fetch order data and render a view
 app.get('/orderStatus', authenticate, async (req, res) => {
   try {
-    // Fetch order status data from the database based on the logged-in user
-    const orders = await prisma.order.findMany({
-      where: {
-        userId: req.user.id,
-        status: {
-          notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim())  // Handle case sensitivity and trim spaces
-        }
-      },
-      include: {
-        orderItems: true,
-      },
-      orderBy: {
-        createdAt: 'desc'  // Sorting orders by creation date in descending order
-      }
-    });
+      const orders = await prisma.order.findMany({
+          where: {
+              userId: req.user.id,
+              status: {
+                  notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim())
+              }
+          },
+          include: {
+              orderItems: {
+                  include: {
+                      foodItem: true // Include the associated FoodItem to get category
+                  }
+              }
+          },
+          orderBy: {
+              createdAt: 'desc'
+          }
+      });
 
-    // Log to check filtered results
-    console.log('Filtered Orders:', orders.map(order => `${order.id}: ${order.status}`));
+      // Log fetched order items with foodItem details
+      console.log('Fetched Order Items:', orders.map(order => order.orderItems.map(item => ({
+          id: item.id,
+          userId: item.userId,
+          itemId: item.itemId,
+          quantity: item.quantity,
+          withEgg: item.withEgg,
+          price: item.price,
+          size10_12: item.size10_12,
+          size25_30: item.size25_30,
+          size45_50: item.size45_50,
+          foodItem: {
+              id: item.foodItem.id,
+              name: item.foodItem.name,
+              description: item.foodItem.description,
+              price: item.foodItem.price,
+              size: item.foodItem.size,
+              price25_30: item.foodItem.price25_30,
+              price45_50: item.foodItem.price45_50,
+              category: item.foodItem.category,
+              dietaryRestrictions: item.foodItem.dietaryRestrictions,
+              imageUrl: item.foodItem.imageUrl,
+              createdAt: item.foodItem.createdAt,
+              deleted: item.foodItem.deleted,
+              available: item.foodItem.available,
+              totalPrice: item.foodItem.totalPrice
+          }
+      }))));
 
-    // Render the orderStatus.ejs template with the filtered orders data
-    res.render('orderStatus', { orders });
+      // Modify the order items to include the necessary data for rendering
+      orders.forEach(order => {
+          order.orderItems.forEach(item => {
+              item.itemName = item.foodItem.name.replace('card-', ''); // Use foodItem.name for itemName
+              item.category = item.foodItem.category; // Set category from foodItem
+              item.size10_12 = item.size10_12;
+              item.size25_30 = item.size25_30;
+              item.size45_50 = item.size45_50;
+              item.withEgg = item.withEgg;
+              item.itemImageUrl = item.foodItem.imageUrl;
+              item.dietaryRestrictions = item.foodItem.dietaryRestrictions;
+          });
+      });
+
+      console.log('Sorted Orders:', orders.map(order => `${order.id}: ${order.status}`));
+
+      res.render('orderStatus', { orders });
   } catch (error) {
-    console.error('Error fetching order status:', error);
-    res.status(500).send('Internal Server Error');
+      console.error('Error fetching order data:', error);
+      res.status(500).send('Internal Server Error');
   }
 });
+
+
 
 
 app.get('/userOrder', authenticate, (req, res) => {
@@ -396,14 +479,15 @@ app.use("/recommendations", recommendationsRouter);
 app.use("/api/cart", cartRouter);
 app.use('/orders', orderRouter);
 
-app.use('/adminOrderStatus', adminOrderStatusRouter);
+
+app.use('/adminTransactionHistory', adminTransactionHistoryRouter);
 app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
 
 app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
 app.use('/featuredItem', featuredItemRouter);
 app.use('/soloMeals', soloMealsRouter);
 app.use('/PartyTrays', partyTraysRouter);
-app.use('/foodMenu', featuredItemRouter);
+app.use('/foodMenu', foodMenuRouter);
 app.use('/bestSeller', bestSellerRouter); 
 
 const generateAccessToken = async () => {
@@ -441,110 +525,151 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
     let order;
     let totalAmount = 0;
 
-    // Calculate total amount
+    // Calculate total amount using the price from each cart item
     for (const item of cartItems) {
-      totalAmount += item.foodItem.price * item.quantity;
-    }
+      let itemPrice = item.price; // Initialize item price from cart item
 
-    if (paymentMethod === 'PayPal') {
-      const accessToken = await generateAccessToken();
-      const url = `${base}/v2/checkout/orders/${orderId}/capture`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          shippingAddress: shippingAddress,
-          contactPerson: contactPerson,
-          contactNumber: contactNumber
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to capture PayPal order. Status: ${response.status}`);
+      // Adjust price if withEgg is true
+      if (item.withEgg) {
+        itemPrice += 5; // Add 5 to item price if withEgg is true
       }
 
-      const data = await response.json();
-      console.log("PayPal Order captured:", data);
+      totalAmount += itemPrice * item.quantity; // Calculate total amount
 
-      order = await prisma.order.create({
-        data: {
+      if (paymentMethod === 'PayPal') {
+        const accessToken = await generateAccessToken();
+        const url = `${base}/v2/checkout/orders/${orderId}/capture`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            shippingAddress: shippingAddress,
+            contactPerson: contactPerson,
+            contactNumber: contactNumber
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to capture PayPal order. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("PayPal Order captured:", data);
+
+        order = await prisma.order.create({
+          data: {
+            userId: userId,
+            paypalOrderId: orderId,
+            status: 'PENDING',
+            amount: totalAmount,
+            paymentMethod: 'PayPal',
+            shippingAddress: shippingAddress,
+            createdAt: new Date(),
+            contactPerson: contactPerson,
+            contactNumber: contactNumber,
+            orderItems: {
+              create: cartItems.map(item => ({
+                itemId: item.itemId,
+                itemName: item.foodItem.name,
+                itemDescription: item.foodItem.description,
+                itemPrice: itemPrice, // Use adjusted item price
+                itemSize: item.size10_12 ?? item.size25_30 ?? item.size45_50 ?? 'N/A',
+                itemImageUrl: item.foodItem.imageUrl,
+                quantity: item.quantity,
+                totalPrice: item.quantity * itemPrice, // Use adjusted item price
+                withEgg: item.withEgg, // Ensure withEgg is included
+                category: item.foodItem.category, // Include category
+                dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
+              }))
+            }
+          },
+          include: { orderItems: true } // Ensure orderItems are included
+        });
+      } else if (paymentMethod === 'COD') {
+        order = await prisma.order.create({
+          data: {
+            userId: userId,
+            status: 'PENDING',
+            amount: totalAmount,
+            paymentMethod: 'COD',
+            shippingAddress: shippingAddress,
+            createdAt: new Date(),
+            contactPerson: contactPerson,
+            contactNumber: contactNumber,
+            orderItems: {
+              create: cartItems.map(item => ({
+                itemId: item.itemId,
+                itemName: item.foodItem.name,
+                itemDescription: item.foodItem.description,
+                itemPrice: itemPrice, // Use adjusted item price
+                itemSize: item.size10_12 ?? item.size25_30 ?? item.size45_50 ?? 'N/A',
+                itemImageUrl: item.foodItem.imageUrl,
+                quantity: item.quantity,
+                totalPrice: item.quantity * itemPrice, // Use adjusted item price
+                withEgg: item.withEgg, // Ensure withEgg is included
+                category: item.foodItem.category, // Include category
+                dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
+              }))
+            }
+          },
+          include: { orderItems: true } // Ensure orderItems are included
+        });
+      } else {
+        throw new Error('Invalid payment method.');
+      }
+
+      console.log("Order and OrderItems saved to database:", order);
+
+      // Call the function to display order details
+      displayOrderDetails(order);
+
+      // Clear cart items from session after order is captured
+      req.session.cartItems = [];
+
+      await prisma.cartItem.deleteMany({
+        where: {
           userId: userId,
-          paypalOrderId: orderId,
-          status: 'PENDING',
-          amount: totalAmount,
-          paymentMethod: 'PayPal',
-          shippingAddress: shippingAddress,
-          createdAt: new Date(),
-          contactPerson: contactPerson,
-          contactNumber: contactNumber,
-          orderItems: {
-            create: cartItems.map(item => ({
-              itemId: item.itemId,
-              itemName: item.foodItem.name,
-              itemDescription: item.foodItem.description,
-              itemPrice: item.foodItem.price,
-              itemSize: item.foodItem.size,
-              itemImageUrl: item.foodItem.imageUrl,
-              quantity: item.quantity,
-              totalPrice: item.quantity * item.foodItem.price,
-              withEgg: item.withEgg, // Ensure withEgg is included
-              dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
-            }))
-          }
-          
         },
       });
-    } else if (paymentMethod === 'COD') {
-      order = await prisma.order.create({
-        data: {
-          userId: userId,
-          status: 'PENDING',
-          amount: totalAmount,
-          paymentMethod: 'COD',
-          shippingAddress: shippingAddress,
-          createdAt: new Date(),
-          contactPerson: contactPerson,
-          contactNumber: contactNumber,
-          orderItems: {
-            create: cartItems.map(item => ({
-              itemId: item.itemId,
-              itemName: item.foodItem.name,
-              itemDescription: item.foodItem.description,
-              itemPrice: item.foodItem.price,
-              itemSize: item.foodItem.size,
-              itemImageUrl: item.foodItem.imageUrl,
-              quantity: item.quantity,
-              totalPrice: item.quantity * item.foodItem.price,
-              withEgg: item.withEgg, // Ensure withEgg is included
-              dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
-            }))
-          }
-          
-        },
-      });
-    } else {
-      throw new Error('Invalid payment method.');
+
+      return order;
     }
-
-    console.log("Order and OrderItems saved to database:", order);
-
-    // Clear cart items from session after order is captured
-    req.session.cartItems = [];
-
-    await prisma.cartItem.deleteMany({
-      where: {
-        userId: userId,
-      },
-    });
-
-    return order;
   } catch (error) {
     console.error("Failed to capture order:", error);
     throw error;
   }
+};
+
+
+// Define the displayOrderDetails function
+const displayOrderDetails = (order) => {
+  if (!order || !order.orderItems) {
+    console.error("Order details are missing or incomplete.");
+    return;
+  }
+
+  console.log(`Order ID: ${order.id}\n`);
+  console.log(`Status: ${order.status}\n`);
+  console.log(`Order Date: ${new Date(order.createdAt).toLocaleString()}\n`);
+  console.log(`Amount: ${order.amount}\n`);
+  console.log(`Shipping Address: ${order.shippingAddress}\n`);
+  console.log(`Contact Person: ${order.contactPerson}\n`);
+  console.log(`Contact Number: ${order.contactNumber}\n`);
+  console.log(`Payment Method: ${order.paymentMethod}\n`);
+  console.log(`Order Items:\n`);
+
+  order.orderItems.forEach(item => {
+    console.log(`Item Name: ${item.itemName}\n`);
+    console.log(`Item Size: ${item.itemSize}\n`);
+    console.log(`Quantity: ${item.quantity}\n`);
+    console.log(`Category: ${item.category}\n`);
+    console.log(`Price: ${item.itemPrice}\n`);
+    console.log(`Total Price: ${item.totalPrice}\n`);
+    console.log(`Dietary Restrictions: ${item.dietaryRestrictions.join(', ')}\n`);
+  });
 };
 
 
@@ -558,14 +683,13 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
 
 
-// Helper function to calculate total amount based on items in the cart
-const calculateTotalAmount = (cartItems) => {
+function calculateTotalAmount(cartItems) {
   let totalAmount = 0;
-  for (const item of cartItems) {
-    totalAmount += item.foodItem.price * item.quantity;
-  }
+  cartItems.forEach(item => {
+      totalAmount += item.price * item.quantity;
+  });
   return totalAmount;
-};
+}
 
 
 
@@ -674,40 +798,41 @@ app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, 
 // Route to capture a COD order
 app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
-    const cartItems = req.session.cartItems || [];
-    const userId = req.user.id;
-    const { shippingAddress, contactPerson, contactNumber, paymentMethod } = req.body;
+      const cartItems = req.session.cartItems || [];
+      const userId = req.user.id;
+      const { shippingAddress, contactPerson, contactNumber, paymentMethod } = req.body;
 
-    if (paymentMethod !== 'COD') {
-      return res.status(400).json({ error: "Invalid payment method specified." });
-    }
+      if (paymentMethod !== 'COD') {
+          return res.status(400).json({ error: "Invalid payment method specified." });
+      }
 
-    console.log("Attempting to capture order with cart items:", cartItems);
-    const totalAmount = calculateTotalAmount(cartItems);
-    console.log("Total Amount for Order:", totalAmount);
+      console.log("Attempting to capture order with cart items:", cartItems);
+      const totalAmount = calculateTotalAmount(cartItems);
+      console.log("Total Amount for Order:", totalAmount);
 
-    const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD', req);
+      const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD', req);
 
-    // Clear session cart items
-    req.session.cartItems = [];
+      // Clear session cart items
+      req.session.cartItems = [];
 
-    if (req.user && req.user.id && req.user.email) {
-      await prisma.log.create({
-        data: {
-          action: `COD Payment captured for order`,
-          email: req.user.email,
-          userId: req.user.id,
-        },
-      });
-      res.status(200).json({ message: "COD Order captured successfully", orderDetails: capturedOrder });
-    } else {
-      res.status(500).json({ error: "User information not found in session" });
-    }
+      if (req.user && req.user.id && req.user.email) {
+          await prisma.log.create({
+              data: {
+                  action: `COD Payment captured for order`,
+                  email: req.user.email,
+                  userId: req.user.id,
+              },
+          });
+          res.status(200).json({ message: "COD Order captured successfully", orderDetails: capturedOrder });
+      } else {
+          res.status(500).json({ error: "User information not found in session" });
+      }
   } catch (error) {
-    console.error("Failed to capture COD order:", error);
-    res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
+      console.error("Failed to capture COD order:", error);
+      res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
   }
 });
+
 
 
 

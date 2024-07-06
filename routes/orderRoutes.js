@@ -18,23 +18,54 @@ router.get('/orderStatus', authenticate, async (req, res) => {
     try {
         const orders = await prisma.order.findMany({
             where: {
-                userId: req.user.id,  // Use the user ID from the user object provided by Passport
+                userId: req.user.id,
                 status: {
-                    notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim()) // Handle case sensitivity and trim spaces
+                    notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim())
                 }
             },
             include: {
-                orderItems: true,
+                orderItems: {
+                    include: {
+                        foodItem: true // Include the associated FoodItem to get category
+                    }
+                }
             },
             orderBy: {
-                createdAt: 'desc'  // Sorting orders by creation date in descending order
+                createdAt: 'desc'
             }
         });
+
+        // Log fetched order items with foodItem details
+        console.log('Fetched Order Items:', orders.map(order => order.orderItems.map(item => ({
+            id: item.id,
+            userId: item.userId,
+            itemId: item.itemId,
+            quantity: item.quantity,
+            withEgg: item.withEgg,
+            price: item.price,
+            foodItem: {
+                id: item.foodItem.id,
+                name: item.foodItem.name,
+                description: item.foodItem.description,
+                price: item.foodItem.price,
+                size: item.foodItem.size,
+                price25_30: item.foodItem.price25_30,
+                price45_50: item.foodItem.price45_50,
+                category: item.foodItem.category,
+                dietaryRestrictions: item.foodItem.dietaryRestrictions,
+                imageUrl: item.foodItem.imageUrl,
+                createdAt: item.foodItem.createdAt,
+                deleted: item.foodItem.deleted,
+                available: item.foodItem.available,
+                totalPrice: item.foodItem.totalPrice
+            }
+        }))));
 
         // Modify the order items to include the necessary data for rendering
         orders.forEach(order => {
             order.orderItems.forEach(item => {
-                item.itemName = item.itemName.replace('card-', '');
+                item.itemName = item.foodItem.name.replace('card-', ''); // Use foodItem.name for itemName
+                item.category = item.foodItem.category; // Set category from foodItem
             });
         });
 
@@ -46,6 +77,8 @@ router.get('/orderStatus', authenticate, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+
 
 // Route to display user order history
 router.get('/orderHistory', authenticate, async (req, res) => {
