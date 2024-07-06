@@ -303,7 +303,7 @@ overflow-y: auto; /* Enable vertical scrolling if the content exceeds the contai
   }
 .card-img-top {
   width: 100%;
-  height: 200px;
+  height: 230px;
   object-fit: cover;
   border-radius: 15px;
 }

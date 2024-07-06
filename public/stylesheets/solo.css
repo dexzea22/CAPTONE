@@ -40,12 +40,12 @@
     .cards:hover {
       box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     }
-  .cards img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
+    .card-img-top {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
   .cards h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;

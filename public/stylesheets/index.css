@@ -81,7 +81,12 @@ body{
     opacity: 0.5; /* Adjust opacity to make it look grayed-out */
     pointer-events: none; /* Disable pointer events so the card cannot be interacted with */
   }
-
+  .card-img-top {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 15px;
+  }
   .unavailable-text {
     position: absolute;
     top: 50%;
