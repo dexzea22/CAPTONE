@@ -1086,13 +1086,13 @@ body{
           text-decoration: none;
           cursor: pointer;
         }
-        .prg {
+        .price-radio-group {
             display: grid;
             grid-template-columns: repeat(3,1fr); 
             margin-right: 20px;
             }
 /* Individual image styles */
-.prg img{
+.price-radio-group img{
     width: 90px;
     height: 115px;
     cursor: pointer;
@@ -1101,7 +1101,7 @@ body{
     margin: auto;
     }
     /* Hover effect on images */
-    .prg img:hover{
+    .price-radio-group img:hover{
     transform: scale(1.1); /* Zoom effect on hover */
     }
     .cbtn{

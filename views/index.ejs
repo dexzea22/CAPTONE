@@ -48,31 +48,31 @@
       </div>  
     </div>
     <form action="/login" method="post">
-    <section class="form text-center text-lg-start">
-      <div class="card">
-        <div class="row g-0 d-flex align-items-center">
-          <div class="col-lg-4 d-none d-lg-flex">
-            <img src="images/food.jpg"
-              class="img-fluid w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
-          </div>
-          <div class="col-lg-8">
-            <div class="card-body py-5 px-md-5">
-              <div style="text-align: center; margin-top:0;">
-                <label class="lbl">LOGIN</label>
-              </div>
-        <div class="error">
-          <% if (typeof errorMessage !== 'undefined') { %>
-            <p style="color: red; font-size: 20px;"><%= errorMessage %></p>
-            <% } %>
+      <section class="form text-center text-lg-start">
+        <div class="card">
+          <div class="row g-0 d-flex align-items-center">
+            <div class="col-lg-4 d-none d-lg-flex">
+              <img src="images/food.jpg" id="food-img"
+                class="img-fluid w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
+            </div>
+            <div class="col-lg-8">
+              <div class="card-body py-5 px-md-5">
+                <div style="text-align: center; margin-top:0;">
+                  <label class="lbl">LOGIN</label>
+                </div>
+                <div class="error">
+                  <% if (typeof errorMessage !== 'undefined') { %>
+                    <p style="color: red; font-size: 20px;" id="error-msg"><%= errorMessage %></p>
+                  <% } %>
     
-            <% if (typeof message !== 'undefined') { %>
-            <p style="color: rgb(0, 255, 0); font-size: 20px;"><%= message %></p>
-            <% } %>
-          </div>
-              
+                  <% if (typeof message !== 'undefined') { %>
+                    <p style="color: rgb(0, 255, 0); font-size: 20px;" id="success-msg"><%= message %></p>
+                  <% } %>
+                </div>
+    
                 <!-- Email input -->
                 <div class="form-outline mb-4">
-                  <input type="email" placeholder="Enter Email . . . . ." id="email" name="email" class="formc" required/>
+                  <input type="email" placeholder="Enter Email . . . . ." id="email" name="email" class="formc" required />
                 </div>
     
                 <!-- Password input -->
@@ -83,31 +83,51 @@
                 <script>
                   const togglePassword = document.querySelector('#togglePassword');
                   const password = document.querySelector('#password');
-            
+    
                   togglePassword.addEventListener('click', function (e) {
-                  // toggle the type attribute
-                  const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                  password.setAttribute('type', type);
-                  // toggle the eye slash icon
-                  this.classList.toggle('fa-eye-slash');
-                    });
-                  </script>
+                    // toggle the type attribute
+                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                    password.setAttribute('type', type);
+                    // toggle the eye slash icon
+                    this.classList.toggle('fa-eye-slash');
+                  });
+    
+                  // Function to synchronize image height with form height
+                  function synchronizeImageHeight() {
+                    const img = document.getElementById('food-img');
+                    const formCard = img.closest('.card');
+                    img.style.height = formCard.offsetHeight + 'px';
+                  }
+    
+                  // Call the function on window load and whenever there's an error message
+                  window.onload = synchronizeImageHeight;
+                  if (document.getElementById('error-msg')) {
+                    synchronizeImageHeight();
+                  }
+                </script>
                 <!-- Submit button -->
-          <div class="action" accesskey="">
-          <button class="btns">Login</button>
-        </div>
-        <div class="actionss">
-        <label class="lbll" for="">Or</label>
-      </div>
-        <div class="actions">
-          <a href="/auth/google" class="btn btn-primary"><div class="fa-google-wrapper"><span class="fab fa-google"></span></div>&emsp14;Login with Google</i></a>
-        </div>
+                <div class="action" accesskey="">
+                  <button class="btns">Login</button>
+                </div>
+                <div class="actionss">
+                  <label class="lbll" for="">Or</label>
+                </div>
+                <div class="actions">
+                  <a href="/auth/google" class="btn btn-primary">
+                    <div class="fa-google-wrapper"><span class="fab fa-google"></span></div>&emsp14;Login with Google</i>
+                  </a>
+                </div>
                 <div>
                   <!-- Simple link -->
-                <label class="dha">Don't Have An Account?</label> <a href="/register"> Register here!</a>
+                  <label class="dha">Don't Have An Account?</label> <a href="/register"> Register here!</a>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </form>
     
-              </form>
             </div>
           </div>
         </div>
