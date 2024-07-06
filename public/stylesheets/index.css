@@ -57,19 +57,49 @@ body{
     margin: 25px 0 0 15px;
   }
   }
- 
+  .card {
+    background-color:rgba(255, 255, 255, 0.497);
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    border-radius: 15px;
+    position: relative;
+    max-width:370px;
+    cursor: pointer;
+    max-height: 700px; /* Set the desired height for the search result container */
+    overflow-y: auto; /* Enable vertical scrolling if the content exceeds the container height */
+    }
+.card-body{
+  text-align: center;
+}
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  /* CSS for unavailable cards */
+  .card.unavailable {
+    opacity: 0.5; /* Adjust opacity to make it look grayed-out */
+    pointer-events: none; /* Disable pointer events so the card cannot be interacted with */
+  }
+
+  .unavailable-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+  }
+
+  .unavailable-text p {
+    color: red; /* Red text color for the "Unavailable" message */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    font-weight: bold; /* Optionally, make the text bold */
+  }
   .food-card {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-  }
-  .card {
-    width: calc(33.33% - 20px);
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    background-color:rgba(255, 255, 255, 0.497);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   }
   .card:hover {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -336,9 +366,23 @@ body{
   color: rgb(0, 0, 0);
   text-decoration: none;
 }
+.price-radio-group {
+  display: grid;
+  grid-template-columns: repeat(3,1fr); 
+  align-items:center;
+  }
+  
+.qty{
+  width: 210px;
+  text-align: center;
+}
+  /* Hover effect on images */
+  .price-radio-group img:hover{
+  transform: scale(1.1); /* Zoom effect on hover */
+  }
 .cbtn{
-  padding: 9px;
-  width: 23%;
+  padding: 5px;
+  width: 20%;
   background-color: #C69B68;
   color: white;
   margin: 0 3% 5% 0;
@@ -346,9 +390,7 @@ body{
   border-radius: 5px;
   float: right;
   font-weight: bold;
-  position: relative; 
-  z-index: 2;
-}
+  }
 .cbtn:hover{
   background-color: rgb(243, 185, 113);
   color: black;

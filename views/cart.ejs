@@ -255,6 +255,9 @@
                     }
                 }
 
+                // Construct dietary restrictions string
+                const dietaryRestrictions = item.foodItem.dietaryRestrictions.length > 0 ? `Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}` : '';
+
                 itemElement.innerHTML = `
                     <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
                     <div class="Itm">

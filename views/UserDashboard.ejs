@@ -17,55 +17,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="stylesheets/user.css">
 <link rel="stylesheet" href="stylesheets/index.css">
-<style>
-  .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 10px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: auto;
-      }
-      .card img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin-bottom: 10px;
-      }
-      .card h2 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-      }
-      .card p {
-        margin-bottom: 5px;
-      }
-      .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 20px;
-      }
-      /* CSS for unavailable cards */
-      .card.unavailable {
-        opacity: 0.5; /* Adjust opacity to make it look grayed-out */
-        pointer-events: none; /* Disable pointer events so the card cannot be interacted with */
-      }
-
-      .unavailable-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        width: 100%;
-      }
-
-      .unavailable-text p {
-        color: red; /* Red text color for the "Unavailable" message */
-        font-size: 1.5rem; /* Adjust font size as needed */
-        font-weight: bold; /* Optionally, make the text bold */
-      }
-</style>
 </head>
 
 <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
@@ -132,9 +83,9 @@
   <img class="logo" src="images/logo.png" alt="">
 <div class="log">
 <a class="fbtns" href="/bestSeller">Best Sellers</a>
-<a class="fbtns" href="/userMenu">Food Menu</a>
-<a class="fbtns" href="/userTrays">Party Trays</a>
-<a class="fbtnsu" href="/userMeals">Solo Meals</a>
+<a class="fbtns" href="/foodMenu">Food Menu</a>
+<a class="fbtns" href="/partyTrays">Party Trays</a>
+<a class="fbtnsu" href="/soloMeals">Solo Meals</a>
 <a class="fbtnsuf" href="/featuredItem">New Products</a>
 
 </div>
@@ -167,16 +118,15 @@
               <!-- Quantity input -->
               <div class="form-group">
                 <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
-                <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>">
-              </div>
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input add-egg" id="withEgg-<%= item.name.replace(/\s+/g, '-') %>" data-egg-price="5"> with Egg (₱5.00)<br>
+                <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>">
               </div>
               <div class="form-group">
+                <input type="checkbox" class="add-egg" id="withEgg-<%= item.name.replace(/\s+/g, '-') %>" data-egg-price="5"> With Egg (₱5.00)<br>
+            
                 <label>Total Price:</label>
                 <span class="total-price">₱<%= item.price.toFixed(2) %></span>
               </div>
-              <button class="btn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+              <button class="cbtn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
             </div>
           
           <% } else if (item.category === 'Party Trays') { %>
@@ -184,28 +134,28 @@
               <!-- Radio buttons for different sizes and prices -->
               <div class="price-radio-group">
                 <div class="form-check">
-                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>-10-12" data-price="<%= item.price %>" checked <%= !item.available ? 'disabled' : '' %>>
                   <label class="form-check-label" for="price<%= item.id %>-10-12">
-                    <img src="/images/sTray.png" alt="10-12 Pax" /> Small 10-12 Pax: ₱<%= item.price.toFixed(2) %>
+                    <img class="fimg" src="/images/sTray.png" alt="10-12 Pax" /> S (10-12) ₱<%= item.price.toFixed(2) %>
                   </label>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>-10-12" data-price="<%= item.price %>" checked <%= !item.available ? 'disabled' : '' %>>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price<%= item.id %>-25-30" data-price="<%= item.price25_30 %>" <%= !item.available ? 'disabled' : '' %>>
                   <label class="form-check-label" for="price<%= item.id %>-25-30">
-                    <img src="/images/mTray.png" alt="25-30 Pax" /> Medium 25-30 Pax: ₱<%= item.price25_30.toFixed(2) %>
+                    <img class="fimg" src="/images/mTray.png" alt="25-30 Pax" /> M (25-30) ₱<%= item.price25_30.toFixed(2) %>
                   </label>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price<%= item.id %>-25-30" data-price="<%= item.price25_30 %>" <%= !item.available ? 'disabled' : '' %>>
                 </div>
                 <div class="form-check">
-                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price45_50 %>" id="price<%= item.id %>-45-50" data-price="<%= item.price45_50 %>" <%= !item.available ? 'disabled' : '' %>>
                   <label class="form-check-label" for="price<%= item.id %>-45-50">
-                    <img src="/images/lTray.png" alt="45-50 Pax" /> Large 45-50 Pax: ₱<%= item.price45_50.toFixed(2) %>
+                    <img class="fimg" src="/images/lTray.png" alt="45-50 Pax" /> L (45-50) ₱<%= item.price45_50.toFixed(2) %>
                   </label>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price45_50 %>" id="price<%= item.id %>-45-50" data-price="<%= item.price45_50 %>" <%= !item.available ? 'disabled' : '' %>>
                 </div>
               </div>
               <!-- Quantity selector -->
               <div class="form-group mt-3">
                 <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
-                <input type="number" class="form-control quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('card-<%= item.name.replace(/\s+/g, '-') %>')" <%= !item.available ? 'disabled' : '' %>>
+                <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('card-<%= item.name.replace(/\s+/g, '-') %>')" <%= !item.available ? 'disabled' : '' %>>
               </div>
               <!-- Total price display -->
               <div class="form-group">
@@ -213,7 +163,7 @@
                 <span id="totalPrice-<%= item.id %>">₱<%= item.price.toFixed(2) %></span>
               </div>
               <!-- Add to Cart button -->
-              <button class="btn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">Add to Cart</button>
+              <button class="cbtn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
             </div>
           <% } %>
           
