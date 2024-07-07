@@ -102,7 +102,7 @@
 <section class="feature-food">
   <div class="grid-container">
     <% foodItems.forEach(item => { %>
-      <div class="card h-100 <%= item.category === 'Solo Meals' ? 'solo-meal' : 'party-tray' %> <%= !item.available ? 'unavailable' : '' %>" id="card-<%= item.name.replace(/\s+/g, '-') %>" data-item-id="<%= item.id %>" data-category="<%= item.category %>" data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>">
+      <div class="card <%= item.category === 'Solo Meals' ? 'solo-meal' : 'party-tray' %> <%= !item.available ? 'unavailable' : '' %>" id="card-<%= item.name.replace(/\s+/g, '-') %>" data-item-id="<%= item.id %>" data-category="<%= item.category %>" data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>">
         <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
         <div class="card-body">
           <h5 class="card-title"><%= item.name %></h5>
@@ -116,7 +116,7 @@
           <% if (item.category === 'Solo Meals') { %>
             <div class="solo-meal" data-item-id="<%= item.id %>">
               <!-- Quantity input -->
-              <div class="form-group">
+              <div class="form-group" style="margin-top: 145px;">
                 <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
                 <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>">
               </div>

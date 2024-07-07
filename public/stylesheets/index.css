@@ -1,6 +1,3 @@
-body{
-      background-color: #FFF3EB;
-}
 .qbtn{
   height: 30px;
 }
@@ -62,13 +59,17 @@ body{
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     border-radius: 15px;
     position: relative;
-    max-width:370px;
+    max-width:500px;
     cursor: pointer;
-    max-height: 700px; /* Set the desired height for the search result container */
+    max-height: 760px; /* Set the desired height for the search result container */
     overflow-y: auto; /* Enable vertical scrolling if the content exceeds the container height */
     }
 .card-body{
   text-align: center;
+}
+.card-text{
+  padding: 0%;
+  margin: 0%;
 }
   .grid-container {
     display: grid;
