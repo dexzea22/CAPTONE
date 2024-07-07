@@ -39,6 +39,9 @@ router.post('/', async (req, res) => {
             size45_50,
         } = req.body;
 
+        // Sanitize name to replace spaces with dashes and remove parentheses
+        const sanitizedName = name.replace(/\s+/g, '-').replace(/[()]/g, '');
+
         // Convert dietaryRestrictions to an array if it exists and is not an array
         const dietaryArray = Array.isArray(dietaryRestrictions)
             ? dietaryRestrictions
@@ -60,7 +63,7 @@ router.post('/', async (req, res) => {
 
         // Determine which fields to save based on category
         let newData = {
-            name,
+            name: sanitizedName,
             description,
             category,
             dietaryRestrictions: dietaryArray,
@@ -102,6 +105,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to create food item.' });
     }
 });
+
 
 // edit & delete
 // Route to get food item details for edit

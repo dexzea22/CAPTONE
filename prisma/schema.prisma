@@ -70,7 +70,7 @@ model FoodItem {
   size10_12           String?
   size25_30           String?
   size45_50           String?
-  @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
+  // @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
 }
 
 model CartItem {
