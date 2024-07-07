@@ -101,7 +101,6 @@ color: white;
   display: flex;
   justify-content: center;
   align-items: center;
-
   margin: 0 auto; /* Horizontal centering */
   width: 100%; /* Adjust width to ensure centering within the viewport */
 }
@@ -299,7 +298,7 @@ border-radius: 15px;
 position: relative;
 max-width:500px;
 cursor: pointer;
-max-height: 700px; /* Set the desired height for the search result container */
+max-height: 760px; /* Set the desired height for the search result container */
 overflow-y: auto; /* Enable vertical scrolling if the content exceeds the container height */
 }
 .card:hover {
