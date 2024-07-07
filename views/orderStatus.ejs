@@ -105,7 +105,11 @@
                               <p><strong>Order ID:</strong> <%= order.id %></p>
                               <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
                               <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
-                              <p><strong>Amount:</strong> <%= order.amount %></p>
+                              
+                              <!-- Calculate total price for the order -->
+                              <% let totalPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0); %>
+                              <p><strong>Total Price:</strong> ₱<%= totalPrice.toFixed(2) %></p>
+                              
                               <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
                               <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
                               <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
@@ -115,13 +119,10 @@
                               <div class="item-grid">
                                   <% order.orderItems.forEach(item => { %>
                                       <div class="item-card">
-                                        <p><b>Item Name:</b> <%= item.itemName.replace('card-', '') %> <%= item.category === 'Solo Meals' && !item.foodItem.price25_30 && !item.foodItem.price45_50 ? (item.withEgg ? '(with egg)' : '(without egg)') : '' %></p>
-
+                                          <p><b>Item Name:</b> <%= item.itemName.replace('card-', '') %> <%= item.category === 'Solo Meals' && !item.foodItem.price25_30 && !item.foodItem.price45_50 ? (item.withEgg ? '(with egg)' : '(without egg)') : '' %></p>
                                           <p><strong>Item Size:</strong> <%= item.itemSize %></p>
                                           <p><strong>Quantity:</strong> <%= item.quantity %></p>
                                           <p><strong>Category:</strong> <%= item.category %></p>
-
-
                                           <p><strong>Price:</strong> <%= item.itemPrice %></p>
                                           <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
                                           <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions.join(', ') %></p>
@@ -135,7 +136,6 @@
               <% } else { %>
                   <p>No orders found.</p>
               <% } %>
-              
               
               
               

@@ -51,6 +51,14 @@
           <a class="nav" href="/recommendations">Recommended</a>
           <a class="nav" href="/userOrder">Orders</a>
           <a class="nav" href="/contact">Contact Us</a>
+          <div class="nav" style="float: right;">
+            <div class="search-input">
+              <i class="fas fa-search"></i>
+              <input type="text" class="form-control" style="margin-top: 12px;" placeholder="Search menu items"
+                id="menuSearchInput">
+            </div>
+          </div>
+
       </div>
       <div class="side-menu">
         <a href="/UserDashboard">Home</a>
@@ -83,6 +91,7 @@
           </div>
       </div>
     </div>
+    
     <h1 class="ttl">Solo Meals</h1>
     <div class="grid-container">
         <% soloMeals.forEach(item => { %>
@@ -194,7 +203,32 @@
             </div>
         <% }); %>
     </div>
-    
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+  // Add event listener for input event on the search input
+  document.getElementById('menuSearchInput').addEventListener('input', function () {
+    performSearch();
+  });
+
+  function performSearch() {
+    // Get the value from the search input
+    var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
+
+    // Get all cards on the page
+    var cards = document.querySelectorAll('.card, .cards');
+
+    // Perform your search logic here
+    cards.forEach(function (card) {
+      var cardTitle = card.querySelector('h5').innerText.toLowerCase();
+      if (cardTitle.includes(searchQuery)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+});
+    </script>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
