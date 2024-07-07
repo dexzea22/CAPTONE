@@ -113,7 +113,10 @@
               <p><strong>Order ID:</strong> <%= order.id %></p>
               <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
               <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
-              <p><strong>Amount:</strong> <%= order.amount %></p>
+          <!-- Calculate total price for the order -->
+          <% let totalPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0); %>
+          <p><strong>Total Price:</strong> ₱<%= totalPrice.toFixed(2) %></p>
+          
               <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
               <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
               <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>

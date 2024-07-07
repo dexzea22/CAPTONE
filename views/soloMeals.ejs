@@ -319,21 +319,22 @@
           .join("");
       }
     }
-     // Add event listener for keydown event
-     document.getElementById('menuSearchInput').addEventListener('keydown', function (event) {
-      // Check if Enter key is pressed (key code 13)
-      if (event.keyCode === 13) {
-        performSearch();
-      }
-    });
-    function performSearch() {
+    document.addEventListener('DOMContentLoaded', function () {
+  // Add event listener for input event on the search input
+  document.getElementById('menuSearchInput').addEventListener('input', function () {
+    performSearch();
+  });
+
+  function performSearch() {
     // Get the value from the search input
     var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
 
+    // Get all cards on the page
+    var cards = document.querySelectorAll('.card, .cards');
+
     // Perform your search logic here
-    // For demonstration, you can hide/show cards based on the search query
     cards.forEach(function (card) {
-      var cardTitle = card.querySelector('h4').innerText.toLowerCase();
+      var cardTitle = card.querySelector('h5').innerText.toLowerCase();
       if (cardTitle.includes(searchQuery)) {
         card.style.display = 'block';
       } else {
@@ -341,6 +342,9 @@
       }
     });
   }
+});
+
+
    // Function to update the cart counter and item counter
    function updateCartCounter() {
             fetch('/api/cart/items', {
