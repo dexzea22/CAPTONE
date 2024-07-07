@@ -103,7 +103,7 @@ router.post('/add', async (req, res, next) => {
 
         if (category === 'Party Trays') {
             // Determine the size based on the price for Party Trays
-            if (price == foodItem.price10_12) {
+            if (price == foodItem.price) {
                 size10_12 = foodItem.size10_12;
             } else if (price == foodItem.price25_30) {
                 size25_30 = foodItem.size25_30;
@@ -117,7 +117,7 @@ router.post('/add', async (req, res, next) => {
         if (category === 'Party Trays') {
             // Adjust price for Party Trays based on selected size
             if (size10_12) {
-                totalPrice = foodItem.price10_12 * quantity;
+                totalPrice = foodItem.price * quantity;
             } else if (size25_30) {
                 totalPrice = foodItem.price25_30 * quantity;
             } else if (size45_50) {
