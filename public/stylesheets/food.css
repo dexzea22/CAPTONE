@@ -11,12 +11,7 @@
     .card:hover {
       box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
       }
-  .price-radio-group img {
-    width: 30px;
-    height: 30px;
-    margin-right: 5px;
-    vertical-align: middle;
-  }
+  
   .unavailable-card {
     opacity: 0.5; /* Adjust opacity for grayed-out effect */
     position: relative;
@@ -659,6 +654,17 @@
           .gallery img:hover, .gllry img:hover,.ogallery img:hover {
           transform: scale(1.1); /* Zoom effect on hover */
           }
+          .gmap{
+   
+            width: 650px;
+            height:400px
+          }
+          @media(max-width:900px){
+            .gmap{
+              width:169px;
+              max-height: 125px;
+            }
+          }
           .card-maps{
             width: calc(100%);
             border: 1px solid #ccc;
@@ -672,17 +678,6 @@
           @media(max-width:999px){
             .card-maps{
               height: 180px;
-            }
-          }
-          .gmap{
-             
-            width: 650px;
-            height:400px
-          }
-          @media(max-width:900px){
-            .gmap{
-              width:200px;
-              max-height: 125px;
             }
           }
           .map-img{

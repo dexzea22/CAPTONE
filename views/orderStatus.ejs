@@ -145,18 +145,18 @@
         <label class="fpu" for="">Menu and Prices</label>
         </div>
         <div>
-        <div class="ogallery">
-        <img src="images/m1.jpg" alt="Image 1">
-        <img src="images/m4.jpg" alt="Image 1">
-        <img src="images/m2.jpg" alt="Image 1">
-        <img src="images/m5.jpg" alt="Image 1">
-        <img src="images/m3.jpg" alt="Image 1">
-        <!-- Add more images as needed -->
-        </div>
-        
+          <div class="ogallery">
+            <img src="images/m1.jpg" alt="Image 1" onclick="openLightbox('images/m1.jpg')">
+            <img src="images/m4.jpg" alt="Image 1" onclick="openLightbox('images/m4.jpg')">
+            <img src="images/m2.jpg" alt="Image 1" onclick="openLightbox('images/m2.jpg')">
+            <img src="images/m5.jpg" alt="Image 1" onclick="openLightbox('images/m5.jpg')">
+            <img src="images/m3.jpg" alt="Image 1" onclick="openLightbox('images/m3.jpg')">
+            <!-- Add more images as needed -->
+          </div>
         <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
+        <div class="lightbox" id="lightbox" onclick="closeLightbox()">
           <img src="" alt="Enlarged Image" class="lightbox-image">
+          <!-- Add close button or any other content here -->
         </div>
         </div>
         <div class="container">
@@ -307,6 +307,40 @@
   </div>
 
   <script>
+ function openLightbox(imageSrc) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = lightbox.querySelector('.lightbox-image');
+    
+    // Update the source of the lightbox image
+    lightboxImage.src = imageSrc;
+    
+    // Show the lightbox
+    lightbox.style.display = 'flex'; // Assuming the lightbox has a flex display
+    
+    // Add an event listener to close the lightbox when clicked
+    lightbox.addEventListener('click', closeLightbox);
+}
+
+// Function to close the lightbox
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.style.display = 'none'; // Hide the lightbox
+}
+
+// Function to initialize the lightbox
+function initializeLightbox() {
+    // Get the lightbox element
+    const lightbox = document.getElementById('lightbox');
+    
+    // Prevent clicks inside the lightbox from closing it
+    lightbox.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+}
+
+// Call the initializeLightbox function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeLightbox);
+
     var modal = document.getElementById("dietaryPreferencesModal");
     var btn = document.getElementById("dietaryPreferencesNav");
 
