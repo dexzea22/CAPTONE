@@ -49,10 +49,16 @@ const soloMealsRouter = require('./routes/soloMealsRouter');
 const partyTraysRouter = require('./routes/partyTraysRouter');
 const foodMenuRouter = require('./routes/foodMenuRouter');
 
-
+const editUserFormRouter = require('./routes/editUserForm'); 
+app.use('/editUserForm', editUserFormRouter); 
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
+
+
+
+
+
 
 // Initialize flash middleware after session
 app.use(flash());
@@ -218,8 +224,12 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
     };
 }
 
+  // GET route for rendering the forgot password form
+app.get('/forgotPassword', (req, res) => {
+  res.render('forgotPassword'); // Assuming you have a 'forgotPassword.ejs' file
+});
   
-  
+
 // Correct usage with 'app'
 app.get("/", (req, res) => {
   // Assume we have a function that gets recommendations.

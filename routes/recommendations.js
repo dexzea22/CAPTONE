@@ -23,12 +23,18 @@ function ensureAuthenticated(req, res, next) {
 router.get("/", ensureAuthenticated, async (req, res) => {
   const userId = req.user.id;
   try {
-    const existingPreference = await prisma.dietaryPreference.findUnique({
+    let existingPreference = await prisma.dietaryPreference.findUnique({
       where: { userId },
     });
 
+    // If dietary preferences are not set, handle it gracefully
     if (!existingPreference) {
-      return res.status(404).json({ success: false, message: "Dietary preferences not found." });
+      existingPreference = {
+        vegetarian: false,
+        omnivore: false,
+        glutenFree: false,
+        nutAllergy: false,
+      };
     }
 
     const dietaryData = {
@@ -64,8 +70,5 @@ router.get("/", ensureAuthenticated, async (req, res) => {
     });
   }
 });
-
-
-
 
 module.exports = router;

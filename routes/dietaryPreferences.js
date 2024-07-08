@@ -1,12 +1,14 @@
+// routes/dietaryPreferences.js
+
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
-const generateRecommendations = require("../utils/generateRecommendations");
 const router = express.Router();
 const prisma = new PrismaClient();
+const { revised_generated_recommendation } = require("../utils/revisedGenerateRecommendation");
 
 // Middleware to ensure the user is authenticated
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {  // Passport method to check authentication
+  if (req.isAuthenticated()) {
     return next();
   } else {
     console.log("Unauthorized attempt to access dietary preferences");
@@ -14,10 +16,10 @@ function ensureAuthenticated(req, res, next) {
   }
 }
 
+// Endpoint to submit dietary preferences
 router.post("/submit-dietary-preferences", ensureAuthenticated, async (req, res) => {
   const userId = req.user.id; // Use req.user provided by Passport
   const dietaryData = req.body;
-  console.log("CALL2", dietaryData);
 
   try {
     let dietaryPreference;
@@ -36,9 +38,8 @@ router.post("/submit-dietary-preferences", ensureAuthenticated, async (req, res)
       });
     }
 
-    // Generate recommendations based on the dietaryData
-    const recommendations = await generateRecommendations(dietaryData);
-    console.log("CALL1", dietaryData);
+    // Generate recommendations based on the updated dietaryData
+    const recommendations = await revised_generated_recommendation(dietaryData);
 
     // Respond with the recommendations in a JSON format
     res.status(200).json({ success: true, recommendations });

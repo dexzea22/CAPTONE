@@ -7,7 +7,44 @@ const router = express.Router();
 
 router.use(fileUpload());
 
-router.get('/', async (req, res) => {
+
+// Middleware to check if user is authenticated
+function authenticate(req, res, next) {
+    // Use Passport's built-in method to check authentication
+    if (req.isAuthenticated()) {  // Checks if the user session is saved and valid
+      console.log('User authenticated with userId:', req.user.id); // Log the authenticated user's ID
+      next();  // Continue to next middleware or request handler
+    } else {
+      console.log('User not authenticated. Redirecting to login.');
+      res.redirect('/login');  // Redirect to login page if not authenticated
+    }
+  }
+  
+  
+  
+  // Middleware to check user type and restrict access to specific routes
+  async function restrictAccess(userType, req, res, next) {
+    if (req.user && req.user.id) {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: req.user.id },
+        });
+  
+        if (user.usertype !== userType) {
+          return res.redirect('/login'); // Redirect unauthorized users to login
+        } else {
+          next();
+        }
+      } catch (err) {
+        console.error(err);
+        return res.status(500).send('Internal server error');
+      }
+    } else {
+      return res.redirect('/login');
+    }
+  }
+
+  router.get('/', authenticate, (req, res, next) => restrictAccess('Admin', req, res, next), async (req, res) => {
     try {
         // Fetch food items that are not deleted from the database
         const foodItems = await prisma.foodItem.findMany({
