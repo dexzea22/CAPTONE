@@ -99,123 +99,162 @@
       <div class="lblso">
         <label class="fpu">Order History</label>
       </div>
-      
-      <% const filteredOrders = orders; %> <!-- Remove any status-based filtering here to display all orders -->
-      
-      <% if (filteredOrders.length > 0) { %>
-        <div class="grid-container">
-          <% filteredOrders.forEach(order => { %>
-            <div class="order-card">
-              <p><strong>Order ID:</strong> <%= order.id %></p>
-              <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
-              <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
-              <!-- Calculate total price for the order -->
-              <% let totalPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0); %>
-              <p><strong>Total Price:</strong> ₱<%= totalPrice.toFixed(2) %></p>
-                
-              <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
-              <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
-              <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
-              <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p> <!-- Display payment method -->
-              <p><strong>Order Items:</strong></p>
-      
-              <div class="item-grid">
-                <% order.orderItems.forEach(item => { %>
-                  <div class="item-card">
-                    <p><b>Item Name:</b> <%= item.itemName %> <%= item.withEggText %></p>
-                    <p><strong>Item Size:</strong> <%= item.itemSize %></p>
-                    <p><strong>Category:</strong> <%= item.category %></p>
-                    <p><strong>Quantity:</strong> <%= item.quantity %></p>
-                    <p><strong>Price:</strong> <%= item.itemPrice %></p>
-                    <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
-                    <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions.join(', ') %></p>
-                    <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
-                  </div>
-                <% }); %>
-              </div>
- <!-- Feedback form -->
-<% if (order.status.toLowerCase() === 'delivered') { %>
-  <form class="feedback-form" action="/submitFeedback" method="POST" onsubmit="submitFeedback(event)">
-    <input type="hidden" name="orderId" value="<%= order.id %>">
-    <label for="rating">Rating:</label>
-    <select id="rating" name="rating" required>
-      <option value="5">5 - Excellent</option>
-      <option value="4">4 - Good</option>
-      <option value="3">3 - Average</option>
-      <option value="2">2 - Poor</option>
-      <option value="1">1 - Very Poor</option>
-    </select>
-    <br>
-    <label for="comments">Comments:</label><br>
-    <textarea id="comments" name="comments" rows="4" cols="50" required></textarea>
-    <br>
-    <button type="submit">Submit Feedback</button>
-  </form>
-  
+    <!-- orderHistory.ejs -->
 
-  
-<% } else { %>
-  <p>Feedback can only be submitted for delivered orders.</p>
-<% } %>
+<% const filteredOrders = orders; %> <!-- Remove any status-based filtering here to display all orders -->
 
+<% if (filteredOrders.length > 0) { %>
+  <div class="grid-container">
+    <% filteredOrders.forEach(order => { %>
+      <div class="order-card">
+        <p><strong>Order ID:</strong> <%= order.id %></p>
+        <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
+        <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
+        <!-- Calculate total price for the order -->
+        <% let totalPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0); %>
+        <p><strong>Total Price:</strong> ₱<%= totalPrice.toFixed(2) %></p>
+
+        <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
+        <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
+        <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
+        <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p> <!-- Display payment method -->
+        <p><strong>Order Items:</strong></p>
+
+        <div class="item-grid">
+          <% order.orderItems.forEach(item => { %>
+            <div class="item-card">
+              <p><b>Item Name:</b> <%= item.itemName %> <%= item.withEggText %></p>
+              <p><strong>Item Size:</strong> <%= item.itemSize %></p>
+              <p><strong>Category:</strong> <%= item.category %></p>
+              <p><strong>Quantity:</strong> <%= item.quantity %></p>
+              <p><strong>Price:</strong> <%= item.itemPrice %></p>
+              <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
+              <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions.join(', ') %></p>
+              <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
             </div>
           <% }); %>
         </div>
-      <% } else { %>
-        <p>No orders found.</p>
-      <% } %>
+
+        <!-- Check if feedback is already submitted -->
+        <% if (order.feedbackSubmitted) { %>
+          <p>Feedback already submitted for this order.</p>
+        <% } else if (order.status.toLowerCase() === 'delivered') { %>
+          <!-- Feedback form -->
+          <form class="feedback-form" id="feedbackForm_<%= order.id %>" action="/submitFeedback" method="POST" onsubmit="submitFeedback(event, '<%= order.id %>')">
+            <input type="hidden" name="orderId" value="<%= order.id %>">
+            <label for="rating_<%= order.id %>">Rating:</label>
+            <select id="rating_<%= order.id %>" name="rating" required>
+              <option value="5">5 - Excellent</option>
+              <option value="4">4 - Good</option>
+              <option value="3">3 - Average</option>
+              <option value="2">2 - Poor</option>
+              <option value="1">1 - Very Poor</option>
+            </select>
+            <br>
+            <label for="comments_<%= order.id %>">Comments:</label><br>
+            <textarea id="comments_<%= order.id %>" name="comments" rows="4" cols="50" required></textarea>
+            <br>
+            <button type="submit">Submit Feedback</button>
+          </form>
+        <% } else { %>
+          <p>Feedback can only be submitted for delivered orders.</p>
+        <% } %>
+
+      </div>
+    <% }); %>
+  </div>
+<% } else { %>
+  <p>No orders found.</p>
+<% } %>
+
       
      
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
       <script>
-        function submitFeedback(event) {
-  event.preventDefault(); // Prevent default form submission
-
-  const form = event.target; // Get the form element
-  const formData = new FormData(form); // Serialize form data
-
-  // Convert FormData to a JSON object
-  const jsonFormData = {};
-  formData.forEach((value, key) => {
-    jsonFormData[key] = value;
-  });
-
-  // Send a POST request to '/submitFeedback'
-  fetch('/submitFeedback', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(jsonFormData), // Include serialized form data as body
-  })
-  .then(response => {
-    console.log('Response status:', response.status); // Log the response status
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json(); // Parse response JSON
-  })
-  .then(data => {
-    console.log('Feedback submitted successfully:', data);
-    Swal.fire({
-      icon: 'success',
-      title: 'Feedback Submitted!',
-      text: data.message,
-    });
-    // Optionally reload or update the page after feedback submission
-    // window.location.reload();
-  })
-  .catch(error => {
-    console.error('Error submitting feedback:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Something went wrong! Please try again later.',
-    });
-  });
-}
-
-    </script>
+        function submitFeedback(event, orderId) {
+          event.preventDefault(); // Prevent default form submission
+      
+          const form = event.target; // Get the form element
+          const formData = new FormData(form); // Serialize form data
+      
+          // Convert FormData to a JSON object
+          const jsonFormData = {};
+          formData.forEach((value, key) => {
+            jsonFormData[key] = value;
+          });
+      
+          // Check if feedback has already been submitted
+          fetch(`/checkFeedback/${orderId}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.alreadySubmitted) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Oops...',
+                  text: 'Feedback already submitted for this order.',
+                });
+              } else {
+                // If feedback not already submitted, proceed with submission
+                sendFeedbackRequest(jsonFormData);
+              }
+            })
+            .catch(error => {
+              console.error('Error checking feedback:', error);
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong! Please try again later.',
+              });
+            });
+        }
+      
+        function sendFeedbackRequest(formData) {
+          // Send a POST request to '/submitFeedback'
+          fetch('/submitFeedback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), // Include serialized form data as body
+          })
+          .then(response => {
+            console.log('Response status:', response.status); // Log the response status
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse response JSON
+          })
+          .then(data => {
+            console.log('Feedback submitted successfully:', data);
+            Swal.fire({
+              icon: 'success',
+              title: 'Feedback Submitted!',
+              text: data.message,
+            });
+      
+            // Reload the page after 2 seconds
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000); // 2000 milliseconds = 2 seconds
+          })
+          .catch(error => {
+            console.error('Error submitting feedback:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong! Please try again later.',
+            });
+          });
+        }
+      </script>
+      
+      
+      
         
       
  

@@ -314,6 +314,30 @@ app.get('/orderHistory',  async (req, res) => {
   }
 });
 
+// Route to check if feedback has already been submitted for an order
+app.get('/checkFeedback/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const userId = req.user.id; // Assuming userId is obtained from authentication middleware
+
+    // Query database to check if feedback exists for the order and user
+    const existingFeedback = await prisma.feedback.findFirst({
+      where: {
+        orderId: orderId,
+        userId: userId,
+      },
+    });
+
+    if (existingFeedback) {
+      res.status(200).json({ alreadySubmitted: true });
+    } else {
+      res.status(200).json({ alreadySubmitted: false });
+    }
+  } catch (error) {
+    console.error('Error checking feedback:', error);
+    res.status(500).json({ error: 'Error checking feedback' });
+  }
+});
 
 
 
@@ -352,6 +376,7 @@ app.post('/submitFeedback', async (req, res) => {
     res.status(500).json({ error: 'Error submitting feedback' });
   }
 });
+
 
 
 
