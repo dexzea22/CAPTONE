@@ -96,384 +96,118 @@
             </div>
         </div>
       </div>
-    <div class="lblso" >
-       <label class="fpu">Order History</label>
-    </div>
-
-    <!-- orderHistory.ejs -->
-
-<% const filteredOrders = orders; %> <!-- Remove any status-based filtering here to display all orders -->
-
-
-
-<% if (filteredOrders.length > 0) { %>
-  <div class="grid-container">
-      <% filteredOrders.forEach(order => { %>
-          <div class="order-card">
+      <div class="lblso">
+        <label class="fpu">Order History</label>
+      </div>
+      
+      <% const filteredOrders = orders; %> <!-- Remove any status-based filtering here to display all orders -->
+      
+      <% if (filteredOrders.length > 0) { %>
+        <div class="grid-container">
+          <% filteredOrders.forEach(order => { %>
+            <div class="order-card">
               <p><strong>Order ID:</strong> <%= order.id %></p>
               <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
               <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
-          <!-- Calculate total price for the order -->
-          <% let totalPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0); %>
-          <p><strong>Total Price:</strong> ₱<%= totalPrice.toFixed(2) %></p>
-          
+              <!-- Calculate total price for the order -->
+              <% let totalPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0); %>
+              <p><strong>Total Price:</strong> ₱<%= totalPrice.toFixed(2) %></p>
+                
               <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
               <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
               <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
               <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p> <!-- Display payment method -->
               <p><strong>Order Items:</strong></p>
-
+      
               <div class="item-grid">
-                  <% order.orderItems.forEach(item => { %>
-                      <div class="item-card">
-                          <p><b>Item Name:</b> <%= item.itemName %> <%= item.withEggText %></p>
-                          <p><strong>Item Size:</strong> <%= item.itemSize %></p>
-                          <p><strong>Category:</strong> <%= item.category %></p>
-                          <p><strong>Quantity:</strong> <%= item.quantity %></p>
-                          <p><strong>Price:</strong> <%= item.itemPrice %></p>
-                          <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
-                          <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions.join(', ') %></p>
-                          <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
-                      </div>
-                  <% }); %>
+                <% order.orderItems.forEach(item => { %>
+                  <div class="item-card">
+                    <p><b>Item Name:</b> <%= item.itemName %> <%= item.withEggText %></p>
+                    <p><strong>Item Size:</strong> <%= item.itemSize %></p>
+                    <p><strong>Category:</strong> <%= item.category %></p>
+                    <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                    <p><strong>Price:</strong> <%= item.itemPrice %></p>
+                    <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
+                    <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions.join(', ') %></p>
+                    <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
+                  </div>
+                <% }); %>
               </div>
-          </div>
-      <% }); %>
-  </div>
+ <!-- Feedback form -->
+<% if (order.status.toLowerCase() === 'delivered') { %>
+  <form class="feedback-form" action="/submitFeedback" method="POST" onsubmit="submitFeedback(event)">
+    <input type="hidden" name="orderId" value="<%= order.id %>">
+    <label for="rating">Rating:</label>
+    <select id="rating" name="rating" required>
+      <option value="5">5 - Excellent</option>
+      <option value="4">4 - Good</option>
+      <option value="3">3 - Average</option>
+      <option value="2">2 - Poor</option>
+      <option value="1">1 - Very Poor</option>
+    </select>
+    <br>
+    <label for="comments">Comments:</label><br>
+    <textarea id="comments" name="comments" rows="4" cols="50" required></textarea>
+    <br>
+    <button type="submit">Submit Feedback</button>
+  </form>
+  
+
+  
 <% } else { %>
-  <p>No orders found.</p>
+  <p>Feedback can only be submitted for delivered orders.</p>
 <% } %>
 
-    <div class="lblso" style="margin:3% 0 0 1%;">
-        <label class="fpu" for="">Menu and Prices</label>
-        </div>
-        <div>
-          <div class="ogallery">
-            <img src="images/m1.jpg" alt="Image 1" onclick="openLightbox('images/m1.jpg')">
-            <img src="images/m4.jpg" alt="Image 1" onclick="openLightbox('images/m4.jpg')">
-            <img src="images/m2.jpg" alt="Image 1" onclick="openLightbox('images/m2.jpg')">
-            <img src="images/m5.jpg" alt="Image 1" onclick="openLightbox('images/m5.jpg')">
-            <img src="images/m3.jpg" alt="Image 1" onclick="openLightbox('images/m3.jpg')">
-            <!-- Add more images as needed -->
-          </div>
-        <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-          <img src="" alt="Enlarged Image" class="lightbox-image">
-          <!-- Add close button or any other content here -->
-        </div>
-        </div>
-        <div class="container">
-            <div class="lblso" style="margin-top: 5%;">
-              <label class="fpu" for="">Store Location</label>
-             </div>
-            <div class="card-maps">   
-                <div>
-                  <img class="map-img"  src="images/mam.png" alt="">
-                </div>
-                  <div>
-                      <iframe class="gmap" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d15473.095439622592!2d121.50914925672969!3d14.178731599845047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTTCsDEwJzU1LjkiTiAxMjHCsDMwJzM2LjAiRQ!5e0!3m2!1sen!2sus!4v1701578225488!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> 
-                   </div>
             </div>
-            </div>
-            <div class="cntr">
-            
-            <footer class="text-white text-center text-lg-start" style="background-color: #C69B68;">
-              <!-- Grid container -->
-              <div class="p-5">
-              
-              <!--Grid row-->
-              
-              <div class="row mt-4">
-                <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-                <!--Grid column-->
-                <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
-                <h5 class="text-uppercase mb-4">About company</h5>
-            
-                <label style="color: white;">
-                  Thank you for choosing Maya&Me Services for your food ordering needs. We're here to satisfy your cravings, one delicious meal at a time. Enjoy your meal and have a wonderful day!
-                </label>
-            
-                <div class="mt-4">
-                  <!-- Facebook -->
-                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
-                  <!-- Dribbble -->
-                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
-                  <!-- Twitter -->
-                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
-                  <!-- Google + -->
-                  <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
-                  <!-- Linkedin -->
-                </div>
-                </div>
-                <!--Grid column-->
-            <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-                <!--Grid column-->
-                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
-            
-                <ul class="fa-ul" style="margin-left: 1.65em;">
-                  <li class="mb-3">
-                  <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
-                  </li>
-                  <li class="mb-3">
-                  <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
-                  </li>
-                  <li class="mb-3">
-                  <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
-                  </li>
-               
-                </ul>
-                </div>
-                <!--Grid column-->
-            
-                <!--Grid column-->
-                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-uppercase mb-4">Opening hours</h5>
-            
-                <table class="table text-center text-white">
-                  <tbody class="font-weight-normal">
-                  <tr>
-                    <td>Mon - Thu:</td>
-                    <td>8am - 9pm</td>
-                  </tr>
-                  <tr style="background-color: #C69B68;">
-                    <td>Fri - Sat:</td>
-                    <td>8am - 1am</td>
-                  </tr>
-                  <tr>
-                    <td>Sunday:</td>
-                    <td>9am - 10pm</td>
-                  </tr>
-                  </tbody>
-                </table>
-                </div>
-                <!--Grid column-->
-              </div>
-              <!--Grid row-->
-              </div>
-              <!-- Grid container -->
-            
-              <!-- Copyright -->
-              <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
-              © 2023 Copyright:
-              <label style="color: #C69B68;">Maya&Me Services</label>
-              </div>
-              <!-- Copyright -->
-            </footer>
-            </div>
-            <!-- Dietary Preferences Modal -->
-  <div id="dietaryPreferencesModal" class="modal">
-    <div class="mod-content">
-      <span class="close-button" onclick="closeDietaryModal()">&times;</span>
-      <h2>Dietary Preferences</h2>
-
-      <!-- Start of the Dietary Preferences Form -->
-      <div class="container">
-        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST"
-          onsubmit="return handleSubmit(event);">
-          <!-- Diet Type -->
-          <div>
-            <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
-            <label class="lbld" for="vegetarian">Vegetarian</label>
-
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p>No orders found.</p>
+      <% } %>
+      
+     
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+      <script>
+        function submitFeedback(event) {
+          event.preventDefault(); // Prevent default form submission
           
-
-
-            <input type="checkbox" id="omnivore" name="omnivore" value="true" />
-            <label class="lbld" for="omnivore">Omnivore</label>
-
-
-            <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
-            <label class="lbld" for="glutenFree">Gluten-Free</label>
-
-          </div>
-
-          <!-- Allergies -->
-          <div>
-            <label class="lbld">Allergies:</label>
-           
-
-
-            <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
-            <label class="lbld" for="nutAllergy">Nut Allergy</label>
-
-          </div>
-
-          <input type="submit" value="Submit" />
-        </form>
-        <!-- Removed the confirmationMessage div -->
-        <!-- Add this div to display errors -->
-        <div id="errorDisplay" style="color: red; display: none"></div>
-      </div>
-      <!-- End of the Dietary Preferences Form -->
-    </div>
-  </div>
-
-  <script>
-    function openLightbox(imageSrc) {
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImage = lightbox.querySelector('.lightbox-image');
-    
-    // Update the source of the lightbox image
-    lightboxImage.src = imageSrc;
-    
-    // Show the lightbox
-    lightbox.style.display = 'flex'; // Assuming the lightbox has a flex display
-    
-    // Add an event listener to close the lightbox when clicked
-    lightbox.addEventListener('click', closeLightbox);
-}
-
-// Function to close the lightbox
-function closeLightbox() {
-    const lightbox = document.getElementById('lightbox');
-    lightbox.style.display = 'none'; // Hide the lightbox
-}
-
-// Function to initialize the lightbox
-function initializeLightbox() {
-    // Get the lightbox element
-    const lightbox = document.getElementById('lightbox');
-    
-    // Prevent clicks inside the lightbox from closing it
-    lightbox.addEventListener('click', function(event) {
-        event.stopPropagation();
-    });
-}
-
-// Call the initializeLightbox function when the DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeLightbox);
-    var modal = document.getElementById("dietaryPreferencesModal");
-    var btn = document.getElementById("dietaryPreferencesNav");
-
-    function openDietaryModal() {
-      modal.style.display = "block";
-    }
-
-    window.onclick = function (event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    };
-
-    function closeDietaryModal() {
-      modal.style.display = "none";
-    }
-    // ...other code...
-
-    async function handleSubmit(event) {
-      event.preventDefault();
-      const errorDisplay = document.getElementById("errorDisplay");
-
-      // Reset the error display
-      errorDisplay.style.display = "none";
-      errorDisplay.textContent = "";
-
-      const form = document.getElementById("dietaryForm");
-      const dietaryPreferences = {
-        vegetarian: form["vegetarian"].checked,
-        // vegan: form["vegan"].checked,
-        omnivore: form["omnivore"].checked,
-        // halal: form["halal"].checked,
-        // kosher: form["kosher"].checked,
-        // lactoseFree: form["lactoseFree"].checked,
-        glutenFree: form["glutenFree"].checked,
-        nutAllergy: form["nutAllergy"].checked,
-        // otherRestrictions: form["otherRestrictions"].value.trim(),
-      };
-
-      console.log("CALL 1", dietaryPreferences);
-
-      // Check if at least one dietary choice is selected
-      const isAnyChoiceSelected = Object.values(dietaryPreferences).some(
-        (choice) => choice
-      );
-      if (!isAnyChoiceSelected) {
-        errorDisplay.textContent =
-          "Please select at least one dietary preference.";
-        errorDisplay.style.display = "block";
-        return; // Don't proceed with the submission
-      }
-
-      // Proceed with submission
-      try {
-        const response = await fetch("/submit-dietary-preferences", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dietaryPreferences),
-        });
-
-        if (response.ok) {
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const data = await response.json();
-            if (data.success) {
-              // Show the success message using SweetAlert
-              Swal.fire({
-                icon: "success",
-                title: "Success!",
-                text: "Your dietary preferences have been submitted successfully!",
-                showConfirmButton: true,
-              }).then(() => {
-                window.location.href = "/recommendations";
-              });
-            } else {
-              throw new Error(data.message || "An error occurred.");
+          const form = event.target; // Get the form element
+          const formData = new FormData(form); // Serialize form data
+          
+          // Send a POST request to '/submitFeedback'
+          fetch('/submitFeedback', {
+            method: 'POST',
+            body: formData, // Include serialized form data as body
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
             }
-          } else {
-            throw new Error("Received non-JSON response from server");
-          }
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json(); // Parse response JSON
+          })
+          .then(data => {
+            console.log('Feedback submitted successfully:', data);
+            Swal.fire({
+              icon: 'success',
+              title: 'Feedback Submitted!',
+              text: data.message,
+            });
+            // Optionally reload or update the page after feedback submission
+            // window.location.reload();
+          })
+          .catch(error => {
+            console.error('Error submitting feedback:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Something went wrong! Please try again later.',
+            });
+          });
         }
-      } catch (error) {
-        console.error("Error:", error);
-        errorDisplay.textContent = error.message;
-        errorDisplay.style.display = "block";
-      }
-    }
-
-    function displayRecommendations(recommendations) {
-      const recommendationsContainer = document.getElementById(
-        "recommendations-container"
-      );
-      if (recommendationsContainer) {
-        recommendationsContainer.innerHTML = recommendations
-          .map((rec) => `<li>${rec}</li>`)
-          .join("");
-      }
-    }
-  </script>
-    <!-- Add more links or buttons as needed -->
-    <script>
-      // Function to update the cart counter and item counter
-      function updateCartCounter() {
-                fetch('/api/cart/items', {
-                    method: 'GET',
-                    credentials: 'include', // Important for sessions
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch cart items. Please try again.');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // Calculate total number of items in the cart
-                        const totalItems = data.reduce((total, item) => total + item.quantity, 0);
-                        // Update the cart counter and item counter in the UI
-                        document.getElementById('cart-counter').textContent = totalItems;
-                        document.getElementById('item-counter').textContent = totalItems; // Update item counter
-                    })
-                    .catch(error => {
-                        console.error('Error fetching cart items:', error);
-                        // Display an error message or handle it as per your requirement
-                    });
-            }
-    
-            // Call the function to update the cart counter and item counter when the page loads
-            document.addEventListener('DOMContentLoaded', updateCartCounter);
-    </script>
+        </script>
+        
+      
+ 
     <script src="scripts/meals.js"></script>
 
 </body>

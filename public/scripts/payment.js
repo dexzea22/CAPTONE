@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to update button state based on total amount
     function updateButtonState(totalAmount) {
-        if (totalAmount > 10000) {
+        if (totalAmount > 15000) {
             btn.disabled = true;
         } else {
             btn.disabled = false;
