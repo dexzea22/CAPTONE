@@ -169,42 +169,53 @@
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
       <script>
         function submitFeedback(event) {
-          event.preventDefault(); // Prevent default form submission
-          
-          const form = event.target; // Get the form element
-          const formData = new FormData(form); // Serialize form data
-          
-          // Send a POST request to '/submitFeedback'
-          fetch('/submitFeedback', {
-            method: 'POST',
-            body: formData, // Include serialized form data as body
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json(); // Parse response JSON
-          })
-          .then(data => {
-            console.log('Feedback submitted successfully:', data);
-            Swal.fire({
-              icon: 'success',
-              title: 'Feedback Submitted!',
-              text: data.message,
-            });
-            // Optionally reload or update the page after feedback submission
-            // window.location.reload();
-          })
-          .catch(error => {
-            console.error('Error submitting feedback:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'Something went wrong! Please try again later.',
-            });
-          });
-        }
-        </script>
+  event.preventDefault(); // Prevent default form submission
+
+  const form = event.target; // Get the form element
+  const formData = new FormData(form); // Serialize form data
+
+  // Convert FormData to a JSON object
+  const jsonFormData = {};
+  formData.forEach((value, key) => {
+    jsonFormData[key] = value;
+  });
+
+  // Send a POST request to '/submitFeedback'
+  fetch('/submitFeedback', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(jsonFormData), // Include serialized form data as body
+  })
+  .then(response => {
+    console.log('Response status:', response.status); // Log the response status
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json(); // Parse response JSON
+  })
+  .then(data => {
+    console.log('Feedback submitted successfully:', data);
+    Swal.fire({
+      icon: 'success',
+      title: 'Feedback Submitted!',
+      text: data.message,
+    });
+    // Optionally reload or update the page after feedback submission
+    // window.location.reload();
+  })
+  .catch(error => {
+    console.error('Error submitting feedback:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Something went wrong! Please try again later.',
+    });
+  });
+}
+
+    </script>
         
       
  

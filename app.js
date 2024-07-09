@@ -321,8 +321,10 @@ app.get('/orderHistory',  async (req, res) => {
 app.post('/submitFeedback', async (req, res) => {
   try {
     console.log('Received feedback submission request:', req.body);
-
     const { orderId, rating, comments } = req.body;
+    console.log('Order ID:', orderId);
+    console.log('Rating:', rating);
+    console.log('Comments:', comments);
 
     // Validate required fields
     if (!orderId || !rating || !comments) {
@@ -350,6 +352,7 @@ app.post('/submitFeedback', async (req, res) => {
     res.status(500).json({ error: 'Error submitting feedback' });
   }
 });
+
 
 
 
