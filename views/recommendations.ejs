@@ -405,7 +405,7 @@
                               <label for="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>">Quantity:</label>
                               <input type="number" name="quantity"
                                      id="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>"
-                                     class="form-control quantity-input" min="1" value="1"
+                                     class="qty quantity-input" min="1" value="1"
                                      data-price="<%= currentItem.price %>"
                                      <%= !currentItem.available ? 'disabled' : '' %>>
                           </div>
@@ -415,7 +415,7 @@
                                      class="form-check-input" data-egg-price="5"
                                      <%= !currentItem.available ? 'disabled' : '' %>>
                               <label for="withEgg-<%= currentItem.name.replace(/\s+/g, '-') %>"
-                                     class="form-check-label">With Egg (₱5)</label>
+                                     class="form-check-label" style="margin-bottom: 149px;">With Egg (₱5)</label>
                           </div>
                       <% } %>
 

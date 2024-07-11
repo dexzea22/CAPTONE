@@ -95,7 +95,7 @@
         <% bestSellerItems.forEach(item => { %>
           <% if (item.available) { %>
             <% if (item.category === 'Solo Meals') { %>
-                <div class="card h-100" id="card-<%= item.name.replace(/\s+/g, '-') %>"
+                <div class="card" id="card-<%= item.name.replace(/\s+/g, '-') %>"
                   data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>"
                   data-category="Solo Meals">
                   <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
@@ -125,7 +125,7 @@
                       <label class="form-check-label" for="withEgg-<%= item.name.replace(/\s+/g, '-') %>">Add Egg (₱5)</label>
                     </div>
                     <!-- Total Price -->
-                    <p class="card-text" style="font-size: 16px; margin-top: 140px;">Total Price: ₱<span class="total-price"><%= item.price.toFixed(2) %></span></p>
+                    <p class="card-text" style="font-size: 16px; margin-top: 150px;">Total Price: ₱<span class="total-price"><%= item.price.toFixed(2) %></span></p>
                     <!-- Add to Cart button -->
                     <button style="margin-top: 10px;" type="button" class="cbtn"
                       onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
