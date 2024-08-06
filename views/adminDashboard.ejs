@@ -1,48 +1,117 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADMIN</title>
+    <link rel="website icon" type="png" href="images/maya.png" />
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Rubik:400,700"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://kit.fontawesome.com/7f01a542af.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="stylesheets/admin.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
+    <style>
+      .container {
+        background-color: #ffffff; /* White background for the container */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+      }
+      .container a {
+        color: black;
+        text-decoration: none;
+      }
+      .container a:hover {
+        color: #eecf44; /* Darker blue on hover */
+        text-decoration: none; /* Underline on hover */
+      }
+      .backgroundSales {
+        background-color: #f7ddad;
+        border-radius: 10px;
+        height: auto;
+        width: 100%;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        margin: auto;
+      }
+      .backgroundSales h1 {
+        padding: 25px;
+      }
+      .tab-content iframe {
+        width: 100%;
+        height: 480px;
+        border: none;
+        border-radius: 2px;
+        box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+      }
+      .iframe-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around; /* Adjusts the space between the iframes */
+        gap: 20px; /* Optional: adds gap between the iframes */
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ADMIN</title>
-  <link rel="website icon" type="png" href="images/maya.png" />
-  <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
-  <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="stylesheets/admin.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script
-    src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
-</head>
+      .iframe-container iframe {
+        background: #ffffff;
+        border: none;
+        border-radius: 2px;
+        box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+        width: 45%; /* Adjust width as needed to fit two iframes in a row */
+        height: 480px; /* Adjust height as needed */
+      }
+    </style>
+  </head>
 
-<body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
-  <div class="menu-toggle">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-  </div>
-  <div>
-    <div class="menu">
-      <a href="/adminDashboard">Dashboard</a>
-      <a href="/adminUserTable">User Table</a>
-      <a href="/logs">Logs</a>
-      <a href="/adminTransactionHistory">Transaction History</a>
-      <a href="/adminOrderNotifications">Order Notifications</a>
-      <a href="/adminCreateFoodItem">Add Food Item</a>
-      <a href="/logout">Logout</a>
+  <body
+    style="
+      background-image: url('images/standard-bg.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+    "
+  >
+    <div class="menu-toggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
     </div>
-    
-      
+    <div>
+      <div class="menu">
+        <a href="/adminDashboard">Dashboard</a>
+        <a href="/adminUserTable">User Table</a>
+        <a href="/logs">Logs</a>
+        <a href="/adminTransactionHistory">Transaction History</a>
+        <a href="/adminOrderNotifications">Order Notifications</a>
+        <a href="/adminCreateFoodItem">Add Food Item</a>
+        <a href="/logout">Logout</a>
+      </div>
+
       <div class="side-menu">
         <a href="/adminDashboard">Dashboard</a>
         <a href="/adminUserTable">User Table</a>
@@ -57,75 +126,152 @@
         <!-- Number of User -->
         <iframe
           style="
-            background: #ffffff;
+            background: #b3e6c8;
             border: none;
             border-radius: 2px;
             box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            margin: 2%;
           "
-          width="540"
-          height="280"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662271e6-bf90-4b40-8933-1369eb0e904c&maxDataAge=3600&theme=light&autoRefresh=true"
+          width="450"
+          height="170"
+          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668ec37e-9fda-411d-88d6-e77463bd36b5&maxDataAge=3600&theme=light&autoRefresh=true"
+        ></iframe>
+        <!-- pending order -->
+        <iframe
+          style="
+            background: #d27979;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            margin: 2%;
+          "
+          width="450"
+          height="170"
+          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668eb8aa-637b-4043-8b6c-b02570af9e76&maxDataAge=3600&theme=light&autoRefresh=true"
+        ></iframe>
+        <!-- delivered -->
+        <iframe
+          style="
+            background: #79c3d2;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            margin: 2%;
+          "
+          width="450"
+          height="170"
+          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668eb917-9fda-47d9-8e68-e77463d5b41e&maxDataAge=3600&theme=light&autoRefresh=true"
         ></iframe>
         <!-- Revenue Generation -->
         <iframe
           style="
-            background: #ffffff;
+            background: #79c3d2;
+            color: #ffffff;
             border: none;
-            border-radius: 2px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            margin: 2%;
           "
-          width="440"
-          height="280"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226f59-bf47-41d4-89f7-33b637501676&maxDataAge=3600&theme=light&autoRefresh=true"
+          width="450"
+          height="170"
+          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668c0087-adf1-4aa1-8047-6e1d52baeb7c&maxDataAge=3600&theme=light&autoRefresh=true"
         ></iframe>
         <!-- Donut -->
         <iframe
           style="
             background: #ffffff;
+            color: #ffffff;
             border: none;
-            border-radius: 2px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            margin: 2%;
           "
-          width="440"
-          height="280"
+          width="450"
+          height="170"
           src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662282c1-b28f-4620-86b1-0567f6ffab17&maxDataAge=3600&theme=light&autoRefresh=true"
         ></iframe>
-        <!-- average order value -->
-        <iframe
-          style="
-            background: #ffffff;
-            border: none;
-            border-radius: 2px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-          "
-          width="1430"
-          height="480"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66228974-8996-4fee-8aa7-9719cb6e8159&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-        <!-- Popular Items -->
-        <iframe
-          style="
-            background: #ffffff;
-            border: none;
-            border-radius: 2px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-          "
-          width="1430"
-          height="480"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226e96-bf47-4fc0-81f4-33b6374566cc&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-        <!-- dietary -->
-        <iframe
-          style="
-            background: #ffffff;
-            border: none;
-            border-radius: 2px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-          "
-          width="1430"
-          height="480"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66227b12-47c9-4006-8f48-023fc4ca8990&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
+        <br />
+        <!-- Sales -->
+
+        <div class="backgroundSales">
+          <h1>Sales</h1>
+          <div class="container mt-3">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  id="average-order-value-tab"
+                  data-toggle="tab"
+                  href="#average-order-value"
+                  role="tab"
+                  aria-controls="average-order-value"
+                  aria-selected="true"
+                  >Average Order Value</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="hourly-tab"
+                  data-toggle="tab"
+                  href="#hourly"
+                  role="tab"
+                  aria-controls="hourly"
+                  aria-selected="false"
+                  >Hourly</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="minutes-tab"
+                  data-toggle="tab"
+                  href="#minutes"
+                  role="tab"
+                  aria-controls="minutes"
+                  aria-selected="false"
+                  >Minutes</a
+                >
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="average-order-value"
+                role="tabpanel"
+                aria-labelledby="average-order-value-tab"
+              >
+                <iframe
+                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66228974-8996-4fee-8aa7-9719cb6e8159&maxDataAge=3600&theme=light&autoRefresh=true"
+                ></iframe>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="hourly"
+                role="tabpanel"
+                aria-labelledby="hourly-tab"
+              >
+                <iframe
+                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226f59-bf47-41d4-89f7-33b637501676&maxDataAge=3600&theme=light&autoRefresh=true"
+                ></iframe>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="minutes"
+                role="tabpanel"
+                aria-labelledby="minutes-tab"
+              >
+                <iframe
+                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668bfeeb-adf1-468f-86c8-6e1d528b3b04&maxDataAge=3600&theme=light&autoRefresh=true"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br />
+        <!-- Transaction -->
         <div>
           <h2>Transactions</h2>
           <iframe
@@ -134,387 +280,43 @@
               border: none;
               border-radius: 2px;
               box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+              margin-left: 5%;
             "
             width="1430"
             height="480"
             src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662273b8-4660-443f-856e-af65de4259d7&maxDataAge=3600&theme=light&autoRefresh=true"
           ></iframe>
-          <!-- <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Transaction ID</th>
-                <th>Amount</th>
-                
-              </tr>
-            </thead>
-            <tbody id="transactionTableBody">
-               Transaction data will be inserted here dynamically 
-            </tbody>
-          </table> -->
         </div>
-        <!-- Display the PayPal transaction data on your admin dashboard -->
+        <br />
+        <!-- row Popular and Dietary -->
+        <div class="iframe-container">
+          <!-- Popular Items -->
+          <iframe
+            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226e96-bf47-4fc0-81f4-33b6374566cc&maxDataAge=3600&theme=light&autoRefresh=true"
+          ></iframe>
 
-        <!-- <div class="chart-container">
-          <div class="chart-wrapper">
-            <canvas id="barChart"></canvas>
-          </div>
-          <div class="chart-wrapper" id="pieChartWrapper">
-            <canvas id="pieChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="lineChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="stackedBarChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="scatterPlot"></canvas>
-          </div>
-          <div class="chart-wrapper" id="donutChartWrapper">
-            <canvas id="donutChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="areaChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="radarChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="funnelChart"></canvas>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="heatmapChart"></canvas>
-          </div>
-        </div> -->
-
-        <script>
-          // Assuming you have retrieved the food choices data from the form submissions
-          // Replace the foodChoicesData array with the actual data fetched from the form submissions
-
-          // Create the bar chart
-          const barChartCtx = document
-            .getElementById("barChart")
-            .getContext("2d");
-          new Chart(barChartCtx, {
-            type: "bar",
-            data: {
-              labels: ["Burger", "Pizza", "Pasta", "Salad", "Sushi"],
-              datasets: [
-                {
-                  label: "Food Choices",
-                  data: [25, 35, 20, 10, 15],
-                  backgroundColor: [
-                    "#FF6384",
-                    "#36A2EB",
-                    "#FFCE56",
-                    "#4BC0C0",
-                    "#9966FF",
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Count",
-                  },
-                },
-              },
-            },
-          });
-
-          // Create the pie chart
-          const pieChartCtx = document
-            .getElementById("pieChart")
-            .getContext("2d");
-          new Chart(pieChartCtx, {
-            type: "pie",
-            data: {
-              labels: ["Burger", "Pizza", "Pasta", "Salad", "Sushi"],
-              datasets: [
-                {
-                  label: "Food Choices",
-                  data: [25, 35, 20, 10, 15],
-                  backgroundColor: [
-                    "#FF6384",
-                    "#36A2EB",
-                    "#FFCE56",
-                    "#4BC0C0",
-                    "#9966FF",
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            },
-          });
-
-          // Assuming you have retrieved the data for form submissions and orders from your system
-          // Replace the formSubmissionsData and ordersData arrays with the actual data fetched from your system
-
-          // Create an array of dates for the x-axis labels (e.g., monthly or weekly timestamps)
-          const dates = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-
-          // Form submissions data
-          const formSubmissionsData = [10, 20, 30, 25, 35, 40];
-
-          // Orders data
-          const ordersData = [15, 25, 20, 30, 45, 35];
-
-          // Create the line chart
-          const lineChartCtx = document
-            .getElementById("lineChart")
-            .getContext("2d");
-          new Chart(lineChartCtx, {
-            type: "line",
-            data: {
-              labels: dates,
-              datasets: [
-                {
-                  label: "Form Submissions",
-                  data: formSubmissionsData,
-                  borderColor: "#FF6384",
-                  borderWidth: 2,
-                  fill: false,
-                },
-                {
-                  label: "Orders",
-                  data: ordersData,
-                  borderColor: "#36A2EB",
-                  borderWidth: 2,
-                  fill: false,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Count",
-                  },
-                },
-                x: {
-                  title: {
-                    display: true,
-                    text: "Months",
-                  },
-                },
-              },
-            },
-          });
-
-          // Create the donut chart
-          const donutChartCtx = document
-            .getElementById("donutChart")
-            .getContext("2d");
-          new Chart(donutChartCtx, {
-            type: "doughnut",
-            data: {
-              labels: ["Burger", "Pizza", "Pasta", "Salad", "Sushi"],
-              datasets: [
-                {
-                  label: "Food Choices",
-                  data: [25, 35, 20, 10, 15],
-                  backgroundColor: [
-                    "#FF6384",
-                    "#36A2EB",
-                    "#FFCE56",
-                    "#4BC0C0",
-                    "#9966FF",
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            },
-          });
-
-          // Create the stacked bar chart
-          const stackedBarChartCtx = document
-            .getElementById("stackedBarChart")
-            .getContext("2d");
-          new Chart(stackedBarChartCtx, {
-            type: "bar",
-            data: {
-              labels: ["Group 1", "Group 2", "Group 3"],
-              datasets: [
-                {
-                  label: "Burger",
-                  data: [10, 20, 30],
-                  backgroundColor: "#FF6384",
-                },
-                {
-                  label: "Pizza",
-                  data: [15, 25, 35],
-                  backgroundColor: "#36A2EB",
-                },
-                {
-                  label: "Pasta",
-                  data: [5, 10, 15],
-                  backgroundColor: "#FFCE56",
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Count",
-                  },
-                },
-              },
-              plugins: {
-                legend: {
-                  position: "bottom",
-                },
-                title: {
-                  display: true,
-                  text: "Distribution of Food Choices across Age Groups",
-                },
-              },
-            },
-          });
-
-          // Create the scatter plot
-          const scatterPlotCtx = document
-            .getElementById("scatterPlot")
-            .getContext("2d");
-          new Chart(scatterPlotCtx, {
-            type: "scatter",
-            data: {
-              datasets: [
-                {
-                  label: "Scatter Plot",
-                  data: [
-                    { x: 20, y: 30 },
-                    { x: 25, y: 35 },
-                    { x: 30, y: 20 },
-                    { x: 35, y: 15 },
-                    { x: 40, y: 25 },
-                  ],
-                  backgroundColor: "#FF6384",
-                  pointRadius: 6,
-                  pointHoverRadius: 8,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                x: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Age",
-                  },
-                },
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Food Choices",
-                  },
-                },
-              },
-              plugins: {
-                title: {
-                  display: true,
-                  text: "Relationship between Age and Preferred Food Choices",
-                },
-              },
-            },
-          });
-
-          // Create the area chart
-          const areaChartCtx = document
-            .getElementById("areaChart")
-            .getContext("2d");
-          new Chart(areaChartCtx, {
-            type: "line",
-            data: {
-              labels: dates,
-              datasets: [
-                {
-                  label: "Cumulative Orders",
-                  data: ordersData,
-                  borderColor: "#4BC0C0",
-                  backgroundColor: "rgba(75, 192, 192, 0.3)",
-                  borderWidth: 2,
-                  fill: true,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Cumulative Orders",
-                  },
-                },
-                x: {
-                  title: {
-                    display: true,
-                    text: "Months",
-                  },
-                },
-              },
-              plugins: {
-                title: {
-                  display: true,
-                  text: "Cumulative Number of Orders over Time",
-                },
-              },
-            },
-          });
-
-          // Create the radar chart
-          const radarChartCtx = document
-            .getElementById("radarChart")
-            .getContext("2d");
-          new Chart(radarChartCtx, {
-            type: "radar",
-            data: {
-              labels: ["Burger", "Pizza", "Pasta", "Salad", "Sushi"],
-              datasets: [
-                {
-                  label: "Gender 1",
-                  data: [3, 4, 5, 2, 1],
-                  backgroundColor: "rgba(255, 99, 132, 0.3)",
-                  borderColor: "#FF6384",
-                  borderWidth: 2,
-                },
-                {
-                  label: "Gender 2",
-                  data: [2, 3, 1, 4, 5],
-                  backgroundColor: "rgba(54, 162, 235, 0.3)",
-                  borderColor: "#36A2EB",
-                  borderWidth: 2,
-                },
-              ],
-            },
-            options: {
-              scales: {
-                r: {
-                  beginAtZero: true,
-                },
-              },
-              plugins: {
-                title: {
-                  display: true,
-                  text: "Distribution of Food Choices among User Demographics",
-                },
-              },
-            },
-          });
-        </script>
+          <!-- Dietary -->
+          <iframe
+            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66227b12-47c9-4006-8f48-023fc4ca8990&maxDataAge=3600&theme=light&autoRefresh=true"
+          ></iframe>
+        </div>
+        <br />
+        <!-- Food Performance Rating -->
+        <iframe
+          style="
+            background: #ffffff;
+            border: none;
+            border-radius: 2px;
+            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            margin-left: 2.1%;
+          "
+          width="45%"
+          height="480"
+          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668ede4d-263d-44a1-86ff-a8e1ea81a696&maxDataAge=3600&theme=light&autoRefresh=true"
+        ></iframe>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       </div>
     </div>
     <script src="scripts/index.js"></script>
