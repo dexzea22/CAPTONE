@@ -1,0 +1,174 @@
+<!-- views/charts.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charts PDF</title>
+    <style>
+      .container {
+        background-color: #ffffff; /* White background for the container */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+      }
+      .container a {
+        color: black;
+        text-decoration: none;
+      }
+      .container a:hover {
+        color: #eecf44; /* Darker blue on hover */
+        text-decoration: none; /* Underline on hover */
+      }
+      .backgroundSales {
+        background-color: #f7ddad;
+        border-radius: 10px;
+        height: auto;
+        width: 100%;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        margin: auto;
+      }
+      .backgroundSales h1 {
+        padding: 25px;
+      }
+      .tab-content iframe {
+        width: 100%;
+        height: 480px;
+        border: none;
+        border-radius: 2px;
+        box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+      }
+      .iframe-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around; /* Adjusts the space between the iframes */
+        gap: 20px; /* Optional: adds gap between the iframes */
+      }
+
+      .iframe-container iframe {
+        background: #ffffff;
+        border: none;
+        border-radius: 2px;
+        box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+        width: 45%; /* Adjust width as needed to fit two iframes in a row */
+        height: 480px; /* Adjust height as needed */
+      }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h1 class="admn">Admin Dashboard</h1>
+        <br />
+        <!-- Sales -->
+
+        <div class="backgroundSales">
+          <h1>Sales</h1>
+          <div class="container mt-3">
+          
+            <div class="tab-content" id="myTabContent">
+              <div
+                class="tab-pane fade show active"
+                id="average-order-value"
+                role="tabpanel"
+                aria-labelledby="average-order-value-tab"
+              >
+                <iframe
+                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66228974-8996-4fee-8aa7-9719cb6e8159&maxDataAge=3600&theme=light&autoRefresh=true"
+                ></iframe>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="hourly"
+                role="tabpanel"
+                aria-labelledby="hourly-tab"
+              >
+                <iframe
+                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226f59-bf47-41d4-89f7-33b637501676&maxDataAge=3600&theme=light&autoRefresh=true"
+                ></iframe>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="minutes"
+                role="tabpanel"
+                aria-labelledby="minutes-tab"
+              >
+                <iframe
+                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668bfeeb-adf1-468f-86c8-6e1d528b3b04&maxDataAge=3600&theme=light&autoRefresh=true"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br />
+        <!-- Transaction -->
+        
+          <h2>Transactions</h2>
+          <iframe
+            style="
+              background: #ffffff;
+              border: none;
+              border-radius: 2px;
+              box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+              
+            "
+            width="100%"
+            height="500"
+            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662273b8-4660-443f-856e-af65de4259d7&maxDataAge=3600&theme=light&autoRefresh=true"
+          ></iframe>
+        
+        <br />
+          <!-- Popular Items -->
+          <iframe
+          style="
+              background: #ffffff;
+              border: none;
+              border-radius: 2px;
+              box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            "
+            width="100%"
+            height="500"
+            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226e96-bf47-4fc0-81f4-33b6374566cc&maxDataAge=3600&theme=light&autoRefresh=true"
+          ></iframe>
+          <br />
+        <!-- Dietary -->
+        <iframe
+        style="
+              background: #ffffff;
+              border: none;
+              border-radius: 2px;
+              box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            "
+            width="100%"
+            height="500"
+        src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66227b12-47c9-4006-8f48-023fc4ca8990&maxDataAge=3600&theme=light&autoRefresh=true"
+      ></iframe>
+        <br />
+        
+          <!-- Food Performance Rating -->
+          <iframe
+            style="
+              background: #ffffff;
+              border: none;
+              border-radius: 2px;
+              box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+            "
+            width="100%"
+            height="600"
+            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668ede4d-263d-44a1-86ff-a8e1ea81a696&maxDataAge=3600&theme=light&autoRefresh=true"
+          ></iframe>
+          <br />
+        <!-- Reviews -->
+        <iframe
+        style="
+          background: #ffffff;
+          border: none;
+          border-radius: 2px;
+          box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
+        "
+        width="100%"
+        height="500"
+        src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668a9f48-9e24-42ed-8829-6b5109563c85&maxDataAge=3600&theme=light&autoRefresh=true"
+      ></iframe>
+</body>
+</html>
