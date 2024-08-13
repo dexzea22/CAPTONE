@@ -49,7 +49,7 @@ const soloMealsRouter = require('./routes/soloMealsRouter');
 const partyTraysRouter = require('./routes/partyTraysRouter');
 const foodMenuRouter = require('./routes/foodMenuRouter');
 const generateReportRouter = require('./routes/generateReportRouter');
-
+const apiRoutes = require('./routes/api');
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
@@ -499,6 +499,7 @@ app.use('/PartyTrays', partyTraysRouter);
 app.use('/foodMenu', foodMenuRouter);
 app.use('/bestSeller', bestSellerRouter); 
 app.use('/reports', generateReportRouter);
+app.use('/api', apiRoutes);
 
 const generateAccessToken = async () => {
   try {
