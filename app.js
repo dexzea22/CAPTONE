@@ -49,9 +49,8 @@ const bestSellerRouter = require('./routes/bestSellerRouter');
 const soloMealsRouter = require('./routes/soloMealsRouter');
 const partyTraysRouter = require('./routes/partyTraysRouter');
 const foodMenuRouter = require('./routes/foodMenuRouter');
-
-const editUserFormRouter = require('./routes/editUserForm'); 
-app.use('/editUserForm', editUserFormRouter); 
+const generateReportRouter = require('./routes/generateReportRouter');
+const apiRoutes = require('./routes/api');
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
@@ -169,6 +168,9 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
       user: user,
       welcomeMessage: `Welcome ${user.firstName || 'Admin'}!`  // Safe fallback if firstName is not set
     });
+
+    
+
   } catch (error) {
     console.error('Error loading AdminDashboard:', error);
     res.status(500).send('Internal Server Error');
@@ -507,6 +509,12 @@ app.get("/contact", (req, res) => {
 // app.get("/bestSeller", (req, res) => {
 //   res.render("bestSeller"); // Render the bestSeller.ejs view
 // });
+app.get('/charts', (req, res) => {
+  res.render('charts'); // This will render the charts.ejs
+});
+
+
+
 
 
 
@@ -546,6 +554,8 @@ app.use('/soloMeals', soloMealsRouter);
 app.use('/PartyTrays', partyTraysRouter);
 app.use('/foodMenu', foodMenuRouter);
 app.use('/bestSeller', bestSellerRouter); 
+app.use('/reports', generateReportRouter);
+app.use('/api', apiRoutes);
 
 const generateAccessToken = async () => {
   try {

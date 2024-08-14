@@ -21,6 +21,10 @@ router.get('/register', async (req, res) => {
 // Handle registration logic
 router.post('/register', async (req, res) => {
     const { firstName, lastName, email, password, confirmPassword, gender, address, dateOfBirth, phoneNumber, usertype } = req.body;
+    // Check if Terms and Conditions were accepted
+    if (!terms) {
+        return res.render('register', { errorMessage: 'You must agree to the Terms and Conditions.', data: req.body });
+    }
 
     // Validate email
     if (!validator.validate(email)) {
