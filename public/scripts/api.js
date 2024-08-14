@@ -262,6 +262,54 @@ async function renderRevenueByDayChart() {
     `;
 }
 
+// Fetch yearly revenue and render chart with analysis
+async function fetchYearlyRevenue() {
+    const response = await fetch('/api/yearly-revenue');
+    const data = await response.json();
+    return data;
+  }
+  
+  async function renderYearlyRevenueChart() {
+    const yearlyRevenue = await fetchYearlyRevenue();
+  
+    const labels = yearlyRevenue.map(item => item.year);
+    const data = yearlyRevenue.map(item => item.totalRevenue);
+  
+    const ctx = document.getElementById('yearlyRevenueChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Total Revenue',
+          data: data,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x: { 
+            beginAtZero: true,
+            reverse: false // Make sure the X-axis is in the correct order
+          },
+          y: { 
+            beginAtZero: true 
+          }
+        }
+      }
+    });
+  
+    // Textual analysis
+    const highestRevenueYear = yearlyRevenue.reduce((max, item) => item.totalRevenue > max.totalRevenue ? item : max, yearlyRevenue[0]);
+    document.getElementById('yearlyRevenueAnalysis').innerHTML = `
+      <p>Total revenue for the past years is shown in the chart.</p>
+      <p>The highest revenue was recorded in ${highestRevenueYear.year} with $${highestRevenueYear.totalRevenue.toFixed(2)}.</p>
+      <p>Focus on the years with lower revenue to identify potential causes and solutions.</p>
+    `;
+  }
+
 // Call functions to render charts and analysis
 renderOrderChart();
 renderTopSellingChart();
@@ -269,3 +317,4 @@ renderMonthlyRevenueChart();
 renderDailyOrdersTrendChart();
 //renderCustomerSatisfactionChart();
 renderRevenueByDayChart();
+renderYearlyRevenueChart();

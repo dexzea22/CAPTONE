@@ -213,4 +213,41 @@ router.get('/revenue-by-day', async (req, res) => {
     }
   });
 
+  // Endpoint to get yearly revenue
+router.get('/yearly-revenue', async (req, res) => {
+  try {
+    const revenueData = await prismaClient.order.groupBy({
+      by: ['createdAt'],
+      _sum: {
+        amount: true
+      },
+      _count: {
+        id: true
+      }
+    });
+
+    const yearlyRevenue = revenueData.reduce((acc, item) => {
+      const year = item.createdAt.getFullYear();
+      if (!acc[year]) {
+        acc[year] = 0;
+      }
+      acc[year] += item._sum.amount;
+      return acc;
+    }, {});
+
+    const formattedYearlyRevenue = Object.entries(yearlyRevenue).map(([year, totalRevenue]) => ({
+      year,
+      totalRevenue
+    }));
+
+    // Reverse the order to have the most recent year last
+    formattedYearlyRevenue.reverse();
+
+    res.json(formattedYearlyRevenue);
+  } catch (error) {
+    console.error('Error fetching yearly revenue:', error);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
 module.exports = router;
