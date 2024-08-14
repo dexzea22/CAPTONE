@@ -37,19 +37,14 @@ model User {
 }
 
 model DietaryPreference {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @unique
-  vegetarian        Boolean @default(false)
-  vegan             Boolean @default(false)
-  omnivore          Boolean @default(false)
-  halal             Boolean @default(false)
-  kosher            Boolean @default(false)
-  glutenFree        Boolean @default(false)
-  lactoseFree       Boolean @default(false)
-  nutAllergy        Boolean @default(false)
-  otherRestrictions String?
-  user              User    @relation(fields: [userId], references: [id])
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique
+  preferences Json?
+  user        User     @relation(fields: [userId], references: [id])
 }
+
+
+
 
 model FoodItem {
   id                  String      @id @default(auto()) @map("_id") @db.ObjectId

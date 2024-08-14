@@ -30,53 +30,148 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
     <style>
-       thead.thead-dark th {
-            background-color: #343a40;
-            color: #fff;
-        }
-      /* The Modal (background) */
-      .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        left: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0, 0, 0); /* Fallback color */
-        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-      }
+      /* Table Header Styling */
+thead.thead-dark th {
+    background-color: #343a40;
+    color: #fff;
+}
 
-      /* Modal Content/Box */
-      .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto; /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 20%; /* Could be more or less, depending on screen size */
-      }
+/* The Modal (background) */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+}
 
-      /* Close Button */
-      .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-      }
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* Centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Adjusted width */
+    max-width: 600px; /* Maximum width */
+    max-height: 80vh; /* Maximum height to ensure it doesn't exceed viewport height */
+    overflow-y: auto; /* Enable vertical scroll if content overflows */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    border-radius: 8px; /* Rounded corners */
+    position: relative; /* For positioning close button */
+}
 
-      .close:hover,
-      .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-      }
+/* Close Button */
+.modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-  @media(max-width:789px){
-        table{
-          width: 20px;
-        }
-      }
-    </style>
+.modal-close:hover,
+.modal-close:focus {
+    color: black;
+    text-decoration: none;
+}
+
+/* Modal Title */
+.modal-title {
+    color: #333;
+    margin-top: 0;
+    text-align: center;
+}
+
+/* Modal Input and Buttons */
+.modal-input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+
+
+/* List of Preferences */
+.modal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Button Styling */
+.modal-btn {
+    background-color: #008CBA; /* Primary color for buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Add Button */
+.modal-btn-add {
+    background-color: #28a745; /* Green for 'Add' */
+}
+
+.modal-btn-add:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Save Preferences Button */
+.modal-btn-save {
+    background-color: #007bff; /* Blue for 'Save' */
+}
+
+.modal-btn-save:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Edit Button (Warning) */
+.modal-btn-edit {
+    background-color: #FFC107; /* Warning color */
+    color: black;
+}
+
+.modal-btn-edit:hover {
+    background-color: #e0a800; /* Darker warning color on hover */
+}
+
+/* Delete Button (Danger) */
+.modal-btn-delete {
+    background-color: #F44336; /* Danger color */
+    color: white;
+}
+
+.modal-btn-delete:hover {
+    background-color: #c82333; /* Darker danger color on hover */
+}
+
+/* Buttons Container */
+.button-container {
+    display: inline-flex;
+    gap: 5px; /* Space between buttons */
+}
+
+
+/* Responsive Table Styling */
+@media(max-width: 789px) {
+    table {
+        width: 100%; /* Full width on smaller screens */
+    }
+}
+
+  </style>
+  
   </head>
   <body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
     <div class="menu-toggle">
@@ -106,9 +201,33 @@
           <a href="/logs">Logs</a>
           <a href="/logout">Logout</a>
         </div>
+
+
+      
     <div class="main-content">
       <h1 class="admn">Manage Food Item</h1>
       <h1 style="margin-top: 50px; font-size: 40px;">Food Items</h1>
+<!-- Button to open dietary preferences modal -->
+<button class="open-modal-btn" onclick="openDietaryPreferencesModal()">Manage Dietary Preferences</button>
+
+<!-- Modal for Dietary Preferences -->
+<div id="dietaryPreferencesModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeDietaryPreferencesModal()">&times;</span>
+        <h2 class="modal-title">Manage Dietary Preferences</h2>
+        <form id="dietaryPreferencesForm">
+            <input type="text" id="dietaryPreferenceInput" class="modal-input" placeholder="Enter new dietary preference">
+            <button type="button" class="modal-btn" onclick="addDietaryPreference()">Add</button>
+        </form>
+        <ul id="dietaryPreferencesList" class="modal-list">
+            <!-- List of dietary preferences will be dynamically populated here -->
+        </ul>
+        <button type="button" class="modal-btn" onclick="savePreferences()">Save Preferences</button>
+    </div>
+</div>
+
+
+
       <button onclick="openAddModal()">Add Food Item</button>
       <table id="foodItemTable" class="table" style="background-color: white;">
         <thead class="thead-dark">
@@ -248,14 +367,12 @@
           
           <div class="form-group">
             <label for="dietaryRestrictions">Dietary Restrictions:</label>
-            <select class="form-control" id="dietaryRestrictions" name="dietaryRestrictions" required>
-              <option value="">Select Restriction:</option>
-              <option value="vegetarian">Vegetarian</option>
-              <option value="omnivore">Omnivore</option>
-              <option value="glutenFree">Gluten Free</option>
-              <option value="nutAllergy">Nut Allergy</option>
-            </select>
-          </div>
+            <div id="dietaryRestrictionsContainer">
+                <!-- Checkboxes for dietary restrictions will be dynamically added here -->
+            </div>
+        </div>
+        
+
           <div class="form-group">
             <label for="imageUpload">Upload Image:</label>
             <input type="file" class="form-control-file" id="imageUpload" name="imageUpload" accept="image/*" required>
@@ -321,14 +438,12 @@
           </div>
 
           <div class="form-group">
-            <label for="editDietaryRestrictions">Dietary Restrictions:</label><br />
-              <select id="editDietaryRestrictions" name="editDietaryRestrictions" required multiple>
-                  <option value="vegetarian">Vegetarian</option>
-                  <option value="omnivore">Omnivore</option>
-                  <option value="glutenFree">Gluten Free</option>
-                  <option value="nutAllergy">Nut Allergy</option>
-              </select><br />
-          </div>
+            <label for="editDietaryRestrictions">Dietary Restrictions:</label>
+            <div id="editDietaryRestrictionsContainer">
+                <!-- Checkboxes for dietary restrictions will be dynamically added here -->
+            </div>
+        </div>
+        
           
           <label for="editImageUpload">Current Image:</label><br />
           <img id="editImagePreview" src="#" alt="Current Image" style="max-width: 200px; max-height: 200px;"><br />
@@ -348,6 +463,170 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
     <script>
+
+
+
+
+
+
+// Open dietary preferences modal
+function openDietaryPreferencesModal() {
+    document.getElementById('dietaryPreferencesModal').style.display = 'flex'; // Show modal
+    loadExistingPreferences(); // Load preferences when the modal opens
+    loadDietaryRestrictions(); // Load dietary restrictions when the modal opens
+}
+
+// Close dietary preferences modal
+function closeDietaryPreferencesModal() {
+    document.getElementById('dietaryPreferencesModal').style.display = 'none'; // Hide modal
+}
+
+// Add dietary preference to the list
+function addDietaryPreference() {
+    const input = document.getElementById('dietaryPreferenceInput');
+    const value = input.value.trim();
+
+    if (value) {
+        addPreferenceToList(value);
+        input.value = ''; // Clear input field
+        updatePreferences(); // Update preferences after addition
+    }
+}
+
+// Add a preference to the list with edit and delete buttons
+function addPreferenceToList(value) {
+    const list = document.getElementById('dietaryPreferencesList');
+    const listItem = document.createElement('li');
+    listItem.textContent = value;
+
+    // Container for buttons
+    const buttonContainer = document.createElement('span');
+    buttonContainer.classList.add('button-container'); // Apply container styles
+
+    // Add edit button to each preference
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.classList.add('modal-btn', 'modal-btn-edit'); // Add edit button class
+    editButton.onclick = function () {
+        const newValue = prompt('Edit your dietary preference:', value);
+        if (newValue) {
+            listItem.firstChild.textContent = newValue.trim();
+            updatePreferences(); // Update preferences after editing
+        }
+    };
+
+    // Add delete button to each preference
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.classList.add('modal-btn', 'modal-btn-delete'); // Add delete button class
+    deleteButton.onclick = function () {
+        list.removeChild(listItem);
+        deletePreference(value); // Delete preference from server
+    };
+
+    buttonContainer.appendChild(editButton);
+    buttonContainer.appendChild(deleteButton);
+    listItem.appendChild(buttonContainer);
+    list.appendChild(listItem);
+}
+
+// Update the JSON object with the current list of preferences
+function updatePreferences() {
+    const list = document.getElementById('dietaryPreferencesList');
+    const preferences = [];
+
+    Array.from(list.children).forEach(item => {
+        const preference = item.firstChild.textContent.trim();
+        if (preference) {
+            preferences.push(preference); // Collect preferences as an array
+        }
+    });
+
+    // Optionally, display the updated preferences
+    console.log('Updated Preferences:', preferences);
+}
+
+// Function to send preferences to the server
+function savePreferences() {
+    const list = document.getElementById('dietaryPreferencesList');
+    const preferences = Array.from(list.children).map(item => {
+        return item.firstChild.textContent.trim();
+    }).filter(preference => preference); // Collect preferences
+
+    const selectedDietaryRestrictions = Array.from(document.querySelectorAll('input[name="dietaryRestrictions"]:checked')).map(checkbox => checkbox.id);
+
+    fetch('/dietary-preferences', { // No need to manually set userId
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ preferences, dietaryRestrictions: selectedDietaryRestrictions }) // Send preferences and restrictions as JSON
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire('Success', 'Preferences saved successfully!', 'success').then(() => {
+                window.location.reload(); // Reload the page after successful save
+            });
+        } else {
+            Swal.fire('Error', `Failed to save preferences: ${data.message}`, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error sending preferences to server:', error);
+        Swal.fire('Error', 'An error occurred while saving preferences.', 'error');
+    });
+}
+
+
+// Load existing preferences from the server and display them
+function loadExistingPreferences() {
+    fetch('/dietary-preferences') // No need to manually set userId
+        .then(response => response.json())
+        .then(data => {
+            const preferences = data.preferences || {};
+            const list = document.getElementById('dietaryPreferencesList');
+            list.innerHTML = ''; // Clear existing list
+
+            Object.keys(preferences).forEach(preference => {
+                if (preferences[preference]) {
+                    addPreferenceToList(preference);
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching existing preferences:', error);
+            Swal.fire('Error', 'An error occurred while fetching preferences.', 'error');
+        });
+}
+
+// Delete a specific dietary preference from the server
+function deletePreference(preference) {
+    fetch('/dietary-preferences/delete', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ preference })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire('Deleted', 'Preference deleted successfully', 'success');
+            } else {
+                Swal.fire('Error', `Failed to delete preference: ${data.message}`, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting preference:', error);
+            Swal.fire('Error', 'An error occurred while deleting preference.', 'error');
+        });
+}
+
+
+
+
+
       function previewImage() {
         var fileInput = document.getElementById("imageUpload");
         var imagePreview = document.getElementById("imagePreview");
@@ -379,22 +658,79 @@
       }
     }
 
-    document.getElementById("addFoodForm").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const formData = new FormData(event.target);
 
-      fetch("/adminCreateFoodItem", {
+    async function loadDietaryRestrictions(selectedRestrictions = []) {
+    try {
+        const response = await fetch('/api/dietary-restrictions', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const { preferences } = await response.json();
+        console.log('Fetched data:', preferences);
+
+        const container = document.getElementById('dietaryRestrictionsContainer');
+        container.innerHTML = ''; // Clear existing content
+
+        for (const key of Object.keys(preferences)) {
+            const normalizedKey = key.toLowerCase();
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = normalizedKey;
+            checkbox.value = key;
+
+            // Check if the current preference is in the selectedRestrictions (case-insensitive match)
+            checkbox.checked = selectedRestrictions.some(item => item.toLowerCase() === normalizedKey);
+
+            const label = document.createElement('label');
+            label.htmlFor = normalizedKey;
+            label.textContent = key; // Use the original case for display
+
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.appendChild(checkbox);
+            div.appendChild(label);
+
+            container.appendChild(div);
+        }
+    } catch (error) {
+        console.error('Error fetching dietary restrictions:', error.message);
+    }
+}
+
+
+document.getElementById("addFoodForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+
+    // Dynamically handle dietary restrictions
+    const dietaryRestrictions = [];
+    document.querySelectorAll('#dietaryRestrictionsContainer input[type="checkbox"]').forEach((checkbox) => {
+        if (checkbox.checked) {
+            dietaryRestrictions.push(checkbox.value); // Use the original value for casing
+        }
+    });
+    formData.append('dietaryRestrictions', dietaryRestrictions.join(','));
+
+    fetch("/adminCreateFoodItem", {
         method: "POST",
         body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if (data.success) {
             const foodItem = data.foodItem;
             Swal.fire({
-              icon: "success",
-              title: "Food Item Created!",
-              html: `
+                icon: "success",
+                title: "Food Item Created!",
+                html: `
                 <div>
                     <p><strong>Name:</strong> ${foodItem.name}</p>
                     <p><strong>Description:</strong> ${foodItem.description}</p>
@@ -406,141 +742,209 @@
                     <img src="${foodItem.imageUrl}" alt="${foodItem.name}" style="max-width: 200px; max-height: 200px;">
                 </div>
               `,
-              showConfirmButton: false,
-              timer: 5000,
+                showConfirmButton: false,
+                timer: 5000,
             }).then(() => {
-              // Redirect to admin dashboard or any other page
-              window.location.href = "/adminCreateFoodItem";
+                window.location.href = "/adminCreateFoodItem";
             });
-          } else {
+        } else {
             Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: data.message,
+                icon: "error",
+                title: "Oops...",
+                text: data.message,
             });
-          }
-        })
-        .catch((error) => {
-          console.error("Error creating food item:", error);
-          Swal.fire({
+        }
+    })
+    .catch((error) => {
+        console.error("Error creating food item:", error);
+        Swal.fire({
             icon: "error",
             title: "Oops...",
             text: "Something went wrong!",
-          });
         });
     });
+});
+
+
 
       //Add
-      // Function to open the add modal
       function openAddModal() {
-        document.getElementById("myModal").style.display = "block";
-      }
+    loadDietaryRestrictions(); // Load all dietary restrictions with checkboxes unchecked
+    document.getElementById("myModal").style.display = "block";
+}
+
 
       // Function to close the add modal
       function closeAddModal() {
         document.getElementById("myModal").style.display = "none";
       }
 
-      
-      
+    
 
-      //Edit & delete
-      
-      // Function to open the edit modal and populate fields
-    function openEditModal(id, name, description, price, size, category, dietaryRestrictions, pax25_30, pax45_50, imageUrl, available,size10_12,size25_30,size45_50) {
-        document.getElementById("editName").value = name || "";
-        document.getElementById("editDescription").value = description || "";
-        document.getElementById("editAvailability").value = available;
-        document.getElementById("editPrice").value = price || "";
-        document.getElementById("editSize10_12").value = size10_12 || "";
-        document.getElementById("editSize").value = size || "";
-        document.getElementById("editCategory").value = category || "";
-        document.getElementById("editDietaryRestrictions").value = dietaryRestrictions || [];
-        document.getElementById("editPax25_30").value = pax25_30 || "";
-        document.getElementById("editSize25_30").value = size25_30 || "";
-        document.getElementById("editPax45_50").value = pax45_50 || "";
-        document.getElementById("editSize45_50").value = size45_50 || "";
-        // Set image preview if imageUrl is available
+      async function openEditModal(id, name, description, price, size, category, dietaryRestrictions = [], pax25_30, pax45_50, imageUrl, available, size10_12, size25_30, size45_50) {
+    document.getElementById("editName").value = name || "";
+    document.getElementById("editDescription").value = description || "";
+    document.getElementById("editAvailability").value = available;
+    document.getElementById("editPrice").value = price || "";
+    document.getElementById("editSize10_12").value = size10_12 || "";
+    document.getElementById("editSize").value = size || "";
+    document.getElementById("editCategory").value = category || "";
+    document.getElementById("editPax25_30").value = pax25_30 || "";
+    document.getElementById("editSize25_30").value = size25_30 || "";
+    document.getElementById("editPax45_50").value = pax45_50 || "";
+    document.getElementById("editSize45_50").value = size45_50 || "";
+
     if (imageUrl) {
-        var imagePreview = document.getElementById("editImagePreview");
-        imagePreview.src = imageUrl;
+        document.getElementById("editImagePreview").src = imageUrl;
     }
-        document.getElementById("editItemId").value = id || "";
-        document.getElementById("editModal").style.display = "block";
+    document.getElementById("editItemId").value = id || "";
 
-        // Toggle size field visibility based on category
-        toggleSizeField();
-    }
+    // Debugging dietary restrictions before loading them
+    console.log("Loading dietary restrictions:", dietaryRestrictions);
 
-    // Function to toggle size field visibility based on category selection
-    function toggleSizeField() {
-        const category = document.getElementById("editCategory").value;
-        const paxSizesDiv = document.getElementById("paxSizes");
+    // Load and display dietary restrictions
+    await loadEditDietaryRestrictions(dietaryRestrictions);
 
-        if (category === "Party Trays") {
-            paxSizesDiv.style.display = "block";
-        } else {
-            paxSizesDiv.style.display = "none";
+    // Toggle size field visibility based on category
+    toggleSizeField();
+
+    // Display the modal
+    document.getElementById("editModal").style.display = "block";
+}
+
+async function loadEditDietaryRestrictions(selectedRestrictions = []) {
+    try {
+        const response = await fetch('/api/all-dietary-restrictions', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        const { preferences } = await response.json();
+        console.log('Fetched dietary restrictions for edit:', preferences);
+
+        const container = document.getElementById('editDietaryRestrictionsContainer');
+        container.innerHTML = ''; // Clear existing content
+
+        // Ensure preferences is an object with key-value pairs
+        if (preferences && typeof preferences === 'object') {
+            Object.keys(preferences).forEach(key => {
+                const normalizedKey = key.toLowerCase();
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `edit-${normalizedKey}`;
+                checkbox.value = key;
+
+                // Check if the current preference is in the selectedRestrictions (case-insensitive match)
+                checkbox.checked = selectedRestrictions.some(item => item.toLowerCase() === normalizedKey);
+
+                const label = document.createElement('label');
+                label.htmlFor = `edit-${normalizedKey}`;
+                label.textContent = key; // Use the original case for display
+
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.appendChild(checkbox);
+                div.appendChild(label);
+
+                container.appendChild(div);
+            });
+        } else {
+            console.error('Invalid format for preferences:', preferences);
+        }
+    } catch (error) {
+        console.error('Error fetching dietary restrictions for edit:', error.message);
     }
+}
+
+
+
+
+
+
+
+
+
+// Function to submit the update form
+function submitUpdateForm() {
+    const formData = new FormData(document.getElementById("editForm"));
+    const id = formData.get("editItemId");
+
+    // Collect selected dietary restrictions
+    const dietaryRestrictions = [];
+    document.querySelectorAll('#editDietaryRestrictionsContainer input[type="checkbox"]').forEach((checkbox) => {
+        if (checkbox.checked) {
+            dietaryRestrictions.push(checkbox.value);
+        }
+    });
+
+    // Append dietary restrictions as a JSON string
+    formData.append('dietaryRestrictions', JSON.stringify(dietaryRestrictions));
+
+    // Log form data for debugging
+    for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+    }
+
+    fetch(`/adminCreateFoodItem/${id}`, {
+        method: "PUT",
+        body: formData,
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then((data) => {
+        if (data.success) {
+            Swal.fire({
+                icon: "success",
+                title: "Updated!",
+                text: "The food item has been updated.",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Failed to update the food item.",
+            });
+        }
+    })
+    .catch((error) => {
+        console.error("Error updating food item:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+        });
+    });
+}
+
+
 // Function to toggle size field visibility based on category selection
 function toggleSizeField() {
-        const category = document.getElementById("editCategory").value;
-        const paxSizesDiv = document.getElementById("paxSizes");
+    const category = document.getElementById("editCategory").value;
+    const paxSizesDiv = document.getElementById("paxSizes");
 
-        if (category === "Party Trays") {
-            paxSizesDiv.style.display = "block";
-        } else {
-            paxSizesDiv.style.display = "none";
-        }
+    if (category === "Party Trays") {
+        paxSizesDiv.style.display = "block";
+    } else {
+        paxSizesDiv.style.display = "none";
     }
+}
 
-    // Function to submit the update form
-    function submitUpdateForm() {
-        const formData = new FormData(document.getElementById("editForm"));
-        const id = formData.get("editItemId");
-
-        fetch(`/adminCreateFoodItem/${id}`, {
-            method: "PUT",
-            body: formData,
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                if (data.success) {
-                    // Show success message and reload the page after update
-                    Swal.fire({
-                        icon: "success",
-                        title: "Updated!",
-                        text: "The food item has been updated.",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    });
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
-                } else {
-                    // Show error message if update failed
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Failed to update the food item.",
-                    });
-                }
-            })
-            .catch((error) => {
-                console.error("Error updating food item:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Something went wrong!",
-                });
-            });
-    }
+    
 
     // Function to close the edit modal
     function closeEditModal() {

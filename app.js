@@ -37,7 +37,7 @@ var userinfoRouter = require("./routes/userinfo");
 
 var dietaryRouter = require("./routes/dietaryPreferences");
 const profileRouter = require("./routes/profile");
-const recommendationsRouter = require("./routes/recommendations");
+// const recommendationsRouter = require("./routes/recommendations");
 const cartRouter = require("./routes/cart");
 const orderRouter = require('./routes/orderRoutes');
 
@@ -244,21 +244,6 @@ paypal.configure({
   client_secret: PAYPAL_CLIENT_SECRET,
 });
 
-// test recommendation
-app.get("/revised_recommendation", async (req, res) => {
-  const response3 = await revised_generated_recommendation({
-    vegetarian: false,
-  
-    omnivore: false,
-
-
-    glutenFree: false,
-    nutAllergy: true,
-
-  });
-
-  res.json({ message3: response3 });
-});
 
 // Serve the "Menu" page
 app.get("/menu", (req, res) => {
@@ -547,7 +532,7 @@ app.use("/", userinfoRouter);
 
 app.use("/", dietaryRouter); // Use the dietary routes
 app.use("/profile", profileRouter);
-app.use("/recommendations", recommendationsRouter);
+// app.use("/recommendations", recommendationsRouter);
 app.use("/api/cart", cartRouter);
 app.use('/orders', orderRouter);
 
@@ -810,6 +795,226 @@ const createPayPalOrder = async (cartItems) => {
 };
 
 
+// Create or update dietary preferences for the authenticated user
+app.post('/dietary-preferences', async (req, res) => {
+  try {
+    const userId = req.user.id; // Extract user ID from authenticated user
+    const { preferences } = req.body;
+
+    if (!preferences || !Array.isArray(preferences)) {
+      return res.status(400).json({ success: false, message: 'Invalid data' });
+    }
+
+    // Convert preferences array to an object with boolean values
+    const preferencesObject = preferences.reduce((acc, preference) => {
+      acc[preference] = true;
+      return acc;
+    }, {});
+
+    // Fetch existing preferences from the database
+    const existingPreferences = await prisma.dietaryPreference.findUnique({
+      where: { userId },
+    });
+
+    // Merge existing preferences with the new ones
+    const mergedPreferences = {
+      ...(existingPreferences ? existingPreferences.preferences : {}),
+      ...preferencesObject,
+    };
+
+    // Upsert the preferences
+    const updatedPreferences = await prisma.dietaryPreference.upsert({
+      where: { userId },
+      update: { preferences: mergedPreferences },
+      create: { userId, preferences: mergedPreferences },
+    });
+
+    res.json({ success: true, dietaryPreference: updatedPreferences });
+  } catch (error) {
+    console.error('Error updating dietary preferences:', error);
+    res.status(500).json({ success: false, message: 'Failed to update dietary preferences.' });
+  }
+});
+
+// Retrieve dietary preferences for the authenticated user
+app.get('/dietary-preferences', async (req, res) => {
+  try {
+    const userId = req.user.id; // Extract user ID from authenticated user
+    
+    // Fetch preferences from the database
+    const preferences = await prisma.dietaryPreference.findUnique({
+      where: { userId },
+    });
+
+    res.json({ preferences: preferences ? preferences.preferences : {} });
+  } catch (error) {
+    console.error('Failed to fetch dietary preferences:', error);
+    res.status(500).json({ error: 'Failed to fetch dietary preferences' });
+  }
+});
+
+
+// Retrieve all dietary preferences
+app.get('/admin/dietary-preferences', async (req, res) => {
+  try {
+    // Fetch all dietary preferences from the database
+    const preferences = await prisma.dietaryPreference.findMany();
+    
+    // Extract preferences into a single object
+    const allPreferences = preferences.reduce((acc, pref) => {
+      Object.keys(pref.preferences || {}).forEach(key => {
+        acc[key] = true;
+      });
+      return acc;
+    }, {});
+
+    res.json({ preferences: allPreferences });
+  } catch (error) {
+    console.error('Failed to fetch dietary preferences:', error);
+    res.status(500).json({ error: 'Failed to fetch dietary preferences' });
+  }
+});
+
+// Endpoint to submit dietary preferences
+// app.post("/submit-dietary-preferences", async (req, res) => {
+//   const userId = req.user.id; // Use req.user provided by Passport
+//   const dietaryData = req.body; // Assumed to be an object with preference data
+
+//   try {
+//     // Ensure dietaryData is a valid object
+//     if (typeof dietaryData !== 'object' || dietaryData === null) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid dietary preferences data."
+//       });
+//     }
+
+//     // Fetch existing dietary preferences
+//     const existingPreference = await prisma.dietaryPreference.findUnique({
+//       where: { userId },
+//     });
+
+//     if (existingPreference) {
+//       // Update existing preferences
+//       await prisma.dietaryPreference.update({
+//         where: { userId },
+//         data: {
+//           preferences: dietaryData, // Ensure only preferences are updated
+//         },
+//       });
+//     } else {
+//       // Create new dietary preferences
+//       await prisma.dietaryPreference.create({
+//         data: { userId, preferences: dietaryData },
+//       });
+//     }
+
+//     // Redirect to /foodMenu after successfully submitting preferences
+//     res.redirect('/foodMenu');
+//   } catch (error) {
+//     console.error("Error in submitting dietary preferences:", error);
+
+//     // Respond with JSON error message to avoid non-JSON response issues
+//     res.status(500).json({
+//       success: false,
+//       message: "An error occurred while submitting dietary preferences.",
+//     });
+//   }
+// });
+
+
+
+// Delete a specific dietary preference for the authenticated user
+app.delete('/dietary-preferences/delete', async (req, res) => {
+  try {
+    const userId = req.user.id; // Extract user ID from authenticated user
+    const { preference } = req.body;
+
+    if (!preference || typeof preference !== 'string') {
+      return res.status(400).json({ success: false, message: 'Invalid data' });
+    }
+
+    // Fetch existing preferences from the database
+    const existingPreferences = await prisma.dietaryPreference.findUnique({
+      where: { userId },
+    });
+
+    if (!existingPreferences) {
+      return res.status(404).json({ success: false, message: 'Preferences not found' });
+    }
+
+    // Remove the specified preference
+    const updatedPreferences = { ...existingPreferences.preferences };
+    delete updatedPreferences[preference];
+
+    // Update the preferences in the database
+    await prisma.dietaryPreference.update({
+      where: { userId },
+      data: { preferences: updatedPreferences },
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting dietary preference:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete dietary preference.' });
+  }
+});
+
+// Assuming you have already set up Prisma and imported it
+
+app.get('/api/dietary-restrictions', async (req, res) => {
+  try {
+      if (!req.user || !req.user.id) {
+          console.log('User is not authenticated or user ID is missing');
+          return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const userId = req.user.id;
+      console.log('Fetching dietary preferences for user ID:', userId);
+
+      const preferencesRecord = await prisma.dietaryPreference.findUnique({
+          where: { userId }
+      });
+
+      if (preferencesRecord) {
+          const preferences = preferencesRecord.preferences;
+          console.log('Preferences:', preferences);
+          return res.json({ preferences });
+      } else {
+          console.log('No dietary preferences found for user ID:', userId);
+          return res.status(404).json({ message: 'No dietary preferences found' });
+      }
+  } catch (error) {
+      console.error('Error fetching dietary preferences:', error);
+      return res.status(500).json({ message: 'Error fetching dietary preferences' });
+  }
+});
+
+// Endpoint to fetch all available dietary restrictions
+app.get('/api/all-dietary-restrictions', async (req, res) => {
+  try {
+    // Fetch all dietary restrictions from your database or predefined list
+    const allRestrictions = await prisma.dietaryPreference.findMany({
+      // Assuming you have a way to get all available dietary restrictions
+      // Adjust this according to your actual data source
+      select: { preferences: true }
+    });
+
+    // Combine and normalize all dietary restrictions
+    const allPreferences = {};
+    allRestrictions.forEach(record => {
+      Object.keys(record.preferences).forEach(key => {
+        allPreferences[key] = true;
+      });
+    });
+
+    console.log('All dietary restrictions:', allPreferences);
+    return res.json({ preferences: allPreferences });
+  } catch (error) {
+    console.error('Error fetching all dietary restrictions:', error);
+    return res.status(500).json({ message: 'Error fetching all dietary restrictions' });
+  }
+});
 
 
 

@@ -411,9 +411,9 @@ window.onload = function() {
 
 
 
-$('#openDietaryModal').click(function () {
-  $('#dietaryPreferencesModal').modal('show');
-});
+// $('#openDietaryModal').click(function () {
+//   $('#dietaryPreferencesModal').modal('show');
+// });
 // Function to open the profile modal
 function openProfileModal() {
   document.getElementById('profileModal').style.display = 'block';
