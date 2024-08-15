@@ -165,10 +165,20 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { editName, editDescription, editPrice, editSize, editCategory, editDietaryRestrictions, editPax25_30, editPax45_50, editAvailability, editImageUpload, editSize10_12, editSize25_30, editSize45_50 } = req.body;
+        const {
+            editName, editDescription, editPrice, editSize, editCategory,
+            editDietaryRestrictions, editPax25_30, editPax45_50, editAvailability,
+            editImageUpload, editSize10_12, editSize25_30, editSize45_50
+        } = req.body;
 
         // Convert editDietaryRestrictions to an array if it exists and is not an array
-        const dietaryArray = Array.isArray(editDietaryRestrictions) ? editDietaryRestrictions : editDietaryRestrictions ? [editDietaryRestrictions] : [];
+        const dietaryArray = Array.isArray(editDietaryRestrictions) 
+            ? editDietaryRestrictions 
+            : editDietaryRestrictions 
+                ? JSON.parse(editDietaryRestrictions) 
+                : [];
+
+        console.log('Parsed dietary restrictions:', dietaryArray);
 
         // Handle file upload
         let imageUrl;
@@ -178,7 +188,6 @@ router.put('/:id', async (req, res) => {
             const imagePath = path.join(__dirname, '../public/images', imageName);
             await imageFile.mv(imagePath);
             imageUrl = `/images/${imageName}`;
-            
         }
 
         // Update the food item in the database
@@ -211,8 +220,8 @@ router.put('/:id', async (req, res) => {
                     price: parseFloat(editPrice),
                     size: editSize,
                     category: editCategory,
-                    dietaryRestrictions: dietaryArray, // has problem
-                    imageUrl: imageUrl,
+                    dietaryRestrictions: dietaryArray,
+                    imageUrl: imageUrl || undefined,
                     available: editAvailability === 'true',
                 }
             });

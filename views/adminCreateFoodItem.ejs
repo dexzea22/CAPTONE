@@ -803,7 +803,7 @@ document.getElementById("addFoodForm").addEventListener("submit", function (even
     console.log("Loading dietary restrictions:", dietaryRestrictions);
 
     // Load and display dietary restrictions
-    await loadEditDietaryRestrictions(dietaryRestrictions);
+    loadEditDietaryRestrictions(dietaryRestrictions);
 
     // Toggle size field visibility based on category
     toggleSizeField();
@@ -831,36 +831,30 @@ async function loadEditDietaryRestrictions(selectedRestrictions = []) {
         const container = document.getElementById('editDietaryRestrictionsContainer');
         container.innerHTML = ''; // Clear existing content
 
-        // Ensure preferences is an object with key-value pairs
-        if (preferences && typeof preferences === 'object') {
-            Object.keys(preferences).forEach(key => {
-                const normalizedKey = key.toLowerCase();
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `edit-${normalizedKey}`;
-                checkbox.value = key;
+        Object.keys(preferences).forEach((key) => {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `edit-${key}`;
+            checkbox.value = key;
+            checkbox.checked = selectedRestrictions.includes(key);
 
-                // Check if the current preference is in the selectedRestrictions (case-insensitive match)
-                checkbox.checked = selectedRestrictions.some(item => item.toLowerCase() === normalizedKey);
+            const label = document.createElement('label');
+            label.htmlFor = `edit-${key}`;
+            label.textContent = key;
 
-                const label = document.createElement('label');
-                label.htmlFor = `edit-${normalizedKey}`;
-                label.textContent = key; // Use the original case for display
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.appendChild(checkbox);
+            div.appendChild(label);
 
-                const div = document.createElement('div');
-                div.className = 'form-group';
-                div.appendChild(checkbox);
-                div.appendChild(label);
-
-                container.appendChild(div);
-            });
-        } else {
-            console.error('Invalid format for preferences:', preferences);
-        }
+            container.appendChild(div);
+        });
     } catch (error) {
         console.error('Error fetching dietary restrictions for edit:', error.message);
     }
 }
+
+
 
 
 
