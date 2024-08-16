@@ -793,17 +793,16 @@ document.getElementById("addFoodForm").addEventListener("submit", function (even
     document.getElementById("editSize25_30").value = size25_30 || "";
     document.getElementById("editPax45_50").value = pax45_50 || "";
     document.getElementById("editSize45_50").value = size45_50 || "";
+    // Debugging dietary restrictions before loading them
+    console.log("Loading dietary restrictions:", dietaryRestrictions);
+
+    // Load and display dietary restrictions
+    await loadEditDietaryRestrictions(dietaryRestrictions);
 
     if (imageUrl) {
         document.getElementById("editImagePreview").src = imageUrl;
     }
     document.getElementById("editItemId").value = id || "";
-
-    // Debugging dietary restrictions before loading them
-    console.log("Loading dietary restrictions:", dietaryRestrictions);
-
-    // Load and display dietary restrictions
-    loadEditDietaryRestrictions(dietaryRestrictions);
 
     // Toggle size field visibility based on category
     toggleSizeField();
@@ -814,7 +813,7 @@ document.getElementById("addFoodForm").addEventListener("submit", function (even
 
 async function loadEditDietaryRestrictions(selectedRestrictions = []) {
     try {
-        const response = await fetch('/api/all-dietary-restrictions', {
+        const response = await fetch('/api/dietary-restrictions', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -855,15 +854,6 @@ async function loadEditDietaryRestrictions(selectedRestrictions = []) {
 }
 
 
-
-
-
-
-
-
-
-
-
 // Function to submit the update form
 function submitUpdateForm() {
     const formData = new FormData(document.getElementById("editForm"));
@@ -878,7 +868,7 @@ function submitUpdateForm() {
     });
 
     // Append dietary restrictions as a JSON string
-    formData.append('dietaryRestrictions', JSON.stringify(dietaryRestrictions));
+    formData.append('editDietaryRestrictions', JSON.stringify(dietaryRestrictions));
 
     // Log form data for debugging
     for (const [key, value] of formData.entries()) {
@@ -924,6 +914,9 @@ function submitUpdateForm() {
         });
     });
 }
+
+
+
 
 
 // Function to toggle size field visibility based on category selection

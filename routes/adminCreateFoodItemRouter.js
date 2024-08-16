@@ -168,19 +168,19 @@ router.put('/:id', async (req, res) => {
         const {
             editName, editDescription, editPrice, editSize, editCategory,
             editDietaryRestrictions, editPax25_30, editPax45_50, editAvailability,
-            editImageUpload, editSize10_12, editSize25_30, editSize45_50
+            editSize10_12, editSize25_30, editSize45_50
         } = req.body;
 
-        // Convert editDietaryRestrictions to an array if it exists and is not an array
-        const dietaryArray = Array.isArray(editDietaryRestrictions) 
-            ? editDietaryRestrictions 
-            : editDietaryRestrictions 
-                ? JSON.parse(editDietaryRestrictions) 
+        // Parse dietary restrictions from the request body
+        const dietaryArray = Array.isArray(editDietaryRestrictions)
+            ? editDietaryRestrictions
+            : editDietaryRestrictions
+                ? JSON.parse(editDietaryRestrictions)
                 : [];
 
         console.log('Parsed dietary restrictions:', dietaryArray);
 
-        // Handle file upload
+        // Handle file upload if needed
         let imageUrl;
         if (req.files && req.files.editImageUpload) {
             const imageFile = req.files.editImageUpload;
@@ -204,7 +204,7 @@ router.put('/:id', async (req, res) => {
                     dietaryRestrictions: dietaryArray,
                     price25_30: parseFloat(editPax25_30) || null,
                     price45_50: parseFloat(editPax45_50) || null,
-                    imageUrl: imageUrl || undefined, // Only update if new image is uploaded
+                    imageUrl: imageUrl || undefined,
                     available: editAvailability === 'true',
                     size10_12: editSize10_12,
                     size25_30: editSize25_30,
@@ -234,6 +234,7 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to update food item.' });
     }
 });
+
 
 // Route to delete food item (soft delete)
 router.delete('/:id', async (req, res) => {
