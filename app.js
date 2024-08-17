@@ -7,8 +7,6 @@ const fetch = require("node-fetch"); // Import fetch module for making HTTP requ
 
 const bodyParser = require('body-parser'); // Ensure body-parser middleware is used if not already
 // Assuming your app setup includes bodyParser middleware
-
-
 const express = require('express');
 var createError = require("http-errors");
 
@@ -54,8 +52,6 @@ const apiRoutes = require('./routes/api');
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
-
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -169,9 +165,7 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
       welcomeMessage: `Welcome ${user.firstName || 'Admin'}!`  // Safe fallback if firstName is not set
     });
 
-    
-
-  } catch (error) {
+    } catch (error) {
     console.error('Error loading AdminDashboard:', error);
     res.status(500).send('Internal Server Error');
   }
@@ -231,15 +225,6 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
 app.get('/forgotPassword', (req, res) => {
   res.render('forgotPassword'); // Assuming you have a 'forgotPassword.ejs' file
 });
-  
-
-// Correct usage with 'app'
-app.get("/", (req, res) => {
-  // Assume we have a function that gets recommendations.
-  const recommendations = getRecommendationsForUser();
-  res.render("recommendations", { recommendations });
-});
-
 paypal.configure({
   mode: "sandbox", // or 'live' for production
   client_id: PAYPAL_CLIENT_ID,
@@ -326,8 +311,6 @@ app.get('/checkFeedback/:orderId', async (req, res) => {
   }
 });
 
-
-
 // Route to handle feedback submission
 app.post('/submitFeedback', async (req, res) => {
   try {
@@ -363,21 +346,6 @@ app.post('/submitFeedback', async (req, res) => {
     res.status(500).json({ error: 'Error submitting feedback' });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Define route handler to fetch order data and render a view
 app.get('/orderStatus', authenticate, async (req, res) => {
@@ -513,10 +481,9 @@ app.get('/charts', (req, res) => {
   res.render('charts'); // This will render the charts.ejs
 });
 
-
-
-
-
+app.get("/", (req, res) => {
+  res.render("index"); // Ensure this file exists in the views directory
+});
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -532,22 +499,17 @@ app.use(
     origin: "http://localhost:3000",
   })
 );
-
 app.use("/", loginRouter);
 app.use("/", registerRouter);
 app.use("/", confirmoderinfoRouter);
 app.use("/", userinfoRouter);
-
 app.use("/", dietaryRouter); // Use the dietary routes
 app.use("/profile", profileRouter);
 app.use("/recommendations", recommendationsRouter);
 app.use("/api/cart", cartRouter);
 app.use('/orders', orderRouter);
-
-
 app.use('/adminTransactionHistory', adminTransactionHistoryRouter);
 app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
-
 app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
 app.use('/featuredItem', featuredItemRouter);
 app.use('/soloMeals', soloMealsRouter);
@@ -738,18 +700,7 @@ const displayOrderDetails = (order) => {
     console.log(`Dietary Restrictions: ${item.dietaryRestrictions.join(', ')}\n`);
   });
 };
-
-
-
-
-
-
-// Ensure that wherever you use `userId` in your routes, it's extracted correctly from `req.user.id` after authentication. This means updating your routes to use `req.user.id` whenever you need to reference the authenticated user’s ID.
-
-
-
-
-
+// Ensure that wherever you use `userId` in your routes, it's extracted correctly from `req.user.id` after authentication. This means updating your routes to use `req.user.id` whenever you need to reference the authenticated user’s
 function calculateTotalAmount(cartItems) {
   let totalAmount = 0;
   cartItems.forEach(item => {
@@ -757,9 +708,6 @@ function calculateTotalAmount(cartItems) {
   });
   return totalAmount;
 }
-
-
-
 // Function to create a PayPal order with intent set to "AUTHORIZE"
 const createPayPalOrder = async (cartItems) => {
   try {
@@ -803,8 +751,6 @@ const createPayPalOrder = async (cartItems) => {
     throw error;
   }
 };
-
-
 // Create or update dietary preferences for the authenticated user
 app.post('/dietary-preferences', async (req, res) => {
   try {
@@ -862,8 +808,6 @@ app.get('/dietary-preferences', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch dietary preferences' });
   }
 });
-
-
 // Retrieve all dietary preferences
 app.get('/admin/dietary-preferences', async (req, res) => {
   try {
@@ -884,55 +828,6 @@ app.get('/admin/dietary-preferences', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch dietary preferences' });
   }
 });
-
-// Endpoint to submit dietary preferences
-// app.post("/submit-dietary-preferences", async (req, res) => {
-//   const userId = req.user.id; // Use req.user provided by Passport
-//   const dietaryData = req.body; // Assumed to be an object with preference data
-
-//   try {
-//     // Ensure dietaryData is a valid object
-//     if (typeof dietaryData !== 'object' || dietaryData === null) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid dietary preferences data."
-//       });
-//     }
-
-//     // Fetch existing dietary preferences
-//     const existingPreference = await prisma.dietaryPreference.findUnique({
-//       where: { userId },
-//     });
-
-//     if (existingPreference) {
-//       // Update existing preferences
-//       await prisma.dietaryPreference.update({
-//         where: { userId },
-//         data: {
-//           preferences: dietaryData, // Ensure only preferences are updated
-//         },
-//       });
-//     } else {
-//       // Create new dietary preferences
-//       await prisma.dietaryPreference.create({
-//         data: { userId, preferences: dietaryData },
-//       });
-//     }
-
-//     // Redirect to /foodMenu after successfully submitting preferences
-//     res.redirect('/foodMenu');
-//   } catch (error) {
-//     console.error("Error in submitting dietary preferences:", error);
-
-//     // Respond with JSON error message to avoid non-JSON response issues
-//     res.status(500).json({
-//       success: false,
-//       message: "An error occurred while submitting dietary preferences.",
-//     });
-//   }
-// });
-
-
 // Delete a specific dietary preference for the authenticated user
 app.delete('/dietary-preferences/delete', async (req, res) => {
   try {
@@ -969,8 +864,6 @@ app.delete('/dietary-preferences/delete', async (req, res) => {
   }
 });
 
-// Assuming you have already set up Prisma and imported it
-
 app.get('/api/dietary-restrictions', async (req, res) => {
   try {
       if (!req.user || !req.user.id) {
@@ -998,7 +891,6 @@ app.get('/api/dietary-restrictions', async (req, res) => {
       return res.status(500).json({ message: 'Error fetching dietary preferences' });
   }
 });
-
 // Endpoint to fetch all available dietary restrictions
 app.get('/api/all-dietary-restrictions', async (req, res) => {
   try {
@@ -1024,9 +916,6 @@ app.get('/api/all-dietary-restrictions', async (req, res) => {
     return res.status(500).json({ message: 'Error fetching all dietary restrictions' });
   }
 });
-
-
-
 // Middleware to load cart items into the session if not already loaded
 async function loadCartItemsToSession(req, res, next) {
   try {
@@ -1042,8 +931,6 @@ async function loadCartItemsToSession(req, res, next) {
   }
   next();
 }
-
-
 // Route to capture a PayPal order
 app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
@@ -1078,9 +965,6 @@ app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, 
     res.status(500).json({ error: "Failed to capture PayPal order." });
   }
 });
-
-
-
 // Route to capture a COD order
 app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
@@ -1118,13 +1002,6 @@ app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
       res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
   }
 });
-
-
-
-
-
-
-
 app.post("/contactUs1", async (req, res) => {
   console.log("Received POST request with data:", req.body);
   const { fullName, email, phone, subject, message } = req.body;
@@ -1147,18 +1024,6 @@ app.post("/contactUs1", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to send message." });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
 //fetching Paypal activity
 app.get("/adminserver", async (req, res) => {
   try {

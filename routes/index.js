@@ -45,6 +45,13 @@ async function restrictAccess(userType, req, res, next) {
   }
 }
 
+
+
+// Add this route to handle the root path
+router.get('/', (req, res) => {
+  return res.redirect('/login');
+});
+
 /* GET home page. */
 router.get('/login', async function (req, res) {
   if (req.isAuthenticated()) {  // Checks if the user is already authenticated
