@@ -22,7 +22,7 @@ const app = express();
 const axios = require("axios");
 const cors = require("cors");
 const MongoStore = require('connect-mongo');
-const port = process.env.PORT || 8000;
+const port = 8000;
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Now you can access the API key
 const openaiApi = new openai(OPENAI_API_KEY);
