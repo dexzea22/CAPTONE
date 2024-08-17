@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-  <html lang="en" >
+<html lang="en" >
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,17 +15,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="stylesheets/login.css">
 </head>
-  <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
-    <div class="topnav">
-      <div class="menu-toggle">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </div>
-      <a href="/login"><img src="images/logo.png" height="60px" width="60px"></a>
-      <a href="/login"><img src="images/mayame.png" height="60px" width="190px"></a>
-      <div class="menu">
+<body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
+  <div class="topnav">
+    <div class="menu-toggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <a href="/login"><img src="images/logo.png" height="60px" width="60px"></a>
+    <a href="/login"><img src="images/mayame.png" height="60px" width="190px"></a>
+    <div class="menu">
       <a class="nav" href="/login">Home</a>
       <a class="nav" href="/contactUs">Contact</a>
       <a class="nav" href="/aboutUs">About</a>
@@ -39,40 +39,41 @@
       <a style="color: #000000;"href="/login">My Cart</i></a>
       <a href="/login">Login</a>
     </div>
-    </div>
-    <div class="login-form">
-  <div class="img">
+  </div>
+  <div class="login-form">
+    <div class="img">
       <img class="logo" src="images/logo.png" alt="">
       <div>
         <p class="del">We Deliver Good Food</p>
       </div>  
     </div>
     <form action="/login" method="post">
-    <section class="form text-center text-lg-start">
-      <div class="card">
-        <div class="row g-0 d-flex align-items-center">
-          <div class="col-lg-4 d-none d-lg-flex">
-            <img src="images/food.jpg"
-              class="img-fluid w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
-          </div>
-          <div class="col-lg-8">
-            <div class="card-body py-5 px-md-5">
-              <div style="text-align: center; margin-top:0;">
-                <label class="lbl">LOGIN</label>
-              </div>
-        <div class="error">
-          <% if (typeof errorMessage !== 'undefined') { %>
-            <p style="color: red; font-size: 20px;"><%= errorMessage %></p>
-            <% } %>
-    
-            <% if (typeof message !== 'undefined') { %>
-            <p style="color: rgb(0, 255, 0); font-size: 20px;"><%= message %></p>
-            <% } %>
-          </div>
+      <section class="form text-center text-lg-start">
+        <div class="card">
+          <div class="row g-0 d-flex align-items-center">
+            <div class="col-lg-4 d-none d-lg-flex">
+              <img src="images/food.jpg" id="food-img"
+                class="img-fluid w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5" />
+            </div>
+            <div class="col-lg-8">
+              <div class="card-body py-5 px-md-5">
+                <div style="text-align: center; margin-top:0;">
+                  <label class="lbl">LOGIN</label>
               
+                </div>
+                <div class="error">
+                  <% if (typeof errorMessage !== 'undefined') { %>
+                    <p style="color: red; font-size: 20px;" id="error-msg"><%= errorMessage %></p>
+                  <% } %>
+    
+                  <% if (typeof message !== 'undefined') { %>
+                    <p style="color: rgb(0, 255, 0); font-size: 20px;" id="success-msg"><%= message %></p>
+                  <% } %>
+                </div>
+    
                 <!-- Email input -->
                 <div class="form-outline mb-4">
-                  <input type="email" placeholder="Enter Email . . . . ." id="email" name="email" class="formc" required/>
+                  <input type="email" placeholder="Enter Email . . . . ." id="email" name="email" class="formc" required />
                 </div>
     
                 <!-- Password input -->
@@ -83,123 +84,144 @@
                 <script>
                   const togglePassword = document.querySelector('#togglePassword');
                   const password = document.querySelector('#password');
-            
+    
                   togglePassword.addEventListener('click', function (e) {
-                  // toggle the type attribute
-                  const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-                  password.setAttribute('type', type);
-                  // toggle the eye slash icon
-                  this.classList.toggle('fa-eye-slash');
-                    });
-                  </script>
+                    // toggle the type attribute
+                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                    password.setAttribute('type', type);
+                    // toggle the eye slash icon
+                    this.classList.toggle('fa-eye-slash');
+                  });
+    
+                  // Function to synchronize image height with form height
+                  function synchronizeImageHeight() {
+                    const img = document.getElementById('food-img');
+                    const formCard = img.closest('.card');
+                    img.style.height = formCard.offsetHeight + 'px';
+                  }
+    
+                  // Call the function on window load and whenever there's an error message
+                  window.onload = synchronizeImageHeight;
+                  if (document.getElementById('error-msg')) {
+                    synchronizeImageHeight();
+                  }
+                </script>
                 <!-- Submit button -->
-          <div class="action" accesskey="">
-          <button class="btns">Login</button>
-        </div>
-        <div class="actionss">
-        <label class="lbll" for="">Or</label>
-      </div>
-        <div class="actions">
-          <a href="/auth/google" class="btn btn-primary"><div class="fa-google-wrapper"><span class="fab fa-google"></span></div>&emsp14;Login with Google</i></a>
-        </div>
+                <div class="action" accesskey="">
+                  <button class="btns">Login</button>
+                </div>
+                <div class="actionss">
+                  <label class="lbll" for="">Or</label>
+                </div>
+                <div class="actions">
+                  <a href="/auth/google" class="btn btn-primary">
+                    <div class="fa-google-wrapper"><span class="fab fa-google"></span></div>&emsp14;Login with Google</i>
+                  </a>
+                </div>
                 <div>
                   <!-- Simple link -->
-                <label class="dha">Don't Have An Account?</label> <a href="/register"> Register here!</a>
+                  <label class="dha">Don't Have An Account?</label> <a href="/register"> Register here!</a>
                 </div>
-    
-              </form>
+              </div>
             </div>
           </div>
         </div>
-      </div> 
-      </body>
-  <!-- Remove the container if you want to extend the Footer to full width. -->
-  <div class="cntr">
-
-  <footer class="text-white text-center text-lg-start" style="background-color: #C69B68;">
-    <!-- Grid container -->
-    <div class="p-5">
+      </section>
+    </form>
     
-    <!--Grid row-->
-    
-    <div class="row mt-4">
-      <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-      <!--Grid column-->
-      <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
-      <h5 class="text-uppercase mb-4">About company</h5>
-  
-      <label>
-        Thank you for choosing Maya&Me Services for your food ordering needs. We're here to satisfy your cravings, one delicious meal at a time. Enjoy your meal and have a wonderful day!
-      </label>
-  
-      <div class="mt-4">
-        <!-- Facebook -->
-        <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
-        <!-- Dribbble -->
-        <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
-        <!-- Twitter -->
-        <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
-        <!-- Google + -->
-        <a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
-        <!-- Linkedin -->
-      </div>
-      </div>
-      <!--Grid column-->
-  <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
-      <!--Grid column-->
-      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-      <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
-  
-      <ul class="fa-ul" style="margin-left: 1.65em;">
-        <li class="mb-3">
-        <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
-        </li>
-        <li class="mb-3">
-        <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
-        </li>
-        <li class="mb-3">
-        <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
-        </li>
-     
-      </ul>
-      </div>
-      <!--Grid column-->
-  
-      <!--Grid column-->
-      <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-      <h5 class="text-uppercase mb-4">Opening hours</h5>
-  
-      <table class="table text-center text-white">
-        <tbody class="font-weight-normal">
-        <tr>
-          <td>Mon - Thu:</td>
-          <td>8am - 9pm</td>
-        </tr>
-        <tr>
-          <td>Fri - Sat:</td>
-          <td>8am - 1am</td>
-        </tr>
-        <tr>
-          <td>Sunday:</td>
-          <td>9am - 10pm</td>
-        </tr>
-        </tbody>
-      </table>
-      </div>
-      <!--Grid column-->
-    </div>
-    <!--Grid row-->
-    </div>
-    <!-- Grid container -->
-  
-    <!-- Copyright -->
-    <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
-    © 2023 Copyright:
-    <label style="color: #976b35;">Maya&Me Services</label>
-    </div>
-    <!-- Copyright -->
-  </footer>
   </div>
-    <!-- End of .container -->
+</div>
+</div>
+</div> 
+</body>
+<!-- Remove the container if you want to extend the Footer to full width. -->
+<div class="cntr">
+
+<footer class="text-white text-center text-lg-start" style="background-color: #C69B68;">
+<!-- Grid container -->
+<div class="p-5">
+
+<!--Grid row-->
+
+<div class="row mt-4">
+<div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+<!--Grid column-->
+<div class="col-lg-3 col-md-12 mb-4 mb-md-0">
+<h5 class="text-uppercase mb-4">About company</h5>
+
+<label>
+Thank you for choosing Maya&Me Services for your food ordering needs. We're here to satisfy your cravings, one delicious meal at a time. Enjoy your meal and have a wonderful day!
+</label>
+
+<div class="mt-4">
+<!-- Facebook -->
+<a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+<!-- Dribbble -->
+<a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+<!-- Twitter -->
+<a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+<!-- Google + -->
+<a type="button" class="btnf btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+<!-- Linkedin -->
+</div>
+</div>
+<!--Grid column-->
+<div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+<!--Grid column-->
+<div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+<h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
+
+<ul class="fa-ul" style="margin-left: 1.65em;">
+<li class="mb-3">
+<span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
+</li>
+<li class="mb-3">
+<span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
+</li>
+<li class="mb-3">
+<span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
+</li>
+
+</ul>
+</div>
+<!--Grid column-->
+
+<!--Grid column-->
+<div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+<h5 class="text-uppercase mb-4">Opening hours</h5>
+
+<table class="table text-center text-white">
+<tbody class="font-weight-normal">
+<tr>
+<td>Mon - Thu:</td>
+<td>8am - 9pm</td>
+</tr>
+<tr>
+<td>Fri - Sat:</td>
+<td>8am - 1am</td>
+</tr>
+<tr>
+<td>Sunday:</td>
+<td>9am - 10pm</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!--Grid column-->
+</div>
+<!--Grid row-->
+</div>
+<!-- Grid container -->
+
+<!-- Copyright -->
+<div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
+© 2023 Copyright:
+<label style="color: #976b35;">Maya&Me Services</label>
+</div>
+<!-- Copyright -->
+</footer>
+  </div>
+  <!-- End of .container -->
   <script src="scripts/index.js"></script>
-  </html>
+</body>
+</html>

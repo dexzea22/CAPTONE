@@ -346,7 +346,7 @@
         justify-content: center;
     }
 
-h1{
+.prfl{
     font-family: Caveat, open-sans;
     font-size: 85px;
     font-weight: bold;
@@ -356,7 +356,7 @@ h1{
     color:#976b35;
 }
 @media(max-width:900px){
-    h1{
+  .prfl{
       font-size: 60px;
     }
 }

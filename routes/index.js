@@ -135,6 +135,39 @@ router.get('/logs', authenticate, restrictAccess.bind(null, 'Admin'), (req, res)
     });
 });
 
+
+// Protected route for adminUserTable
+router.get('/adminUserTable', authenticate, restrictAccess.bind(null, 'Admin'), async (req, res) => {
+  try {
+    const users = await prisma.user.findMany(); // Fetch users from database
+    res.render('adminUserTable', { title: 'User Table', users });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal server error');
+  }
+});
+// Admin Transaction History route
+router.get('/adminTransactionHistory', authenticate, restrictAccess.bind(null, 'Admin'), (req, res) => {
+  prisma.order.findMany({
+    include: {
+      user: true,
+      orderItems: {
+        include: {
+          foodItem: true
+        }
+      }
+    }
+  })
+    .then((orders) => {
+      res.render('adminTransactionHistory', { orders });
+    })
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    });
+});
+
+
 router.post('/logAction', async (req, res) => {
   const { action, email } = req.body;
 
@@ -196,6 +229,47 @@ router.get('/UserDashboard', authenticate, restrictAccess.bind(null, 'User'), as
 
 
 
+// POST route for handling email submission for password reset
+router.post('/forgotPassword', async function(req, res) {
+  const { email } = req.body;
+
+  try {
+    // Check if the user exists with the provided email
+    const user = await prisma.user.findUnique({ where: { email: email } });
+
+    if (!user) {
+      // Handle case where email does not exist in the database
+      return res.render('forgotPassword', { errorMessage: 'Email not found.' });
+    }
+
+    // Generate and send password reset instructions (e.g., email with reset link)
+    // Here, you would typically generate a unique token, save it to the user's document in the database,
+    // and send an email with a link containing this token.
+
+    // Example token generation using a hypothetical library or function
+    const resetToken = generateResetToken(); // Replace with your actual token generation logic
+
+    // Example of saving the reset token and expiration time to the user's document in the database
+    await prisma.user.update({
+      where: { email: email },
+      data: {
+        resetToken: resetToken,
+        resetTokenExpiresAt: new Date(Date.now() + 3600000), // Token expires in 1 hour (adjust as needed)
+      },
+    });
+
+    // Example of sending an email with password reset instructions
+    const resetLink = `http://yourdomain.com/resetPassword/${resetToken}`; // Replace with your actual domain
+    await sendResetEmail(email, resetLink); // Implement this function using Nodemailer or another email service
+
+    // Render the forgotPassword page with a success message
+    return res.render('forgotPassword', { successMessage: 'Password reset instructions sent to your email.' });
+
+  } catch (error) {
+    console.error('Error in forgot password:', error);
+    return res.status(500).render('error', { errorMessage: 'Error in forgot password. Please try again later.' });
+  }
+});
 
 
 app.use('/', router);

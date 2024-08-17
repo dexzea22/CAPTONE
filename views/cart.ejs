@@ -46,7 +46,7 @@
                 <div class="modal-contents">
                     <span class="close" onclick="closeProfileModal()">&times;</span>
                     <a class="prof" href="/profile">My Profile</a>
-                    <a class="prof" href="/recommendations">Recommended</a>
+                    <!-- <a class="prof" href="/recommendations">Recommended</a> -->
                     <a class="prof" href="/logout">Logout</a>
                 </div>
             </div>
@@ -57,17 +57,17 @@
             </a>
             <%- include('dietaryPreferences.ejs') %>
                 <!-- <a class="nav" id="openDietaryModal" href="#">Dietary Preferences</a> -->
-                <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-                <a class="nav" href="/recommendations">Recommended</a>
+                <!-- <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a> -->
+                <!-- <a class="nav" href="/recommendations">Recommended</a> -->
                 <a class="nav" href="/contact">Contact Us</a>
                 <a class="nav" href="/userOrder">Orders</a>
         </div>
         <div class="side-menu">
             <a href="/UserDashboard">Home</a>
             <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-            <a href="/recommendations">Recommended</a>
+            <!-- <a href="/recommendations">Recommended</a> -->
             <a href="/contact">Contact</a>
-            <a href="/about">About</a>
+            <!-- <a href="/about">About</a> -->
             <a class="nav" style="color: #000000;" onclick="openCartModal()">My Cart</i></a>
             <a href="/profile">My Profile</a>
             <a href="/logout">Logout</a>
@@ -81,12 +81,183 @@
         </div>
         <div class="cont">
             <div class="log">
-                <a class="fbtn" href="/userMenu">Food Menu</a>
-                <a class="fbtn" href="/userTrays">Party Trays</a>
-                <a class="fbtn" href="/userMeals">Solo Meals</a>
+                <a class="obtns" href="/bestSeller">Best Sellers</a>
+                <!-- <a class="obtns" href="/featuredItem">New Products</a> -->
             </div>
-        </div>
+          </div>
+            <div class="Olog">
+              <a class="fbtns" href="/foodMenu">Food Menu</a>
+              <a class="fbtns " href="/partyTrays">Party Trays</a>
+              <a class="fbtns" href="/soloMeals">Solo Meals</a>
+            </div>
     </div>
+    <!-- Dietary Preferences Modal -->
+<div class="modal fade" id="dietaryPreferencesModal" tabindex="-1" role="dialog" aria-labelledby="dietaryPreferencesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="dietaryPreferencesModalLabel">Dietary Preferences</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Dynamic Dietary Preferences Form -->
+          <form id="dietaryForm" action="/submit-dietary-preferences" method="POST" onsubmit="return handleSubmit(event);">
+            <div id="dynamicDietaryFields" class="mb-3">
+              <!-- Admin added dietary preferences checkboxes will be rendered here -->
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" value="">
+                Example Preference
+              </label>
+            </div>
+            <div id="errorDisplay" class="text-danger" style="display: none;"></div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Custom CSS -->
+  <style>
+    #dietaryPreferencesModalLabel {
+      font-size: 1.75rem; /* Larger font size for the modal title */
+    }
+    #dietaryForm label {
+      font-size: 1rem; /* Font size for form labels */
+      display: flex;
+      align-items: center; /* Align checkboxes and text vertically */
+      margin-bottom: 1rem; /* Add space between checkbox-label pairs */
+    }
+    #dietaryForm input[type="checkbox"] {
+      width: 1rem; /* Adjust the width of the checkbox */
+      height: 1rem; /* Adjust the height of the checkbox */
+      margin-right: 0.5rem; /* Spacing between checkbox and label */
+      vertical-align: middle; /* Ensure the checkbox is vertically aligned with text */
+    }
+    #dietaryForm button {
+      font-size: 1rem; /* Larger font size for the button */
+    }
+  
+    /* Move the modal down on the screen */
+    .modal-dialog {
+      margin-top: 2rem; /* Adjust this value to move the modal down */
+    }
+  </style>
+  
+  
+  
+  
+  <script>
+   document.addEventListener('DOMContentLoaded', function() {
+        const modal = $('#dietaryPreferencesModal');
+  
+        window.openDietaryModal = function() {
+          modal.modal('show');
+          fetchDietaryPreferencesFields(); // Fetch preferences when opening the modal
+        }
+  
+        window.closeDietaryModal = function() {
+          modal.modal('hide');
+        }
+  
+        async function fetchDietaryPreferencesFields() {
+          try {
+            const response = await fetch('/admin/dietary-preferences');
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            renderDietaryPreferencesFields(data.preferences);
+          } catch (error) {
+            console.error("Error fetching dietary preferences fields:", error);
+            const errorDisplay = document.getElementById("errorDisplay");
+            errorDisplay.textContent = `Error: ${error.message}`;
+            errorDisplay.style.display = "block";
+          }
+        }
+  
+        function renderDietaryPreferencesFields(preferences) {
+          const dynamicFieldsContainer = document.getElementById('dynamicDietaryFields');
+          dynamicFieldsContainer.innerHTML = '';
+  
+          if (!preferences || Object.keys(preferences).length === 0) {
+            dynamicFieldsContainer.innerHTML = '<p>No dietary preferences available.</p>';
+            return;
+          }
+  
+          Object.keys(preferences).forEach(preference => {
+            const fieldHtml = `
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="${preference}" name="${preference}" />
+                <label class="form-check-label" for="${preference}">${preference}</label>
+              </div>
+            `;
+            dynamicFieldsContainer.insertAdjacentHTML('beforeend', fieldHtml);
+          });
+        }
+      });
+  
+      async function handleSubmit(event) {
+    event.preventDefault();
+    const errorDisplay = document.getElementById("errorDisplay");
+    errorDisplay.style.display = "none";
+    errorDisplay.textContent = "";
+  
+    const form = document.getElementById("dietaryForm");
+    const formData = new FormData(form);
+    const dietaryPreferences = Object.fromEntries(formData.entries());
+  
+    // Convert form data into a proper boolean object
+    for (let key in dietaryPreferences) {
+      dietaryPreferences[key] = dietaryPreferences[key] === "on";
+    }
+  
+    // Check if at least one dietary choice is selected
+    const isAnyChoiceSelected = Object.values(dietaryPreferences).some(choice => choice);
+    if (!isAnyChoiceSelected) {
+      errorDisplay.textContent = "Please select at least one dietary preference.";
+      errorDisplay.style.display = "block";
+      return;
+    }
+  
+    try {
+      const response = await fetch("/submit-dietary-preferences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dietaryPreferences),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: data.message,
+            showConfirmButton: true,
+          }).then(() => {
+            // Redirect to the foodMenu page with an anchor to "Menu Recommendations"
+            window.location.href = "/foodMenu#menu-recommendations";
+          });
+        } else {
+          throw new Error(data.message || "An error occurred.");
+        }
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      errorDisplay.textContent = error.message;
+      errorDisplay.style.display = "block";
+    }
+  }
+  
+  
+  
+  
+  </script>
     <div class="card" id="cart-mod">
         <!-- Add the empty cart message div here -->
         <div id="empty-cart-message" style="display: none;">Your cart is empty!</div>
@@ -206,8 +377,7 @@
                 });
         }
 
-   // Function to fetch and display cart items
-function displayCartItems() {
+        function displayCartItems() {
     fetch('/api/cart/items', {
         method: 'GET',
         credentials: 'include', // Important for sessions
@@ -235,11 +405,26 @@ function displayCartItems() {
                 const itemName = item.foodItem.name.replace('card-', '');
 
                 // Calculate the total price for each item
-                const itemTotalPrice = item.foodItem.price * item.quantity;
+                const itemTotalPrice = parseFloat(item.itemPrice) * item.quantity;
                 totalPrice += itemTotalPrice; // Add to the total price
 
                 // Determine if the item is with or without egg
-                const eggStatus = item.withEgg ? 'With Egg' : 'Without Egg';
+                let eggStatus = '';
+                if (item.foodItem.category === 'Solo Meals') {
+                    eggStatus = item.withEgg ? 'With Egg' : 'Without Egg';
+                }
+
+                // Determine the size for Party Trays
+                let sizeDisplay = '';
+                if (item.foodItem.category === 'Party Trays') {
+                    if (item.size10_12) {
+                        sizeDisplay = item.size10_12;
+                    } else if (item.size25_30) {
+                        sizeDisplay = item.size25_30;
+                    } else if (item.size45_50) {
+                        sizeDisplay = item.size45_50;
+                    }
+                }
 
                 // Construct dietary restrictions string
                 const dietaryRestrictions = item.foodItem.dietaryRestrictions.length > 0 ? `Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}` : '';
@@ -247,9 +432,9 @@ function displayCartItems() {
                 itemElement.innerHTML = `
                     <div><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
                     <div class="Itm">
-                        <span>${itemName} ${eggStatus}</span><br>
-                        ${dietaryRestrictions ? `<span>${dietaryRestrictions}</span><br>` : ''}
-                        <span>Price: PHP ${item.foodItem.price.toFixed(2)}</span><br>
+                        <span>${itemName} ${sizeDisplay} ${item.foodItem.category} ${eggStatus}</span><br>
+                        <span>Dietary Restrictions: ${item.foodItem.dietaryRestrictions.join(', ')}</span><br>
+                        <span>Price: PHP ${item.itemPrice}</span><br>
                         <span>Quantity: 
                             <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item.id}', ${item.quantity - 1})">-</button>
                             <span>${item.quantity}</span>
@@ -270,12 +455,12 @@ function displayCartItems() {
             document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
 
             // Check if the total price exceeds the limit
-            if (totalPrice > 10000) {
+            if (totalPrice > 15000) {
                 // Display a warning message
                 Swal.fire({
                     icon: 'warning',
                     title: 'Cart Limit Exceeded',
-                    text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                    text: 'Your cart total has exceeded PHP 15,000. Please remove some items.',
                 });
             }
         } else {
@@ -285,7 +470,7 @@ function displayCartItems() {
     })
     .catch(error => {
         console.error('Error fetching cart items:', error);
-        // Display an error message
+        // Display an error message or handle it as per your requirement
         const cartItemsContainer = document.getElementById('mod-cart-items');
         cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
     });
@@ -293,6 +478,12 @@ function displayCartItems() {
 
 // Call the function to fetch and display cart items when the page loads
 document.addEventListener('DOMContentLoaded', displayCartItems);
+
+
+
+
+
+
 
 
 
@@ -389,29 +580,63 @@ document.addEventListener('DOMContentLoaded', displayCartItems);
         }
 
 
-        // Function to update the total amount displayed in the UI
-        function updateTotalAmount() {
-            fetch('/api/cart/items', {
-                method: 'GET',
-                credentials: 'include', // Important for sessions
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch cart items. Please try again.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Calculate total amount
-                    const totalAmount = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
-                    // Update the total amount displayed in the UI
-                    document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
-                })
-                .catch(error => {
-                    console.error('Error fetching cart items:', error);
-                    // Display an error message or handle it as per your requirement
-                });
+       // Function to update the total amount displayed in the UI
+function updateTotalAmount() {
+    fetch('/api/cart/items', {
+        method: 'GET',
+        credentials: 'include', // Important for sessions
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to fetch cart items. Please try again.');
         }
+        return response.json();
+    })
+    .then(data => {
+        // Calculate total amount
+        let totalAmount = 0;
+
+        data.forEach(item => {
+            let itemPrice = 0;
+
+            if (item.foodItem.category === 'Solo Meals') {
+                itemPrice = item.foodItem.price;
+                if (item.withEgg) {
+                    itemPrice += 5; // Add price for egg if applicable
+                }
+            } else if (item.foodItem.category === 'Party Trays') {
+                if (item.foodItem.size === 'Small') {
+                    itemPrice = item.foodItem.price;
+                } else if (item.foodItem.size === 'Medium') {
+                    itemPrice = item.foodItem.price25_30;
+                } else if (item.foodItem.size === 'Large') {
+                    itemPrice = item.foodItem.price45_50;
+                }
+            }
+
+            totalAmount += itemPrice * item.quantity;
+        });
+
+        // Update the total amount displayed in the UI
+        document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+        document.getElementById('total-amounthidden').textContent = totalAmount.toFixed(2);
+
+        // Check if the total price exceeds the limit
+        if (totalAmount > 15000) {
+            // Display a warning message
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cart Limit Exceeded',
+                text: 'Your cart total has exceeded PHP 15,000. Please remove some items.',
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching cart items:', error);
+        // Display an error message or handle it as per your requirement
+    });
+}
+
 
     </script>
 

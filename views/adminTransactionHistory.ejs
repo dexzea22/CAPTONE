@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transaction History</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700" />
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet" />
+    <link href="https://fonts.cdnfonts.com/css/kreon" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/admin.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <style>
+        thead.thead-dark th {
+            background-color: #343a40;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
+    <div class="menu-toggle">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <div class="menu">
+        <a href="/adminDashboard"><i class="fa-solid fa-chart-line"></i>Dashboard</a>
+        <a href="/adminUserTable"><i class="fa-solid fa-users"></i>User Table</a>
+        <a href="/logs"><i class="fa-solid fa-clipboard-list"></i>Logs</a>
+        <a href="/adminTransactionHistory" style="font-size: 22px;"><i class="fa-solid fa-clock-rotate-left"></i>Transaction History</a>
+        <a href="/adminOrderNotifications"><i class="fa-solid fa-bell"></i>Order Notifications</a>
+        <a href="/adminCreateFoodItem"><i class="fa-solid fa-plus"></i>Add Food Item</a>
+        <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+    </div>
+    <div class="side-menu">
+        <a href="/adminDashboard">Dashboard</a>
+        <a href="/adminUserTable">User Table</a>
+        <a href="/adminTransactionHistory">Transaction History</a>
+        <a href="/adminOrderNotifications">Order Notifications</a>
+        <a href="/adminCreateFoodItem">Add Food Item</a>
+        <a href="/logs">Logs</a>
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="main-content">
+        <h1 class="admn">Transaction History</h1>
+        <table id="transactionTable" class="display" style="width:100%">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Status</th>
+                    <th>Customer Name</th>
+                    <th>Contact Number</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order => { %>
+                <tr>
+                    <td><%= order.id %></td>
+                    <td><%= order.status %></td>
+                    <td><%= order.user.firstName %> <%= order.user.lastName %></td>
+                    <td><%= order.contactNumber %></td>
+                    <td><%= new Date(order.createdAt).toLocaleString() %></td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewOrderDetails('<%= order.id %>')">View Details</button>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Modal for Viewing Order Details -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="orderInfo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function viewOrderDetails(orderId) {
+            fetch(`/adminTransactionHistory/details/${orderId}`, {
+                headers: {
+                    'Cache-Control': 'no-cache', // Forces the request to bypass the cache
+                    'Pragma': 'no-cache'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`Failed to fetch order details: ${response.statusText}`);
+                }
+            })
+            .then(data => {
+                if (!data || Object.keys(data).length === 0) {
+                    throw new Error("No data returned from server");
+                }
+
+                const orderItemsHtml = data.orderItems.map(item => {
+                    let itemName = item.foodItem.name;
+                    let category = item.foodItem.category;
+                    let pricePerItem = item.itemPrice;
+                    let totalItemPrice = item.totalPrice;
+                    let dietaryRestrictions = item.foodItem.dietaryRestrictions.join(', ');
+
+                    // Adjust item name for Solo Meals with or without egg
+                    if (category === "Solo Meals") {
+                        if (item.withEgg) {
+                            itemName += " (with egg)";
+                            pricePerItem += 5; // Add 5 if withEgg is true for Solo Meals
+                        } else {
+                            itemName += " (without egg)";
+                        }
+                    }
+
+                    totalItemPrice = pricePerItem * item.quantity;
+
+                    return `
+                        <li>
+                            <div class="d-flex align-items-center">
+                                <img src="${item.foodItem.imageUrl}" alt="Food Image"
+                                    class="mr-3 clickable-image"
+                                    style="max-width: 150px; max-height: 150px; border-radius: 0; cursor: pointer;"
+                                    onclick="openImageViewer('${item.foodItem.imageUrl}', '${item.foodItem.name}', '${item.withEgg ? 'With Egg' : 'Without Egg'}', '${item.foodItem.dietaryRestrictions.join(', ')}')">
+                                <div>
+                                    <p><strong>Item Name:</strong> ${itemName}</p>
+                                    <p><strong>Item Size:</strong> ${item.itemSize ? item.itemSize : 'N/A'}</p>
+                                    <p><strong>Quantity:</strong> ${item.quantity}</p>
+                                    <p><strong>Category:</strong> ${category}</p>
+                                    <p><strong>Price:</strong> ₱${pricePerItem} each</p>
+                                    <p><strong>Total Price:</strong> ₱${totalItemPrice}</p>
+                                    <p><strong>Dietary Restrictions:</strong> ${dietaryRestrictions}</p>
+                                </div>
+                            </div>
+                        </li>
+                    `;
+                }).join('');
+
+                const orderInfo = `
+                    <p><strong>Order ID:</strong> ${data.id}</p>
+                    <p><strong>Customer:</strong> ${data.user.firstName} ${data.user.lastName}</p>
+                    <p><strong>Contact:</strong> ${data.contactNumber}</p>
+                    <p><strong>Address:</strong> ${data.shippingAddress}</p>
+                    <p><strong>Ordered Items:</strong></p>
+                    <ul class="list-unstyled">
+                        ${orderItemsHtml}
+                    </ul>
+                `;
+                
+                $('#orderInfo').html(orderInfo);
+                $('#orderDetailsModal').modal('show');
+            })
+            .catch(error => {
+                console.error('Error fetching order details:', error);
+                Swal.fire('Error', error.toString(), 'error');
+            });
+        }
+
+        $(document).ready(function() {
+            $('#transactionTable').DataTable({
+                "pagingType": "full_numbers"
+            });
+        });
+    </script>
+</body>
+</html>

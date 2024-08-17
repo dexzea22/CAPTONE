@@ -129,85 +129,136 @@ function QTY(operation, outputId) {
   quantityOutput.innerText = currentQuantity;
 }
 
-// Function to update cart counter
-
- // Updated addToCart function to include quantity, "With Egg" option, and dietary restrictions
 function addToCart(cardId) {
-  console.log('Adding to cart:', cardId); // Log to track function execution
+  console.log('Adding to cart:', cardId);
 
   const cardElement = document.getElementById(cardId);
   if (!cardElement) {
-      console.error('Card element not found:', cardId);
-      return;
+    console.error('Card element not found:', cardId);
+    return;
   }
 
   const quantityInput = cardElement.querySelector(`#quantity-${cardId.replace('card-', '')}`);
-  const withEggCheckbox = cardElement.querySelector(`#withEgg-${cardId.replace('card-', '')}`);
   const imageUrl = cardElement.querySelector('img').getAttribute('src');
   const dietaryRestrictions = cardElement.getAttribute('data-dietary-restrictions').split(',');
+  const category = cardElement.getAttribute('data-category');
 
   if (!quantityInput) {
-      console.error('Quantity input not found for card:', cardId);
-      return;
+    console.error('Quantity input not found for card:', cardId);
+    return;
   }
 
   const quantity = parseInt(quantityInput.value);
-  const itemPrice = parseFloat(quantityInput.getAttribute('data-price'));
+  const withEggCheckbox = cardElement.querySelector(`#withEgg-${cardId.replace('card-', '')}`);
   const withEgg = withEggCheckbox ? withEggCheckbox.checked : false; // Check if withEggCheckbox exists and if it's checked
   const itemName = cardId.replace('card-', ''); // Remove 'card-' prefix
 
-  const requestData = {
-      name: itemName, // Use the item name without the 'card-' prefix
-      price: itemPrice,
-      image: imageUrl,
-      quantity: quantity,
-      withEgg: withEgg, // Include withEgg if checked
-      dietaryRestrictions: dietaryRestrictions, // Include dietaryRestrictions
+  let selectedPrice = null;
+  let selectedSize = '';
+
+  // Adjust price for Party Trays based on selected size
+  if (category === 'Party Trays') {
+    const sizeRadioChecked = cardElement.querySelector('.price-radio-group input[type="radio"]:checked');
+    if (sizeRadioChecked) {
+      selectedPrice = parseFloat(sizeRadioChecked.value);
+      selectedSize = sizeRadioChecked.nextSibling.textContent.trim(); // Get the size label text
+    } else {
+      console.error('Please select a size for Party Trays.');
+      return;
+    }
+  } else {
+    // For other categories, use the selected quantity price
+    selectedPrice = parseFloat(quantityInput.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || quantityInput.getAttribute('data-price'));
+  }
+
+  // Adjust price if withEgg is selected
+  if (withEgg) {
+    selectedPrice += 5; // Add 5 to selectedPrice if withEgg is checked
+  }
+
+  console.log('Quantity:', quantity);
+  console.log('Item Price Chosen by Customer:', selectedPrice);
+  console.log('Selected Size:', selectedSize);
+
+  // Determine the sizes to send based on selectedSize
+  let size10_12 = null;
+  let size25_30 = null;
+  let size45_50 = null;
+
+  // Map selectedSize to corresponding size variable
+  if (category === 'Party Trays') {
+    if (selectedSize === 'Small 10-12 Pax') {
+      size10_12 = selectedSize;
+    } else if (selectedSize === 'Medium 25-30 Pax') {
+      size25_30 = selectedSize;
+    } else if (selectedSize === 'Large 45-50 Pax') {
+      size45_50 = selectedSize;
+    }
+  }
+
+  let requestData = {
+    name: itemName,
+    image: imageUrl,
+    quantity: quantity,
+    withEgg: withEgg,
+    dietaryRestrictions: dietaryRestrictions,
+    category: category,
+    price: selectedPrice, // Send selectedPrice to backend
+    size10_12: size10_12,
+    size25_30: size25_30,
+    size45_50: size45_50,
   };
 
   console.log('Request Data:', requestData);
 
   fetch('/api/cart/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(requestData),
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(requestData),
   })
   .then(response => {
-      if (!response.ok) {
-          throw new Error('Failed to add item to cart. Please try again.');
-      }
-      return response.json();
+    if (!response.ok) {
+      throw new Error('Failed to add item to cart. Please try again.');
+    }
+    return response.json();
   })
   .then(data => {
-      if (data.success) {
-          // Extract the item name from cardId and format the message
-          const eggStatus = withEgg ? 'W/ Egg' : 'W/Out Egg'; // Determine if withEgg is true or false
-
-          Swal.fire({
-              icon: 'success',
-              title: 'Item Added to Cart',
-              text: `${itemName} (${eggStatus}) has been added to your cart.`,
-          }).then(() => {
-              window.location.reload(); // Reload the window after the alert
-          });
-      } else {
-          Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: data.message || 'Could not add item to the cart.',
-          });
-      }
+    console.log('Response Data:', data);
+    if (data.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Item Added to Cart',
+        text: data.message, // Use the message from the server
+      }).then(() => {
+        window.location.reload(); // Optionally reload the page after adding to cart
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: data.message || 'Could not add item to the cart.',
+      });
+    }
   })
   .catch(error => {
-      console.error('Error adding item to cart:', error);
-      Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: error.message || 'An unexpected error occurred.',
-      });
+    console.error('Error adding item to cart:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message || 'An unexpected error occurred.',
+    });
   });
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -360,9 +411,9 @@ window.onload = function() {
 
 
 
-$('#openDietaryModal').click(function () {
-  $('#dietaryPreferencesModal').modal('show');
-});
+// $('#openDietaryModal').click(function () {
+//   $('#dietaryPreferencesModal').modal('show');
+// });
 // Function to open the profile modal
 function openProfileModal() {
   document.getElementById('profileModal').style.display = 'block';

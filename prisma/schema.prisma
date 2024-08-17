@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Log {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  action        String
+  email         String
+  userId        String
+  timestamp     DateTime @default(now())
+  orderId       String?
+  amount        Float?
+  currency      String?
+  paymentStatus String?
+}
+
 model User {
   id                String              @id @default(auto()) @map("_id") @db.ObjectId
   email             String              @unique
@@ -19,101 +31,105 @@ model User {
   dateOfBirth       DateTime?
   phoneNumber       String?
   dietaryPreference DietaryPreference?
-  cartItems         CartItem[]          // Define the relation to CartItem
-  orders            Order[]             @relation(name: "UserToOrder") // Define the relation to Order
-}
-
-model Log {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  action        String
-  email         String
-  userId        String  // Explicitly define userId as String
-  timestamp     DateTime @default(now())
-  orderId       String?  // Add a field to store the PayPal order ID
-  amount        Float?   // Add a field to store the payment amount
-  currency      String?  // Add a field to store the currency code
-  paymentStatus String?  // Add a field to store the payment status (e.g., "captured", "pending", etc.)
+  cartItems         CartItem[]          @relation("UserCartItems")
+  orders            Order[]             @relation(name: "UserToOrder")
+  feedbacks         Feedback[]          @relation("UserFeedbacks")
 }
 
 model DietaryPreference {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @unique
-  vegetarian        Boolean @default(false)
-  vegan             Boolean @default(false)
-  omnivore          Boolean @default(false)
-  halal             Boolean @default(false)
-  kosher            Boolean @default(false)
-  glutenFree        Boolean @default(false)
-  lactoseFree       Boolean @default(false)
-  nutAllergy        Boolean @default(false)
-  otherRestrictions String?
-  user              User    @relation(fields: [userId], references: [id])
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @unique
+  preferences Json?
+  user        User     @relation(fields: [userId], references: [id])
 }
+
+
+
 
 model FoodItem {
   id                  String      @id @default(auto()) @map("_id") @db.ObjectId
   name                String
   description         String?
   price               Float
-  size                String?     // Added size field here
-  price25_30          Float?      // For party trays
-  price45_50          Float?      // For party trays
-  category            String?     // Assuming simple string categories
-  dietaryRestrictions String[]    // Array of strings
+  size                String?
+  price25_30          Float?
+  price45_50          Float?
+  category            String?
+  dietaryRestrictions String[]
   imageUrl            String?
-  cartItems           CartItem[]  // Define the relation to CartItem
-  orderItems          OrderItem[] // Define the relation to OrderItem
-    createdAt DateTime @default(now())
-  @@unique([name, size], name: "name_size") // Ensures uniqueness for combinations of name and size
+  cartItems           CartItem[]  @relation("FoodItemCartItems")
+  orderItems          OrderItem[]
+  createdAt           DateTime    @default(now())
+  deleted             Boolean     @default(false)
+  available           Boolean     @default(true)
+  totalPrice          Float?
+  size10_12           String?
+  size25_30           String?
+  size45_50           String?
 }
 
 model CartItem {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String
-  itemId   String
-  quantity Int
-  withEgg  Boolean?  // Check if withEgg field is correctly defined
-  user     User     @relation(fields: [userId], references: [id])
-  foodItem FoodItem @relation(fields: [itemId], references: [id])
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  itemId     String
+  quantity   Int
+  withEgg    Boolean?
+  price      Float
+  totalPrice Float?
+  size10_12  String?
+  size25_30  String?
+  size45_50  String?
+  user       User     @relation(name: "UserCartItems", fields: [userId], references: [id])
+  foodItem   FoodItem @relation(name: "FoodItemCartItems", fields: [itemId], references: [id])
 }
-
 
 model Order {
   id              String        @id @default(auto()) @map("_id") @db.ObjectId
   userId          String
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  paypalOrderId   String?       // Add this field to store the PayPal order ID
+  paypalOrderId   String?
   status          String
   amount          Float
-  orderItems      OrderItem[]   // Define the relation to OrderItem
-  user            User          @relation(name: "UserToOrder", fields: [userId], references: [id]) // Define the opposite relation to User
-  shippingAddress String?       // New fields for shipping information
-  contactPerson   String?       // New fields for shipping information
-  contactNumber   String?       // New fields for shipping information
-  paymentMethod   String?       // New field for payment method (e.g., "PayPal", "COD", etc.)
+  orderItems      OrderItem[]
+  user            User          @relation(name: "UserToOrder", fields: [userId], references: [id])
+  shippingAddress String?
+  contactPerson   String?
+  contactNumber   String?
+  paymentMethod   String?
+  feedbacks       Feedback[]    @relation("OrderFeedbacks")
 }
 
 model OrderItem {
   id                  String      @id @default(auto()) @map("_id") @db.ObjectId
   orderId             String
   itemId              String
-  itemName            String      // Add field for the name of the item
-  itemDescription     String?     // Add field for the description of the item
-  itemPrice           Float       // Add field for the price of the item
-  itemSize            String?     // Add field for the size of the item
-  itemImageUrl        String?     // Add field for the image URL of the item
+  itemName            String
+  itemDescription     String?
+  itemPrice           Float
+  itemSize            String?
+  itemImageUrl        String?
   quantity            Int
-  withEgg             Boolean?    // Ensure withEgg is correctly defined
+  category            String?
+  withEgg             Boolean?
   totalPrice          Float
-  dietaryRestrictions String[]    // Array of strings for dietary restrictions
+  dietaryRestrictions String[]
   order               Order       @relation(fields: [orderId], references: [id])
   foodItem            FoodItem    @relation(fields: [itemId], references: [id])
   createdAt           DateTime    @default(now())
+  
 }
 
-
-
+model Feedback {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId   String
+  userId    String
+  rating    Int
+  comments  String
+  createdAt DateTime @default(now())
+  order     Order    @relation(name: "OrderFeedbacks", fields: [orderId], references: [id])
+  user      User     @relation(name: "UserFeedbacks", fields: [userId], references: [id])
+}
 
 
 model ContactMessage {

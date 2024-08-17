@@ -3,51 +3,796 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solo Meals</title>
-    <style>
-      .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 20px;
-      }
-      .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 10px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-      .card img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin-bottom: 10px;
-      }
-      .card h2 {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-      }
-      .card p {
-        margin-bottom: 5px;
-      }
-    </style>
+    <title>Maya&Me | SoloMeals</title>
+    <link rel="website icon" type="png" href="images/maya.png">
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+
+    <link rel="stylesheet" href="stylesheets/solo.css">
+  
+
   </head>
-  <body>
-    <h1>Solo Meals</h1>
+  <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;"></body>
+  <div class="topnav">
+    <div class="menu-toggle">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px" /></a>
+    <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px" /></a>
+    <div class="menu">
+      <a class="nav" href="/UserDashboard">Home</a>
+      <div class="nav" onclick="openProfileModal()"
+        style="font-size: 22px;cursor: pointer;float: right;margin: 1.3% 3% 0 0;color: #976b35;"> <i
+          class="fas fa-user-circle fa-2x"></i>
+      </div>
+      <!-- Profile Modal -->
+      <div id="profileModal" class="pmod">
+        <div class="modal-contents">
+          <span class="close" onclick="closeProfileModal()">&times;</span>
+          <a class="prof" href="/profile">My Profile</a>
+          <a class="prof" href="/recommendations">Recommended</a>
+          <a class="prof" href="/logout">Logout</a>
+        </div>
+      </div>
+      <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;" onclick="openCartPage()">
+      <i class="fas fa-shopping-cart fa-2x"></i>
+      <span id="cart-counter">0</span>
+      <!-- </a>
+        <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a> -->
+        <!-- <a class="nav" href="/recommendations">Recommended</a> -->
+        <a class="nav" href="/userOrder">Orders</a>
+        <a class="nav" href="/contact">Contact Us</a>
+        <div class="nav" style="float: right;">
+          <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control" style="margin-top: 12px;" placeholder="Search menu items"
+              id="menuSearchInput">
+          </div>
+        </div>
+    </div>
+    <div class="side-menu">
+      <a href="/UserDashboard">Home</a>
+      <!-- <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+      <a href="/recommendations">Recommended</a> -->
+      <a href="/contact">Contact Us</a>
+      <a href="/userOrder">Orders</a>
+      <!-- <a href="/about">About Us</a> -->
+      <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
+      <a href="/profile">My Profile</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </div>
+  <div class="dashboard">
+    <!-- Dietary Preferences Modal -->
+  <div id="dietaryPreferencesModal" class="modal">
+    <div class="mod-content">
+      <span class="close-button" onclick="closeDietaryModal()">&times;</span>
+      <h2>Dietary Preferences</h2>
+
+      <!-- Start of the Dietary Preferences Form -->
+      <div class="container">
+        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST"
+          onsubmit="return handleSubmit(event);">
+          <!-- Diet Type -->
+          <div>
+            <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
+            <label class="lbld" for="vegetarian">Vegetarian</label>
+
+          
+
+
+            <input type="checkbox" id="omnivore" name="omnivore" value="true" />
+            <label class="lbld" for="omnivore">Omnivore</label>
+
+
+            <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
+            <label class="lbld" for="glutenFree">Gluten-Free</label>
+
+          </div>
+
+          <!-- Allergies -->
+          <div>
+            <label class="lbld">Allergies:</label>
+           
+
+
+            <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
+            <label class="lbld" for="nutAllergy">Nut Allergy</label>
+
+          </div>
+
+          <input type="submit" value="Submit" />
+        </form>
+        <!-- Removed the confirmationMessage div -->
+        <!-- Add this div to display errors -->
+        <div id="errorDisplay" style="color: red; display: none"></div>
+      </div>
+      <!-- End of the Dietary Preferences Form -->
+    </div>
+  </div>
+  </div>
+  <div class="dashboard-banner">
+    <img src="images/long.jpg" alt="" />
+    <div class="banner-promo">
+      <span><img class="logo" src="images/maya.png" alt="" height="330px" /></span>
+    </div>
+    <div class="cont">
+      <div class="log">
+          <a class="obtns" href="/bestSeller">Best Sellers</a>
+          <!-- <a class="obtns" href="/featuredItem">New Products</a> -->
+      </div>
+    </div>
+      <div class="Olog">
+        <a class="fbtns" href="/foodMenu">Food Menu</a>
+        <a class="fbtns" href="/partyTrays">Party Trays</a>
+        <a class="fbtns active" href="/soloMeals">Solo Meals</a>
+      </div>
+    </div>
+    <h1 class="ttl">Solo Meals</h1>
     <div class="grid-container">
       <% foodItems.forEach(item => { %>
-      <div class="card">
-        <img src="<%= item.imageUrl %>" alt="<%= item.name %>" />
-        <h2><%= item.name %></h2>
-        <p><%= item.description %></p>
-        <p>Price: ₱<%= item.price.toFixed(2) %></p>
-        <p>
-          Dietary Preferences: <% item.dietaryRestrictions.forEach(diet => { %>
-          <%= diet %> <% }); %>
-        </p>
-      </div>
-      <% }); %>
+        <div class="cards h-100 <% if (!item.available) { %>unavailable-card<% } %>" id="card-<%= item.name.replace(/\s+/g, '-') %>" data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" data-category="Solo Meals">
+          <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
+          <% if (!item.available) { %>
+              <% } %>
+
+              <div class="card-body">
+                <h5 class="card-title"><%= item.name %></h5>
+                <p class="card-text">
+                  Dietary Preferences:   <% item.dietaryRestrictions.forEach((diet, index) => { %>
+                    <%= diet %><% if (index !== item.dietaryRestrictions.length - 1) { %>, <% } %>
+                  <% }); %>
+                </p>
+                <!-- Category -->
+                <p>Category: <%= item.category %></p>
+                <% if (item.available) { %>
+                  <!-- Quantity input -->
+                  <div class="form-group">
+                    <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                    <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>"
+                      value="1" min="1" data-price="<%= item.price %>">
+                  </div>
+                  <!-- Add Egg checkbox -->
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="add-egg"
+                      id="withEgg-<%= item.name.replace(/\s+/g, '-') %>" data-egg-price="5">
+                    <label class="form-check-label" for="withEgg-<%= item.name.replace(/\s+/g, '-') %>">Add Egg (₱5)</label>
+                  </div>
+                  <!-- Total Price -->
+                  <p class="card-text">Total Price: ₱<span class="total-price"><%= item.price.toFixed(2) %></span></p>
+                  <!-- Add to Cart button -->
+                  <button type="button" class="cbtn"
+                    onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
+                <% } else { %>
+                  <div class="unavailable-text">Unavailable</div>
+
+                <% } %>
+              </div>
+            </div>
+        <% }); %>
     </div>
-  </body>
+    <div class="cntr">
+      <div class="lbls" style="margin:3% 0 0 1%;">
+      <label class="fpu" for="">Menu and Prices</label>
+      </div>
+      <div>
+        <div class="ogallery">
+          <img src="images/m1.jpg" alt="Image 1" onclick="openLightbox('images/m1.jpg')">
+          <img src="images/m4.jpg" alt="Image 1" onclick="openLightbox('images/m4.jpg')">
+          <img src="images/m2.jpg" alt="Image 1" onclick="openLightbox('images/m2.jpg')">
+          <img src="images/m5.jpg" alt="Image 1" onclick="openLightbox('images/m5.jpg')">
+          <img src="images/m3.jpg" alt="Image 1" onclick="openLightbox('images/m3.jpg')">
+          <!-- Add more images as needed -->
+        </div>
+      <!-- Lightbox (hidden by default) -->
+      <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <img src="" alt="Enlarged Image" class="lightbox-image">
+        <!-- Add close button or any other content here -->
+      </div>
+      </div>
+      </div>
+      <div class="container">
+      <div class="lbls" style="margin-top: 5%;">
+        <label class="fpu" for="">Store Location</label>
+       </div>
+      <div class="card-maps">   
+          <div>
+            <img class="map-img"  src="images/mam.png" alt="">
+          </div>
+            <div>
+                <iframe class="gmap" src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d15473.095439622592!2d121.50914925672969!3d14.178731599845047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTTCsDEwJzU1LjkiTiAxMjHCsDMwJzM2LjAiRQ!5e0!3m2!1sen!2sus!4v1701578225488!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> 
+             </div>
+      </div>
+      </div>
+      <div class="cntr">
+      
+      <footer class="text-white text-center text-lg-start" style="background-color: #C69B68;">
+        <!-- Grid container -->
+        <div class="p-5">
+        
+        <!--Grid row-->
+        
+        <div class="row mt-4">
+          <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+          <!--Grid column-->
+          <div class="col-lg-3 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4">About company</h5>
+      
+          <label style="color: white;">
+            Thank you for choosing Maya&Me Services for your food ordering needs. We're here to satisfy your cravings, one delicious meal at a time. Enjoy your meal and have a wonderful day!
+          </label>
+      
+          <div class="mt-4">
+            <!-- Facebook -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-facebook-f"></i></a>
+            <!-- Dribbble -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-dribbble"></i></a>
+            <!-- Twitter -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-twitter"></i></a>
+            <!-- Google + -->
+            <a type="button" class="btn btn-floating btn-warning btn-lg"><i class="fab fa-google-plus-g"></i></a>
+            <!-- Linkedin -->
+          </div>
+          </div>
+          <!--Grid column-->
+      <div class="col-lg-1 col-md-6 mb-4 mb-md-0"></div>
+          <!--Grid column-->
+          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4 pb-1">Contact Us</h5>
+      
+          <ul class="fa-ul" style="margin-left: 1.65em;">
+            <li class="mb-3">
+            <span class="fa-li"><i class="fas fa-home"></i></span><span class="ms-2">Brgy San Isidro Luisiana,Laguna</span>
+            </li>
+            <li class="mb-3">
+            <span class="fa-li"><i class="fas fa-envelope"></i></span><span class="ms-2">mayaandme74@gmail.com</span>
+            </li>
+            <li class="mb-3">
+            <span class="fa-li"><i class="fas fa-phone"></i></span><span class="ms-2">09186506362</span>
+            </li>
+         
+          </ul>
+          </div>
+          <!--Grid column-->
+      
+          <!--Grid column-->
+          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase mb-4">Opening hours</h5>
+      
+          <table class="table text-center text-white" >
+            <tbody class="font-weight-normal">
+            <tr>
+              <td>Mon - Thu:</td>
+              <td>8am - 9pm</td>
+            </tr>
+            <tr >
+              <td>Fri - Sat:</td>
+              <td>8am - 1am</td>
+            </tr>
+            <tr>
+              <td>Sunday:</td>
+              <td>9am - 10pm</td>
+            </tr>
+            </tbody>
+          </table>
+          </div>
+          <!--Grid column-->
+        </div>
+        <!--Grid row-->
+        </div>
+        <!-- Grid container -->
+      
+        <!-- Copyright -->
+        <div class="text-center p-3" style="font-weight: bold; background-color: #ffefe4; color: #C69B68;">
+        © 2023 Copyright:
+        <label style="color: #976b35;">Maya&Me Services</label>
+        </div>
+        <!-- Copyright -->
+      </footer>
+      </div>
+      <script>
+        // Function to open the lightbox and display the clicked image
+      function openLightbox(imageSrc) {
+          const lightbox = document.getElementById('lightbox');
+          const lightboxImage = lightbox.querySelector('.lightbox-image');
+          
+          // Update the source of the lightbox image
+          lightboxImage.src = imageSrc;
+          
+          // Show the lightbox
+          lightbox.style.display = 'flex'; // Assuming the lightbox has a flex display
+          
+          // Add an event listener to close the lightbox when clicked
+          lightbox.addEventListener('click', closeLightbox);
+      }
+      
+      // Function to close the lightbox
+      function closeLightbox() {
+          const lightbox = document.getElementById('lightbox');
+          lightbox.style.display = 'none'; // Hide the lightbox
+      }
+      
+      // Function to initialize the lightbox
+      function initializeLightbox() {
+          // Get the lightbox element
+          const lightbox = document.getElementById('lightbox');
+          
+          // Prevent clicks inside the lightbox from closing it
+          lightbox.addEventListener('click', function(event) {
+              event.stopPropagation();
+          });
+      }
+      
+      // Call the initializeLightbox function when the DOM is loaded
+      document.addEventListener('DOMContentLoaded', initializeLightbox);
+      
+      
+       function updatePriceDisplay(cardId) {
+          const selectedSize = document.querySelector(`#${cardId} input[name="size"]:checked`);
+          const quantityInput = document.getElementById('quantity-' + cardId);
+          const totalPriceElement = document.getElementById('total-price-' + cardId);
+      
+          if (selectedSize && quantityInput && totalPriceElement) {
+              const [size, price] = selectedSize.value.split('-');
+              const quantity = parseInt(quantityInput.value) || 0;
+              const total = parseFloat(price) * quantity;
+              totalPriceElement.textContent = total.toFixed(2);
+          }
+      }
+      
+      function changeQuantity(cardId, delta) {
+          var input = document.getElementById('quantity-' + cardId);
+          var currentValue = parseInt(input.value) || 0;
+          currentValue += delta;
+          if (currentValue < 1) currentValue = 1; // Prevent negative quantities
+          input.value = currentValue;
+          updatePriceDisplay(cardId); // Update the total price whenever the quantity changes
+      }
+          // Get the cards initially
+          var cards = document.querySelectorAll('.cards');
+      
+         
+            // Example function to read selected size and price
+            function getSelectedSizeAndPrice(cardId) {
+            const selected = document.querySelector(`#${cardId} input[name="size"]:checked`);
+            if (selected) {
+              const [size, price] = selected.value.split('-');
+              console.log(`Selected size: ${size}, Price: ${price}`);
+              // Now you can use size and price for further operations
+            } else {
+              console.log('No size selected');
+            }
+          }
+           // Function to update the quantity of a cart item
+           function updateCartItemQuantity(cartItemId, newQuantity) {
+          fetch('/api/cart/items', {
+              method: 'GET',
+              credentials: 'include', // Important for sessions
+          })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Failed to fetch cart items. Please try again.');
+              }
+              return response.json();
+          })
+          .then(data => {
+              const totalPrice = data.reduce((total, item) => total + (item.foodItem.price * item.quantity), 0);
+              const itemToUpdate = data.find(item => item._id === cartItemId || item.id === cartItemId);
+              const updatedTotalPrice = itemToUpdate.foodItem.price * newQuantity;
+      
+              // Check if adding the updated item exceeds the limit
+              if (totalPrice + updatedTotalPrice > 10000) {
+                  Swal.fire({
+                      icon: 'warning',
+                      title: 'Cart Limit Exceeded',
+                      text: 'Adding this item will exceed PHP 10,000. Please remove some items.',
+                  });
+              } else {
+                  // Proceed with updating the item quantity in the cart
+                  fetch('/api/cart/updateQuantity', {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include', // Important for sessions
+                      body: JSON.stringify({ cartItemId, quantity: newQuantity }),
+                  })
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error('Failed to update item quantity in cart. Please try again.');
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      if (data.success) {
+                          // Call the function to fetch and display cart items again
+                          displayCartItems();
+                      } else {
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: data.message || 'Could not update item quantity in the cart.',
+                          });
+                      }
+                  })
+                  .catch(error => {
+                      console.error('Error updating item quantity in cart:', error);
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: error.message || 'An unexpected error occurred while updating item quantity in the cart.',
+                      });
+                  });
+              }
+          })
+          .catch(error => {
+              console.error('Error fetching cart items:', error);
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Failed to fetch cart items. Please try again.',
+              });
+          });
+      }
+      
+      
+             // Function to fetch and display cart items
+      function displayCartItems() {
+          fetch('/api/cart/items', {
+              method: 'GET',
+              credentials: 'include', // Important for sessions
+          })
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error('Failed to fetch cart items. Please try again.');
+                  }
+                  return response.json();
+              })
+              .then(data => {
+                  const cartItemsContainer = document.getElementById('mod-cart-items');
+                  cartItemsContainer.innerHTML = ''; // Clear previous content
+      
+                  if (data.length > 0) { // Check if data is not empty
+                      let totalPrice = 0; // Initialize total price variable
+      
+                      data.forEach(item => {
+                          const itemElement = document.createElement('div');
+                          itemElement.classList.add('row', 'border-top', 'border-bottom');
+      
+                          // Calculate the total price for each item
+                          const itemTotalPrice = item.foodItem.price * item.quantity;
+                          totalPrice += itemTotalPrice; // Add to the total price
+      
+                          itemElement.innerHTML = `
+                  <div class="col-2"><img class="img-fluid" src="${item.foodItem.imageUrl}" alt=""></div>
+                  <div>
+                      <div>${item.foodItem.name} (${item.foodItem.size})</div>
+                      <div>Price: PHP ${item.foodItem.price.toFixed(2)}</div>
+                      <div>Quantity: 
+                          <button class="btn-quantity" data-action="decrease" onclick="updateQuantity('${item._id || item.id}', ${item.quantity - 1})">-</button>
+                          <span>${item.quantity}</span>
+                          <button class="btn-quantity" data-action="increase" onclick="updateQuantity('${item._id || item.id}', ${item.quantity + 1})">+</button>
+      
+                      </div>
+                      <div>Total Price: PHP ${itemTotalPrice.toFixed(2)}</div> <!-- Display total price for each item -->
+                      <button class="btn-delete" onclick="deleteCartItem('${item._id || item.id}')">Delete</button>
+                  </div>
+              `;
+      
+                          cartItemsContainer.appendChild(itemElement);
+                      });
+      
+                      // Update the total price displayed in the UI
+                      document.getElementById('total-amount').textContent = totalPrice.toFixed(2);
+                      document.getElementById('total-amounthidden').textContent = totalPrice.toFixed(2);
+      
+                      // Check if the total price exceeds the limit
+                      if (totalPrice > 10000) {
+                          // Display a warning message
+                          Swal.fire({
+                              icon: 'warning',
+                              title: 'Cart Limit Exceeded',
+                              text: 'Your cart total has exceeded PHP 10,000. Please remove some items.',
+                          });
+                      }
+                  } else {
+                      // Display a message if the cart is empty
+                      cartItemsContainer.innerHTML = '<div>No items in cart</div>';
+                  }
+              })
+              .catch(error => {
+                  console.error('Error fetching cart items:', error);
+                  // Display an error message
+                  const cartItemsContainer = document.getElementById('mod-cart-items');
+                  cartItemsContainer.innerHTML = '<div>Error fetching cart items. Please try again later.</div>';
+              });
+      }
+      
+      
+      
+              // Call the function to fetch and display cart items when the page loads
+              document.addEventListener('DOMContentLoaded', displayCartItems);
+      
+              document.addEventListener('DOMContentLoaded', (event) => {
+                  // Get the modal
+                  var modal = document.getElementById("payment-modal");
+      
+                  // Get the button that opens the modal
+                  var btn = document.getElementById("checkoutButton");
+      
+                  // Get the <span> element that closes the modal
+                  var span = document.getElementsByClassName("close-button")[0];
+      
+                  if (btn && modal && span) {
+                      // When the user clicks the button, open the modal 
+                      btn.onclick = function (event) {
+                          event.preventDefault();  // Prevent any default button action
+                          modal.style.display = "block";
+                      }
+      
+                      // When the user clicks on <span> (x), close the modal
+                      span.onclick = function (event) {
+                          event.preventDefault();  // Prevent any default span action
+                          modal.style.display = "none";
+                      };
+      
+                      // When the user clicks anywhere outside of the modal, close it
+                      window.onclick = function (event) {
+                          if (event.target == modal) {
+                              event.preventDefault();  // Prevent any default window action
+                              modal.style.display = "none";
+                          }
+                      }
+      
+                      // Prevent events inside the modal from closing it and stop propagation
+                      modal.children[0].onclick = function (event) {
+                          event.stopPropagation();
+                          event.preventDefault();  // Prevent any default action inside the modal
+                      }
+                  } else {
+                      console.error("Elements not found. Please check the IDs and class names.");
+                  }
+              });
+      
+              function updateQuantity(cartItemId, newQuantity) {
+                      // Ensure the quantity is not negative
+                      if (newQuantity < 0) {
+                          return;
+                      }
+                      updateCartItemQuantity(cartItemId, newQuantity);
+                  }
+              function updateCartCounter() {
+                      fetch('/api/cart/items', {
+                          method: 'GET',
+                          credentials: 'include', // Important for sessions
+                      })
+                          .then(response => {
+                              if (!response.ok) {
+                                  throw new Error('Failed to fetch cart items. Please try again.');
+                              }
+                              return response.json();
+                          })
+                          .then(data => {
+                              // Calculate total number of items in the cart
+                              const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                              // Update the cart counter and item counter in the UI
+                              document.getElementById('cart-counter').textContent = totalItems;
+                              document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                          })
+                          .catch(error => {
+                              console.error('Error fetching cart items:', error);
+                              // Display an error message or handle it as per your requirement
+                          });
+                  }
+          
+                  // Call the function to update the cart counter and item counter when the page loads
+                  document.addEventListener('DOMContentLoaded', updateCartCounter);
+      
+
+      
+      </script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+    <!-- Your meals.js script -->
+    <script src="scripts/meals.js"></script>
+  
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const quantityInputs = document.querySelectorAll(".quantity-input");
+        const eggCheckboxes = document.querySelectorAll(".add-egg");
+  
+        function updateTotalPrice(cardBody) {
+          const price = parseFloat(cardBody.querySelector(".quantity-input").getAttribute("data-price"));
+          const quantity = parseInt(cardBody.querySelector(".quantity-input").value);
+          const eggPrice = cardBody.querySelector(".add-egg").checked ? parseFloat(cardBody.querySelector(".add-egg").getAttribute("data-egg-price")) : 0;
+          const totalPriceElement = cardBody.querySelector(".total-price");
+          const newTotalPrice = (price * quantity + eggPrice * quantity).toFixed(2);
+          totalPriceElement.textContent = newTotalPrice;
+        }
+  
+        quantityInputs.forEach(input => {
+          input.addEventListener("input", function () {
+            const cardBody = this.closest(".card-body");
+            updateTotalPrice(cardBody);
+          });
+        });
+  
+        eggCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener("change", function () {
+            const cardBody = this.closest(".card-body");
+            updateTotalPrice(cardBody);
+          });
+        });
+      });
+      var modal = document.getElementById("dietaryPreferencesModal");
+    var btn = document.getElementById("dietaryPreferencesNav");
+
+    function openDietaryModal() {
+      modal.style.display = "block";
+    }
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    function closeDietaryModal() {
+      modal.style.display = "none";
+    }
+    // ...other code...
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      const errorDisplay = document.getElementById("errorDisplay");
+
+      // Reset the error display
+      errorDisplay.style.display = "none";
+      errorDisplay.textContent = "";
+
+      const form = document.getElementById("dietaryForm");
+      const dietaryPreferences = {
+        vegetarian: form["vegetarian"].checked,
+        // vegan: form["vegan"].checked,
+        omnivore: form["omnivore"].checked,
+        // halal: form["halal"].checked,
+        // kosher: form["kosher"].checked,
+        // lactoseFree: form["lactoseFree"].checked,
+        glutenFree: form["glutenFree"].checked,
+        nutAllergy: form["nutAllergy"].checked,
+        // otherRestrictions: form["otherRestrictions"].value.trim(),
+      };
+
+      console.log("CALL 1", dietaryPreferences);
+
+      // Check if at least one dietary choice is selected
+      const isAnyChoiceSelected = Object.values(dietaryPreferences).some(
+        (choice) => choice
+      );
+      if (!isAnyChoiceSelected) {
+        errorDisplay.textContent =
+          "Please select at least one dietary preference.";
+        errorDisplay.style.display = "block";
+        return; // Don't proceed with the submission
+      }
+
+      // Proceed with submission
+      try {
+        const response = await fetch("/submit-dietary-preferences", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(dietaryPreferences),
+        });
+
+        if (response.ok) {
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            if (data.success) {
+              // Show the success message using SweetAlert
+              Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Your dietary preferences have been submitted successfully!",
+                showConfirmButton: true,
+              }).then(() => {
+                window.location.href = "/recommendations";
+              });
+            } else {
+              throw new Error(data.message || "An error occurred.");
+            }
+          } else {
+            throw new Error("Received non-JSON response from server");
+          }
+        } else {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        errorDisplay.textContent = error.message;
+        errorDisplay.style.display = "block";
+      }
+    }
+
+    function displayRecommendations(recommendations) {
+      const recommendationsContainer = document.getElementById(
+        "recommendations-container"
+      );
+      if (recommendationsContainer) {
+        recommendationsContainer.innerHTML = recommendations
+          .map((rec) => `<li>${rec}</li>`)
+          .join("");
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+  // Add event listener for input event on the search input
+  document.getElementById('menuSearchInput').addEventListener('input', function () {
+    performSearch();
+  });
+
+  function performSearch() {
+    // Get the value from the search input
+    var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
+
+    // Get all cards on the page
+    var cards = document.querySelectorAll('.card, .cards');
+
+    // Perform your search logic here
+    cards.forEach(function (card) {
+      var cardTitle = card.querySelector('h5').innerText.toLowerCase();
+      if (cardTitle.includes(searchQuery)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+});
+
+
+   // Function to update the cart counter and item counter
+   function updateCartCounter() {
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Calculate total number of items in the cart
+                    const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                    // Update the cart counter and item counter in the UI
+                    document.getElementById('cart-counter').textContent = totalItems;
+                    document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message or handle it as per your requirement
+                });
+        }
+
+        // Call the function to update the cart counter and item counter when the page loads
+        document.addEventListener('DOMContentLoaded', updateCartCounter);
+    </script>
+  
+  
+  
+    
+    </body>
 </html>

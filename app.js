@@ -5,12 +5,13 @@ const prisma = new PrismaClient(); // Initialize PrismaClient
 
 const fetch = require("node-fetch"); // Import fetch module for making HTTP requests
 
+const bodyParser = require('body-parser'); // Ensure body-parser middleware is used if not already
+// Assuming your app setup includes bodyParser middleware
 
 
-
-
+const express = require('express');
 var createError = require("http-errors");
-const express = require("express");
+
 const session = require("express-session");
 const flash = require('express-flash');
 var path = require("path");
@@ -40,14 +41,24 @@ const recommendationsRouter = require("./routes/recommendations");
 const cartRouter = require("./routes/cart");
 const orderRouter = require('./routes/orderRoutes');
 
-const adminOrderStatusRouter = require('./routes/adminOrderStatusRouter');
+const adminTransactionHistoryRouter = require('./routes/adminTransactionHistory');
 const adminOrderNotificationsRouter = require('./routes/adminOrderNotificationsRouter');
 const adminCreateFoodItemRouter = require('./routes/adminCreateFoodItemRouter');
 const featuredItemRouter = require('./routes/featuredItemRouter');
 const bestSellerRouter = require('./routes/bestSellerRouter');
+const soloMealsRouter = require('./routes/soloMealsRouter');
+const partyTraysRouter = require('./routes/partyTraysRouter');
+const foodMenuRouter = require('./routes/foodMenuRouter');
+const generateReportRouter = require('./routes/generateReportRouter');
+const apiRoutes = require('./routes/api');
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
 const base = "https://api-m.sandbox.paypal.com";
+
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Initialize flash middleware after session
 app.use(flash());
@@ -157,6 +168,9 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
       user: user,
       welcomeMessage: `Welcome ${user.firstName || 'Admin'}!`  // Safe fallback if firstName is not set
     });
+
+    
+
   } catch (error) {
     console.error('Error loading AdminDashboard:', error);
     res.status(500).send('Internal Server Error');
@@ -174,14 +188,27 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
         console.error('User not found with ID:', req.user.id);
         return res.status(404).send('User not found');
       }
-  
+      const foodItems = await prisma.foodItem.findMany({
+        where: {
+          deleted: false // Only fetch non-deleted items
+        },
+        take: 3, // Limit to 3 items
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
       // Check if all expected properties are available and non-null if required by the view
+      console.log("Food items fetched:", foodItems);
       console.log('User data to be sent to dashboard:', user);
-  
+      
+      // Fetch featured food items
+    
+
       // Attempt to render the UserDashboard with the user data
       res.render('UserDashboard', { 
         title: 'User Dashboard', 
-        user: user, 
+        user: user,
+        foodItems: foodItems, 
         welcomeMessage: `Welcome ${user.firstName || 'User'}!`  // Safe fallback if firstName is not set
       });
     } catch (error) {
@@ -200,8 +227,12 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
     };
 }
 
+  // GET route for rendering the forgot password form
+app.get('/forgotPassword', (req, res) => {
+  res.render('forgotPassword'); // Assuming you have a 'forgotPassword.ejs' file
+});
   
-  
+
 // Correct usage with 'app'
 app.get("/", (req, res) => {
   // Assume we have a function that gets recommendations.
@@ -215,21 +246,6 @@ paypal.configure({
   client_secret: PAYPAL_CLIENT_SECRET,
 });
 
-// test recommendation
-app.get("/revised_recommendation", async (req, res) => {
-  const response3 = await revised_generated_recommendation({
-    vegetarian: false,
-  
-    omnivore: false,
-
-
-    glutenFree: false,
-    nutAllergy: true,
-
-  });
-
-  res.json({ message3: response3 });
-});
 
 // Serve the "Menu" page
 app.get("/menu", (req, res) => {
@@ -256,59 +272,188 @@ app.get("/userMeals", (req, res) => {
 app.get("/aboutUs", (req, res) => {
   res.render("aboutUs"); // Render a view named "new-page.ejs"
 });
-// Route to display user order history
-app.get('/orderHistory', authenticate, async (req, res) => {
-  try {
-    // Fetch order history data from the database based on the logged-in user
-    const orders = await prisma.order.findMany({
-      where: {
-        userId: req.user.id  // Use the user ID from the user object provided by Passport
-      },
-      include: {
-        orderItems: true,
-      },
-      orderBy: {
-        createdAt: 'desc'  // Orders are sorted by creation date in descending order
-      }
-    });
 
-    // Render EJS template with order history data
-    res.render('orderHistory', { orders });
-  } catch (error) {
-    console.error('Error fetching order history:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-// Define route handler to render orderStatus.ejs template
-app.get('/orderStatus', authenticate, async (req, res) => {
+app.get('/orderHistory',  async (req, res) => {
   try {
-    // Fetch order status data from the database based on the logged-in user
     const orders = await prisma.order.findMany({
       where: {
         userId: req.user.id,
-        status: {
-          notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim())  // Handle case sensitivity and trim spaces
-        }
       },
       include: {
-        orderItems: true,
+        orderItems: {
+          include: {
+            foodItem: true,
+          },
+        },
+        feedbacks: true,
       },
       orderBy: {
-        createdAt: 'desc'  // Sorting orders by creation date in descending order
-      }
+        createdAt: 'desc',
+      },
     });
 
-    // Log to check filtered results
-    console.log('Filtered Orders:', orders.map(order => `${order.id}: ${order.status}`));
+    console.log('Fetched orders:', orders); // Log fetched orders for debugging
 
-    // Render the orderStatus.ejs template with the filtered orders data
-    res.render('orderStatus', { orders });
+    res.render('orderHistory', { orders });
   } catch (error) {
-    console.error('Error fetching order status:', error);
+    console.error('Error fetching order history:', error); // Log detailed error message
     res.status(500).send('Internal Server Error');
   }
 });
+
+// Route to check if feedback has already been submitted for an order
+app.get('/checkFeedback/:orderId', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const userId = req.user.id; // Assuming userId is obtained from authentication middleware
+
+    // Query database to check if feedback exists for the order and user
+    const existingFeedback = await prisma.feedback.findFirst({
+      where: {
+        orderId: orderId,
+        userId: userId,
+      },
+    });
+
+    if (existingFeedback) {
+      res.status(200).json({ alreadySubmitted: true });
+    } else {
+      res.status(200).json({ alreadySubmitted: false });
+    }
+  } catch (error) {
+    console.error('Error checking feedback:', error);
+    res.status(500).json({ error: 'Error checking feedback' });
+  }
+});
+
+
+
+// Route to handle feedback submission
+app.post('/submitFeedback', async (req, res) => {
+  try {
+    console.log('Received feedback submission request:', req.body);
+    const { orderId, rating, comments } = req.body;
+    console.log('Order ID:', orderId);
+    console.log('Rating:', rating);
+    console.log('Comments:', comments);
+
+    // Validate required fields
+    if (!orderId || !rating || !comments) {
+      throw new Error('Missing required fields');
+    }
+
+    // Assuming userId is obtained from authentication middleware (e.g., Passport.js)
+    const userId = req.user.id;
+
+    // Save feedback to database
+    const feedback = await prisma.feedback.create({
+      data: {
+        orderId,
+        userId,
+        rating: parseInt(rating),
+        comments,
+      },
+    });
+
+    console.log('Feedback saved:', feedback);
+
+    res.status(200).json({ message: 'Feedback submitted successfully', feedback });
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    res.status(500).json({ error: 'Error submitting feedback' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Define route handler to fetch order data and render a view
+app.get('/orderStatus', authenticate, async (req, res) => {
+  try {
+      const orders = await prisma.order.findMany({
+          where: {
+              userId: req.user.id,
+              status: {
+                  notIn: ['Completed', 'Delivered', 'completed', 'delivered'].map(s => s.trim())
+              }
+          },
+          include: {
+              orderItems: {
+                  include: {
+                      foodItem: true // Include the associated FoodItem to get category
+                  }
+              }
+          },
+          orderBy: {
+              createdAt: 'desc'
+          }
+      });
+
+      // Log fetched order items with foodItem details
+      console.log('Fetched Order Items:', orders.map(order => order.orderItems.map(item => ({
+          id: item.id,
+          userId: item.userId,
+          itemId: item.itemId,
+          quantity: item.quantity,
+          withEgg: item.withEgg,
+          price: item.price,
+          size10_12: item.size10_12,
+          size25_30: item.size25_30,
+          size45_50: item.size45_50,
+          foodItem: {
+              id: item.foodItem.id,
+              name: item.foodItem.name,
+              description: item.foodItem.description,
+              price: item.foodItem.price,
+              size: item.foodItem.size,
+              price25_30: item.foodItem.price25_30,
+              price45_50: item.foodItem.price45_50,
+              category: item.foodItem.category,
+              dietaryRestrictions: item.foodItem.dietaryRestrictions,
+              imageUrl: item.foodItem.imageUrl,
+              createdAt: item.foodItem.createdAt,
+              deleted: item.foodItem.deleted,
+              available: item.foodItem.available,
+              totalPrice: item.foodItem.totalPrice
+          }
+      }))));
+
+      // Modify the order items to include the necessary data for rendering
+      orders.forEach(order => {
+          order.orderItems.forEach(item => {
+              item.itemName = item.foodItem.name.replace('card-', ''); // Use foodItem.name for itemName
+              item.category = item.foodItem.category; // Set category from foodItem
+              item.size10_12 = item.size10_12;
+              item.size25_30 = item.size25_30;
+              item.size45_50 = item.size45_50;
+              item.withEgg = item.withEgg;
+              item.itemImageUrl = item.foodItem.imageUrl;
+              item.dietaryRestrictions = item.foodItem.dietaryRestrictions;
+          });
+      });
+
+      console.log('Sorted Orders:', orders.map(order => `${order.id}: ${order.status}`));
+
+      res.render('orderStatus', { orders });
+  } catch (error) {
+      console.error('Error fetching order data:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 
 app.get('/userOrder', authenticate, (req, res) => {
@@ -364,6 +509,12 @@ app.get("/contact", (req, res) => {
 // app.get("/bestSeller", (req, res) => {
 //   res.render("bestSeller"); // Render the bestSeller.ejs view
 // });
+app.get('/charts', (req, res) => {
+  res.render('charts'); // This will render the charts.ejs
+});
+
+
+
 
 
 
@@ -393,15 +544,18 @@ app.use("/recommendations", recommendationsRouter);
 app.use("/api/cart", cartRouter);
 app.use('/orders', orderRouter);
 
-app.use('/adminOrderStatus', adminOrderStatusRouter);
+
+app.use('/adminTransactionHistory', adminTransactionHistoryRouter);
 app.use('/adminOrderNotifications', adminOrderNotificationsRouter);
 
 app.use('/adminCreateFoodItem', adminCreateFoodItemRouter);
 app.use('/featuredItem', featuredItemRouter);
-app.use('/soloMeals', featuredItemRouter);
-app.use('/partyTrays', featuredItemRouter);
-app.use('/foodMenu', featuredItemRouter);
+app.use('/soloMeals', soloMealsRouter);
+app.use('/PartyTrays', partyTraysRouter);
+app.use('/foodMenu', foodMenuRouter);
 app.use('/bestSeller', bestSellerRouter); 
+app.use('/reports', generateReportRouter);
+app.use('/api', apiRoutes);
 
 const generateAccessToken = async () => {
   try {
@@ -438,110 +592,151 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
     let order;
     let totalAmount = 0;
 
-    // Calculate total amount
+    // Calculate total amount using the price from each cart item
     for (const item of cartItems) {
-      totalAmount += item.foodItem.price * item.quantity;
-    }
+      let itemPrice = item.price; // Initialize item price from cart item
 
-    if (paymentMethod === 'PayPal') {
-      const accessToken = await generateAccessToken();
-      const url = `${base}/v2/checkout/orders/${orderId}/capture`;
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          shippingAddress: shippingAddress,
-          contactPerson: contactPerson,
-          contactNumber: contactNumber
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to capture PayPal order. Status: ${response.status}`);
+      // Adjust price if withEgg is true
+      if (item.withEgg) {
+        itemPrice += 5; // Add 5 to item price if withEgg is true
       }
 
-      const data = await response.json();
-      console.log("PayPal Order captured:", data);
+      totalAmount += itemPrice * item.quantity; // Calculate total amount
 
-      order = await prisma.order.create({
-        data: {
+      if (paymentMethod === 'PayPal') {
+        const accessToken = await generateAccessToken();
+        const url = `${base}/v2/checkout/orders/${orderId}/capture`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            shippingAddress: shippingAddress,
+            contactPerson: contactPerson,
+            contactNumber: contactNumber
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to capture PayPal order. Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("PayPal Order captured:", data);
+
+        order = await prisma.order.create({
+          data: {
+            userId: userId,
+            paypalOrderId: orderId,
+            status: 'PENDING',
+            amount: totalAmount,
+            paymentMethod: 'PayPal',
+            shippingAddress: shippingAddress,
+            createdAt: new Date(),
+            contactPerson: contactPerson,
+            contactNumber: contactNumber,
+            orderItems: {
+              create: cartItems.map(item => ({
+                itemId: item.itemId,
+                itemName: item.foodItem.name,
+                itemDescription: item.foodItem.description,
+                itemPrice: itemPrice, // Use adjusted item price
+                itemSize: item.size10_12 ?? item.size25_30 ?? item.size45_50 ?? 'N/A',
+                itemImageUrl: item.foodItem.imageUrl,
+                quantity: item.quantity,
+                totalPrice: item.quantity * itemPrice, // Use adjusted item price
+                withEgg: item.withEgg, // Ensure withEgg is included
+                category: item.foodItem.category, // Include category
+                dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
+              }))
+            }
+          },
+          include: { orderItems: true } // Ensure orderItems are included
+        });
+      } else if (paymentMethod === 'COD') {
+        order = await prisma.order.create({
+          data: {
+            userId: userId,
+            status: 'PENDING',
+            amount: totalAmount,
+            paymentMethod: 'COD',
+            shippingAddress: shippingAddress,
+            createdAt: new Date(),
+            contactPerson: contactPerson,
+            contactNumber: contactNumber,
+            orderItems: {
+              create: cartItems.map(item => ({
+                itemId: item.itemId,
+                itemName: item.foodItem.name,
+                itemDescription: item.foodItem.description,
+                itemPrice: itemPrice, // Use adjusted item price
+                itemSize: item.size10_12 ?? item.size25_30 ?? item.size45_50 ?? 'N/A',
+                itemImageUrl: item.foodItem.imageUrl,
+                quantity: item.quantity,
+                totalPrice: item.quantity * itemPrice, // Use adjusted item price
+                withEgg: item.withEgg, // Ensure withEgg is included
+                category: item.foodItem.category, // Include category
+                dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
+              }))
+            }
+          },
+          include: { orderItems: true } // Ensure orderItems are included
+        });
+      } else {
+        throw new Error('Invalid payment method.');
+      }
+
+      console.log("Order and OrderItems saved to database:", order);
+
+      // Call the function to display order details
+      displayOrderDetails(order);
+
+      // Clear cart items from session after order is captured
+      req.session.cartItems = [];
+
+      await prisma.cartItem.deleteMany({
+        where: {
           userId: userId,
-          paypalOrderId: orderId,
-          status: 'PENDING',
-          amount: totalAmount,
-          paymentMethod: 'PayPal',
-          shippingAddress: shippingAddress,
-          createdAt: new Date(),
-          contactPerson: contactPerson,
-          contactNumber: contactNumber,
-          orderItems: {
-            create: cartItems.map(item => ({
-              itemId: item.itemId,
-              itemName: item.foodItem.name,
-              itemDescription: item.foodItem.description,
-              itemPrice: item.foodItem.price,
-              itemSize: item.foodItem.size,
-              itemImageUrl: item.foodItem.imageUrl,
-              quantity: item.quantity,
-              totalPrice: item.quantity * item.foodItem.price,
-              withEgg: item.withEgg, // Ensure withEgg is included
-              dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
-            }))
-          }
-          
         },
       });
-    } else if (paymentMethod === 'COD') {
-      order = await prisma.order.create({
-        data: {
-          userId: userId,
-          status: 'PENDING',
-          amount: totalAmount,
-          paymentMethod: 'COD',
-          shippingAddress: shippingAddress,
-          createdAt: new Date(),
-          contactPerson: contactPerson,
-          contactNumber: contactNumber,
-          orderItems: {
-            create: cartItems.map(item => ({
-              itemId: item.itemId,
-              itemName: item.foodItem.name,
-              itemDescription: item.foodItem.description,
-              itemPrice: item.foodItem.price,
-              itemSize: item.foodItem.size,
-              itemImageUrl: item.foodItem.imageUrl,
-              quantity: item.quantity,
-              totalPrice: item.quantity * item.foodItem.price,
-              withEgg: item.withEgg, // Ensure withEgg is included
-              dietaryRestrictions: item.foodItem.dietaryRestrictions, // Use the array directly
-            }))
-          }
-          
-        },
-      });
-    } else {
-      throw new Error('Invalid payment method.');
+
+      return order;
     }
-
-    console.log("Order and OrderItems saved to database:", order);
-
-    // Clear cart items from session after order is captured
-    req.session.cartItems = [];
-
-    await prisma.cartItem.deleteMany({
-      where: {
-        userId: userId,
-      },
-    });
-
-    return order;
   } catch (error) {
     console.error("Failed to capture order:", error);
     throw error;
   }
+};
+
+
+// Define the displayOrderDetails function
+const displayOrderDetails = (order) => {
+  if (!order || !order.orderItems) {
+    console.error("Order details are missing or incomplete.");
+    return;
+  }
+
+  console.log(`Order ID: ${order.id}\n`);
+  console.log(`Status: ${order.status}\n`);
+  console.log(`Order Date: ${new Date(order.createdAt).toLocaleString()}\n`);
+  console.log(`Amount: ${order.amount}\n`);
+  console.log(`Shipping Address: ${order.shippingAddress}\n`);
+  console.log(`Contact Person: ${order.contactPerson}\n`);
+  console.log(`Contact Number: ${order.contactNumber}\n`);
+  console.log(`Payment Method: ${order.paymentMethod}\n`);
+  console.log(`Order Items:\n`);
+
+  order.orderItems.forEach(item => {
+    console.log(`Item Name: ${item.itemName}\n`);
+    console.log(`Item Size: ${item.itemSize}\n`);
+    console.log(`Quantity: ${item.quantity}\n`);
+    console.log(`Category: ${item.category}\n`);
+    console.log(`Price: ${item.itemPrice}\n`);
+    console.log(`Total Price: ${item.totalPrice}\n`);
+    console.log(`Dietary Restrictions: ${item.dietaryRestrictions.join(', ')}\n`);
+  });
 };
 
 
@@ -555,14 +750,13 @@ const captureOrder = async (orderId, cartItems, userId, shippingAddress, contact
 
 
 
-// Helper function to calculate total amount based on items in the cart
-const calculateTotalAmount = (cartItems) => {
+function calculateTotalAmount(cartItems) {
   let totalAmount = 0;
-  for (const item of cartItems) {
-    totalAmount += item.foodItem.price * item.quantity;
-  }
+  cartItems.forEach(item => {
+      totalAmount += item.price * item.quantity;
+  });
   return totalAmount;
-};
+}
 
 
 
@@ -611,6 +805,225 @@ const createPayPalOrder = async (cartItems) => {
 };
 
 
+// Create or update dietary preferences for the authenticated user
+app.post('/dietary-preferences', async (req, res) => {
+  try {
+    const userId = req.user.id; // Extract user ID from authenticated user
+    const { preferences } = req.body;
+
+    if (!preferences || !Array.isArray(preferences)) {
+      return res.status(400).json({ success: false, message: 'Invalid data' });
+    }
+
+    // Convert preferences array to an object with boolean values
+    const preferencesObject = preferences.reduce((acc, preference) => {
+      acc[preference] = true;
+      return acc;
+    }, {});
+
+    // Fetch existing preferences from the database
+    const existingPreferences = await prisma.dietaryPreference.findUnique({
+      where: { userId },
+    });
+
+    // Merge existing preferences with the new ones
+    const mergedPreferences = {
+      ...(existingPreferences ? existingPreferences.preferences : {}),
+      ...preferencesObject,
+    };
+
+    // Upsert the preferences
+    const updatedPreferences = await prisma.dietaryPreference.upsert({
+      where: { userId },
+      update: { preferences: mergedPreferences },
+      create: { userId, preferences: mergedPreferences },
+    });
+
+    res.json({ success: true, dietaryPreference: updatedPreferences });
+  } catch (error) {
+    console.error('Error updating dietary preferences:', error);
+    res.status(500).json({ success: false, message: 'Failed to update dietary preferences.' });
+  }
+});
+
+// Retrieve dietary preferences for the authenticated user
+app.get('/dietary-preferences', async (req, res) => {
+  try {
+    const userId = req.user.id; // Extract user ID from authenticated user
+    
+    // Fetch preferences from the database
+    const preferences = await prisma.dietaryPreference.findUnique({
+      where: { userId },
+    });
+
+    res.json({ preferences: preferences ? preferences.preferences : {} });
+  } catch (error) {
+    console.error('Failed to fetch dietary preferences:', error);
+    res.status(500).json({ error: 'Failed to fetch dietary preferences' });
+  }
+});
+
+
+// Retrieve all dietary preferences
+app.get('/admin/dietary-preferences', async (req, res) => {
+  try {
+    // Fetch all dietary preferences from the database
+    const preferences = await prisma.dietaryPreference.findMany();
+    
+    // Extract preferences into a single object
+    const allPreferences = preferences.reduce((acc, pref) => {
+      Object.keys(pref.preferences || {}).forEach(key => {
+        acc[key] = true;
+      });
+      return acc;
+    }, {});
+
+    res.json({ preferences: allPreferences });
+  } catch (error) {
+    console.error('Failed to fetch dietary preferences:', error);
+    res.status(500).json({ error: 'Failed to fetch dietary preferences' });
+  }
+});
+
+// Endpoint to submit dietary preferences
+// app.post("/submit-dietary-preferences", async (req, res) => {
+//   const userId = req.user.id; // Use req.user provided by Passport
+//   const dietaryData = req.body; // Assumed to be an object with preference data
+
+//   try {
+//     // Ensure dietaryData is a valid object
+//     if (typeof dietaryData !== 'object' || dietaryData === null) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid dietary preferences data."
+//       });
+//     }
+
+//     // Fetch existing dietary preferences
+//     const existingPreference = await prisma.dietaryPreference.findUnique({
+//       where: { userId },
+//     });
+
+//     if (existingPreference) {
+//       // Update existing preferences
+//       await prisma.dietaryPreference.update({
+//         where: { userId },
+//         data: {
+//           preferences: dietaryData, // Ensure only preferences are updated
+//         },
+//       });
+//     } else {
+//       // Create new dietary preferences
+//       await prisma.dietaryPreference.create({
+//         data: { userId, preferences: dietaryData },
+//       });
+//     }
+
+//     // Redirect to /foodMenu after successfully submitting preferences
+//     res.redirect('/foodMenu');
+//   } catch (error) {
+//     console.error("Error in submitting dietary preferences:", error);
+
+//     // Respond with JSON error message to avoid non-JSON response issues
+//     res.status(500).json({
+//       success: false,
+//       message: "An error occurred while submitting dietary preferences.",
+//     });
+//   }
+// });
+
+
+// Delete a specific dietary preference for the authenticated user
+app.delete('/dietary-preferences/delete', async (req, res) => {
+  try {
+    const userId = req.user.id; // Extract user ID from authenticated user
+    const { preference } = req.body;
+
+    if (!preference || typeof preference !== 'string') {
+      return res.status(400).json({ success: false, message: 'Invalid data' });
+    }
+
+    // Fetch existing preferences from the database
+    const existingPreferences = await prisma.dietaryPreference.findUnique({
+      where: { userId },
+    });
+
+    if (!existingPreferences) {
+      return res.status(404).json({ success: false, message: 'Preferences not found' });
+    }
+
+    // Remove the specified preference
+    const updatedPreferences = { ...existingPreferences.preferences };
+    delete updatedPreferences[preference];
+
+    // Update the preferences in the database
+    await prisma.dietaryPreference.update({
+      where: { userId },
+      data: { preferences: updatedPreferences },
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting dietary preference:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete dietary preference.' });
+  }
+});
+
+// Assuming you have already set up Prisma and imported it
+
+app.get('/api/dietary-restrictions', async (req, res) => {
+  try {
+      if (!req.user || !req.user.id) {
+          console.log('User is not authenticated or user ID is missing');
+          return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const userId = req.user.id;
+      console.log('Fetching dietary preferences for user ID:', userId);
+
+      const preferencesRecord = await prisma.dietaryPreference.findUnique({
+          where: { userId }
+      });
+
+      if (preferencesRecord) {
+          const preferences = preferencesRecord.preferences;
+          console.log('Preferences:', preferences);
+          return res.json({ preferences });
+      } else {
+          console.log('No dietary preferences found for user ID:', userId);
+          return res.status(404).json({ message: 'No dietary preferences found' });
+      }
+  } catch (error) {
+      console.error('Error fetching dietary preferences:', error);
+      return res.status(500).json({ message: 'Error fetching dietary preferences' });
+  }
+});
+
+// Endpoint to fetch all available dietary restrictions
+app.get('/api/all-dietary-restrictions', async (req, res) => {
+  try {
+    // Fetch all dietary restrictions from your database or predefined list
+    const allRestrictions = await prisma.dietaryPreference.findMany({
+      // Assuming you have a way to get all available dietary restrictions
+      // Adjust this according to your actual data source
+      select: { preferences: true }
+    });
+
+    // Combine and normalize all dietary restrictions
+    const allPreferences = {};
+    allRestrictions.forEach(record => {
+      Object.keys(record.preferences).forEach(key => {
+        allPreferences[key] = true;
+      });
+    });
+
+    console.log('All dietary restrictions:', allPreferences);
+    return res.json({ preferences: allPreferences });
+  } catch (error) {
+    console.error('Error fetching all dietary restrictions:', error);
+    return res.status(500).json({ message: 'Error fetching all dietary restrictions' });
+  }
+});
 
 
 
@@ -671,40 +1084,41 @@ app.post("/capture/:orderId", authenticate, loadCartItemsToSession, async (req, 
 // Route to capture a COD order
 app.post("/capture", authenticate, loadCartItemsToSession, async (req, res) => {
   try {
-    const cartItems = req.session.cartItems || [];
-    const userId = req.user.id;
-    const { shippingAddress, contactPerson, contactNumber, paymentMethod } = req.body;
+      const cartItems = req.session.cartItems || [];
+      const userId = req.user.id;
+      const { shippingAddress, contactPerson, contactNumber, paymentMethod } = req.body;
 
-    if (paymentMethod !== 'COD') {
-      return res.status(400).json({ error: "Invalid payment method specified." });
-    }
+      if (paymentMethod !== 'COD') {
+          return res.status(400).json({ error: "Invalid payment method specified." });
+      }
 
-    console.log("Attempting to capture order with cart items:", cartItems);
-    const totalAmount = calculateTotalAmount(cartItems);
-    console.log("Total Amount for Order:", totalAmount);
+      console.log("Attempting to capture order with cart items:", cartItems);
+      const totalAmount = calculateTotalAmount(cartItems);
+      console.log("Total Amount for Order:", totalAmount);
 
-    const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD', req);
+      const capturedOrder = await captureOrder(null, cartItems, userId, shippingAddress, contactPerson, contactNumber, 'COD', req);
 
-    // Clear session cart items
-    req.session.cartItems = [];
+      // Clear session cart items
+      req.session.cartItems = [];
 
-    if (req.user && req.user.id && req.user.email) {
-      await prisma.log.create({
-        data: {
-          action: `COD Payment captured for order`,
-          email: req.user.email,
-          userId: req.user.id,
-        },
-      });
-      res.status(200).json({ message: "COD Order captured successfully", orderDetails: capturedOrder });
-    } else {
-      res.status(500).json({ error: "User information not found in session" });
-    }
+      if (req.user && req.user.id && req.user.email) {
+          await prisma.log.create({
+              data: {
+                  action: `COD Payment captured for order`,
+                  email: req.user.email,
+                  userId: req.user.id,
+              },
+          });
+          res.status(200).json({ message: "COD Order captured successfully", orderDetails: capturedOrder });
+      } else {
+          res.status(500).json({ error: "User information not found in session" });
+      }
   } catch (error) {
-    console.error("Failed to capture COD order:", error);
-    res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
+      console.error("Failed to capture COD order:", error);
+      res.status(500).json({ error: "Failed to capture COD order.", details: error.message });
   }
 });
+
 
 
 

@@ -1,83 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Recommendations</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maya&Me | Recommendations</title>
+    <link rel="website icon" type="png" href="images/maya.png">
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <style>
-        .food-image {
-            width: 100%;
-            height: 200px; /* Fixed height for uniformity */
-            object-fit: cover; /* Ensure images cover the area without distortion */
-        }
-    </style>
-</head>
-<body>
-    <div class="container mt-5 text-center">
-        <h1>Menu Recommendations</h1>
-        <p>Dietary Preferences: <%= recommendations.dietaryPreferences %></p>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+   <link rel="stylesheet" href="stylesheets/recommendations.css">
+   <style>
+    .unavailable-card {
+    opacity: 0.5; /* Adjust opacity for grayed-out effect */
+    position: relative;
+    pointer-events:none; /* Disable pointer events so the card cannot be interacted with */
 
-        <% if (recommendations.menuDescription) { %>
-            <h2 class="mt-4">Menu Description:</h2>
-            <div class="row justify-content-center">
-                <% 
-                const lines = recommendations.menuDescription.split('\n');
-                let currentDietaryRestriction = '';
-                let currentItemName = '';
-                lines.forEach((line, index) => {
-                    if (line.startsWith('Dietary Restrictions:')) {
-                        currentDietaryRestriction = line.replace('Dietary Restrictions:', '').trim();
-                    } else if (line.includes(':') && !line.trim().startsWith('Price')) {
-                        currentItemName = line.split(':')[0].trim();
-                    } else if (line.trim().startsWith('Price')) {
-                        const price = parseFloat(line.replace('Price: $', '').trim());
-                        const description = lines[index - 1].split(':')[1].trim();
-                        const imageUrl = lines[index + 1].match(/\(([^)]+)\)/)[1];
-                %>
-                <div class="col-md-4 col-sm-6 my-3">
-                    <div class="card" 
-                         id="card-<%= currentItemName.replace(/\s+/g, '-') %>"
-                         data-dietary-restrictions="<%= currentDietaryRestriction %>">
-                        <img src="<%= imageUrl %>" alt="Food Image" class="card-img-top food-image">
-                        <div class="card-body">
-                            <h5 class="card-title"><%= currentItemName %></h5>
-                            <% if (currentDietaryRestriction) { %>
-                                <h6 class="card-subtitle mb-2 text-muted"><%= currentDietaryRestriction %></h6>
-                            <% } %>
-                            <!-- Add to Cart Form -->
-                            <div class="form-group">
-                                <label for="quantity-<%= currentItemName.replace(/\s+/g, '-') %>">Quantity:</label>
-                                <input type="number" name="quantity" id="quantity-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-control quantity-input" min="1" value="1" data-price="<%= price %>" data-egg-price="5">
-                            </div>
-                            <div class="form-group form-check">
-                                <input type="checkbox" name="withEgg" id="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-input">
-                                <label for="withEgg-<%= currentItemName.replace(/\s+/g, '-') %>" class="form-check-label">With Egg (₱5)</label>
-                            </div>
-                            <input type="hidden" name="foodName" value="<%= currentItemName %>">
-                            <input type="hidden" name="price" value="<%= price %>">
-                            <p>Total Price: ₱<span class="total-price"><%= price.toFixed(2) %></span></p>
-                            <button type="button" class="btn btn-primary" onclick="addToCart('card-<%= currentItemName.replace(/\s+/g, '-') %>')">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-                <%
-                    }
-                });
-                %>
-            </div>
-        <% } else { %>
-            <p>No menu description available.</p>
-        <% } %>
+  }
 
-        <!-- Add a script tag to log the recommendations -->
-        <script>
-            console.log('Recommendations:', <%= JSON.stringify(recommendations.recommendations) %>);
-        </script>
+  .unavailable-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+  }
+
+  .unavailable-text {
+    color: red; /* Red text color for the "Unavailable" message */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    font-weight: bold; /* Optionally, make the text bold */
+  }
+   </style>
+  </head>
+  <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
+    <div class="topnav">
+      <div class="menu-toggle">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <a href="/UserDashboard"><img src="images/logo.png" height="60px" width="60px" /></a>
+      <a href="/UserDashboard"><img src="images/mayame.png" height="60px" width="190px" /></a>
+      <div class="menu">
+        <a class="nav" href="/UserDashboard">Home</a>
+        <div class="nav" onclick="openProfileModal()"
+          style="font-size: 22px;cursor: pointer;float: right;margin: 1.3% 3% 0 0;color: #976b35;"> <i
+            class="fas fa-user-circle fa-2x"></i>
+        </div>
+        <!-- Profile Modal -->
+        <div id="profileModal" class="pmod">
+          <div class="modal-contents">
+            <span class="close" onclick="closeProfileModal()">&times;</span>
+            <a class="prof" href="/profile">My Profile</a>
+            <a class="prof" href="/recommendations">Recommended</a>
+            <a class="prof" href="/logout">Logout</a>
+          </div>
+        </div>
+        <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;" onclick="openCartPage()">
+          <i class="fas fa-shopping-cart fa-2x"></i>
+          <span id="cart-counter">0</span>
+          </a>
+          <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
+          <a class="nav" href="/recommendations">Recommended</a>
+          <a class="nav" href="/userOrder">Orders</a>
+          <a class="nav" href="/contact">Contact Us</a>
+        
+      </div>
+      <div class="side-menu">
+        <a href="/UserDashboard">Home</a>
+        <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+        <a href="/recommendations">Recommended</a>
+        <a href="/contact">Contact Us</a>
+        <a href="/userOrder">Orders</a>
+        <!-- <a href="/about">About Us</a> -->
+        <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
+        <a href="/profile">My Profile</a>
+        <a href="/logout">Logout</a>
+      </div>
     </div>
+    <div class="dashboard">
+      <!-- Dietary Preferences Modal -->
+    <div id="dietaryPreferencesModal" class="modal">
+      <div class="mod-content">
+        <span class="close-button" onclick="closeDietaryModal()">&times;</span>
+        <h2>Dietary Preferences</h2>
+  
+        <!-- Start of the Dietary Preferences Form -->
+        <div class="container">
+          <form id="dietaryForm" action="/submit-dietary-preferences" method="POST"
+            onsubmit="return handleSubmit(event);">
+            <!-- Diet Type -->
+            <div>
+              <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
+              <label class="lbld" for="vegetarian">Vegetarian</label>
+  
+            
+  
+  
+              <input type="checkbox" id="omnivore" name="omnivore" value="true" />
+              <label class="lbld" for="omnivore">Omnivore</label>
+  
+  
+              <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
+              <label class="lbld" for="glutenFree">Gluten-Free</label>
+  
+            </div>
+  
+            <!-- Allergies -->
+            <div>
+              <label class="lbld">Allergies:</label>
+             
+  
+  
+              <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
+              <label class="lbld" for="nutAllergy">Nut Allergy</label>
+  
+            </div>
+  
+            <input type="submit" value="Submit" />
+          </form>
+          <!-- Removed the confirmationMessage div -->
+          <!-- Add this div to display errors -->
+          <div id="errorDisplay" style="color: red; display: none"></div>
+        </div>
+        <!-- End of the Dietary Preferences Form -->
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-banner">
+    <img src="images/long.jpg" alt="" />
+    <div class="banner-promo">
+      <span><img class="logo" src="images/maya.png" alt="" height="330px" /></span>
+    </div>
+    <div class="cont">
+      <div class="log">
+          <a class="obtns" href="/bestSeller">Best Sellers</a>
+          <!-- <a class="obtns" href="/featuredItem">New Products</a> -->
+      </div>
+    </div>
+    <div class="Olog">
+      <a class="fbtns" href="/foodMenu">Food Menu</a>
+      <a class="fbtns active" href="/partyTrays">Party Trays</a>
+      <a class="fbtns" href="/soloMeals">Solo Meals</a>
+    </div>
+    </div>
+   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+  // Add event listener for input event on the search input
+  document.getElementById('menuSearchInput').addEventListener('input', function () {
+    performSearch();
+  });
+
+  function performSearch() {
+    // Get the value from the search input
+    var searchQuery = document.getElementById('menuSearchInput').value.toLowerCase();
+
+    // Get all cards on the page
+    var cards = document.querySelectorAll('.card, .cards');
+
+    // Perform your search logic here
+    cards.forEach(function (card) {
+      var cardTitle = card.querySelector('h5').innerText.toLowerCase();
+      if (cardTitle.includes(searchQuery)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+});
+
+
+   // Function to update the cart counter and item counter
+   function updateCartCounter() {
+            fetch('/api/cart/items', {
+                method: 'GET',
+                credentials: 'include', // Important for sessions
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch cart items. Please try again.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Calculate total number of items in the cart
+                    const totalItems = data.reduce((total, item) => total + item.quantity, 0);
+                    // Update the cart counter and item counter in the UI
+                    document.getElementById('cart-counter').textContent = totalItems;
+                    document.getElementById('item-counter').textContent = totalItems; // Update item counter
+                })
+                .catch(error => {
+                    console.error('Error fetching cart items:', error);
+                    // Display an error message or handle it as per your requirement
+                });
+        }
+
+        // Call the function to update the cart counter and item counter when the page loads
+        document.addEventListener('DOMContentLoaded', updateCartCounter);
+    </script>
+  
+
+  <h1 class="ttl">Menu Recommendations</h1>
+
+    <!-- Check if recommendations contain dietaryPreferences -->
+<div class="container mt-5 text-center">
+  <% if (recommendations.dietaryPreferences && recommendations.dietaryPreferences.length > 0) { %>
+      <p>Dietary Preferences: <%= recommendations.dietaryPreferences %></p>
+  <% } else { %>
+    <h4 class="font-weight-bold mb-4">No Specific Dietary Preferences Selected</h4>
+  <% } %>
+
+  <% if (recommendations.menuDescription) { %>
+      <h2>Menu Description:</h2>
+    </div>
+      <div class="grid-container">
+          <% const items = recommendations.menuDescription.split('\n\n'); 
+             items.forEach(item => {
+                 const lines = item.split('\n');
+                 let currentItem = {
+                     name: '',
+                     dietaryRestrictions: '',
+                     price: 0,
+                     price25_30: 0,
+                     price45_50: 0,
+                     category: '',
+                     imageUrl: '',
+                     available: true // default to true if not provided
+                 };
+                 lines.forEach((line, index) => {
+                     if (index === 0) {
+                         currentItem.name = line.split(':')[0].trim();
+                     } else if (line.startsWith('Dietary Restrictions:')) {
+                         currentItem.dietaryRestrictions = line.replace('Dietary Restrictions:', '').trim();
+                     } else if (line.includes('Price: $')) {
+                         currentItem.price = parseFloat(line.replace('Price: $', '').trim());
+                     } else if (line.includes('Price25_30: $')) {
+                         currentItem.price25_30 = parseFloat(line.replace('Price25_30: $', '').trim());
+                     } else if (line.includes('Price45_50: $')) {
+                         currentItem.price45_50 = parseFloat(line.replace('Price45_50: $', '').trim());
+                     } else if (line.includes('Category:')) {
+                         currentItem.category = line.replace('Category:', '').trim();
+                     } else if (line.includes('Available:')) {
+                         currentItem.available = line.replace('Available:', '').trim() === 'true';
+                     } else if (line.includes('![')) {
+                         currentItem.imageUrl = line.match(/\(([^)]+)\)/)[1];
+                     }
+                 });
+          %>
+          <!-- Render each item card based on category -->
+          <div >
+              <div class="card <%= currentItem.available ? '' : 'unavailable-card' %>" id="card-<%= currentItem.name.replace(/\s+/g, '-') %>"
+                   data-dietary-restrictions="<%= currentItem.dietaryRestrictions %>"
+                   data-category="<%= currentItem.category %>">
+                  <img  src="<%= currentItem.imageUrl %>" alt="Food Image" class="card-img-top food-image">
+                  <div class="card-body" style="text-align: center;">
+                      <h5 class="card-title">
+                          <%= currentItem.name %>
+                      </h5>
+                      <% if (currentItem.dietaryRestrictions) { %>
+                          <h6 class="card-subtitle mb-2 text-muted">
+                              <%= currentItem.dietaryRestrictions %>
+                          </h6>
+                      <% } %>
+                      <!-- Add category display -->
+                      <p>Category: <%= currentItem.category %></p>
+
+                      <% if (currentItem.category === 'Party Trays') { %>
+                          <!-- Radio buttons for different prices with images -->
+                          <div class="price-radio-group">
+                              <div class="form-check">
+                                  <label class="form-check-label"
+                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12">
+                                      <img src="/images/sTray.png" alt="10-12 Pax"/>Small 10-12 Pax:
+                                      ₱<%= currentItem.price.toFixed(2) %>
+                                  </label>
+                                  <input type="radio" class="form-check-input"
+                                         name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                         value="<%= currentItem.price %>"
+                                         id="price<%= currentItem.name.replace(/\s+/g, '-') %>10_12"
+                                         checked <%= !currentItem.available ? 'disabled' : '' %>>
+                              </div>
+                              <div class="form-check">
+                                  <label class="form-check-label"
+                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30">
+                                      <img src="/images/mTray.png" alt="25-30 Pax"/>Medium 25-30 Pax:
+                                      ₱<%= currentItem.price25_30.toFixed(2) %>
+                                  </label>
+                                  <input type="radio" class="form-check-input"
+                                         name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                         value="<%= currentItem.price25_30 %>"
+                                         id="price<%= currentItem.name.replace(/\s+/g, '-') %>25_30"
+                                         <%= !currentItem.available ? 'disabled' : '' %>>
+                              </div>
+                              <div class="form-check">
+                                  <label class="form-check-label"
+                                         for="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50">
+                                      <img src="/images/lTray.png" alt="45-50 Pax"/>Large 45-50 Pax:
+                                      ₱<%= currentItem.price45_50.toFixed(2) %>
+                                  </label>
+                                  <input type="radio" class="form-check-input"
+                                         name="price<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                         value="<%= currentItem.price45_50 %>"
+                                         id="price<%= currentItem.name.replace(/\s+/g, '-') %>45_50"
+                                         <%= !currentItem.available ? 'disabled' : '' %>>
+                              </div>
+                          </div>
+
+                          <!-- Quantity input for Party Trays -->
+                          <div class="form-group mt-3">
+                              <label for="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                              <input type="number" name="quantity"
+                                     id="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                     class="qty quantity-input" min="1" value="1"
+                                     data-price="<%= currentItem.price %>"
+                                     data-price25_30="<%= currentItem.price25_30 %>"
+                                     data-price45_50="<%= currentItem.price45_50 %>"
+                                     <%= !currentItem.available ? 'disabled' : '' %>>
+                          </div>
+                      <% } else { %>
+                          <!-- Quantity input for Solo Meals -->
+                          <div class="form-group">
+                              <label for="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                              <input type="number" name="quantity"
+                                     id="quantity-<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                     class="qty quantity-input" min="1" value="1"
+                                     data-price="<%= currentItem.price %>"
+                                     <%= !currentItem.available ? 'disabled' : '' %>>
+                          </div>
+                          <div class="form-group form-check">
+                              <input type="checkbox" name="withEgg"
+                                     id="withEgg-<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                     class="form-check-input" data-egg-price="5"
+                                     <%= !currentItem.available ? 'disabled' : '' %>>
+                              <label for="withEgg-<%= currentItem.name.replace(/\s+/g, '-') %>"
+                                     class="form-check-label" style="margin-bottom: 149px;">With Egg (₱5)</label>
+                          </div>
+                      <% } %>
+
+                      <!-- Add to Cart Form -->
+                      <input type="hidden" name="foodName" value="<%= currentItem.name %>">
+                      <input type="hidden" name="price" value="<%= currentItem.price %>">
+                      <p>Total Price: ₱<span class="total-price"><%= currentItem.price.toFixed(2) %></span></p>
+                      <button type="button" class="cbtn" onclick="addToCart('card-<%= currentItem.name.replace(/\s+/g, '-') %>')"
+                              <%= !currentItem.available ? 'disabled' : '' %>>
+                          <i class="fas fa-shopping-cart"></i>
+                      </button>
+                  </div>
+                  <% if (!currentItem.available) { %>
+                      <div class="unavailable-text">Unavailable</div>
+                  <% } %>
+              </div>
+          </div>
+          <% }); %>
+      </div>
+  <% } else { %>
+    <p class="lead text-muted">Please select your dietary preferences to receive personalized menu recommendations.</p>
+
+  <% } %>
+
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -94,29 +384,48 @@
 
             quantityInputs.forEach(input => {
                 const price = parseFloat(input.getAttribute('data-price'));
-                const eggPrice = parseFloat(input.getAttribute('data-egg-price'));
+                const price25_30 = parseFloat(input.getAttribute('data-price25_30'));
+                const price45_50 = parseFloat(input.getAttribute('data-price45_50'));
                 const totalPriceElement = input.closest('.card-body').querySelector('.total-price');
                 const withEggCheckbox = input.closest('.card-body').querySelector('.form-check-input');
+                const radioButtons = input.closest('.card-body').querySelectorAll('.price-radio-group input[type="radio"]');
 
                 // Function to calculate total price
                 const calculateTotalPrice = () => {
                     const quantity = parseInt(input.value);
-                    const isWithEgg = withEggCheckbox.checked;
-                    const totalPrice = (price + (isWithEgg ? eggPrice : 0)) * quantity;
+                    let selectedPrice = parseFloat(input.closest('.card-body').querySelector('.price-radio-group input[type="radio"]:checked')?.value || price);
+                    const isWithEgg = withEggCheckbox && withEggCheckbox.checked;
+                    const eggPrice = isWithEgg ? parseFloat(withEggCheckbox.getAttribute('data-egg-price')) : 0;
+
+                    // Adjust price calculation for solo meals if withEgg is checked
+                    if (!input.closest('.card-body').querySelector('.price-radio-group')) {
+                        selectedPrice = price + eggPrice;
+                    }
+
+                    const totalPrice = selectedPrice * quantity;
                     totalPriceElement.textContent = totalPrice.toFixed(2);
                 };
 
-                // Initialize total price on page load
+                // Initialize total price display
                 calculateTotalPrice();
 
-                // Update total price on input change
-                input.addEventListener('input', calculateTotalPrice);
-                withEggCheckbox.addEventListener('change', calculateTotalPrice);
+                // Event listeners for quantity change and withEgg checkbox change
+                input.addEventListener('change', calculateTotalPrice);
+                if (withEggCheckbox) {
+                    withEggCheckbox.addEventListener('change', calculateTotalPrice);
+                }
+                radioButtons.forEach(radio => {
+                    radio.addEventListener('change', calculateTotalPrice);
+                });
             });
         });
+
     </script>
 
     <!-- Your meals.js script -->
     <script src="scripts/meals.js"></script>
+</body>
+
+</html>
 </body>
 </html>

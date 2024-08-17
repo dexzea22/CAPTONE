@@ -43,7 +43,7 @@
                       <div class="modal-contents">
                         <span class="close" onclick="closeProfileModal()">&times;</span>
                         <a class="prof" href="/profile">My Profile</a>
-                        <a class="prof" href="/recommendations">Recommended</a>
+                        <!-- <a class="prof" href="/recommendations">Recommended</a> -->
                         <a class="prof" href="/logout">Logout</a>
                       </div>
                     </div>
@@ -55,8 +55,8 @@
                   </a>
               
                     </a>
-                      <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-                      <a class="nav" href="/recommendations">Recommended</a>
+                      <!-- <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
+                      <a class="nav" href="/recommendations">Recommended</a> -->
                       <a class="nav" href="/userOrder">Orders</a>
                       <a class="nav" href="/contact">Contact Us</a>
                       
@@ -65,11 +65,11 @@
                   </div>
                   <div class="side-menu">
                     <a href="/UserDashboard">Home</a>
-                    <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-                    <a href="/recommendations">Recommended</a>
+                    <!-- <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+                    <a href="/recommendations">Recommended</a> -->
                     <a href="contact">Contact</a>
                     <a href="/userOrder">Orders</a>
-                    <a href="/about">About</a>
+                    <!-- <a href="/about">About</a> -->
                     <a class="nav" style="color: #000000;" onclick="openCartPage()">My Cart</i></a>
                     <a href="/profile">My Profile</a>
                     <a href="/logout">Logout</a>
@@ -88,53 +88,56 @@
                       </div>
                     </div>
                       <div class="Olog">
-                        <a class="fbtns" href="/userMenu">Food Menu</a>
-                        <a class="fbtns" href="/userTrays">Party Trays</a>
-                        <a class="fbtns" href="/userMeals">Solo Meals</a>
+                        <a class="fbtns" href="/foodMenu">Food Menu</a>
+                        <a class="fbtns" href="/partyTrays">Party Trays</a>
+                        <a class="fbtns" href="/soloMeals">Solo Meals</a>
                       </div>
                   </div>
                 </div>
-                <div class="lblso" >
+                <div class="lblso">
                   <label class="fpu">Order Status</label>
               </div>
-          
+              
               <% if (orders.length > 0) { %>
-                <div class="grid-container">
-                  <% orders.forEach(order => { %>
-                    <div class="order-card">
-                      <p><strong>Order ID:</strong> <%= order.id %></p>
-                      <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
-                      <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
-                      <p><strong>Amount:</strong> <%= order.amount %></p>
-                      <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
-                      <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
-                      <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
-                      <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
-                      <p><strong>Order Items:</strong></p>
+                  <div class="grid-container">
+                      <% orders.forEach(order => { %>
+                          <div class="order-card">
+                              <p><strong>Order ID:</strong> <%= order.id %></p>
+                              <p><strong>Status:</strong> <strong style="color: red;"><%= order.status %></strong></p>
+                              <p><strong>Order Date:</strong> <%= new Date(order.createdAt).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }) %></p>
+                              
+                              <!-- Calculate total price for the order -->
+                              <% let totalPrice = order.orderItems.reduce((acc, item) => acc + item.totalPrice, 0); %>
+                              <p><strong>Total Price:</strong> ₱<%= totalPrice.toFixed(2) %></p>
+                              
+                              <p><strong>Shipping Address:</strong> <%= order.shippingAddress %></p>
+                              <p><strong>Contact Person:</strong> <%= order.contactPerson %></p>
+                              <p><strong>Contact Number:</strong> <%= order.contactNumber %></p>
+                              <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+                              <p><strong>Order Items:</strong></p>
               
-                      <div class="item-grid">
-                        <% order.orderItems.forEach(item => { %>
-                          <div class="item-card">
-              
-                            <p><b>Item Name:</b> <%= item.itemName.replace('card-', '') %> <%= item.withEgg ? '(with egg)' : '(without egg)' %></p>
-                            
-                            <p><strong>Item Size:</strong> <%= item.itemSize %></p>
-                            <p><strong>Quantity:</strong> <%= item.quantity %></p>
-                            <p><strong>Price:</strong> <%= item.itemPrice %></p>
-                            <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
-                            <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions %></p>
-                            <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
-                            
+                              <div class="item-grid">
+                                  <% order.orderItems.forEach(item => { %>
+                                      <div class="item-card">
+                                          <p><b>Item Name:</b> <%= item.itemName.replace('card-', '') %> <%= item.category === 'Solo Meals' && !item.foodItem.price25_30 && !item.foodItem.price45_50 ? (item.withEgg ? '(with egg)' : '(without egg)') : '' %></p>
+                                          <p><strong>Item Size:</strong> <%= item.itemSize %></p>
+                                          <p><strong>Quantity:</strong> <%= item.quantity %></p>
+                                          <p><strong>Category:</strong> <%= item.category %></p>
+                                          <p><strong>Price:</strong> <%= item.itemPrice %></p>
+                                          <p><strong>Total Price:</strong> <%= item.totalPrice %></p>
+                                          <p><strong>Dietary Restrictions:</strong> <%= item.dietaryRestrictions.join(', ') %></p>
+                                          <img class="fimg" src="<%= item.itemImageUrl %>" alt="<%= item.itemName %>">
+                                      </div>
+                                  <% }); %>
+                              </div>
                           </div>
-
-                        <% }); %>
-                      </div>
-                    </div>
-                  <% }); %>
-                </div>
+                      <% }); %>
+                  </div>
               <% } else { %>
-                <p>No orders found.</p>
+                  <p>No orders found.</p>
               <% } %>
+              
+              
               
          
      
@@ -142,18 +145,18 @@
         <label class="fpu" for="">Menu and Prices</label>
         </div>
         <div>
-        <div class="ogallery">
-        <img src="images/m1.jpg" alt="Image 1">
-        <img src="images/m4.jpg" alt="Image 1">
-        <img src="images/m2.jpg" alt="Image 1">
-        <img src="images/m5.jpg" alt="Image 1">
-        <img src="images/m3.jpg" alt="Image 1">
-        <!-- Add more images as needed -->
-        </div>
-        
+          <div class="ogallery">
+            <img src="images/m1.jpg" alt="Image 1" onclick="openLightbox('images/m1.jpg')">
+            <img src="images/m4.jpg" alt="Image 1" onclick="openLightbox('images/m4.jpg')">
+            <img src="images/m2.jpg" alt="Image 1" onclick="openLightbox('images/m2.jpg')">
+            <img src="images/m5.jpg" alt="Image 1" onclick="openLightbox('images/m5.jpg')">
+            <img src="images/m3.jpg" alt="Image 1" onclick="openLightbox('images/m3.jpg')">
+            <!-- Add more images as needed -->
+          </div>
         <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
+        <div class="lightbox" id="lightbox" onclick="closeLightbox()">
           <img src="" alt="Enlarged Image" class="lightbox-image">
+          <!-- Add close button or any other content here -->
         </div>
         </div>
         <div class="container">
@@ -304,6 +307,40 @@
   </div>
 
   <script>
+ function openLightbox(imageSrc) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = lightbox.querySelector('.lightbox-image');
+    
+    // Update the source of the lightbox image
+    lightboxImage.src = imageSrc;
+    
+    // Show the lightbox
+    lightbox.style.display = 'flex'; // Assuming the lightbox has a flex display
+    
+    // Add an event listener to close the lightbox when clicked
+    lightbox.addEventListener('click', closeLightbox);
+}
+
+// Function to close the lightbox
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.style.display = 'none'; // Hide the lightbox
+}
+
+// Function to initialize the lightbox
+function initializeLightbox() {
+    // Get the lightbox element
+    const lightbox = document.getElementById('lightbox');
+    
+    // Prevent clicks inside the lightbox from closing it
+    lightbox.addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+}
+
+// Call the initializeLightbox function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeLightbox);
+
     var modal = document.getElementById("dietaryPreferencesModal");
     var btn = document.getElementById("dietaryPreferencesNav");
 

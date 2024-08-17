@@ -1,22 +1,29 @@
+<!-- bestSeller.ejs -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home | Maya&Me</title>
-<link rel="website icon" type="png" href="images/maya.png">
-<link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="website icon" type="png" href="images/maya.png">
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="stylesheets/user.css">
 <link rel="stylesheet" href="stylesheets/index.css">
+
+<title>Home | Maya&Me</title>
+
+
+  
+  
+  
 </head>
 
 <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
@@ -40,7 +47,7 @@
         <div class="modal-contents">
           <span class="close" onclick="closeProfileModal()">&times;</span>
           <a class="prof" href="/profile">My Profile</a>
-          <a class="prof" href="/recommendations">Recommended</a>
+          <!-- <a class="prof" href="/recommendations">Recommended</a> -->
           <a class="prof" href="/logout">Logout</a>
         </div>
       </div>
@@ -51,7 +58,7 @@
         <span id="cart-counter">0</span>
     </a>    
       <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-      <a class="nav" href="/recommendations">Recommended</a>
+      <!-- <a class="nav" href="/recommendations">Recommended</a> -->
       <a class="nav" href="/userOrder">Orders</a>
       <a class="nav" href="/contact">Contact Us</a>
       <span class="nav welcome-message" style="font-size: 24px; cursor:pointer; float: right; margin:1.4% 0 0 0;color:#976b35;"><%= welcomeMessage %></span>
@@ -59,10 +66,10 @@
     <div class="side-menu">
       <a style="color: black;" href="/UserDashboard">Home</a>
       <a style="color: black;" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-      <a style="color: black;" href="/recommendations">Recommended</a>
+      <!-- <a style="color: black;" href="/recommendations">Recommended</a> -->
       <a style="color: black;" href="/userOrder">Orders</a>
       <a style="color: black;" href="contact">Contact Us</a>
-      <a style="color: black;" href="/about">About Us</a>
+      <!-- <a style="color: black;" href="/about">About Us</a> -->
       <a style="color: black;"class="nav" onclick="openCartPage()">My Cart</i></a>
       <a style="color: black;" href="/profile">My Profile</a>
       <a style="color: black;" href="/logout">Logout</a>
@@ -83,10 +90,10 @@
   <img class="logo" src="images/logo.png" alt="">
 <div class="log">
 <a class="fbtns" href="/bestSeller">Best Sellers</a>
-<a class="fbtns" href="/userMenu">Food Menu</a>
-<a class="fbtns" href="/userTrays">Party Trays</a>
-<a class="fbtnsu" href="/userMeals">Solo Meals</a>
-<a class="fbtnsuf" href="/featuredItem">New Products</a>
+<a class="fbtns" href="/foodMenu">Food Menu</a>
+<a class="fbtns" href="/partyTrays">Party Trays</a>
+<a class="fbtnsu" href="/soloMeals">Solo Meals</a>
+<!-- <a class="fbtnsuf" href="/featuredItem">New Products</a> -->
 
 </div>
 </div>
@@ -100,295 +107,259 @@
 </div>
 <!-- End Jumbotron -->
 <section class="feature-food">
-  <div class="dashboard-content">
-    <div class="cards" id="chkr">
-      <img class="card-image" src="images/f1.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Chicken Roll (Tray)</h4>
-        <p> Delectable and savory dish that combines the flavors of tender chicken, smoky ham, and creamy cheese into a mouthwatering culinary masterpiece. </p>
-        <div class="gallerys" style="margin-top: 11%">
-          <label>
-            <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax) &emsp14; -400"  onchange="updatePriceDisplay('chkr')" />
-            S (₱400) (10-12 pax)
-          </label>          
-          <label>
-            <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1000" onchange="updatePriceDisplay('chkr')" />
-            M (₱1,000) (25-30 pax)
-          </label>
-          <label>
-            <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1500" onchange="updatePriceDisplay('chkr')" />
-            L (₱1,500) (45-50 pax)
-          </label>
-        </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button class="btnsss" onclick="changeQuantity('chkr', -1)">-</button>
-          <input type="text" id="quantity-chkr" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('chkr')">
-          <button class="btnsss" onclick="changeQuantity('chkr', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-chkr">0.00</span></div>
-        <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
-          <img src="" alt="Enlarged Image" class="lightbox-image" />
-        </div>
-        <div class="rat">
-          <p>Rating:</p>
-          <div class="star-rating" id="starrating">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        <button onclick="addToCart('Chicken Roll','chkr')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
-      </div>
-    </div>
-    <div class="cards" id="fff">
-      <img class="card-image" src="images/f5.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Fried Fish Filet (Tray)</h4>
-        <p>Our "Fried Fish Filet" is a culinary masterpiece. Each fillet is meticulously seasoned with a blend of aromatic herbs and spices, ensuring a burst of taste with every bite.</p>
-        <div class="gallerys" style="margin-top: 11%">
-          <label>
-            <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-300" onchange="updatePriceDisplay('fff')" />
-            S (₱300) (10-12 pax)
+  <div class="grid-container">
+    <% foodItems.forEach(item => { %>
+      <div class="card <%= item.category === 'Solo Meals' ? 'solo-meal' : 'party-tray' %> <%= !item.available ? 'unavailable' : '' %>" id="card-<%= item.name.replace(/\s+/g, '-') %>" data-item-id="<%= item.id %>" data-category="<%= item.category %>" data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>">
+        <img src="<%= item.imageUrl %>" class="card-img-top" alt="<%= item.name %>">
+        <div class="card-body">
+          <h5 class="card-title"><%= item.name %></h5>
+          <p class="card-text">
+            <% item.dietaryRestrictions.forEach((diet, index) => { %>
+              <%= diet %><% if (index !== item.dietaryRestrictions.length - 1) { %>, <% } %>
+            <% }); %>
+          </p>
+          <p class="card-text">Category: <%= item.category %></p>
+          
+          <% if (item.category === 'Solo Meals') { %>
+            <div class="solo-meal" data-item-id="<%= item.id %>">
+              <!-- Quantity input -->
+              <div class="form-group" style="margin-top: 145px;">
+                <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>">
+              </div>
+              <div class="form-group">
+                <input type="checkbox" class="add-egg" id="withEgg-<%= item.name.replace(/\s+/g, '-') %>" data-egg-price="5"> With Egg (₱5.00)<br>
             
-          </label>
-          <label>
-            <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25  to 30 pax)-900" onchange="updatePriceDisplay('fff')" />
-            M (₱900) (25-30 pax)
-          </label>
-          <label>
-            <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-1400" onchange="updatePriceDisplay('fff')" />
-            L (₱1,400) (45-50 pax)
-          </label>
+                <label>Total Price:</label>
+                <span class="total-price">₱<%= item.price.toFixed(2) %></span>
+              </div>
+              <button class="cbtn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
+            </div>
+          
+          <% } else if (item.category === 'Party Trays') { %>
+            <div class="party-tray" data-item-id="<%= item.id %>">
+              <!-- Radio buttons for different sizes and prices -->
+              <div class="price-radio-group">
+                <div class="form-check">
+                  <label class="form-check-label" for="price<%= item.id %>-10-12">
+                    <img class="fimg" src="/images/sTray.png" alt="10-12 Pax" /> S (10-12) ₱<%= item.price.toFixed(2) %>
+                  </label>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price %>" id="price<%= item.id %>-10-12" data-price="<%= item.price %>" checked <%= !item.available ? 'disabled' : '' %>>
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label" for="price<%= item.id %>-25-30">
+                    <img class="fimg" src="/images/mTray.png" alt="25-30 Pax" /> M (25-30) ₱<%= item.price25_30.toFixed(2) %>
+                  </label>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price25_30 %>" id="price<%= item.id %>-25-30" data-price="<%= item.price25_30 %>" <%= !item.available ? 'disabled' : '' %>>
+                </div>
+                <div class="form-check">
+                  <label class="form-check-label" for="price<%= item.id %>-45-50">
+                    <img class="fimg" src="/images/lTray.png" alt="45-50 Pax" /> L (45-50) ₱<%= item.price45_50.toFixed(2) %>
+                  </label>
+                  <input type="radio" class="form-check-input price-radio" name="price<%= item.id %>" value="<%= item.price45_50 %>" id="price<%= item.id %>-45-50" data-price="<%= item.price45_50 %>" <%= !item.available ? 'disabled' : '' %>>
+                </div>
+              </div>
+              <!-- Quantity selector -->
+              <div class="form-group mt-3">
+                <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('card-<%= item.name.replace(/\s+/g, '-') %>')" <%= !item.available ? 'disabled' : '' %>>
+              </div>
+              <!-- Total price display -->
+              <div class="form-group">
+                <label>Total Price:</label>
+                <span id="totalPrice-<%= item.id %>">₱<%= item.price.toFixed(2) %></span>
+              </div>
+              <!-- Add to Cart button -->
+              <button class="cbtn btn-primary mt-3" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')"><i class="fas fa-shopping-cart"></i></button>
+            </div>
+          <% } %>
+          
+          <% if (!item.available) { %>
+            <div class="card-overlay"></div>
+            <div class="unavailable-text">
+              <p>Unavailable</p>
+            </div>
+          <% } %>
+          
         </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button class="btnsss" onclick="changeQuantity('fff', -1)">-</button>
-          <input type="text" id="quantity-fff" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('fff')">
-          <button class="btnsss" onclick="changeQuantity('fff', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-fff">0.00</span></div>
-        <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
-          <img src="" alt="Enlarged Image" class="lightbox-image" />
-        </div>
-        <div class="rat">
-          <p>Rating:</p>
-          <div class="star-rating" id="starrating2">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        <button onclick="addToCart('Fried Fish Fillet','fff')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
       </div>
-    </div>
-    <div class="cards" id="ssg">
-      <img class="card-image" src="images/sisig.jpg" alt="" />
-      <div class="card-detail">
-        <h4>Pork Sisig (Tray)</h4>
-        <p>Savor the sizzle, indulge in the flavor. Our sisig is not just a dish; it's a culinary masterpiece that elevates your taste buds to new heights.</p>
-        <div class="gallerys" style="margin-top: 11%">
-          <label>
-            <img src="images/sTray.png" alt="Image 1" /><br />
-            <input type="radio" name="size" value="(10 to 12 pax)-600" onchange="updatePriceDisplay('ssg')" />
-            S (₱600) (10-12 pax)
-          </label>
-          <label>
-            <img src="images/mTray.png" alt="Image 2" /><br />
-            <input type="radio" name="size" value="(25 to 30 pax)-1450" onchange="updatePriceDisplay('ssg')" />
-            M (₱1,450) (25-30 pax)
-          </label>
-          <label>
-            <img src="images/lTray.png" alt="Image 3" /><br />
-            <input type="radio" name="size" value="(45 to 50 pax)-2800" onchange="updatePriceDisplay('ssg')" />
-            L (₱2,800) (45-50 pax)
-          </label>
-        </div>
-        <div class="quantity-selector">
-          <label>Quantity:</label>
-          <button class="btnsss" onclick="changeQuantity('ssg', -1)">-</button>
-          <input type="text" id="quantity-ssg" value="1" style="width: 40px; text-align: center;" onchange="updatePriceDisplay('ssg')">
-          <button class="btnsss" onclick="changeQuantity('ssg', 1)">+</button>
-        </div>
-        <div>Total Price: ₱<span id="total-price-ssg">0.00</span></div>
-        <!-- Lightbox (hidden by default) -->
-        <div class="lightbox" id="lightbox">
-          <img src="" alt="Enlarged Image" class="lightbox-image" />
-        </div>
-        <div class="rat">
-          <p>Rating:</p>
-          <div class="star-rating" id="starrating3">
-            <!-- Star icons will be added here using JavaScript -->
-          </div>
-        </div>
-        <p class="card-time"><span class="fas fa-clock"></span>15-30 mins</p>
-        <button onclick="addToCart('Sizzling Sisig','ssg')" class="cbtn">
-          <i class="fas fa-shopping-cart"></i>
-        </button>
-      </div>
-    </div>
+    <% }); %>
   </div>
 </section>
+
+
 <!-- Dietary Preferences Modal -->
-<div id="dietaryPreferencesModal" class="modal">
-  <div class="mod-content">
-    <span class="close-button" onclick="closeDietaryModal()">&times;</span>
-    <h2>Dietary Preferences</h2>
-
-    <!-- Start of the Dietary Preferences Form -->
-    <div class="container">
-      <form id="dietaryForm" action="/submit-dietary-preferences" method="POST"
-        onsubmit="return handleSubmit(event);">
-        <!-- Diet Type -->
-        <div>
-          <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
-          <label class="lbld" for="vegetarian">Vegetarian</label>
-
-        
-
-
-          <input type="checkbox" id="omnivore" name="omnivore" value="true" />
-          <label class="lbld" for="omnivore">Omnivore</label>
-
-
-          <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
-          <label class="lbld" for="glutenFree">Gluten-Free</label>
-
-        </div>
-
-        <!-- Allergies -->
-        <div>
-          <label class="lbld">Allergies:</label>
-         
-
-
-          <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
-          <label class="lbld" for="nutAllergy">Nut Allergy</label>
-
-        </div>
-
-        <input type="submit" value="Submit" />
-      </form>
-      <!-- Removed the confirmationMessage div -->
-      <!-- Add this div to display errors -->
-      <div id="errorDisplay" style="color: red; display: none"></div>
+<div class="modal fade" id="dietaryPreferencesModal" tabindex="-1" role="dialog" aria-labelledby="dietaryPreferencesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dietaryPreferencesModalLabel">Dietary Preferences</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Dynamic Dietary Preferences Form -->
+        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST" onsubmit="return handleSubmit(event);">
+          <div id="dynamicDietaryFields" class="mb-3">
+            <!-- Admin added dietary preferences checkboxes will be rendered here -->
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" value="">
+              Example Preference
+            </label>
+          </div>
+          <div id="errorDisplay" class="text-danger" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
     </div>
-    <!-- End of the Dietary Preferences Form -->
   </div>
 </div>
 
+<!-- Custom CSS -->
+<style>
+  #dietaryPreferencesModalLabel {
+    font-size: 1.75rem; /* Larger font size for the modal title */
+  }
+  #dietaryForm label {
+    font-size: 1rem; /* Font size for form labels */
+    display: flex;
+    align-items: center; /* Align checkboxes and text vertically */
+    margin-bottom: 1rem; /* Add space between checkbox-label pairs */
+  }
+  #dietaryForm input[type="checkbox"] {
+    width: 1rem; /* Adjust the width of the checkbox */
+    height: 1rem; /* Adjust the height of the checkbox */
+    margin-right: 0.5rem; /* Spacing between checkbox and label */
+    vertical-align: middle; /* Ensure the checkbox is vertically aligned with text */
+  }
+  #dietaryForm button {
+    font-size: 1rem; /* Larger font size for the button */
+  }
+
+  /* Move the modal down on the screen */
+  .modal-dialog {
+    margin-top: 2rem; /* Adjust this value to move the modal down */
+  }
+</style>
+
+
+
+
 <script>
-  var modal = document.getElementById("dietaryPreferencesModal");
-  var btn = document.getElementById("dietaryPreferencesNav");
+ document.addEventListener('DOMContentLoaded', function() {
+      const modal = $('#dietaryPreferencesModal');
 
-  function openDietaryModal() {
-    modal.style.display = "block";
-  }
-
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
-    }
-  };
-
-  function closeDietaryModal() {
-    modal.style.display = "none";
-  }
-  // ...other code...
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const errorDisplay = document.getElementById("errorDisplay");
-
-    // Reset the error display
-    errorDisplay.style.display = "none";
-    errorDisplay.textContent = "";
-
-    const form = document.getElementById("dietaryForm");
-    const dietaryPreferences = {
-      vegetarian: form["vegetarian"].checked,
-      // vegan: form["vegan"].checked,
-      omnivore: form["omnivore"].checked,
-      // halal: form["halal"].checked,
-      // kosher: form["kosher"].checked,
-      // lactoseFree: form["lactoseFree"].checked,
-      glutenFree: form["glutenFree"].checked,
-      nutAllergy: form["nutAllergy"].checked,
-      // otherRestrictions: form["otherRestrictions"].value.trim(),
-    };
-
-    console.log("CALL 1", dietaryPreferences);
-
-    // Check if at least one dietary choice is selected
-    const isAnyChoiceSelected = Object.values(dietaryPreferences).some(
-      (choice) => choice
-    );
-    if (!isAnyChoiceSelected) {
-      errorDisplay.textContent =
-        "Please select at least one dietary preference.";
-      errorDisplay.style.display = "block";
-      return; // Don't proceed with the submission
-    }
-
-    // Proceed with submission
-    try {
-      const response = await fetch("/submit-dietary-preferences", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dietaryPreferences),
-      });
-
-      if (response.ok) {
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const data = await response.json();
-          if (data.success) {
-            // Show the success message using SweetAlert
-            Swal.fire({
-              icon: "success",
-              title: "Success!",
-              text: "Your dietary preferences have been submitted successfully!",
-              showConfirmButton: true,
-            }).then(() => {
-              window.location.href = "/recommendations";
-            });
-          } else {
-            throw new Error(data.message || "An error occurred.");
-          }
-        } else {
-          throw new Error("Received non-JSON response from server");
-        }
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      window.openDietaryModal = function() {
+        modal.modal('show');
+        fetchDietaryPreferencesFields(); // Fetch preferences when opening the modal
       }
-    } catch (error) {
-      console.error("Error:", error);
-      errorDisplay.textContent = error.message;
-      errorDisplay.style.display = "block";
-    }
+
+      window.closeDietaryModal = function() {
+        modal.modal('hide');
+      }
+
+      async function fetchDietaryPreferencesFields() {
+        try {
+          const response = await fetch('/admin/dietary-preferences');
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          renderDietaryPreferencesFields(data.preferences);
+        } catch (error) {
+          console.error("Error fetching dietary preferences fields:", error);
+          const errorDisplay = document.getElementById("errorDisplay");
+          errorDisplay.textContent = `Error: ${error.message}`;
+          errorDisplay.style.display = "block";
+        }
+      }
+
+      function renderDietaryPreferencesFields(preferences) {
+        const dynamicFieldsContainer = document.getElementById('dynamicDietaryFields');
+        dynamicFieldsContainer.innerHTML = '';
+
+        if (!preferences || Object.keys(preferences).length === 0) {
+          dynamicFieldsContainer.innerHTML = '<p>No dietary preferences available.</p>';
+          return;
+        }
+
+        Object.keys(preferences).forEach(preference => {
+          const fieldHtml = `
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="${preference}" name="${preference}" />
+              <label class="form-check-label" for="${preference}">${preference}</label>
+            </div>
+          `;
+          dynamicFieldsContainer.insertAdjacentHTML('beforeend', fieldHtml);
+        });
+      }
+    });
+
+    async function handleSubmit(event) {
+  event.preventDefault();
+  const errorDisplay = document.getElementById("errorDisplay");
+  errorDisplay.style.display = "none";
+  errorDisplay.textContent = "";
+
+  const form = document.getElementById("dietaryForm");
+  const formData = new FormData(form);
+  const dietaryPreferences = Object.fromEntries(formData.entries());
+
+  // Convert form data into a proper boolean object
+  for (let key in dietaryPreferences) {
+    dietaryPreferences[key] = dietaryPreferences[key] === "on";
   }
 
-  function displayRecommendations(recommendations) {
-    const recommendationsContainer = document.getElementById(
-      "recommendations-container"
-    );
-    if (recommendationsContainer) {
-      recommendationsContainer.innerHTML = recommendations
-        .map((rec) => `<li>${rec}</li>`)
-        .join("");
-    }
+  // Check if at least one dietary choice is selected
+  const isAnyChoiceSelected = Object.values(dietaryPreferences).some(choice => choice);
+  if (!isAnyChoiceSelected) {
+    errorDisplay.textContent = "Please select at least one dietary preference.";
+    errorDisplay.style.display = "block";
+    return;
   }
+
+  try {
+    const response = await fetch("/submit-dietary-preferences", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dietaryPreferences),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: data.message,
+          showConfirmButton: true,
+        }).then(() => {
+          // Redirect to the foodMenu page with an anchor to "Menu Recommendations"
+          window.location.href = "/foodMenu#menu-recommendations";
+        });
+      } else {
+        throw new Error(data.message || "An error occurred.");
+      }
+    } else {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    errorDisplay.textContent = error.message;
+    errorDisplay.style.display = "block";
+  }
+}
+
+
+
+
 </script>
+
+
+
+
+
 </div>
 <div id="cart-mod" class="mod">
   <div class="mod-cont">
@@ -837,7 +808,19 @@ createStarRating('starrating', 4);
 createStarRating('starrating2', 4);
 createStarRating('starrating3', 5);
 
+//FOR FEATURED ITEM
+
+// JavaScript for UserDashboard.ejs
+
+
+
+
 </script>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="scripts/featureItem.js"></script>
 <script src="scripts/meals.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </body>
