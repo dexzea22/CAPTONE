@@ -16,6 +16,29 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
    <link rel="stylesheet" href="stylesheets/recommendations.css">
+   <style>
+    .unavailable-card {
+    opacity: 0.5; /* Adjust opacity for grayed-out effect */
+    position: relative;
+    pointer-events:none; /* Disable pointer events so the card cannot be interacted with */
+
+  }
+
+  .unavailable-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+  }
+
+  .unavailable-text {
+    color: red; /* Red text color for the "Unavailable" message */
+    font-size: 1.5rem; /* Adjust font size as needed */
+    font-weight: bold; /* Optionally, make the text bold */
+  }
+   </style>
   </head>
   <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
     <div class="topnav">
@@ -236,7 +259,7 @@
           %>
           <!-- Render each item card based on category -->
           <div >
-              <div class="card <%= currentItem.available ? '' : 'Unavailable' %>" id="card-<%= currentItem.name.replace(/\s+/g, '-') %>"
+              <div class="card <%= currentItem.available ? '' : 'unavailable-card' %>" id="card-<%= currentItem.name.replace(/\s+/g, '-') %>"
                    data-dietary-restrictions="<%= currentItem.dietaryRestrictions %>"
                    data-category="<%= currentItem.category %>">
                   <img  src="<%= currentItem.imageUrl %>" alt="Food Image" class="card-img-top food-image">
@@ -334,7 +357,7 @@
                       </button>
                   </div>
                   <% if (!currentItem.available) { %>
-                      <div class="unavailable-overlay">Unavailable</div>
+                      <div class="unavailable-text">Unavailable</div>
                   <% } %>
               </div>
           </div>

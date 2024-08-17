@@ -48,9 +48,9 @@
       <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;" onclick="openCartPage()">
       <i class="fas fa-shopping-cart fa-2x"></i>
       <span id="cart-counter">0</span>
-      </a>
-        <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-        <a class="nav" href="/recommendations">Recommended</a>
+      <!-- </a>
+        <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a> -->
+        <!-- <a class="nav" href="/recommendations">Recommended</a> -->
         <a class="nav" href="/userOrder">Orders</a>
         <a class="nav" href="/contact">Contact Us</a>
         <div class="nav" style="float: right;">
@@ -63,8 +63,8 @@
     </div>
     <div class="side-menu">
       <a href="/UserDashboard">Home</a>
-      <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-      <a href="/recommendations">Recommended</a>
+      <!-- <a href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
+      <a href="/recommendations">Recommended</a> -->
       <a href="/contact">Contact Us</a>
       <a href="/userOrder">Orders</a>
       <!-- <a href="/about">About Us</a> -->
@@ -150,7 +150,7 @@
               <div class="card-body">
                 <h5 class="card-title"><%= item.name %></h5>
                 <p class="card-text">
-                  <% item.dietaryRestrictions.forEach((diet, index) => { %>
+                  Dietary Preferences:   <% item.dietaryRestrictions.forEach((diet, index) => { %>
                     <%= diet %><% if (index !== item.dietaryRestrictions.length - 1) { %>, <% } %>
                   <% }); %>
                 </p>

@@ -1,22 +1,29 @@
+<!-- bestSeller.ejs -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home | Maya&Me</title>
-<link rel="website icon" type="png" href="images/maya.png">
-<link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="website icon" type="png" href="images/maya.png">
+    <link href="https://fonts.cdnfonts.com/css/caveat" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Rubik:400,700'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://kit.fontawesome.com/7f01a542af.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="stylesheets/user.css">
 <link rel="stylesheet" href="stylesheets/index.css">
+
+<title>Home | Maya&Me</title>
+
+
+  
+  
+  
 </head>
 
 <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;">
@@ -40,7 +47,7 @@
         <div class="modal-contents">
           <span class="close" onclick="closeProfileModal()">&times;</span>
           <a class="prof" href="/profile">My Profile</a>
-          <a class="prof" href="/recommendations">Recommended</a>
+          <!-- <a class="prof" href="/recommendations">Recommended</a> -->
           <a class="prof" href="/logout">Logout</a>
         </div>
       </div>
@@ -51,7 +58,7 @@
         <span id="cart-counter">0</span>
     </a>    
       <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-      <a class="nav" href="/recommendations">Recommended</a>
+      <!-- <a class="nav" href="/recommendations">Recommended</a> -->
       <a class="nav" href="/userOrder">Orders</a>
       <a class="nav" href="/contact">Contact Us</a>
       <span class="nav welcome-message" style="font-size: 24px; cursor:pointer; float: right; margin:1.4% 0 0 0;color:#976b35;"><%= welcomeMessage %></span>
@@ -59,7 +66,7 @@
     <div class="side-menu">
       <a style="color: black;" href="/UserDashboard">Home</a>
       <a style="color: black;" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-      <a style="color: black;" href="/recommendations">Recommended</a>
+      <!-- <a style="color: black;" href="/recommendations">Recommended</a> -->
       <a style="color: black;" href="/userOrder">Orders</a>
       <a style="color: black;" href="contact">Contact Us</a>
       <!-- <a style="color: black;" href="/about">About Us</a> -->
@@ -181,106 +188,115 @@
 </section>
 
 
-<a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
-<a class="nav" href="/recommendations">Recommended</a>
-<a class="nav" href="/userOrder">Orders</a>
-<a class="nav" href="/contact">Contact Us</a>
-<span class="nav welcome-message" style="font-size: 24px; cursor:pointer; float: right; margin:1.4% 0 0 0;color:#976b35;"><%= welcomeMessage %></span>
-</div>
-<div class="side-menu">
-  <a style="color: black;" href="/UserDashboard">Home</a>
-  <a style="color: black;" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary</a>
-  <a style="color: black;" href="/recommendations">Recommended</a>
-  <a style="color: black;" href="/userOrder">Orders</a>
-  <a style="color: black;" href="contact">Contact Us</a>
-  <a style="color: black;" class="nav" onclick="openCartPage()">My Cart</i></a>
-  <a style="color: black;" href="/profile">My Profile</a>
-  <a style="color: black;" href="/logout">Logout</a>
-</div>
-
 <!-- Dietary Preferences Modal -->
-<div id="dietaryPreferencesModal" class="modal">
-  <div class="mod-content">
-    <span class="close-button" onclick="closeDietaryModal()">&times;</span>
-    <h2>Dietary Preferences</h2>
-
-    <!-- Dynamic Dietary Preferences Form -->
-    <div class="container">
-      <form id="dietaryForm" action="/submit-dietary-preferences" method="POST" onsubmit="return handleSubmit(event);">
-        <div id="dynamicDietaryFields">
-          <!-- Admin added dietary preferences checkboxes will be rendered here -->
-        </div>
-        <input type="submit" value="Submit" />
-      </form>
-      <div id="errorDisplay" style="color: red; display: none"></div>
+<div class="modal fade" id="dietaryPreferencesModal" tabindex="-1" role="dialog" aria-labelledby="dietaryPreferencesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dietaryPreferencesModalLabel">Dietary Preferences</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Dynamic Dietary Preferences Form -->
+        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST" onsubmit="return handleSubmit(event);">
+          <div id="dynamicDietaryFields" class="mb-3">
+            <!-- Admin added dietary preferences checkboxes will be rendered here -->
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" value="">
+              Example Preference
+            </label>
+          </div>
+          <div id="errorDisplay" class="text-danger" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Custom CSS -->
+<style>
+  #dietaryPreferencesModalLabel {
+    font-size: 1.75rem; /* Larger font size for the modal title */
+  }
+  #dietaryForm label {
+    font-size: 1rem; /* Font size for form labels */
+    display: flex;
+    align-items: center; /* Align checkboxes and text vertically */
+    margin-bottom: 1rem; /* Add space between checkbox-label pairs */
+  }
+  #dietaryForm input[type="checkbox"] {
+    width: 1rem; /* Adjust the width of the checkbox */
+    height: 1rem; /* Adjust the height of the checkbox */
+    margin-right: 0.5rem; /* Spacing between checkbox and label */
+    vertical-align: middle; /* Ensure the checkbox is vertically aligned with text */
+  }
+  #dietaryForm button {
+    font-size: 1rem; /* Larger font size for the button */
+  }
+
+  /* Move the modal down on the screen */
+  .modal-dialog {
+    margin-top: 2rem; /* Adjust this value to move the modal down */
+  }
+</style>
+
+
+
+
 <script>
-  const modal = document.getElementById("dietaryPreferencesModal");
+ document.addEventListener('DOMContentLoaded', function() {
+      const modal = $('#dietaryPreferencesModal');
 
-  function openDietaryModal() {
-    modal.style.display = "block";
-    fetchDietaryPreferencesFields(); // Fetch preferences when opening the modal
-  }
+      window.openDietaryModal = function() {
+        modal.modal('show');
+        fetchDietaryPreferencesFields(); // Fetch preferences when opening the modal
+      }
 
-  function closeDietaryModal() {
-    modal.style.display = "none";
-  }
+      window.closeDietaryModal = function() {
+        modal.modal('hide');
+      }
 
-  window.onclick = function(event) {
-    if (event.target === modal) {
-      closeDietaryModal();
-    }
-  };
+      async function fetchDietaryPreferencesFields() {
+        try {
+          const response = await fetch('/admin/dietary-preferences');
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          renderDietaryPreferencesFields(data.preferences);
+        } catch (error) {
+          console.error("Error fetching dietary preferences fields:", error);
+          const errorDisplay = document.getElementById("errorDisplay");
+          errorDisplay.textContent = `Error: ${error.message}`;
+          errorDisplay.style.display = "block";
+        }
+      }
 
-  async function fetchDietaryPreferencesFields() {
-  try {
-    const response = await fetch('/admin/dietary-preferences');
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    console.log("Fetched data:", data); // Debugging line
-    renderDietaryPreferencesFields(data.preferences);
-  } catch (error) {
-    console.error("Error fetching dietary preferences fields:", error);
-    const errorDisplay = document.getElementById("errorDisplay");
-    errorDisplay.textContent = `Error: ${error.message}`;
-    errorDisplay.style.display = "block";
-  }
-}
+      function renderDietaryPreferencesFields(preferences) {
+        const dynamicFieldsContainer = document.getElementById('dynamicDietaryFields');
+        dynamicFieldsContainer.innerHTML = '';
 
+        if (!preferences || Object.keys(preferences).length === 0) {
+          dynamicFieldsContainer.innerHTML = '<p>No dietary preferences available.</p>';
+          return;
+        }
 
+        Object.keys(preferences).forEach(preference => {
+          const fieldHtml = `
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="${preference}" name="${preference}" />
+              <label class="form-check-label" for="${preference}">${preference}</label>
+            </div>
+          `;
+          dynamicFieldsContainer.insertAdjacentHTML('beforeend', fieldHtml);
+        });
+      }
+    });
 
-  // Render the fetched fields into the form
-  function renderDietaryPreferencesFields(preferences) {
-  const dynamicFieldsContainer = document.getElementById('dynamicDietaryFields');
-  dynamicFieldsContainer.innerHTML = '';
-
-  if (!preferences || Object.keys(preferences).length === 0) {
-    dynamicFieldsContainer.innerHTML = '<p>No dietary preferences available.</p>';
-    return;
-  }
-
-  // Render all preferences with checkboxes set to unchecked by default
-  Object.keys(preferences).forEach(preference => {
-    const fieldHtml = `
-      <div>
-        <input type="checkbox" id="${preference}" name="${preference}" />
-        <label class="lbld" for="${preference}">${preference}</label>
-      </div>
-    `;
-    dynamicFieldsContainer.insertAdjacentHTML('beforeend', fieldHtml);
-  });
-}
-
-
-
-async function handleSubmit(event) {
+    async function handleSubmit(event) {
   event.preventDefault();
   const errorDisplay = document.getElementById("errorDisplay");
   errorDisplay.style.display = "none";
@@ -319,8 +335,8 @@ async function handleSubmit(event) {
           text: data.message,
           showConfirmButton: true,
         }).then(() => {
-          // Optionally use data.recommendations here if needed
-          window.location.href = "/foodMenu";
+          // Redirect to the foodMenu page with an anchor to "Menu Recommendations"
+          window.location.href = "/foodMenu#menu-recommendations";
         });
       } else {
         throw new Error(data.message || "An error occurred.");
@@ -334,6 +350,8 @@ async function handleSubmit(event) {
     errorDisplay.style.display = "block";
   }
 }
+
+
 
 
 </script>
@@ -799,9 +817,9 @@ createStarRating('starrating3', 5);
 
 </script>
 <!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="scripts/featureItem.js"></script>
 <script src="scripts/meals.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

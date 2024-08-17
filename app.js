@@ -37,7 +37,7 @@ var userinfoRouter = require("./routes/userinfo");
 
 var dietaryRouter = require("./routes/dietaryPreferences");
 const profileRouter = require("./routes/profile");
-// const recommendationsRouter = require("./routes/recommendations");
+const recommendationsRouter = require("./routes/recommendations");
 const cartRouter = require("./routes/cart");
 const orderRouter = require('./routes/orderRoutes');
 
@@ -540,7 +540,7 @@ app.use("/", userinfoRouter);
 
 app.use("/", dietaryRouter); // Use the dietary routes
 app.use("/profile", profileRouter);
-// app.use("/recommendations", recommendationsRouter);
+app.use("/recommendations", recommendationsRouter);
 app.use("/api/cart", cartRouter);
 app.use('/orders', orderRouter);
 
@@ -931,7 +931,6 @@ app.get('/admin/dietary-preferences', async (req, res) => {
 //     });
 //   }
 // });
-
 
 
 // Delete a specific dietary preference for the authenticated user

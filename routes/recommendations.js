@@ -1,74 +1,68 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
 const openai = require("openai-api");
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const openaiApi = new openai(OPENAI_API_KEY);
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 const {
   revised_generated_recommendation,
-  extractValues,
 } = require("../utils/revisedGenerateRecommendation");
+
+const prisma = new PrismaClient();
 
 // Middleware to ensure the user is authenticated
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  console.log("Unauthorized attempt to access dietary preferences");
-  return res.status(401).json({ success: false, message: "Unauthorized access. Please log in." });
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    console.log("Unauthorized attempt to access food menu");
+    return res.status(401).json({ success: false, message: "Unauthorized access. Please log in." });
 }
 
-// Endpoint to display the recommendations page
-router.get("/", ensureAuthenticated, async (req, res) => {
-  const userId = req.user.id;
-  try {
-    let existingPreference = await prisma.dietaryPreference.findUnique({
-      where: { userId },
-    });
+// Route for all food items in descending order by createdAt
+router.get('/', ensureAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+    try {
+        // Fetch all food items from the database using Prisma
+        const foodItems = await prisma.foodItem.findMany({
+            where: {
+                deleted: false // Only fetch non-deleted items
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
 
-    // If dietary preferences are not set, handle it gracefully
-    if (!existingPreference) {
-      existingPreference = {
-        vegetarian: false,
-        omnivore: false,
-        glutenFree: false,
-        nutAllergy: false,
-      };
+        // Separate the food items based on their category
+        const soloMeals = foodItems.filter(item => item.category === 'Solo Meals');
+        const partyTrays = foodItems.filter(item => item.category === 'Party Trays');
+
+        // Fetch user's dietary preferences
+        let existingPreference = await prisma.dietaryPreference.findUnique({
+            where: { userId },
+        });
+
+        if (!existingPreference) {
+            existingPreference = { preferences: {} }; // Default to empty object
+        }
+
+        const dietaryData = existingPreference.preferences || {}; // Default to empty object
+
+        // Fetch recommendations based on dietary preferences
+        const apiResponse = await revised_generated_recommendation(dietaryData);
+        const recommendations = apiResponse || [];
+
+        console.log("Recommendations fetched:", recommendations);
+
+        // Render the food menu view and pass the separated data along with recommendations
+        res.render('recommendations', { soloMeals, partyTrays, recommendations });
+
+    } catch (error) {
+        console.error('Error fetching food items or recommendations:', error);
+        res.status(500).send('Internal Server Error');
+    } finally {
+        await prisma.$disconnect(); // Disconnect Prisma client
     }
-
-    const dietaryData = {
-      vegetarian: existingPreference.vegetarian || false,
-      omnivore: existingPreference.omnivore || false,
-      glutenFree: existingPreference.glutenFree || false,
-      nutAllergy: existingPreference.nutAllergy || false,
-    };
-
-    // Fetch recommendations based on dietary preferences
-    const apiResponse = await revised_generated_recommendation(dietaryData);
-
-    // Log the raw API response for debugging
-    console.log("API Response:", JSON.stringify(apiResponse, null, 2));
-
-    // Directly use the response if it's already in the correct format
-    const recommendations = apiResponse;  
-
-    if (!recommendations || recommendations.length === 0) {
-      console.log("No recommendations available for the given preferences:", dietaryData);
-      return res.render("recommendations", { recommendations: null });
-    }
-
-    console.log("Recommendations fetched:", recommendations);
-    res.render("recommendations", {
-      recommendations: recommendations, // Directly pass the array of strings
-    });
-  } catch (error) {
-    console.error("Error in fetching recommendations:", error);
-    res.status(500).render("recommendations", {
-      recommendations: null,
-      error: "Failed to fetch recommendations due to an internal server error."
-    });
-  }
 });
 
 module.exports = router;
