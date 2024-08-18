@@ -20,15 +20,9 @@ const app = express();
 const axios = require("axios");
 const cors = require("cors");
 const MongoStore = require('connect-mongo');
-// Destructure environment variables
-const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT } = process.env;
+const port = 8000;
 
-// Use PORT or fallback to 8000 if not defined
-const port = PORT || 8000;
-
-
-
-
+const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET,} = process.env;
 const base = "https://api-m.sandbox.paypal.com";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Now you can access the API key
