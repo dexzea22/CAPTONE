@@ -311,6 +311,11 @@ app.get('/checkFeedback/:orderId', async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.render('index'); // Render index.ejs as the landing page
+});
+
+
 // Route to handle feedback submission
 app.post('/submitFeedback', async (req, res) => {
   try {
