@@ -20,7 +20,16 @@ const app = express();
 const axios = require("axios");
 const cors = require("cors");
 const MongoStore = require('connect-mongo');
-const port = 8000;
+// Destructure environment variables
+const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT } = process.env;
+
+// Use PORT or fallback to 8000 if not defined
+const port = PORT || 8000;
+
+
+
+
+const base = "https://api-m.sandbox.paypal.com";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Now you can access the API key
 const openaiApi = new openai(OPENAI_API_KEY);
@@ -50,8 +59,7 @@ const foodMenuRouter = require('./routes/foodMenuRouter');
 const generateReportRouter = require('./routes/generateReportRouter');
 const apiRoutes = require('./routes/api');
 
-const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8000 } = process.env;
-const base = "https://api-m.sandbox.paypal.com";
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -1082,5 +1090,7 @@ app.use(function (err, req, res, next) {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+
 
 module.exports = app;
