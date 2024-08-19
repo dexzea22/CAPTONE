@@ -95,6 +95,35 @@ app.post('/login', async function (req, res) {
 });
 
 
+router.get('/UserDashboard', authenticate, restrictAccess.bind(null, 'User'), async (req, res) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(404).send('User not found');
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id }
+    });
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    
+    let welcomeMessage = "Welcome!";
+    if (user.firstName) {
+      welcomeMessage = "Welcome " + user.firstName + "!";
+    }
+    
+    return res.render('UserDashboard', { 
+      title: 'User Page', 
+      user: user,
+      welcomeMessage: welcomeMessage
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('Internal server error');
+  }
+});
 
 
 
@@ -204,35 +233,6 @@ router.post('/setDeleteEmail', (req, res) => {
 
 
 
-router.get('/UserDashboard', authenticate, restrictAccess.bind(null, 'User'), async (req, res) => {
-  try {
-    if (!req.user || !req.user.id) {
-      return res.status(404).send('User not found');
-    }
-    
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.id }
-    });
-
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
-    
-    let welcomeMessage = "Welcome!";
-    if (user.firstName) {
-      welcomeMessage = "Welcome " + user.firstName + "!";
-    }
-    
-    return res.render('UserDashboard', { 
-      title: 'User Page', 
-      user: user,
-      welcomeMessage: welcomeMessage
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send('Internal server error');
-  }
-});
 
 
 

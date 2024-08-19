@@ -20,10 +20,18 @@ const app = express();
 const axios = require("axios");
 const cors = require("cors");
 const MongoStore = require('connect-mongo');
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET,} = process.env;
 const base = "https://api-m.sandbox.paypal.com";
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+
+
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Now you can access the API key
 const openaiApi = new openai(OPENAI_API_KEY);
@@ -1080,10 +1088,6 @@ app.use(function (err, req, res, next) {
   res.status(500).json({ success: false, message: "Internal server error." });
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 
 
