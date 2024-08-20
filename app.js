@@ -519,7 +519,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
     origin: "https://captone-4.onrender.com",
-    credentials: true
+
   })
 );
 
