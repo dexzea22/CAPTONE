@@ -83,6 +83,13 @@ app.use(session({
     httpOnly: true,
   }
 }));
+
+app.use((req, res, next) => {
+  console.log('Session ID:', req.sessionID);
+  console.log('Session Data:', req.session);
+  next();
+});
+
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -511,9 +518,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "renderlink",
+    credentials: true
   })
 );
+
+
 app.use("/", loginRouter);
 app.use("/", registerRouter);
 app.use("/", confirmoderinfoRouter);
@@ -1087,8 +1097,4 @@ app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).json({ success: false, message: "Internal server error." });
 });
-
-
-
-
 module.exports = app;
