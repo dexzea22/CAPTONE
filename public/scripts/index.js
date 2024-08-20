@@ -85,21 +85,7 @@ galleries.forEach((gallery, index) => {
     }
   });
 });
- // JavaScript function to create a star rating
- function createStarRating(containerId, rating) {
-  const container = document.getElementById(containerId);
-  
-  // Clear any existing content in the container
-  container.innerHTML = '';
-  
-  // Create a loop to generate the stars
-  for (let i = 1; i <= 5; i++) {
-    const star = document.createElement('span');
-    star.classList.add('star', i <= rating ? 'filled' : 'empty');
-    star.innerHTML = '★'; // You can use a star icon here if available
-    container.appendChild(star);
-  }
-}
+
 
 // Call the function with the desired rating (e.g., 4 out of 5 stars)
 createStarRating('star-rating', 4);
