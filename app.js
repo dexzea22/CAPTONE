@@ -20,7 +20,7 @@ const app = express();
 const axios = require("axios");
 const cors = require("cors");
 const MongoStore = require('connect-mongo');
-const port = process.env.PORT || 8000;
+const port = 8000;
 
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET,} = process.env;
 const base = "https://api-m.sandbox.paypal.com";
