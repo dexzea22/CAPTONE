@@ -52,7 +52,7 @@ app.use(session({
   }),
   cookie: {
     maxAge: 86400000, // 24 hours
-    secure: process.env.NODE_ENV === "production",
+    secure: false,
     httpOnly: true,
   }
 }));
@@ -107,8 +107,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  // callbackURL: "https://captone-4.onrender.com/auth/google/callback"
-    callbackURL: "http://localhost:3000/auth/google/callback"
+  callbackURL: "https://captone-4.onrender.com/auth/google/callback"
+    // callbackURL: "http://localhost:3000/auth/google/callback"
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
@@ -531,8 +531,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "https://captone-4.onrender.com",
-
+    origin: "https://captone-4.onrender.com", 
   })
 );
 
