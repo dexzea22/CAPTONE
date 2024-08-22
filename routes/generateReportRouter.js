@@ -12,10 +12,11 @@ router.get('/generateChartsReport', async (req, res) => {
     });
     const page = await browser.newPage();
 
-    const url = 'https://captone-4.onrender.com/reports/generateChartsReport'; // Update this to your Render URL
+    // Use the deployed URL instead of localhost
+    const url = 'https://captone-4.onrender.com/charts'; // Ensure this route exists
+    await page.goto(url, { waitUntil: 'networkidle2' });
     
-    await page.goto(url, { waitUntil: 'networkidle2' }); // Use networkidle2 to wait longer
-    
+
     // Adding a delay using setTimeout wrapped in a promise
     await new Promise(resolve => setTimeout(resolve, 10000)); //  10 seconds delay
 
