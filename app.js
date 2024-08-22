@@ -188,7 +188,7 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
     }
   
     // Render the AdminDashboard with the user data
-    res.render('AdminDashboard', { 
+    res.render('adminDashboard', { 
       title: 'Admin Dashboard', 
       user: user,
       welcomeMessage: `Welcome ${user.firstName || 'Admin'}!`  // Safe fallback if firstName is not set
