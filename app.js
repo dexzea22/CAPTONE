@@ -19,6 +19,7 @@ const paypal = require("paypal-rest-sdk");
 const app = express();
 const axios = require("axios");
 const cors = require("cors");
+const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const port = 8000;
 
@@ -30,7 +31,31 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
+// MongoDB connection
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('MongoDB connected');
+}).catch(err => {
+  console.error('MongoDB connection error:', err);
+});
 
+// Configure session middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || "secret-key",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.DATABASE_URL,
+    collectionName: 'sessions', // Optional: name of the collection
+  }),
+  cookie: {
+    maxAge: 86400000, // 24 hours
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  }
+}));
 
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Now you can access the API key
@@ -69,26 +94,12 @@ app.use(bodyParser.json());
 // Initialize flash middleware after session
 app.use(flash());
 
-// Configure session middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET || "secret-key",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.DATABASE_URL,
-  }),
-  cookie: {
-    maxAge: 86400000, // 24 hours
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-  }
-}));
 
-app.use((req, res, next) => {
-  console.log('Session ID:', req.sessionID);
-  console.log('Session Data:', req.session);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('Session ID:', req.sessionID);
+//   console.log('Session Data:', req.session);
+//   next();
+// });
 
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
@@ -191,6 +202,7 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
 
   app.get('/UserDashboard', authenticate, checkRole('User'), async (req, res) => {
     try {
+      console.log('Session data:', req.session);
       console.log('Authenticated User ID:', req.user.id); // Confirm user ID is available
       const user = await prisma.user.findUnique({
         where: { id: req.user.id }  // Accessing user data via authenticated session
@@ -209,9 +221,9 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
           createdAt: 'desc'
         }
       });
-      // Check if all expected properties are available and non-null if required by the view
-      console.log("Food items fetched:", foodItems);
-      console.log('User data to be sent to dashboard:', user);
+      // // Check if all expected properties are available and non-null if required by the view
+      // console.log("Food items fetched:", foodItems);
+      // console.log('User data to be sent to dashboard:', user);
       
       // Fetch featured food items
     
@@ -456,7 +468,7 @@ app.get('/userOrder', authenticate, (req, res) => {
 function authenticate(req, res, next) {
   // Use Passport's built-in method to check authentication
   if (req.isAuthenticated()) {  // Checks if the user session is saved and valid
-    // console.log('User authenticated with userId:', req.user.id); // Log the authenticated user's ID
+    console.log('User is authenticated:', req.user);// console.log('User authenticated with userId:', req.user.id); // Log the authenticated user's ID
     next();  // Continue to next middleware or request handler
   } else {
     console.log('User not authenticated. Redirecting to login.');
