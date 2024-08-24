@@ -5,7 +5,7 @@ const fs = require('fs');
 const router = express.Router();
 
 const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
-const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome/linux-127.0.6533.119/chrome-linux64/chrome');
+const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome\win64-127.0.6533.119\chrome-win64\chrome.exe');
 
 router.get('/generateChartsReport', async (req, res) => {
   try {
