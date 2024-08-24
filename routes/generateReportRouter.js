@@ -16,16 +16,22 @@ router.get('/generateChartsReport', async (req, res) => {
       executablePath: chromePath,
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      timeout: 60000 
+      timeout: 120000 // Increase the timeout to 2 minutes
     });
-    
+
     console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
 
     const url = 'https://captone-4.onrender.com/charts';
-    await page.goto(url, { waitUntil: 'networkidle2' });
+    try {
+      await page.goto(url, { waitUntil: 'networkidle0', timeout: 60000 }); // Wait for network idle and set a 60 seconds timeout
+    } catch (gotoError) {
+      console.error('Error navigating to page:', gotoError);
+      await browser.close();
+      return res.status(500).send('Error navigating to page');
+    }
 
-    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
+    await new Promise(resolve => setTimeout(resolve, 5000)); // Reduce delay to 5 seconds
 
     const pdfPath = path.join(__dirname, 'chartsReport.pdf');
     await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
