@@ -2,10 +2,10 @@
   "name": "final-project",
   "version": "0.0.0",
   "private": true,
- "scripts": {
-  "install-chrome": "npx puppeteer browsers install chrome",
-  "start": "npm run install-chrome && node ./bin/www"
-},
+  "scripts": {
+ "install-chrome": "npx puppeteer browsers install chrome",
+     "start": "npm run install-chrome && node ./bin/www"
+  },
   "dependencies": {
     "@googlemaps/routing": "^1.0.1",
     "@prisma/client": "^5.16.2",

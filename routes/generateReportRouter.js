@@ -4,8 +4,9 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 
-const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';  // This is the cache directory on Render
+const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
 const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome/linux-127.0.6533.119/chrome-linux64/chrome');
+
 
 router.get('/generateChartsReport', async (req, res) => {
   try {
@@ -16,17 +17,17 @@ router.get('/generateChartsReport', async (req, res) => {
       executablePath: chromePath,
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      timeout: 30000 // Reduced timeout for faster response
+      timeout: 60000 
     });
     
     console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
 
-    const url = 'https://captone-4.onrender.com/charts';
-    await page.goto(url, { waitUntil: 'networkidle0' });
+    const url = 'https://captone-4.onrender.com/charts'; // Ensure this route exists
+    
+    await page.goto(url, { waitUntil: 'networkidle2' });
 
-    // Reduce the delay to 3 seconds to speed up the process
-    await new Promise(resolve => setTimeout(resolve, 2000)); // 3 seconds delay
+    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
 
     const pdfPath = path.join(__dirname, 'chartsReport.pdf');
     await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
@@ -50,3 +51,5 @@ router.get('/generateChartsReport', async (req, res) => {
 });
 
 module.exports = router;
+
+
