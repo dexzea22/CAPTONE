@@ -1,4 +1,3 @@
-
 const express = require('express');
 const puppeteer = require('puppeteer-core');
 const path = require('path');
@@ -26,7 +25,8 @@ router.get('/generateChartsReport', async (req, res) => {
     const url = 'https://captone-4.onrender.com/charts';
     await page.goto(url, { waitUntil: 'networkidle2' });
 
-    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
+    // Remove or shorten this delay
+    await new Promise(resolve => setTimeout(resolve, 2000)); // 2 seconds delay
 
     const pdfPath = path.join(__dirname, 'chartsReport.pdf');
     await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
