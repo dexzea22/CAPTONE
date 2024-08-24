@@ -1,12 +1,15 @@
-
 const express = require('express');
 const puppeteer = require('puppeteer-core');
 const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 
+// For Render deployment, use Render-specific paths and configurations
 const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
 const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome/linux-127.0.6533.119/chrome-linux64/chrome');
+
+// Adjust the URL based on your deployed environment
+const CHARTS_URL = 'https://captone-4.onrender.com/charts'; // Replace with your deployed URL
 
 router.get('/generateChartsReport', async (req, res) => {
   try {
@@ -17,18 +20,17 @@ router.get('/generateChartsReport', async (req, res) => {
       executablePath: chromePath,
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      timeout: 60000 
+      timeout: 60000  // Set timeout to 60 seconds
     });
-    
+
     console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
 
-    const url = 'https://captone-4.onrender.com/charts';
-    await page.goto(url, { waitUntil: 'networkidle2' });
+    await page.goto(CHARTS_URL, { waitUntil: 'networkidle2' });
 
     await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
 
-    const pdfPath = path.join(__dirname, 'chartsReport.pdf');
+    const pdfPath = path.join('/tmp', 'chartsReport.pdf');  // Use /tmp for temporary file storage on Render
     await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
     await browser.close();
     console.log('PDF generated and saved successfully.');
