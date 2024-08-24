@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
- "install-chrome": "npx puppeteer browsers install chrome",
-     "start": "npm run install-chrome && node ./bin/www"
+    "install-chrome": "npx puppeteer browsers install chrome",
+    "start": "npm run install-chrome && node ./bin/www"
   },
   "dependencies": {
     "@googlemaps/routing": "^1.0.1",

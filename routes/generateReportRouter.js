@@ -7,7 +7,6 @@ const router = express.Router();
 const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
 const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome/linux-127.0.6533.119/chrome-linux64/chrome');
 
-
 router.get('/generateChartsReport', async (req, res) => {
   try {
     console.log('Launching Puppeteer...');
@@ -23,8 +22,7 @@ router.get('/generateChartsReport', async (req, res) => {
     console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
 
-    const url = 'https://captone-4.onrender.com/charts'; // Ensure this route exists
-    
+    const url = 'https://captone-4.onrender.com/charts';
     await page.goto(url, { waitUntil: 'networkidle2' });
 
     await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
@@ -51,5 +49,3 @@ router.get('/generateChartsReport', async (req, res) => {
 });
 
 module.exports = router;
-
-
