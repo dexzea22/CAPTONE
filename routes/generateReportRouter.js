@@ -4,9 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 
-// When hosting on Render, we don't need to specify an executable path for Puppeteer
-// Puppeteer will automatically download a compatible version of Chrome
-
 router.get('/generateChartsReport', async (req, res) => {
   try {
     console.log('Launching Puppeteer...');
@@ -14,17 +11,16 @@ router.get('/generateChartsReport', async (req, res) => {
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      timeout: 60000  // Set timeout to 60 seconds
+      timeout: 120000  // Increase timeout to 120 seconds
     });
 
     console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
 
-    // Update the URL to point to your Render-hosted application
-    const url = 'https://captone-tz20.onrender.com/charts';  // Ensure this route exists and is correct
-    await page.goto(url, { waitUntil: 'networkidle2' });
+    const url = 'https://captone-tz20.onrender.com/charts';
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 120000 });  // Increase navigation timeout
 
-    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
+    await new Promise(resolve => setTimeout(resolve, 20000)); // 20 seconds delay to ensure everything loads
 
     const pdfPath = path.join(__dirname, 'chartsReport.pdf');
     await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
