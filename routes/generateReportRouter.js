@@ -1,43 +1,37 @@
 const express = require('express');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const path = require('path');
-const ejs = require('ejs');
 const fs = require('fs');
 const router = express.Router();
 
-// Path to Chrome executable in Render
-const chromePath = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.119/chrome-linux64/chrome';
-
-// Path to EJS template
-const EJS_TEMPLATE_PATH = path.join(__dirname, 'views/charts.ejs');
+// When hosting on Render, we don't need to specify an executable path for Puppeteer
+// Puppeteer will automatically download a compatible version of Chrome
 
 router.get('/generateChartsReport', async (req, res) => {
   try {
-    // Render EJS to HTML
-    const htmlContent = await ejs.renderFile(EJS_TEMPLATE_PATH);
+    console.log('Launching Puppeteer...');
 
     const browser = await puppeteer.launch({
-      executablePath: chromePath,
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       timeout: 60000  // Set timeout to 60 seconds
     });
 
+    console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: 'networkidle2' });
 
-    // Wait for charts and content to fully load
-    await page.waitForTimeout(15000); // Increase if needed for charts to render
+    // Update the URL to point to your Render-hosted application
+    const url = 'https://captone-tz20.onrender.com/charts';  // Ensure this route exists and is correct
+    await page.goto(url, { waitUntil: 'networkidle2' });
 
-    // Generate the PDF
-    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
 
+    const pdfPath = path.join(__dirname, 'chartsReport.pdf');
+    await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
     await browser.close();
+    console.log('PDF generated and saved successfully.');
 
-    const pdfPath = path.join('/tmp', 'chartsReport.pdf');  // Use /tmp for temporary file storage on Render
-    fs.writeFileSync(pdfPath, pdfBuffer);
-
-    res.download(pdfPath, 'chartsReport.pdf', err => {
+    res.sendFile(pdfPath, err => {
       if (err) {
         console.error('Error sending PDF:', err);
         res.status(500).send('Error sending PDF');
