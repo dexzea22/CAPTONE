@@ -1,20 +1,20 @@
 const express = require('express');
 const puppeteer = require('puppeteer-core');
 const path = require('path');
+const ejs = require('ejs');
 const fs = require('fs');
 const router = express.Router();
 
-// For Render deployment, use Render-specific paths and configurations
-const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
-const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome/linux-127.0.6533.119/chrome-linux64/chrome');
+// Path to Chrome executable in Render
+const chromePath = '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.119/chrome-linux64/chrome';
 
-// MongoDB Charts URL
-const CHARTS_URL = 'https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662273b8-4660-443f-856e-af65de4259d7&maxDataAge=3600&theme=light&autoRefresh=true';
+// Path to EJS template
+const EJS_TEMPLATE_PATH = path.join(__dirname, 'views/charts.ejs');
 
 router.get('/generateChartsReport', async (req, res) => {
   try {
-    console.log('Launching Puppeteer...');
-    console.log('Puppeteer executable path:', chromePath);
+    // Render EJS to HTML
+    const htmlContent = await ejs.renderFile(EJS_TEMPLATE_PATH);
 
     const browser = await puppeteer.launch({
       executablePath: chromePath,
@@ -23,17 +23,19 @@ router.get('/generateChartsReport', async (req, res) => {
       timeout: 60000  // Set timeout to 60 seconds
     });
 
-    console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
+    await page.setContent(htmlContent, { waitUntil: 'networkidle2' });
 
-    await page.goto(CHARTS_URL, { waitUntil: 'networkidle2', timeout: 0 });
+    // Wait for charts and content to fully load
+    await page.waitForTimeout(15000); // Increase if needed for charts to render
 
-    await new Promise(resolve => setTimeout(resolve, 15000)); // Ensure chart is fully loaded
+    // Generate the PDF
+    const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+
+    await browser.close();
 
     const pdfPath = path.join('/tmp', 'chartsReport.pdf');  // Use /tmp for temporary file storage on Render
-    await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
-    await browser.close();
-    console.log('PDF generated and saved successfully.');
+    fs.writeFileSync(pdfPath, pdfBuffer);
 
     res.download(pdfPath, 'chartsReport.pdf', err => {
       if (err) {

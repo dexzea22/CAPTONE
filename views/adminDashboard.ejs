@@ -208,8 +208,8 @@
         <br />
         <!-- Sales -->
 
-        <button onclick="window.open('/reports/generateChartsReport', '_blank')">Download Charts PDF</button>
-
+        <div class="backgroundSales">
+          <button onclick="downloadChartsPDF()">Download Charts PDF</button>
           
 
           <h1>Sales</h1>
@@ -395,8 +395,24 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
       </div>
     </div>
-    <button onclick="downloadChartsPDF()">Download Charts PDF</button>
-
+  
+    <script>
+      function downloadChartsPDF() {
+        fetch('/reports/generateChartsReport')
+          .then(response => response.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chartsReport.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          })
+          .catch(error => console.error('Error downloading PDF:', error));
+      }
+      </script>
+      
 
 
     <script src="scripts/index.js"></script>
