@@ -107,7 +107,9 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "https://captone-4.onrender.com/auth/google/callback"
+  callbackURL: "https://captone-tz20.onrender.com/auth/google/callback"
+
+  // callbackURL: "https://captone-4.onrender.com/auth/google/callback"
     // callbackURL: "http://localhost:3000/auth/google/callback"
 },
 async (accessToken, refreshToken, profile, done) => {
@@ -250,6 +252,60 @@ app.get('/adminDashboard', authenticate, checkRole('Admin'), async (req, res) =>
         }
     };
 }
+
+// Route to get all meals in the "Solo Meals" category
+app.get('/meals', async (req, res) => {
+  const category = 'Solo Meals';
+  try {
+      console.log(`Fetching items for category: ${category}`);
+      
+      // Fetching food items filtered by category "Solo Meals" using Prisma
+      const foodItems = await prisma.foodItem.findMany({
+          where: {
+              category: category,
+              deleted: false // Only fetch non-deleted items
+          },
+          orderBy: {
+              createdAt: 'desc' // Order by creation date in descending order
+          }
+      });
+
+      console.log('Fetched items:', foodItems);
+      
+      // Render the 'meals' view and pass the fetched food items and user data (if logged in)
+      res.render('meals', { foodItems, user: req.user });
+  } catch (error) {
+      console.error('Error fetching food items:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+// Route to get all meals in the "Party Trays" category
+app.get('/trays', async (req, res) => {
+  const category = 'Party Trays';
+  try {
+      console.log(`Fetching items for category: ${category}`);
+      
+      // Fetching food items filtered by category "Party Trays" using Prisma
+      const foodItems = await prisma.foodItem.findMany({
+          where: {
+              category: category,
+              deleted: false // Only fetch non-deleted items
+          },
+          orderBy: {
+              createdAt: 'desc' // Order by creation date in descending order
+          }
+      });
+
+      console.log('Fetched items:', foodItems);
+      
+      // Render the 'partyTrays' view and pass the fetched food items
+      res.render('trays', { foodItems, user: req.user });
+  } catch (error) {
+      console.error('Error fetching food items:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
 
   // GET route for rendering the forgot password form
 app.get('/forgotPassword', (req, res) => {
@@ -531,7 +587,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "https://captone-4.onrender.com", 
+    origin: "https://captone-tz20.onrender.com", 
   })
 );
 

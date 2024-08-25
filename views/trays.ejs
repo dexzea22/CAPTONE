@@ -78,7 +78,71 @@
       </div>
     </div>
     <div class="dashboard-content" id="container">
-      
+      <h1 class="ttl">Party Trays</h1>
+      <div class="grid-container">
+          <% foodItems.forEach(item => { %>
+              <div class="card h-100 <% if (!item.available) { %>unavailable-card<% } %>" 
+                   id="card-<%= item.name.replace(/\s+/g, '-') %>" 
+                   data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" 
+                   data-category="Party Trays">
+                  <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="card-img-top" />
+                  <div class="card-body">
+                      <h5 class="card-title"><%= item.name %></h5>
+                      <p class="card-text">
+                          Dietary Preferences: 
+                          <% item.dietaryRestrictions.forEach(diet => { %> 
+                              <span><%= diet %></span>
+                          <% }); %>
+                      </p>
+                      <p>Category: <%= item.category %></p>
+  
+                      <% if (item.available) { %>
+                          <div class="price-radio-group">
+                              <div class="form-check">
+                                  <label class="form-check-label" for="price<%= item.name.replace(/\s+/g, '-') %>10_12">
+                                      <img src="/images/sTray.png" alt="10-12 Pax" /> S (10-12) ₱<%= item.price.toFixed(2) %>
+                                  </label>
+                                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price %>" id="price<%= item.name.replace(/\s+/g, '-') %>10_12" data-price="<%= item.price %>" checked>
+                              </div>
+                              <div class="form-check">
+                                  <label class="form-check-label" for="price25_30<%= item.name.replace(/\s+/g, '-') %>">
+                                      <img src="/images/mTray.png" alt="25-30 Pax" /> M (25-30) ₱<%= item.price25_30.toFixed(2) %>
+                                  </label>
+                                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price25_30 %>" id="price25_30<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price25_30 %>">
+                              </div>
+                              <div class="form-check">
+                                  <label class="form-check-label" for="price45_50<%= item.name.replace(/\s+/g, '-') %>">
+                                      <img src="/images/lTray.png" alt="45-50 Pax" /> L (45-50) ₱<%= item.price45_50.toFixed(2) %>
+                                  </label>
+                                  <input type="radio" class="form-check-input price-radio" name="price<%= item.name.replace(/\s+/g, '-') %>" value="<%= item.price45_50 %>" id="price45_50<%= item.name.replace(/\s+/g, '-') %>" data-price="<%= item.price45_50 %>">
+                              </div>
+                          </div>
+  
+                          <div class="form-group mt-3">
+                              <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
+                              <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.name.replace(/\s+/g, '-') %>')">
+                          </div>
+  
+                          <div class="form-group">
+                              <label for="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">Total Price:</label>
+                              <span id="totalPrice-<%= item.name.replace(/\s+/g, '-') %>">₱<%= item.price.toFixed(2) %></span>
+                          </div>
+  
+                          <% if (user) { %> <!-- Check if the user is logged in -->
+                              <button class="cbtn" onclick="addToCart('card-<%= item.name.replace(/\s+/g, '-') %>')">
+                                  <i class="fas fa-shopping-cart"></i>
+                              </button>
+                          <% } else { %>
+                              <!-- Login Prompt -->
+                              <p class="login-prompt">Please <a href="/login">login</a> to add to cart.</p>
+                          <% } %>
+                      <% } else { %>
+                          <div class="unavailable-text">Unavailable</div>
+                      <% } %>
+                  </div>
+              </div>
+          <% }); %>
+      </div>
     </div>
    
     </body>
@@ -184,4 +248,35 @@
     </footer>
   </div>
   <script src="scripts/trays.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const priceRadios = document.querySelectorAll('.price-radio');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+
+        function updateTotalPrice(itemId) {
+            const selectedPriceRadio = document.querySelector('input[name="price' + itemId + '"]:checked');
+            if (!selectedPriceRadio) return;
+
+            const price = parseFloat(selectedPriceRadio.getAttribute('data-price'));
+            const quantity = parseInt(document.getElementById('quantity-' + itemId).value);
+            const totalPriceElement = document.getElementById('totalPrice-' + itemId);
+            const newTotalPrice = (price * quantity).toFixed(2);
+            totalPriceElement.textContent = '₱' + newTotalPrice;
+        }
+
+        priceRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const itemId = this.getAttribute('name').split('price')[1];
+                updateTotalPrice(itemId);
+            });
+        });
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const itemId = this.getAttribute('id').split('quantity-')[1];
+                updateTotalPrice(itemId);
+            });
+        });
+    });
+</script>
 </html>

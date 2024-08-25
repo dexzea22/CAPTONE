@@ -9,7 +9,7 @@ const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
 const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome/linux-127.0.6533.119/chrome-linux64/chrome');
 
 // Adjust the URL based on your deployed environment
-const CHARTS_URL = 'https://captone-4.onrender.com/charts'; // Replace with your deployed URL
+const CHARTS_URL = 'https://captone-tz20.onrender.com/charts'; // Replace with your deployed URL
 
 router.get('/generateChartsReport', async (req, res) => {
   try {
