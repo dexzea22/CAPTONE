@@ -16,7 +16,7 @@ router.get('/generateChartsReport', async (req, res) => {
     await page.goto(url, { waitUntil: 'networkidle2' }); // Use networkidle2 to wait longer
     
     // Adding a delay using setTimeout wrapped in a promise
-    await new Promise(resolve => setTimeout(resolve, 10000)); //  10 seconds delay
+    await new Promise(resolve => setTimeout(resolve, 5000)); //  5 seconds delay
 
     // Save the PDF to a file
     const pdfPath = path.join(__dirname, 'chartsReport.pdf');
