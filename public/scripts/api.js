@@ -1,3 +1,5 @@
+
+
 // Fetch order statistics and render chart with analysis
 async function fetchOrderData() {
     const response = await fetch("/api/order-stats");
@@ -173,52 +175,7 @@ async function renderDailyOrdersTrendChart() {
     `;
 }
 
-// Fetch customer satisfaction ratings and render chart with analysis
-// async function fetchCustomerSatisfaction() {
-//     const response = await fetch('/api/customer-satisfaction');
-//     const data = await response.json();
-//     return data;
-// }
 
-// async function renderCustomerSatisfactionChart() {
-//     const satisfactionData = await fetchCustomerSatisfaction();
-
-//     const labels = satisfactionData.map(item => item.aspect);
-//     const data = satisfactionData.map(item => item.averageRating);
-
-//     const ctx = document.getElementById('customerSatisfactionChart').getContext('2d');
-//     new Chart(ctx, {
-//         type: 'radar',
-//         data: {
-//             labels: labels,
-//             datasets: [{
-//                 label: 'Average Rating',
-//                 data: data,
-//                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
-//                 borderColor: 'rgba(153, 102, 255, 1)',
-//                 borderWidth: 1
-//             }]
-//         },
-//         options: {
-//             scales: {
-//                 r: {
-//                     angleLines: {
-//                         display: false
-//                     },
-//                     suggestedMin: 0,
-//                     suggestedMax: 5
-//                 }
-//             }
-//         }
-//     });
-
-//     const bestAspect = satisfactionData.reduce((max, item) => item.averageRating > max.averageRating ? item : max, satisfactionData[0]);
-//     document.getElementById('customerSatisfactionAnalysis').innerHTML = `
-//         <p>The average customer satisfaction ratings are shown in the chart.</p>
-//         <p>The aspect with the highest rating is ${bestAspect.aspect} with an average rating of ${bestAspect.averageRating.toFixed(1)}.</p>
-//         <p>Focus on aspects with lower ratings for improvement.</p>
-//     `;
-// }
 
 // Fetch revenue by day of the week and render chart with analysis
 async function fetchRevenueByDay() {
@@ -310,6 +267,67 @@ async function fetchYearlyRevenue() {
     `;
   }
 
+  async function fetchDataAndDisplay() {
+    const totalRevenueResponse = await fetch('/api/total-revenue');
+    const totalRevenueData = await totalRevenueResponse.json();
+    document.getElementById('totalRevenue').textContent = `₱${totalRevenueData.totalRevenue.toFixed(2)}`;
+
+    const totalOrdersResponse = await fetch('/api/total-orders');
+    const totalOrdersData = await totalOrdersResponse.json();
+    document.getElementById('totalOrders').textContent = totalOrdersData.totalOrders;
+
+    const pendingOrdersResponse = await fetch('/api/pending-orders');
+    const pendingOrdersData = await pendingOrdersResponse.json();
+    document.getElementById('pendingOrders').textContent = pendingOrdersData.pendingOrders;
+
+    const preparingOrdersResponse = await fetch('/api/preparing-orders');
+    const preparingOrdersData = await preparingOrdersResponse.json();
+    document.getElementById('preparingOrders').textContent = preparingOrdersData.preparingOrders;
+
+    const deliveredOrdersResponse = await fetch('/api/delivered-orders');
+    const deliveredOrdersData = await deliveredOrdersResponse.json();
+    document.getElementById('deliveredOrders').textContent = deliveredOrdersData.deliveredOrders;
+}
+
+async function fetchOrderTransactions() {
+  const response = await fetch('/api/order-transactions');
+  const data = await response.json();
+  return data;
+}
+
+async function renderOrderTransactions() {
+  const transactions = await fetchOrderTransactions();
+  const tableBody = document.getElementById('transactionsTableBody');
+
+  tableBody.innerHTML = transactions.map(transaction => {
+      // Calculate the total amount for this order
+      const totalAmount = transaction.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+
+      return `
+          <tr>
+              <td>${transaction.id}</td>
+              <td>${transaction.date}</td>
+              <td>₱${totalAmount.toFixed(2)}</td>
+              <td>${transaction.contactPerson || 'N/A'}</td>
+              <td>
+                  ${transaction.items.map(item => `
+                      <p>${item.name} (x${item.quantity}): ₱${item.totalPrice.toFixed(2)}</p>
+                  `).join('')}
+              </td>
+          </tr>
+      `;
+  }).join('');
+
+  // Initialize DataTables
+  $('#transactionsTable').DataTable({
+      paging: true,
+      searching: true,
+      ordering: true,
+      info: true
+  });
+}
+
+
 // Call functions to render charts and analysis
 renderOrderChart();
 renderTopSellingChart();
@@ -318,3 +336,5 @@ renderDailyOrdersTrendChart();
 //renderCustomerSatisfactionChart();
 renderRevenueByDayChart();
 renderYearlyRevenueChart();
+fetchDataAndDisplay();
+renderOrderTransactions();

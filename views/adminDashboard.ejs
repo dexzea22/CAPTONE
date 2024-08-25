@@ -29,11 +29,15 @@
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="stylesheets/admin.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
@@ -86,6 +90,83 @@
         width: 45%; /* Adjust width as needed to fit two iframes in a row */
         height: 480px; /* Adjust height as needed */
       }
+      .dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    }
+
+    .box {
+        flex: 1 1 calc(33.333% - 20px);
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .box h2 {
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .box p {
+        font-size: 32px;
+        margin: 0;
+    }
+
+    .total-revenue { background-color: #c5a882; }
+    .total-orders { background-color: #98d7c2; }
+    .pending-orders { background-color: #e28b8b; }
+    .preparing-orders { background-color: #95c7e6; }
+    .delivered-orders { background-color: #95c7e6; }
+
+    .nav-tabs .nav-link {
+      background-color: #f8f9fa;
+      border: 1px solid #dee2e6;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .nav-tabs .nav-link.active {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .tab-content {
+      margin-top: 20px;
+    }
+
+    .tab-pane {
+      padding: 10px;
+    }
+    /* Style the table background */
+    #transactionsTable {
+            background-color: #f9f9f9; /* Light gray background */
+            border: 1px solid #ddd;    /* Light gray border */
+        }
+        
+        /* Style the table header background */
+        #transactionsTable thead {
+            background-color: #007bff; /* Blue background */
+            color: #fff;               /* White text */
+        }
+
+        /* Style the table rows */
+        #transactionsTable tbody tr:nth-child(odd) {
+            background-color: #f2f2f2; /* Alternating row color */
+        }
+
+        #transactionsTable tbody tr:nth-child(even) {
+            background-color: #ffffff; /* Alternating row color */
+        }
+
+        /* Style the table cells */
+        #transactionsTable td, #transactionsTable th {
+            padding: 8px;
+            text-align: left;
+        }
     </style>
   </head>
 
@@ -121,228 +202,90 @@
       </div>
       <div class="main-content">
         <h1 class="admn">Admin Dashboard</h1>
-        <!-- Number of User -->
-        <iframe
-          style="
-            background: #b3e6c8;
-            border: none;
-            border-radius: 2px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            margin: 2%;
-          "
-          width="450"
-          height="170"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668ec37e-9fda-411d-88d6-e77463bd36b5&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-        <!-- Revenue Generation -->
-        <iframe
-          style="
-            background: #79c3d2;
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            margin: 2%;
-          "
-          width="450"
-          height="170"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668c0087-adf1-4aa1-8047-6e1d52baeb7c&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-        <!-- Donut -->
-        <iframe
-          style="
-            background: #ffffff;
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            margin: 2%;
-          "
-          width="450"
-          height="170"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662282c1-b28f-4620-86b1-0567f6ffab17&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-        <!-- pending order -->
-        <iframe
-          style="
-            background: #d27979;
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            margin: 2%;
-          "
-          width="450"
-          height="170"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668eb8aa-637b-4043-8b6c-b02570af9e76&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-        <!-- Preparing Orders -->
-        <iframe
-          style="
-            background: #79c3d2;
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            margin: 2%;
-          "
-          width="450"
-          height="170"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668ec2c7-bda3-4aac-86e7-1fc5021f4b19&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-        <!-- delivered -->
-        <iframe
-          style="
-            background: #79c3d2;
-            color: #ffffff;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            margin: 2%;
-          "
-          width="450"
-          height="170"
-          src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668eb917-9fda-47d9-8e68-e77463d5b41e&maxDataAge=3600&theme=light&autoRefresh=true"
-        ></iframe>
-
-        <br />
-        <!-- Sales -->
-
-        <div class="backgroundSales">
-          <button onclick="window.open('/reports/generateChartsReport', '_blank')">Download Charts PDF</button>
-
-          <h1>Sales</h1>
-          <div class="container mt-3">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              <li class="nav-item">
-                <a
-                  class="nav-link active"
-                  id="average-order-value-tab"
-                  data-toggle="tab"
-                  href="#average-order-value"
-                  role="tab"
-                  aria-controls="average-order-value"
-                  aria-selected="true"
-                  >Average Order Value</a
-                >
-              </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  id="hourly-tab"
-                  data-toggle="tab"
-                  href="#hourly"
-                  role="tab"
-                  aria-controls="hourly"
-                  aria-selected="false"
-                  >Hourly</a
-                >
-              </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  id="minutes-tab"
-                  data-toggle="tab"
-                  href="#minutes"
-                  role="tab"
-                  aria-controls="minutes"
-                  aria-selected="false"
-                  >Minutes</a
-                >
-              </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-              <div
-                class="tab-pane fade show active"
-                id="average-order-value"
-                role="tabpanel"
-                aria-labelledby="average-order-value-tab"
-              >
-                <iframe
-                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66228974-8996-4fee-8aa7-9719cb6e8159&maxDataAge=3600&theme=light&autoRefresh=true"
-                ></iframe>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="hourly"
-                role="tabpanel"
-                aria-labelledby="hourly-tab"
-              >
-                <iframe
-                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226f59-bf47-41d4-89f7-33b637501676&maxDataAge=3600&theme=light&autoRefresh=true"
-                ></iframe>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="minutes"
-                role="tabpanel"
-                aria-labelledby="minutes-tab"
-              >
-                <iframe
-                  src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668bfeeb-adf1-468f-86c8-6e1d528b3b04&maxDataAge=3600&theme=light&autoRefresh=true"
-                ></iframe>
-              </div>
-            </div>
+        <br /><br />
+        <div class="dashboard">
+          <div class="box total-revenue">
+              <h2>Total Revenue</h2>
+              <p id="totalRevenue">₱0.00</p>
+          </div>
+          <div class="box total-orders">
+              <h2>Total Number of Orders</h2>
+              <p id="totalOrders">0</p>
+          </div>
+          <div class="box pending-orders">
+              <h2>Pending Orders</h2>
+              <p id="pendingOrders">0</p>
+          </div>
+          <div class="box preparing-orders">
+              <h2>Preparing Orders</h2>
+              <p id="preparingOrders">0</p>
+          </div>
+          <div class="box delivered-orders">
+              <h2>Delivered Orders</h2>
+              <p id="deliveredOrders">0</p>
+          </div>
+      </div>
+      <br /><br />
+      <!-- Revenue  -->
+      <button
+      onclick="window.open('/reports/generateChartsReport', '_blank')"
+    >
+      Download Charts PDF
+    </button>
+      <h1>Revenue</h1>
+      <br />
+      <div class="container">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#monthlyRevenue" data-toggle="tab">Monthly Revenue</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#yearlyRevenue" data-toggle="tab">Yearly Revenue</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#revenueByDay" data-toggle="tab">Revenue by Day</a>
+          </li>
+        </ul>
+        
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="monthlyRevenue">
+            <!-- Monthly Revenue chart and analysis -->
+            <canvas id="monthlyRevenueChart"></canvas>
+            <div id="monthlyRevenueAnalysis"></div>
+          </div>
+          <div class="tab-pane fade" id="yearlyRevenue">
+            <!-- Yearly Revenue chart and analysis -->
+            <canvas id="yearlyRevenueChart"></canvas>
+            <div id="yearlyRevenueAnalysis"></div>
+          </div>
+          <div class="tab-pane fade" id="revenueByDay">
+            <!-- Revenue by Day chart and analysis -->
+            <canvas id="revenueByDayChart"></canvas>
+            <div id="revenueByDayAnalysis"></div>
           </div>
         </div>
-        <br />
-        <!-- Transaction -->
-        <div>
-          <h2>Transactions</h2>
-          <iframe
-            style="
-              background: #ffffff;
-              border: none;
-              border-radius: 2px;
-              box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-              margin-left: 5%;
-            "
-            width="1430"
-            height="480"
-            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662273b8-4660-443f-856e-af65de4259d7&maxDataAge=3600&theme=light&autoRefresh=true"
-          ></iframe>
-        </div>
-        <br />
-        <!-- row Popular and Dietary -->
-        <div class="iframe-container">
-          <!-- Popular Items -->
-          <iframe
-            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66226e96-bf47-4fc0-81f4-33b6374566cc&maxDataAge=3600&theme=light&autoRefresh=true"
-          ></iframe>
+      </div>
+          
+            <br /><br />
+      <!-- Order Transactions Table -->
+      <h2>Order Transactions</h2>
+      <table id="transactionsTable" class="display">
+          <thead>
+              <tr>
+                  <th>Order ID</th>
+                  <th>Date</th>
+                  <th>Total Amount</th>
+                  <th>Contact Person</th>
+                  <th>Items</th>
+              </tr>
+          </thead>
+          <tbody id="transactionsTableBody">
+              <!-- Table rows will be inserted here by the script -->
+          </tbody>
+      </table>
 
-          <!-- Dietary -->
-          <iframe
-            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=66227b12-47c9-4006-8f48-023fc4ca8990&maxDataAge=3600&theme=light&autoRefresh=true"
-          ></iframe>
-        </div>
-        <br />
-        <div class="iframe-container">
-          <!-- Food Performance Rating -->
-          <iframe
-            style="
-              background: #ffffff;
-              border: none;
-              border-radius: 2px;
-              box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            "
-            width="45%"
-            height="480"
-            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668ede4d-263d-44a1-86ff-a8e1ea81a696&maxDataAge=3600&theme=light&autoRefresh=true"
-          ></iframe>
-          <!-- Reviews -->
-          <iframe
-            style="
-              background: #ffffff;
-              border: none;
-              border-radius: 2px;
-              box-shadow: 0 2px 10px 0 rgba(70, 76, 79, 0.2);
-            "
-            width="45%"
-            height="480"
-            src="https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=668a9f48-9e24-42ed-8829-6b5109563c85&maxDataAge=3600&theme=light&autoRefresh=true"
-          ></iframe>
-        </div>
-        <br /><br />
+<br /><br />
+
         <h1>Diagnostic Analysis</h1>
         <br />
         <div class="container">
@@ -358,11 +301,11 @@
             <div id="topSellingAnalysis"></div>
           </section>
           <br />
-          <section>
+          <!-- <section>
             <h2>Monthly Revenue</h2>
             <canvas id="monthlyRevenueChart"></canvas>
             <div id="monthlyRevenueAnalysis"></div>
-          </section>
+          </section> -->
           <br />
           <section>
             <h2>Daily Orders Trend</h2>
@@ -376,22 +319,24 @@
             <div id="customerSatisfactionAnalysis"></div>
           </section> -->
 
-          <section>
+          <!-- <section>
             <h2>Revenue by Day of the Week</h2>
             <canvas id="revenueByDayChart"></canvas>
             <div id="revenueByDayAnalysis"></div>
-          </section>
+          </section> -->
           <br />
-          <section>
+          <!-- <section>
             <h2>Yearly Revenue</h2>
             <canvas id="yearlyRevenueChart"></canvas>
             <div id="yearlyRevenueAnalysis"></div>
-          </section>
+          </section> -->
         </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        
       </div>
     </div>
     <script src="scripts/index.js"></script>

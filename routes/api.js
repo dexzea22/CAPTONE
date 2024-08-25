@@ -146,38 +146,6 @@ router.get('/daily-orders-trend', async (req, res) => {
     }
 });
 
-// Endpoint to get customer satisfaction ratings
-// router.get('/customer-satisfaction', async (req, res) => {
-//     try {
-//       // Fetch all reviews
-//       const reviews = await prismaClient.review.findMany({
-//         select: {
-//           aspect: true,
-//           rating: true
-//         }
-//       });
-  
-//       // Compute average ratings by aspect
-//       const aspectRatings = reviews.reduce((acc, review) => {
-//         if (!acc[review.aspect]) {
-//           acc[review.aspect] = { totalRating: 0, count: 0 };
-//         }
-//         acc[review.aspect].totalRating += review.rating;
-//         acc[review.aspect].count += 1;
-//         return acc;
-//       }, {});
-  
-//       const satisfactionData = Object.entries(aspectRatings).map(([aspect, { totalRating, count }]) => ({
-//         aspect,
-//         averageRating: totalRating / count
-//       }));
-  
-//       res.json(satisfactionData);
-//     } catch (error) {
-//       console.error('Error fetching customer satisfaction ratings:', error);
-//       res.status(500).json({ error: 'Error fetching data' });
-//     }
-//   });
 
 // Endpoint to get revenue by day of the week
 router.get('/revenue-by-day', async (req, res) => {
@@ -249,5 +217,106 @@ router.get('/yearly-revenue', async (req, res) => {
     res.status(500).json({ error: 'Error fetching data' });
   }
 });
+
+// Total Revenue
+router.get('/total-revenue', async (req, res) => {
+  try {
+    const totalRevenue = await prismaClient.order.aggregate({
+      _sum: {
+        amount: true
+      }
+    });
+    res.json({ totalRevenue: totalRevenue._sum.amount || 0 });
+  } catch (error) {
+    console.error('Error fetching total revenue:', error);
+    res.status(500).json({ error: 'Error fetching total revenue' });
+  }
+});
+
+// Total Number of Orders
+router.get('/total-orders', async (req, res) => {
+  try {
+    const totalOrders = await prismaClient.order.count();
+    res.json({ totalOrders });
+  } catch (error) {
+    console.error('Error fetching total number of orders:', error);
+    res.status(500).json({ error: 'Error fetching total number of orders' });
+  }
+});
+
+// Pending Orders
+router.get('/pending-orders', async (req, res) => {
+  try {
+    const pendingOrders = await prismaClient.order.count({
+      where: { status: 'PENDING' }
+    });
+    res.json({ pendingOrders });
+  } catch (error) {
+    console.error('Error fetching pending orders:', error);
+    res.status(500).json({ error: 'Error fetching pending orders' });
+  }
+});
+
+// Preparing Orders
+router.get('/preparing-orders', async (req, res) => {
+  try {
+    const preparingOrders = await prismaClient.order.count({
+      where: { status: 'preparing' }
+    });
+    res.json({ preparingOrders });
+  } catch (error) {
+    console.error('Error fetching preparing orders:', error);
+    res.status(500).json({ error: 'Error fetching preparing orders' });
+  }
+});
+
+// Delivered Orders
+router.get('/delivered-orders', async (req, res) => {
+  try {
+    const deliveredOrders = await prismaClient.order.count({
+      where: { status: 'delivered' }
+    });
+    res.json({ deliveredOrders });
+  } catch (error) {
+    console.error('Error fetching delivered orders:', error);
+    res.status(500).json({ error: 'Error fetching delivered orders' });
+  }
+});
+
+// Endpoint to get order transactions
+router.get('/order-transactions', async (req, res) => {
+  try {
+    const transactions = await prismaClient.order.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(new Date().setDate(new Date().getDate() - 30)) // last 30 days
+        }
+      },
+      include: {
+        orderItems: true
+      }
+    });
+
+    const transactionData = transactions.map(transaction => ({
+      id: transaction.id,
+      date: transaction.createdAt.toISOString().split('T')[0],
+      totalAmount: transaction.amount,
+      contactPerson: transaction.contactPerson || 'N/A',
+      items: transaction.orderItems.map(item => ({
+        name: item.itemName,
+        quantity: item.quantity,
+        totalPrice: item.totalPrice
+      }))
+    }));
+
+    res.json(transactionData);
+  } catch (error) {
+    console.error('Error fetching order transactions:', error);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
+
+
 
 module.exports = router;
