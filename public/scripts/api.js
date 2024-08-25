@@ -305,7 +305,7 @@ async function fetchYearlyRevenue() {
     const highestRevenueYear = yearlyRevenue.reduce((max, item) => item.totalRevenue > max.totalRevenue ? item : max, yearlyRevenue[0]);
     document.getElementById('yearlyRevenueAnalysis').innerHTML = `
       <p>Total revenue for the past years is shown in the chart.</p>
-      <p>The highest revenue was recorded in ${highestRevenueYear.year} with $${highestRevenueYear.totalRevenue.toFixed(2)}.</p>
+      <p>The highest revenue was recorded in ${highestRevenueYear.year} with ₱${highestRevenueYear.totalRevenue.toFixed(2)}.</p>
       <p>Focus on the years with lower revenue to identify potential causes and solutions.</p>
     `;
   }

@@ -8,8 +8,8 @@ const router = express.Router();
 const PUPPETEER_CACHE_DIR = '/opt/render/.cache/puppeteer';
 const chromePath = path.join(PUPPETEER_CACHE_DIR, 'chrome/linux-127.0.6533.119/chrome-linux64/chrome');
 
-// Adjust the URL based on your deployed environment
-const CHARTS_URL = 'https://captone-tz20.onrender.com/charts'; // Replace with your deployed URL
+// MongoDB Charts URL
+const CHARTS_URL = 'https://charts.mongodb.com/charts-project-0-kwgwhle/embed/charts?id=662273b8-4660-443f-856e-af65de4259d7&maxDataAge=3600&theme=light&autoRefresh=true';
 
 router.get('/generateChartsReport', async (req, res) => {
   try {
@@ -26,16 +26,16 @@ router.get('/generateChartsReport', async (req, res) => {
     console.log('Puppeteer launched successfully.');
     const page = await browser.newPage();
 
-    await page.goto(CHARTS_URL, { waitUntil: 'networkidle2' });
+    await page.goto(CHARTS_URL, { waitUntil: 'networkidle2', timeout: 0 });
 
-    await new Promise(resolve => setTimeout(resolve, 10000)); // 10 seconds delay
+    await new Promise(resolve => setTimeout(resolve, 15000)); // Ensure chart is fully loaded
 
     const pdfPath = path.join('/tmp', 'chartsReport.pdf');  // Use /tmp for temporary file storage on Render
     await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
     await browser.close();
     console.log('PDF generated and saved successfully.');
 
-    res.sendFile(pdfPath, err => {
+    res.download(pdfPath, 'chartsReport.pdf', err => {
       if (err) {
         console.error('Error sending PDF:', err);
         res.status(500).send('Error sending PDF');
