@@ -107,7 +107,7 @@
     <% }); %>
 </div>
 
-<h1 class="ttl">Party Trays</h1>
+<h1 class="ttl1">Party Trays</h1>
 <div class="grid-container">
     <% partyTrays.forEach(item => { %>
         <div class="card h-100 <% if (!item.available) { %>unavailable-card<% } %>" id="card-<%= item.name.replace(/\s+/g, '-') %>" data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" data-category="Party Trays">
