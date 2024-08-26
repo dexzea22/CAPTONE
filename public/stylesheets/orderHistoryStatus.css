@@ -1,0 +1,875 @@
+.topnav {
+    overflow: hidden; 
+    background-color: rgb(239, 232, 202);
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+  }
+  .topnav a {
+    float: left;
+    color:#976b35;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 23px;
+    position: relative; /* Add this line */
+  }
+  .nav:hover{
+  color: #000000;
+  }
+  .topnav .nav::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: 0;
+  left: 0;
+  background-color: #000000;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  }
+  
+  .topnav a:hover::before {
+  width: 100%;
+  visibility: visible;
+  }
+  .nav{
+  margin-right: 50px;
+  margin-top: 18px;
+  font-weight: bold;
+  }
+  .topnav {
+  color: white;
+  }
+  .menu-toggle {
+    display: none; /* Hide on larger screens */
+    cursor: pointer;
+    float: left;
+    }
+    .bar {
+    width: 30px;
+    height: 3px;
+    background-color: rgb(0, 0, 0);
+    margin: 5px 0;
+    }
+    .imgrec {
+      height: 200px;
+      width: 300px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+  }
+    /* Show menu on smaller screens */
+    @media (max-width: 768px) {
+    .menu {
+      display: none;
+      flex-direction: column;
+      background-color: #333;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+    .side-menu a {
+      display: block;
+      padding: 15px;
+      color: rgb(0, 0, 0);
+      margin-right: 50px;
+      margin-top: 7px;
+      font-weight: bold;
+    }
+    .menu-toggle {
+      display: block;
+      max-width: 100%;
+      float: left;
+      margin: 25px 0 0 15px;
+    }
+  
+  }
+  
+  .side-menu {
+    display: none; /* Hide the side menu by default */
+    position: fixed;
+    top: 88px;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: rgba(239, 232, 202, 0.663);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  /* Underline animation */
+  .side-menu a::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: rgb(0, 0, 0);
+    transition: width 0.3s ease-in-out;
+  }
+  
+  .side-menu a:hover {
+    color: #000000;
+  }
+  
+  .side-menu a:hover::before {
+    width: 100%;
+  }
+  /* Show the side menu when the .show class is added */
+  .side-menu.show {
+    display: block;
+  }
+  #cart-counter {
+    color: #000000;
+    padding: 4px 8px;
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .rounded-t-5 {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  }
+  
+  @media (min-width: 992px) {
+  .rounded-tr-lg-0 {
+  border-top-right-radius: 0;
+  }
+  
+  .rounded-bl-lg-5 {
+  border-bottom-left-radius: 0.5rem;
+  }
+  }
+  .dashboard {
+  height: 100%;
+  width: 100%;
+  }
+  
+  .dashboard-banner {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  
+  border-radius: 30px;
+  cursor: pointer;
+  }
+  
+  .dashboard-banner > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 30px;
+  }
+  .banner-promo {
+  position: absolute;
+  color: #C69B68;
+  top:8.5%;
+  left: 5%;
+  font-weight: 900;
+  }
+  
+  .dashboard-menu {
+  display: flex;
+  gap: 10px;
+  padding: 0.3rem 1rem;
+  overflow-x: auto;
+  color: #C69B68;
+  font-weight: bold;
+  }
+  
+  .dashboard-menu a {
+  text-decoration: none;
+  text-align: center;
+  border-radius: 20px;
+  min-width: 120px;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  color: var(--darkBlack);
+  background-color: var(--ligthGrey);
+  }
+  .dashboard-menu a {
+  text-decoration: none; /* Remove default underline */
+  position: relative; /* Create a positioning context for the pseudo-element */
+  }
+  .dashboard-menu a:hover{
+  color: #000000;
+  }
+  .dashboard-menu a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2.5px; /* Height of the underline */
+  background-color: #000000; /* Color of the underline */
+  transition: width 0.3s ease-in-out; /* Animation transition properties */
+  }
+  
+  .dashboard-menu a:hover::after {
+  width: 100%; /* Expand the underline on hover */
+  }
+  .cont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    }
+  .log {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1186px; /* Adjust the max-width as needed */
+    width: 100%;
+  }
+  .Olog {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 2500px; /* Adjust the max-width as needed */
+    width: 100%;
+  }
+  .fbtn,.obtn{
+  margin: 0 10px 0 10px;
+  background-color:#C69B68;
+  border: none;
+  border-radius: 5px;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  transition: all 0.3s ease; 
+  position: relative;
+  text-decoration: none;
+  text-align: center;
+  }
+  .fbtns:hover,.obtns:hover{
+    background-color:rgb(243, 185, 113);
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    }
+    .fbtns.active,.obtns.active{
+    background-color:rgb(243, 185, 113);
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    }
+    .fbtns,.obtns {
+      padding: 10px 20px;
+          margin: 0 10px 0 10px;
+          text-decoration: none;
+          color: white;
+          background-color:#C69B68;
+          border-radius: 5px;
+          font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+          font-size: 20px;
+          font-weight: bold;
+    }
+    
+  @media (max-width: 900px) {
+    .log,.Olog {
+      flex-direction: row;
+      justify-content: center;
+    }
+    
+    .fbtn, .fbtns  {
+      margin-bottom: 110px;
+      width: 100px;
+      font-size: 11px;
+      font-weight: bold;
+      height: 35px;
+      text-align: center;
+    }
+  .obtns{
+    width: 128px;
+    font-size: 13px;
+    font-weight: bold;
+    height: 35px;
+    text-align: center;
+  }
+    
+  }
+  .fbtn:hover{
+  background-color:rgb(243, 185, 113);
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  }
+  .fbtn.active{
+  background-color:rgb(243, 185, 113);
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  }
+  
+  .ydr{
+    font-family: Caveat, open-sans; 
+    font-size: 80px;
+    font-weight: bold;
+    color: #C69B68;
+    margin-top:50px;
+    position: relative;
+    z-index: 1;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  }
+  .btn:hover{
+    color: #000;
+  }
+  .btn{
+    padding: 9px;
+    width: 15%;
+    background-color: #C69B68;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  @media(max-width:900px){
+    .ydr{
+      width: 370px;
+      font-size: 40px;
+  }
+  .btn{
+    width: 35%;
+    font-size: 13px;
+    text-align: center;
+  }
+   
+    .cards{
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Two columns */
+    }
+   #afrtd{
+    margin-top: 25%;
+   }
+  }
+  .dashboard-content{
+  display: grid;
+  margin-top: 8%;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  padding: 0.5rem 1rem 1rem 1rem;
+  }
+  .cards {
+  background-color:rgba(255, 255, 255, 0.497);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 15px;
+  position: relative;
+  max-width:370px;
+  cursor: pointer;
+  max-height: 800px; /* Set the desired height for the search result container */
+  overflow-y: auto; /* Enable vertical scrolling if the content exceeds the container height */
+  }
+  
+  .card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+  }
+  .cards-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+    }
+  
+  .card-detail {
+  padding: 10px;
+  font-size: 16px;
+  }
+  
+  .card-time {
+  color: var(--darkGray);
+  font-size: 0.8rem;
+  }
+  .card {
+  width: calc(33.33% - 20px);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.639);
+  }
+  
+  .card img {
+  width: 100%;
+  border-radius: 5px;
+  }
+  .card h3 {
+  padding: 10px;
+  margin: 10px 0;
+  }
+  .card p {
+  padding: 10px;
+  
+  }
+  
+  .dashboard-order {
+  width: 340px;
+  min-height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 0.5rem 1.5rem;
+  background-color: var(--mainColor);
+  z-index: 3;
+  }
+  
+  .dashboard-order > h3 {
+  padding: 10px 0;
+  }
+  .cbtn{
+  padding: 5px;
+  width: 20%;
+  background-color: #C69B68;
+  color: white;
+  margin: 0 3% 5% 0;
+  border: none;
+  border-radius: 5px;
+  float: right;
+  font-weight: bold;
+  }
+  .cbtn:hover{
+  background-color: rgb(243, 185, 113);
+  color: black;
+  margin: 0 3% 5% 0;
+  border: none;
+  border-radius: 5px;
+  }
+  
+  
+  
+  
+  
+  /* Styles for the modal container with id "cart-modal" */
+  #cart-mod {
+  display: none; /* Hide the modal by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  }
+  .crt{
+  text-align: center;
+  }
+  
+  
+  /* Styles for the close button with class "close" */
+  .clse {
+  position: relative;
+  float: right;
+  margin: -25px -10px 0 0;
+  font-size: 30px;
+  cursor: pointer;
+  color: #000
+  }
+  .close-button {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close-button:hover,
+  .close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .food-card {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  }
+  .fp{
+  color:#C69B68 ;
+  position: relative; 
+  z-index: 2; 
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  }
+  .flm {
+  position: absolute;
+  margin-top: 510px;
+  z-index: 1; 
+  }
+  .lbl{
+  font-family: Caveat, open-sans; 
+  font-size: 85px;
+  font-weight: bold;
+  color: #C69B68;
+  margin-top:50px;
+  position: relative;
+  z-index: 1;
+  }
+  .lbls{
+    font-family: Caveat, open-sans; 
+    font-size: 85px;
+    font-weight: bold;
+    color: #C69B68;
+    margin-top:50px;
+    position: relative;
+    z-index: 1;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  }
+  .lblso{
+    font-family: Caveat, open-sans; 
+    font-size: 85px;
+    font-weight: bold;
+    color: #C69B68;
+    margin-top:200px;
+    position: relative;
+    z-index: 1;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  }
+  @media(max-width:900px){
+  .lbls{
+    font-size: 50px;
+   margin-top: 0%;
+  }
+  .lblso{
+    font-size: 50px;
+    margin-top: 200px;
+  }
+  .cntr{
+    margin-top: 20%;
+  }
+  }
+  .ftr{
+  font-size: 1vw;
+  color: #FFF3EB;
+  font-weight: bold;
+  }
+  .flm {
+  position: absolute;
+  margin-top: 510px;
+  z-index: 1; 
+  }
+  
+  .cards:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  }
+  .fpu{
+    color: #C69B68;
+    position: relative; 
+    z-index: 2; 
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  }
+  
+  .gmap{
+     
+    width: 650px;
+    height:400px
+  }
+  @media(max-width:900px){
+    .gmap{
+      width:169px;
+      max-height: 125px;
+    }
+  }
+  .card-maps{
+    width: calc(100%);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.639);
+    background-color: white;
+    height: 450px;
+  }
+  @media(max-width:999px){
+    .card-maps{
+      height: 180px;
+    }
+  }
+  .map-img{
+    float: left; 
+    margin-top: 2%;
+  }
+  @media(max-width:500px){
+    .map-img{
+      height: 120px;
+    }
+  }
+  .fimg{
+    display: block; /* Ensures the image behaves as a block element */
+    margin: auto;   /* Centers the image horizontally */
+    width: 150px;
+    height: 100px;
+    border-radius: 5px;
+  }
+  
+  .grid-container {
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    margin: auto;
+    width: 96%;
+    border: solid 1px black;
+  }
+  
+  .order-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+  }
+  
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 5px;
+  }
+  
+  .item-card {
+    border: 1px solid #000000;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.461);
+  }
+  @media(max-width:900px){
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 5px;
+    }
+    .item-card {
+      border: 1px solid #000000;
+      padding: 5px;
+      background-color: rgba(255, 255, 255, 0.461);
+      font-size: 10px;
+      height: 350px;
+    }
+    .order-card {
+      border: 1px solid #ccc;
+      font-size: 10px;
+    }
+    .fimg{
+      display: block; /* Ensures the image behaves as a block element */
+      margin: auto;   /* Centers the image horizontally */
+      width: 85px;
+      height: 50px;
+      border-radius: 5px;
+    }
+  }
+  
+  
+  .gallery,.gllry {
+  display: grid;
+  grid-template-columns: repeat(3,1fr); 
+  gap:5px;
+  margin-left:10px;
+  }
+  .ogallery{
+  display: grid;
+  grid-template-columns: repeat(5,1fr); 
+  gap:10px;
+  margin-left:15px;
+  }
+  .ogallery img{
+    max-width: 87%;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s;
+  align-items: center;
+  margin: auto;
+  width: 950px;
+  }
+  /* Individual image styles */
+  .gallery img, .gllry img{
+  max-width: 87%;
+  height: 100px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  align-items: center;
+  margin: auto;
+  width: 950px;
+  }
+  /* Hover effect on images */
+  .gallery img:hover, .gllry img:hover,.ogallery img:hover {
+  transform: scale(1.1); /* Zoom effect on hover */
+  }
+  
+  .lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 999;
+  }
+  
+  .lightbox-image {
+    display: block;
+    margin: auto;
+    max-width: 80%;
+    max-height: 80%;
+    padding: 20px;
+  }
+  
+  
+  .logo{
+    height: 325px;;
+    width: 325px;
+  }
+  @media (max-width: 600px) {
+    .logo {
+      height: 200px; 
+      width: 200px; 
+      margin-left: 85px;
+      margin-top:70px ;
+    }
+    
+  }
+  
+  .rat {
+  display: flex;
+  align-items: center;
+  } 
+  .rat p {
+  margin: 0;
+  }
+  .star-rating {
+  display: inline-block;
+  }
+  
+  .star {
+  color: #f8d72f; /* Color of filled stars */
+  font-size: 24px; /* Adjust the size as needed */
+  
+  }
+  
+  .star.empty {
+  color: #ccc; /* Color of empty stars */
+  }
+  /* Profile Modal (Centered in the viewport) */
+  .pmod {
+      margin: auto;
+      display: none; 
+      position: fixed; 
+      z-index: 10000; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-contents {
+      background-color: #fefefe;
+      margin: 4.5% auto;
+      padding: 10px;
+      border: 1px solid #888;
+      width: 10%;
+      height:220px;
+      border-radius: 5px;
+      float: right;
+    }
+    .modal-contents a.prof {
+      text-decoration: none;
+      color:#C69B68; /* Set the default text color */
+      position: relative;
+      font-weight: bold;
+      font-size: 20px;
+      margin-top: 5px;
+    }
+    
+    .modal-contents a.prof::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 2px; /* Adjust the thickness of the underline */
+      bottom: 0;
+      left: 0;
+      background-color: transparent; /* Set the initial color of the underline */
+      transform: scaleX(0); /* Start with no width */
+      transform-origin: bottom left;
+      transition: transform 0.3s ease-in-out; /* Add a smooth transition effect */
+    }
+    
+    .modal-contents a.prof:hover::before {
+      transform: scaleX(1); /* Expand the underline to full width on hover */
+      background-color: black; /* Change the color of the underline on hover */
+    }
+    
+    
+    .close {
+      margin:auto;
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .search-input {
+      position: relative;
+    }
+    .search-input .fa-search {
+      position: absolute;
+      right: 10px; /* Adjust the position of the icon */
+      top: 60%;
+      transform: translateY(-50%);
+      font-size: 18px; /* Adjust the font size of the icon */
+      color: #000000; /* Adjust the color of the icon */
+      pointer-events: none; /* Make sure the icon doesn't interfere with text input */
+    }
+    .lbld,
+    h2 {
+      color: black;
+    }
+  
+    /* Style for the form */
+    #dietaryForm {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    /* Style for form labels and checkboxes */
+    .lbld {
+      margin-bottom: 5px;
+    }
+  
+    input[type="checkbox"] {
+      margin-left: 10px;
+    }
+  
+    /* Style for the error display */
+    #errorDisplay {
+      color: red;
+      display: none;
+      margin-top: 10px;
+    }
+    #dietaryPreferencesModal{
+      margin: auto;
+      width: 80%;
+    }
+    .mod-content {
+      background-color: #fefefe;
+      margin: 6% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 35%;
+      height: auto;
+      border-radius:5px;
+    }
+    @media(max-width: 768px) {
+      #dietaryPreferencesModal {
+        width: 100%; /* Adjust as needed */
+        margin: auto; /* Center the modal */
+        border: #000 1px solid;
+      }
+      .mod-content{
+        width: 100%;
+        margin: 20% auto;
+      }
+    }
+    
+  
