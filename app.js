@@ -307,6 +307,38 @@ app.get('/trays', async (req, res) => {
   }
 });
 
+// Route for displaying all food items in descending order by createdAt in menu.ejs
+app.get('/menu', async (req, res) => {
+  try {
+      // Fetch all food items from the database using Prisma
+      const foodItems = await prisma.foodItem.findMany({
+          where: {
+              deleted: false // Only fetch non-deleted items
+          },
+          orderBy: {
+              createdAt: 'desc'
+          }
+      });
+
+      // Separate the food items based on their category
+      const soloMeals = foodItems.filter(item => item.category === 'Solo Meals');
+      const partyTrays = foodItems.filter(item => item.category === 'Party Trays');
+
+      // Pass user information to check if the user is logged in
+      const user = req.user || null;
+
+      // Render the menu view and pass the separated data along with user information
+      res.render('menu', { soloMeals, partyTrays, user });
+
+  } catch (error) {
+      console.error('Error fetching food items:', error);
+      res.status(500).send('Internal Server Error');
+  } finally {
+      await prisma.$disconnect(); // Disconnect Prisma client
+  }
+});
+
+
   // GET route for rendering the forgot password form
 app.get('/forgotPassword', (req, res) => {
   res.render('forgotPassword'); // Assuming you have a 'forgotPassword.ejs' file
