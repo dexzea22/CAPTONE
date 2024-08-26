@@ -62,6 +62,12 @@
 .card-body{
 text-align: center;
 }
+.unavailable-card {
+  opacity: 0.5; /* Adjust opacity for grayed-out effect */
+  position: relative;
+  pointer-events:none; /* Disable pointer events so the card cannot be interacted with */
+
+}
 
 .unavailable-text {
   position: absolute;

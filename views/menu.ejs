@@ -102,7 +102,9 @@
                         <!-- Login Prompt -->
                         <p class="login-prompt">Please <a href="/login">login</a> to add to cart.</p>
                     <% } %>
-                <% } %>
+                    <% } else { %>
+                      <div class="unavailable-text">Unavailable</div>
+                  <% } %>
             </div>
         </div>
     <% }); %>
@@ -113,8 +115,9 @@
     <% partyTrays.forEach(item => { %>
         <div class="card h-100 <% if (!item.available) { %>unavailable-card<% } %>" id="card-<%= item.name.replace(/\s+/g, '-') %>" data-dietary-restrictions="<%= item.dietaryRestrictions.join(',') %>" data-category="Party Trays">
             <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="card-img-top" />
+            
             <% if (!item.available) { %>
-                <!-- Additional unavailable logic can be added here -->
+                <div class="unavailable-text">Unavailable</div>
             <% } %> 
 
             <div class="card-body">
@@ -145,7 +148,6 @@
                     </div>
                 </div>
 
-            
                 <div class="form-group mt-3">
                     <label for="quantity-<%= item.name.replace(/\s+/g, '-') %>">Quantity:</label>
                     <input type="number" class="qty quantity-input" id="quantity-<%= item.name.replace(/\s+/g, '-') %>" value="1" min="1" data-price="<%= item.price %>" onchange="updateTotalPrice('<%= item.name.replace(/\s+/g, '-') %>')">
@@ -166,6 +168,7 @@
         </div>
     <% }); %>
 </div>
+
 
 
 
