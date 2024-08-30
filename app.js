@@ -892,22 +892,11 @@ app.post('/dietary-preferences', async (req, res) => {
       return acc;
     }, {});
 
-    // Fetch existing preferences from the database
-    const existingPreferences = await prisma.dietaryPreference.findUnique({
-      where: { userId },
-    });
-
-    // Merge existing preferences with the new ones
-    const mergedPreferences = {
-      ...(existingPreferences ? existingPreferences.preferences : {}),
-      ...preferencesObject,
-    };
-
-    // Upsert the preferences
+    // Upsert the preferences: replace existing preferences with the new ones
     const updatedPreferences = await prisma.dietaryPreference.upsert({
       where: { userId },
-      update: { preferences: mergedPreferences },
-      create: { userId, preferences: mergedPreferences },
+      update: { preferences: preferencesObject },
+      create: { userId, preferences: preferencesObject },
     });
 
     res.json({ success: true, dietaryPreference: updatedPreferences });
@@ -933,26 +922,7 @@ app.get('/dietary-preferences', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch dietary preferences' });
   }
 });
-// Retrieve all dietary preferences
-app.get('/admin/dietary-preferences', async (req, res) => {
-  try {
-    // Fetch all dietary preferences from the database
-    const preferences = await prisma.dietaryPreference.findMany();
-    
-    // Extract preferences into a single object
-    const allPreferences = preferences.reduce((acc, pref) => {
-      Object.keys(pref.preferences || {}).forEach(key => {
-        acc[key] = true;
-      });
-      return acc;
-    }, {});
 
-    res.json({ preferences: allPreferences });
-  } catch (error) {
-    console.error('Failed to fetch dietary preferences:', error);
-    res.status(500).json({ error: 'Failed to fetch dietary preferences' });
-  }
-});
 // Delete a specific dietary preference for the authenticated user
 app.delete('/dietary-preferences/delete', async (req, res) => {
   try {
@@ -1041,6 +1011,7 @@ app.get('/api/all-dietary-restrictions', async (req, res) => {
     return res.status(500).json({ message: 'Error fetching all dietary restrictions' });
   }
 });
+
 // Middleware to load cart items into the session if not already loaded
 async function loadCartItemsToSession(req, res, next) {
   try {
