@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Food Item</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Food Item</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:400,700" />
@@ -17,619 +17,529 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <link rel="stylesheet" href="stylesheets/admin.css" />
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-  
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <!-- jQuery -->
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
-    
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-
-    <!-- DataTables JS -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-
     <style>
-      /* Table Header Styling */
-thead.thead-dark th {
-    background-color: #343a40;
-    color: #fff;
-}
+    thead.thead-dark th {
+            background-color: #343a40;
+            color: #fff;
+        }
 
-/* The Modal (background) */
-.modal-overlay {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* Centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Adjusted width */
-    max-width: 600px; /* Maximum width */
-    max-height: 80vh; /* Maximum height to ensure it doesn't exceed viewport height */
-    overflow-y: auto; /* Enable vertical scroll if content overflows */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-    border-radius: 8px; /* Rounded corners */
-    position: relative; /* For positioning close button */
-}
-
-/* Close Button */
-.modal-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.modal-close:hover,
-.modal-close:focus {
-    color: black;
-    text-decoration: none;
-}
-
-/* Modal Title */
-.modal-title {
-    color: #333;
-    margin-top: 0;
-    text-align: center;
-}
-
-/* Modal Input and Buttons */
-.modal-input {
-    width: calc(100% - 22px);
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-
-
-/* List of Preferences */
-.modal-list {
-    list-style: none;
-    padding: 0;
+        html, body {
+    height: 100%;
     margin: 0;
 }
 
-/* Button Styling */
-.modal-btn {
-    background-color: #008CBA; /* Primary color for buttons */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-    font-size: 16px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+#sidebar {
+    min-height: 100vh; /* Ensures the sidebar extends full height */
+    position: fixed; /* Keeps the sidebar fixed on the screen */
+    top: 0;
+    left: 0;
+    width: 250px; /* Sidebar width */
+    background-color: #343a40; /* Dark background color */
 }
 
-/* Add Button */
-.modal-btn-add {
-    background-color: #28a745; /* Green for 'Add' */
+.d-flex.h-100 {
+    min-height: 100vh; /* Ensure the container extends to full height */
+    margin-left: 250px; /* Add margin to account for fixed sidebar */
 }
 
-.modal-btn-add:hover {
-    background-color: #218838; /* Darker green on hover */
+.container-fluid {
+    margin-left: 250px; /* Ensure content is not hidden behind the sidebar */
 }
 
-/* Save Preferences Button */
-.modal-btn-save {
-    background-color: #007bff; /* Blue for 'Save' */
+.d-md-none {
+    margin-left: 0; /* Reset margin for mobile view */
 }
 
-.modal-btn-save:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Edit Button (Warning) */
-.modal-btn-edit {
-    background-color: #FFC107; /* Warning color */
-    color: black;
-}
-
-.modal-btn-edit:hover {
-    background-color: #e0a800; /* Darker warning color on hover */
-}
-
-/* Delete Button (Danger) */
-.modal-btn-delete {
-    background-color: #F44336; /* Danger color */
-    color: white;
-}
-
-.modal-btn-delete:hover {
-    background-color: #c82333; /* Darker danger color on hover */
-}
-
-/* Buttons Container */
-.button-container {
-    display: inline-flex;
-    gap: 5px; /* Space between buttons */
+/* Ensure that the mobile navbar covers the full width on small screens */
+.navbar-collapse {
+    flex-grow: 1;
+    justify-content: flex-start;
 }
 
 
-/* Responsive Table Styling */
-@media(max-width: 789px) {
-    table {
-        width: 100%; /* Full width on smaller screens */
-    }
+
+
+/* Center the modal vertically and horizontally */
+.modal-dialog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100% - 1rem); /* Ensure the modal is always centered */
 }
 
-  </style>
-  
-  </head>
-  <body style="background-image: url('images/standard-bg.png');background-size: cover;background-repeat: no-repeat;">
-    <div class="menu-toggle">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
-    <div>
-      <div class="menu">
-        <img src="images/maya.png" alt="Maya Logo" style="width: 80%; height: auto; margin-bottom: 20px; margin-left: 20px; align-items: center; justify-content: center;">
-        <a href="/adminDashboard"><i class="fa-solid fa-chart-line"></i>Dashboard</a>
-        <a href="/adminUserTable"><i class="fa-solid fa-users"></i>User Table</a>
-        <a href="/logs"><i class="fa-solid fa-clipboard-list"></i>Logs</a>
-        <a href="/adminTransactionHistory" style="font-size: 22px;"><i class="fa-solid fa-clock-rotate-left"></i>Transaction History</a>
-        <a href="/adminOrderNotifications"><i class="fa-solid fa-bell"></i>Order Notifications</a>
-        <a href="/adminCreateFoodItem"><i class="fa-solid fa-plus"></i>Add Food Item</a>
-        <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
-      </div>
-      
-        
-        <div class="side-menu">
-          <img src="images/maya.png" alt="Maya Logo" style="width: 80%; height: auto; margin-bottom: 20px; margin-left: 20px; align-items: center; justify-content: center;">
-          <a href="/adminDashboard">Dashboard</a>
-          <a href="/adminUserTable">User Table</a>
-          <a href="/adminTransactionHistory">Transaction History</a>
-          <a href="/adminOrderNotifications">Order Notifications</a>
-          <a href="/adminCreateFoodItem">Add Food Item</a>
-          <a href="/logs">Logs</a>
-          <a href="/logout">Logout</a>
-        </div>
+.modal-content {
+  background-color: #fefefe;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Adjust width for larger screens */
+  max-width: 800px; /* Limit the maximum width */
+  border-radius: 8px; /* Rounded corners */
+  margin: auto; /* Center horizontally */
+  max-height: calc(100vh - 2rem); /* Prevent the modal from exceeding the viewport height */
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
 
+/* Header and close button */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 10px;
+}
 
-      
-    <div class="main-content">
-      <h1 class="admn">Manage Food Item</h1>
-      <h1 style="margin-top: 50px; font-size: 40px;">Food Items</h1>
-<!-- Button to open dietary preferences modal -->
-<button class="open-modal-btn" onclick="openDietaryPreferencesModal()">Manage Dietary Preferences</button>
+.modal-header .close {
+  font-size: 28px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+}
 
-<!-- Modal for Dietary Preferences -->
-<div id="dietaryPreferencesModal" class="modal-overlay">
-    <div class="modal-content">
-        <span class="modal-close" onclick="closeDietaryPreferencesModal()">&times;</span>
-        <h2 class="modal-title">Manage Dietary Preferences</h2>
-        <form id="dietaryPreferencesForm">
-            <input type="text" id="dietaryPreferenceInput" class="modal-input" placeholder="Enter new dietary preference">
-            <button type="button" class="modal-btn" onclick="addDietaryPreference()">Add</button>
-        </form>
-        <ul id="dietaryPreferencesList" class="modal-list">
-            <!-- List of dietary preferences will be dynamically populated here -->
-        </ul>
-        <button type="button" class="modal-btn" onclick="savePreferences()">Save Preferences</button>
-    </div>
-</div>
+.modal-header .close:hover,
+.modal-header .close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
 
+/* Modal body */
+.modal-body {
+  padding: 20px;
+}
 
+/* Modal footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 10px;
+}
 
-      <button onclick="openAddModal()">Add Food Item</button>
-      <table id="foodItemTable" class="table" style="background-color: white;">
-        <thead class="thead-dark">
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price (Solo Meals/Small 10-12 Pax)</th>
-            <th>Price (Meduim 25-30 Pax)</th>
-            <th>Price (Large 45-50 Pax)</th>
-            <th>Category</th>
-            <th>Dietary Restrictions</th>
-            <th>Image</th>
-            <th>Availability</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .modal-content {
+    width: 90%; /* Increase width on smaller screens */
+  }
+}
 
-        <tbody>
-          <% foodItems.forEach(item => { %>
-          <tr>
-            <td><%= item.name %></td>
-            <td><%= item.description %></td>
-            <td>₱<%= item.price.toFixed(2) %><br/><%= item.size10_12 %></td>
-            <td>
-              <% if (item.category === 'Solo Meals') { %>
-                N/A
-              <% } else { %>
-                ₱<%= item.price25_30 ? item.price25_30.toFixed(2) : '' %><br/><%= item.size25_30 %>
-              <% } %>
-            </td>
-            <td>
-              <% if (item.category === 'Solo Meals') { %>
-                N/A
-              <% } else { %>
-                ₱<%= item.price45_50 ? item.price45_50.toFixed(2) : '' %><br/><%= item.size45_50 %>
-              <% } %>
-            </td>
-            <td><%= item.category %></td>
-            <td>
-              <% if (item.dietaryRestrictions && Array.isArray(item.dietaryRestrictions) && item.dietaryRestrictions.length > 0) { %>
-                <%= item.dietaryRestrictions.join(', ') %>
-              <% } else { %>
-                None
-              <% } %>
-            </td>
-            <td><img src="<%= item.imageUrl %>" alt="Image Preview" style="max-width: 100px; max-height: 100px;"></td>
-            <td><%= item.available ? 'Available' : 'Unavailable' %></td>
-            <td><%= item.createdAt.toLocaleString() %></td>
-            <td>
-              <!-- Pass item details to openEditModal function -->
-              <button onclick="openEditModal(
-                '<%= item.id %>',
-                '<%= item.name %>',
-                '<%= item.description %>',
-                '<%= item.price %>',
-                '<%= item.size %>',
-                '<%= item.category %>',
-                '<%= item.available %>',
-                '<%= item.price25_30 %>',
-                '<%= item.price45_50 %>',
-                '<%= item.dietaryRestrictions.join(', ') %>',
-                '<%= item.imageUrl %>',
-                '<%= item.size10_12 %>',
-                '<%= item.size25_30 %>',
-                '<%= item.size45_50 %>',
-              )">
-                Edit
-              </button>
-              <button onclick="deleteFoodItem('<%= item.id %>')">Delete</button>
-            </td>
-          </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
-    <!-- add -->
-    <div id="myModal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeAddModal()">&times;</span>
+@media screen and (max-width: 480px) {
+  .modal-content {
+    width: 95%; /* Further increase width on the smallest screens */
+  }
+}
 
-        <h2>Add Food Item</h2><br>
-        <form id="addFoodForm" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="category">Category:</label>
-            <select class="form-control" id="category" name="category" required onchange="toggleFields()">
-              <option value="">Select Category:</option>
-              <option value="Solo Meals">Solo Meals</option>
-              <option value="Party Trays">Party Trays</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="available">Availability:</label>
-            <select class="form-control" id="available" name="available" required>
-              <option value="true">Available</option>
-              <option value="false">Unavailable</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-          </div>
-          <div class="form-group">
-            <label for="description">Description:</label>
-            <textarea class="form-control" id="description" name="description"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="price">Price:</label>
-            <input type="number" class="form-control" id="price" name="price" step="0.01" required>
-          </div>
-          <select id="size10_12" name="size10_12" hidden>
-            <option value="Small 10-12 Pax">Small</option>
-            <!-- Add other sizes as needed -->
-          </select><br />
-          <div id="soloMealFields">
-            
-          </div>
-        
-          <div id="partyTrayFields" style="display: none;">
-            <div class="form-group">
-              <label for="price25_30">Price for 25-30 Pax:</label>
-              <input type="number" class="form-control" id="price25_30" name="price25_30" step="0.01">
+    </style>
+</head>
+<body>
+    <div class="d-flex h-100">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="bg-dark text-light p-3" style="width: 250px;">
+            <div class="text-center mb-4">
+                <img src="images/maya.png" alt="Maya Logo" class="img-fluid" style="max-width: 80%;">
             </div>
-            <select id="size25_30" name="size25_30" hidden>
-              <option value="Medium 25-30 Pax">Medium</option>
-              <!-- Add other sizes as needed -->
-            </select><br />
-            <div class="form-group">
-              <label for="price45_50">Price for 45-50 Pax:</label>
-              <input type="number" class="form-control" id="price45_50" name="price45_50" step="0.01">
-            </div>
-            <select id="size45_50" name="size45_50" hidden>
-              <option value="Large 45-50 Pax">Large</option>
-              <!-- Add other sizes as needed -->
-            </select><br />
-          </div>
-          
-          <div class="form-group">
-            <label for="dietaryRestrictions">Dietary Restrictions:</label>
-            <div id="dietaryRestrictionsContainer">
-                <!-- Checkboxes for dietary restrictions will be dynamically added here -->
-            </div>
-        </div>
-        
-
-          <div class="form-group">
-            <label for="imageUpload">Upload Image:</label>
-            <input type="file" class="form-control-file" id="imageUpload" name="imageUpload" accept="image/*" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Add Food Item</button>
-        </form>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-light active" href="/adminDashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/adminUserTable">
+                        <i class="fas fa-users"></i> User Table
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/logs">
+                        <i class="fas fa-clipboard-list"></i> Logs
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/adminTransactionHistory">
+                        <i class="fas fa-clock-rotate-left"></i> Transaction History
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/adminOrderNotifications">
+                        <i class="fas fa-bell"></i> Order Notifications
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/adminCreateFoodItem">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/logout">
+                        <i class="fas fa-right-from-bracket"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
     
-      </div>
-    </div>
-
-   <!-- Edit Food Item Modal -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-      <span class="close" onclick="closeEditModal()">&times;</span>
-      <h2>Edit Food Item</h2>
-      <form id="editForm">
-          <!-- Input fields for editing food item -->
-          <label for="editName">Name:</label><br />
-          <input type="text" id="editName" name="editName" required /><br />
-
-          <label for="editDescription">Description:</label><br />
-          <textarea id="editDescription" name="editDescription"></textarea><br />
-
-          <label for="editAvailability">Availability:</label><br />
-          <select id="editAvailability" name="editAvailability" required>
-            <option value="true">Available</option>
-            <option value="false">Unavailable</option>
-          </select><br />
-
-          <label for="editSize">Size:</label><br />
-          <input type="text" id="editSize" name="editSize" /><br />
-
-          <label for="editCategory">Category:</label><br />
-          <select id="editCategory" name="editCategory" required onchange="toggleSizeField()">
-              <option value="">Select Category</option>
-              <option value="Solo Meals">Solo Meals</option>
-              <option value="Party Trays">Party Trays</option>
-          </select><br />
-
-          <label for="editPrice">Price:</label><br />
-          <input type="number" id="editPrice" name="editPrice" step="0.01" required /><br />
-          <select id="editSize10_12" name="editSize10_12" hidden>
-            <option value="Small 10-12 Pax">Small</option>
-            <!-- Add other sizes as needed -->
-          </select><br />
-
-          <!-- Pax sizes for Party Trays -->
-          <div id="paxSizes" style="display: none;">
-
-              <label for="editPax25_30">25-30 Pax Price:</label><br />
-              <input type="number" id="editPax25_30" name="editPax25_30" step="0.01" /><br />
-              <select id="editSize25_30" name="editSize25_30" hidden>
-                <option value="Medium 25-30 Pax">Medium</option>
-                <!-- Add other sizes as needed -->
-              </select><br />
-
-              <label for="editPax45_50">45-50 Pax Price:</label><br />
-              <input type="number" id="editPax45_50" name="editPax45_50" step="0.01" /><br />
-              <select id="editSize45_50" name="editPax45_50" hidden>
-                <option value="Large 45-50 Pax">Large</option>
-                <!-- Add other sizes as needed -->
-              </select><br />
-          </div>
-
-          <div class="form-group">
-            <label for="editDietaryRestrictions">Dietary Restrictions:</label>
-            <div id="editDietaryRestrictionsContainer">
-                <!-- Checkboxes for dietary restrictions will be dynamically added here -->
+        <!-- Mobile Navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark d-md-none">
+            <a class="navbar-brand" href="#">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/adminDashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/adminUserTable"><i class="fas fa-users"></i> User Table</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logs"><i class="fas fa-clipboard-list"></i> Logs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/adminTransactionHistory"><i class="fas fa-clock-rotate-left"></i> Transaction History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/adminOrderNotifications"><i class="fas fa-bell"></i> Order Notifications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/adminCreateFoodItem"><i class="fas fa-plus"></i> Add Food Item</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><i class="fas fa-right-from-bracket"></i> Logout</a>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </nav>
+         <!-- Main content -->
+    <div class="flex-fill p-4">
+              <h1 class="admn">Manage Food Item</h1>
+              <h1 class="mt-4" style="font-size: 40px;">Food Items</h1>
         
-          
-          <label for="editImageUpload">Current Image:</label><br />
-          <img id="editImagePreview" src="#" alt="Current Image" style="max-width: 200px; max-height: 200px;"><br />
-          <label for="editImageUpload">Upload New Image:</label><br />
-          <input type="file" id="editImageUpload" name="editImageUpload" accept="image/*">
+              <!-- Button to open dietary preferences modal -->
+              <button class="btn btn-primary mt-4" onclick="openDietaryPreferencesModal()">Manage Dietary Preferences</button>
+        
+              <!-- Modal for Dietary Preferences -->
+              <div id="dietaryPreferencesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dietaryPreferencesModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="dietaryPreferencesModalLabel">Manage Dietary Preferences</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="dietaryPreferencesForm">
+                        <div class="form-group">
+                          <label for="dietaryPreferenceInput">New Dietary Preference</label>
+                          <input type="text" id="dietaryPreferenceInput" class="form-control" placeholder="Enter new dietary preference">
+                        </div>
+                        <button type="button" class="btn btn-success btn-block" onclick="addDietaryPreference()">Add</button>
+                      </form>
+                      <ul id="dietaryPreferencesList" class="list-group mt-3">
+                        <!-- List of dietary preferences will be dynamically populated here -->
+                      </ul>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-primary" onclick="savePreferences()">Save Preferences</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        
+              <!-- Edit Preference Modal -->
+              <div class="modal fade" id="editPreferenceModal" tabindex="-1" role="dialog" aria-labelledby="editPreferenceModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="editPreferenceModalLabel">Edit Dietary Preference</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <label for="editPreferenceInput">Dietary Preference</label>
+                        <input type="text" id="editPreferenceInput" class="form-control" placeholder="Enter dietary preference">
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      <button type="button" id="saveEditButton" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        
+              <!-- Bootstrap Modal for notifications -->
+              <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="notificationModalLabel">Notification</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body" id="notificationModalBody">
+                      <!-- Notification message will be populated here -->
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        
+             <!-- Add Food Item Button -->
+<button class="btn btn-primary mt-4" onclick="openAddModal()">Add Food Item</button>
 
+<!-- Food Item Table -->
+<table id="foodItemTable" class="table table-bordered table-striped mt-4">
+  <thead class="thead-dark">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Price (Solo Meals/Small 10-12 Pax)</th>
+      <th>Price (Meduim 25-30 Pax)</th>
+      <th>Price (Large 45-50 Pax)</th>
+      <th>Category</th>
+      <th>Dietary Restrictions</th>
+      <th>Image</th>
+      <th>Availability</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
 
-          <input type="hidden" id="editItemId" name="editItemId" />
+  <tbody>
+    <% foodItems.forEach(item => { %>
+    <tr>
+      <td><%= item.name %></td>
+      <td><%= item.description %></td>
+      <td>₱<%= item.price.toFixed(2) %><br/><%= item.size10_12 %></td>
+      <td>
+        <% if (item.category === 'Solo Meals') { %>
+          N/A
+        <% } else { %>
+          ₱<%= item.price25_30 ? item.price25_30.toFixed(2) : '' %><br/><%= item.size25_30 %>
+        <% } %>
+      </td>
+      <td>
+        <% if (item.category === 'Solo Meals') { %>
+          N/A
+        <% } else { %>
+          ₱<%= item.price45_50 ? item.price45_50.toFixed(2) : '' %><br/><%= item.size45_50 %>
+        <% } %>
+      </td>
+      <td><%= item.category %></td>
+      <td>
+        <% if (item.dietaryRestrictions && Array.isArray(item.dietaryRestrictions) && item.dietaryRestrictions.length > 0) { %>
+          <%= item.dietaryRestrictions.join(', ') %>
+        <% } else { %>
+          None
+        <% } %>
+      </td>
+      <td><img src="<%= item.imageUrl %>" alt="Image Preview" style="max-width: 100px; max-height: 100px;"></td>
+      <td><%= item.available ? 'Available' : 'Unavailable' %></td>
+      <td><%= item.createdAt.toLocaleString() %></td>
+      <td>
+        <!-- Pass item details to openEditModal function -->
+        <button class="btn btn-warning btn-sm mr-2" onclick="openEditModal(
+          '<%= item.id %>',
+          '<%= item.name %>',
+          '<%= item.description %>',
+          '<%= item.price %>',
+          '<%= item.size %>',
+          '<%= item.category %>',
+          '<%= item.available %>',
+          '<%= item.price25_30 %>',
+          '<%= item.price45_50 %>',
+          '<%= item.dietaryRestrictions.join(', ') %>',
+          '<%= item.imageUrl %>',
+          '<%= item.size10_12 %>',
+          '<%= item.size25_30 %>',
+          '<%= item.size45_50 %>'
+        )">
+          Edit
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="deleteFoodItem('<%= item.id %>')">Delete</button>
+      </td>
+      
+    </tr>
+    <% }); %>
+  </tbody>
+</table>
+</div>
+<!-- Add Food Item Modal -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeAddModal()">&times;</span>
 
-          <!-- Submit button -->
-          <button type="button" onclick="submitUpdateForm()">
-              Save Changes
-          </button>
-      </form>
+    <h2>Add Food Item</h2>
+    <form id="addFoodForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="category">Category:</label>
+        <select class="form-control" id="category" name="category" required onchange="toggleFields()">
+          <option value="">Select Category:</option>
+          <option value="Solo Meals">Solo Meals</option>
+          <option value="Party Trays">Party Trays</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="available">Availability:</label>
+        <select class="form-control" id="available" name="available" required>
+          <option value="true">Available</option>
+          <option value="false">Unavailable</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea class="form-control" id="description" name="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+      </div>
+      <select id="size10_12" name="size10_12" hidden>
+        <option value="Small 10-12 Pax">Small</option>
+        <!-- Add other sizes as needed -->
+      </select><br />
+      <div id="soloMealFields">
+        <!-- Solo Meal specific fields will be added here -->
+      </div>
+      <div id="partyTrayFields" style="display: none;">
+        <div class="form-group">
+          <label for="price25_30">Price for 25-30 Pax:</label>
+          <input type="number" class="form-control" id="price25_30" name="price25_30" step="0.01">
+        </div>
+        <select id="size25_30" name="size25_30" hidden>
+          <option value="Medium 25-30 Pax">Medium</option>
+          <!-- Add other sizes as needed -->
+        </select><br />
+        <div class="form-group">
+          <label for="price45_50">Price for 45-50 Pax:</label>
+          <input type="number" class="form-control" id="price45_50" name="price45_50" step="0.01">
+        </div>
+        <select id="size45_50" name="size45_50" hidden>
+          <option value="Large 45-50 Pax">Large</option>
+          <!-- Add other sizes as needed -->
+        </select><br />
+      </div>
+      <div class="form-group">
+        <label for="dietaryRestrictions">Dietary Restrictions:</label>
+        <div id="dietaryRestrictionsContainer">
+          <!-- Checkboxes for dietary restrictions will be dynamically added here -->
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="imageUpload">Upload Image:</label>
+        <input type="file" class="form-control-file" id="imageUpload" name="imageUpload" accept="image/*" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Add Food Item</button>
+    </form>
   </div>
 </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+
+<!-- Edit Food Item Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+    <h2>Edit Food Item</h2>
+    <form id="editForm">
+      <div class="form-group">
+        <label for="editName">Name:</label>
+        <input type="text" class="form-control" id="editName" name="editName" required>
+      </div>
+      <div class="form-group">
+        <label for="editDescription">Description:</label>
+        <textarea class="form-control" id="editDescription" name="editDescription"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="editAvailability">Availability:</label>
+        <select class="form-control" id="editAvailability" name="editAvailability" required>
+          <option value="true">Available</option>
+          <option value="false">Unavailable</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="editSize">Size:</label>
+        <input type="text" class="form-control" id="editSize" name="editSize">
+      </div>
+      <div class="form-group">
+        <label for="editCategory">Category:</label>
+        <select class="form-control" id="editCategory" name="editCategory" required onchange="toggleSizeField()">
+          <option value="">Select Category</option>
+          <option value="Solo Meals">Solo Meals</option>
+          <option value="Party Trays">Party Trays</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="editPrice">Price:</label>
+        <input type="number" class="form-control" id="editPrice" name="editPrice" step="0.01" required>
+      </div>
+      <select id="editSize10_12" name="editSize10_12" hidden>
+        <option value="Small 10-12 Pax">Small</option>
+        <!-- Add other sizes as needed -->
+      </select><br />
+      <div id="paxSizes" style="display: none;">
+        <div class="form-group">
+          <label for="editPax25_30">25-30 Pax Price:</label>
+          <input type="number" class="form-control" id="editPax25_30" name="editPax25_30" step="0.01">
+        </div>
+        <select id="editSize25_30" name="editSize25_30" hidden>
+          <option value="Medium 25-30 Pax">Medium</option>
+          <!-- Add other sizes as needed -->
+        </select><br />
+        <div class="form-group">
+          <label for="editPax45_50">45-50 Pax Price:</label>
+          <input type="number" class="form-control" id="editPax45_50" name="editPax45_50" step="0.01">
+        </div>
+        <select id="editSize45_50" name="editPax45_50" hidden>
+          <option value="Large 45-50 Pax">Large</option>
+          <!-- Add other sizes as needed -->
+        </select><br />
+      </div>
+      <div class="form-group">
+        <label for="editDietaryRestrictions">Dietary Restrictions:</label>
+        <div id="editDietaryRestrictionsContainer">
+          <!-- Checkboxes for dietary restrictions will be dynamically added here -->
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="editImageUpload">Current Image:</label><br />
+        <img id="editImagePreview" src="#" alt="Current Image" style="max-width: 200px; max-height: 200px;"><br />
+        <label for="editImageUpload">Upload New Image:</label><br />
+        <input type="file" id="editImageUpload" name="editImageUpload" accept="image/*">
+      </div>
+      <input type="hidden" id="editItemId" name="editItemId">
+      <button type="button" class="btn btn-primary" onclick="submitUpdateForm()">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
 
     <script>
 
-
-
-
-
-
-// Open dietary preferences modal
-function openDietaryPreferencesModal() {
-    document.getElementById('dietaryPreferencesModal').style.display = 'flex'; // Show modal
-    loadExistingPreferences(); // Load preferences when the modal opens
-    loadDietaryRestrictions(); // Load dietary restrictions when the modal opens
-}
-
-// Close dietary preferences modal
-function closeDietaryPreferencesModal() {
-    document.getElementById('dietaryPreferencesModal').style.display = 'none'; // Hide modal
-}
-
-// Add dietary preference to the list
-function addDietaryPreference() {
-    const input = document.getElementById('dietaryPreferenceInput');
-    const value = input.value.trim();
-
-    if (value) {
-        addPreferenceToList(value);
-        input.value = ''; // Clear input field
-        updatePreferences(); // Update preferences after addition
-    }
-}
-
-// Add a preference to the list with edit and delete buttons
-function addPreferenceToList(value) {
-    const list = document.getElementById('dietaryPreferencesList');
-    const listItem = document.createElement('li');
-    listItem.textContent = value;
-
-    // Container for buttons
-    const buttonContainer = document.createElement('span');
-    buttonContainer.classList.add('button-container'); // Apply container styles
-
-    // Add edit button to each preference
-    const editButton = document.createElement('button');
-    editButton.textContent = 'Edit';
-    editButton.classList.add('modal-btn', 'modal-btn-edit'); // Add edit button class
-    editButton.onclick = function () {
-        const newValue = prompt('Edit your dietary preference:', value);
-        if (newValue) {
-            listItem.firstChild.textContent = newValue.trim();
-            updatePreferences(); // Update preferences after editing
+      
+        // Show notification modal with a message
+        function showNotification(message) {
+            document.getElementById('notificationModalBody').textContent = message;
+            $('#notificationModal').modal('show'); // Show the notification modal
         }
-    };
-
-    // Add delete button to each preference
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('modal-btn', 'modal-btn-delete'); // Add delete button class
-    deleteButton.onclick = function () {
-        list.removeChild(listItem);
-        deletePreference(value); // Delete preference from server
-    };
-
-    buttonContainer.appendChild(editButton);
-    buttonContainer.appendChild(deleteButton);
-    listItem.appendChild(buttonContainer);
-    list.appendChild(listItem);
-}
-
-// Update the JSON object with the current list of preferences
-function updatePreferences() {
-    const list = document.getElementById('dietaryPreferencesList');
-    const preferences = [];
-
-    Array.from(list.children).forEach(item => {
-        const preference = item.firstChild.textContent.trim();
-        if (preference) {
-            preferences.push(preference); // Collect preferences as an array
-        }
-    });
-
-    // Optionally, display the updated preferences
-    console.log('Updated Preferences:', preferences);
-}
-
-// Function to send preferences to the server
-function savePreferences() {
-    const list = document.getElementById('dietaryPreferencesList');
-    const preferences = Array.from(list.children).map(item => {
-        return item.firstChild.textContent.trim();
-    }).filter(preference => preference); // Collect preferences
-
-    const selectedDietaryRestrictions = Array.from(document.querySelectorAll('input[name="dietaryRestrictions"]:checked')).map(checkbox => checkbox.id);
-
-    fetch('/dietary-preferences', { // No need to manually set userId
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ preferences, dietaryRestrictions: selectedDietaryRestrictions }) // Send preferences and restrictions as JSON
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            Swal.fire('Success', 'Preferences saved successfully!', 'success').then(() => {
-                window.location.reload(); // Reload the page after successful save
-            });
-        } else {
-            Swal.fire('Error', `Failed to save preferences: ${data.message}`, 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error sending preferences to server:', error);
-        Swal.fire('Error', 'An error occurred while saving preferences.', 'error');
-    });
-}
 
 
-// Load existing preferences from the server and display them
-function loadExistingPreferences() {
-    fetch('/dietary-preferences') // No need to manually set userId
-        .then(response => response.json())
-        .then(data => {
-            const preferences = data.preferences || {};
-            const list = document.getElementById('dietaryPreferencesList');
-            list.innerHTML = ''; // Clear existing list
-
-            Object.keys(preferences).forEach(preference => {
-                if (preferences[preference]) {
-                    addPreferenceToList(preference);
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching existing preferences:', error);
-            Swal.fire('Error', 'An error occurred while fetching preferences.', 'error');
-        });
-}
-
-// Delete a specific dietary preference from the server
-function deletePreference(preference) {
-    fetch('/dietary-preferences/delete', {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ preference })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire('Deleted', 'Preference deleted successfully', 'success');
-            } else {
-                Swal.fire('Error', `Failed to delete preference: ${data.message}`, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting preference:', error);
-            Swal.fire('Error', 'An error occurred while deleting preference.', 'error');
-        });
-}
-
-
-
-
-
-      function previewImage() {
+        function previewImage() {
         var fileInput = document.getElementById("imageUpload");
         var imagePreview = document.getElementById("imagePreview");
 
@@ -1000,6 +910,183 @@ function toggleSizeField() {
       $(document).ready(function() {
     $('#foodItemTable').DataTable();
   });
+        // Open dietary preferences modal
+        function openDietaryPreferencesModal() {
+            $('#dietaryPreferencesModal').modal('show'); // Show Bootstrap modal
+            loadExistingPreferences(); // Load preferences when the modal opens
+        }
+
+        // Add dietary preference to the list
+        function addDietaryPreference() {
+            const input = document.getElementById('dietaryPreferenceInput');
+            const value = input.value.trim();
+
+            if (value) {
+                addPreferenceToList(value);
+                input.value = ''; // Clear input field
+                updatePreferences(); // Update preferences after addition
+            }
+        }
+
+       // Add a preference to the list with edit and delete buttons
+function addPreferenceToList(value) {
+    const list = document.getElementById('dietaryPreferencesList');
+    const listItem = document.createElement('li');
+    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+    listItem.textContent = value;
+
+    // Edit button
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.className = 'btn btn-warning btn-sm mr-2';
+    editButton.onclick = function () {
+        // Open the edit modal
+        $('#editPreferenceModal').modal('show');
+
+        // Set the current value in the modal's input field
+        document.getElementById('editPreferenceInput').value = value;
+
+        // Save changes when the user clicks "Save" in the modal
+        document.getElementById('saveEditButton').onclick = function () {
+            const newValue = document.getElementById('editPreferenceInput').value.trim();
+
+            if (newValue) {
+                listItem.firstChild.textContent = newValue; // Update list item
+                updatePreferences(); // Update preferences after editing
+                $('#editPreferenceModal').modal('hide'); // Close the modal
+                showNotification('Preference updated successfully!');
+            } else {
+                showNotification('Please enter a valid preference.');
+            }
+        };
+    };
+
+    // Delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.className = 'btn btn-danger btn-sm';
+    deleteButton.onclick = function () {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with deletion
+                deletePreference(value)
+                    .then(() => {
+                        list.removeChild(listItem);
+                        showNotification('Your dietary preference has been deleted.');
+                    })
+                    .catch(() => {
+                        showNotification('An error occurred while deleting the preference.');
+                    });
+            }
+        });
+    };
+
+    // Button container
+    const buttonContainer = document.createElement('span');
+    buttonContainer.classList.add('button-container', 'ml-auto');
+    buttonContainer.appendChild(editButton);
+    buttonContainer.appendChild(deleteButton);
+    listItem.appendChild(buttonContainer);
+    list.appendChild(listItem);
+}
+
+
+        // Update the JSON object with the current list of preferences
+        function updatePreferences() {
+            const list = document.getElementById('dietaryPreferencesList');
+            const preferences = [];
+
+            Array.from(list.children).forEach(item => {
+                const preference = item.firstChild.textContent.trim();
+                if (preference) {
+                    preferences.push(preference); // Collect preferences as an array
+                }
+            });
+
+            // Optionally, display the updated preferences
+            console.log('Updated Preferences:', preferences);
+        }
+
+        // Function to send preferences to the server
+        function savePreferences() {
+            const list = document.getElementById('dietaryPreferencesList');
+            const preferences = Array.from(list.children).map(item => {
+                return item.firstChild.textContent.trim();
+            }).filter(preference => preference); // Collect preferences
+
+            const selectedDietaryRestrictions = Array.from(document.querySelectorAll('input[name="dietaryRestrictions"]:checked')).map(checkbox => checkbox.id);
+
+            fetch('/dietary-preferences', { // No need to manually set userId
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ preferences, dietaryRestrictions: selectedDietaryRestrictions }) // Send preferences and restrictions as JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Preferences saved successfully!');
+                    window.location.reload(); // Reload the page after successful save
+                } else {
+                    showNotification(`Failed to save preferences: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending preferences to server:', error);
+                showNotification('An error occurred while saving preferences.');
+            });
+        }
+
+        // Load existing preferences from the server and display them
+        function loadExistingPreferences() {
+            fetch('/dietary-preferences') // No need to manually set userId
+                .then(response => response.json())
+                .then(data => {
+                    const preferences = data.preferences || {};
+                    const list = document.getElementById('dietaryPreferencesList');
+                    list.innerHTML = ''; // Clear existing list
+
+                    Object.keys(preferences).forEach(preference => {
+                        if (preferences[preference]) {
+                            addPreferenceToList(preference);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching existing preferences:', error);
+                    showNotification('An error occurred while fetching preferences.');
+                });
+        }
+
+    // Delete a specific dietary preference from the server
+function deletePreference(preference) {
+    return fetch('/dietary-preferences/delete', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ preference })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            throw new Error(data.message); // Reject promise if deletion fails
+        }
+    });
+}
+
+
     </script>
-  </body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
 </html>
