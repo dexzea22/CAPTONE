@@ -7,6 +7,11 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Include jsPDF from a CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
     <title>Analytics Summary</title>
     <style>
       body {
@@ -22,6 +27,12 @@
       h1 {
         font-size: 24px;
         font-weight: bold;
+        margin-bottom: 20px;
+      }
+      h2 {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 40px;
         margin-bottom: 20px;
       }
       table {
@@ -41,6 +52,10 @@
       table tr:nth-child(even) {
         background-color: #f9f9f9;
       }
+      .download-btn {
+        margin-bottom: 20px;
+        margin-right: 10px;
+      }
     </style>
   </head>
   <body>
@@ -53,25 +68,117 @@
       />
       <h1>Analytics Summary</h1>
 
-      <!-- Dashboard Summary Table -->
-      <table>
+      <!-- Revenue by Day Table -->
+      <h2>Revenue by Day</h2>
+      <button
+        class="btn btn-primary download-btn"
+        onclick="downloadTable('dailyRevenueTable')"
+      >
+        Download Revenue by Day (CSV)
+      </button>
+      <button
+        class="btn btn-secondary download-btn"
+        onclick="downloadPDF('daily-revenue')"
+      >
+        Download Revenue by Day (PDF)
+      </button>
+      <table id="dailyRevenueTable">
         <thead>
           <tr>
             <th>Date</th>
-            <th>Revenue by Day</th>
-            <th>Monthly Revenue</th>
-            <th>Yearly Revenue</th>
-            <th>Top-Selling Items</th>
+            <th>Revenue</th>
+            <th>Action</th>
           </tr>
         </thead>
-        <tbody id="dashboardTableBody">
+        <tbody id="dailyRevenueTableBody">
+          <!-- Table rows will be inserted here by the script -->
+        </tbody>
+      </table>
+
+      <!-- Monthly Revenue Table -->
+      <h2>Monthly Revenue</h2>
+      <button
+        class="btn btn-primary download-btn"
+        onclick="downloadTable('monthlyRevenueTable')"
+      >
+        Download Monthly Revenue (CSV)
+      </button>
+      <button
+        class="btn btn-secondary download-btn"
+        onclick="downloadPDF('monthly-revenue')"
+      >
+        Download Monthly Revenue (PDF)
+      </button>
+      <table id="monthlyRevenueTable">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Revenue</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="monthlyRevenueTableBody">
+          <!-- Table rows will be inserted here by the script -->
+        </tbody>
+      </table>
+
+      <!-- Yearly Revenue Table -->
+      <h2>Yearly Revenue</h2>
+      <button
+        class="btn btn-primary download-btn"
+        onclick="downloadTable('yearlyRevenueTable')"
+      >
+        Download Yearly Revenue (CSV)
+      </button>
+      <button
+        class="btn btn-secondary download-btn"
+        onclick="downloadPDF('yearly-revenue')"
+      >
+        Download Yearly Revenue (PDF)
+      </button>
+      <table id="yearlyRevenueTable">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Revenue</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="yearlyRevenueTableBody">
+          <!-- Table rows will be inserted here by the script -->
+        </tbody>
+      </table>
+
+      <!-- Top-Selling Items Table -->
+      <h2>Top-Selling Items</h2>
+      <button
+        class="btn btn-primary download-btn"
+        onclick="downloadTable('topSellingItemsTable')"
+      >
+        Download Top-Selling Items (CSV)
+      </button>
+      <button
+        class="btn btn-secondary download-btn"
+        onclick="downloadPDF('top-selling-items')"
+      >
+        Download Top-Selling Items (PDF)
+      </button>
+      <table id="topSellingItemsTable">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Total Sales</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="topSellingItemsTableBody">
           <!-- Table rows will be inserted here by the script -->
         </tbody>
       </table>
     </div>
 
     <script>
-      // Fetch and display the data
+      // Fetch and display the data (same as before)
       async function loadDashboardData() {
         try {
           const [dailyRevenue, monthlyRevenue, yearlyRevenue, topSellingItems] =
@@ -82,54 +189,283 @@
               fetch("/api/top-selling-items").then((res) => res.json()),
             ]);
 
-          const tableBody = document.getElementById("dashboardTableBody");
+          const dailyTableBody = document.getElementById(
+            "dailyRevenueTableBody"
+          );
+          const monthlyTableBody = document.getElementById(
+            "monthlyRevenueTableBody"
+          );
+          const yearlyTableBody = document.getElementById(
+            "yearlyRevenueTableBody"
+          );
+          const topItemsTableBody = document.getElementById(
+            "topSellingItemsTableBody"
+          );
 
-          dailyRevenue.forEach((dayData, index) => {
+          // Populate the Daily Revenue Table
+          dailyRevenue.forEach((dayData) => {
             const row = document.createElement("tr");
 
-            const dayCell = document.createElement("td");
-            dayCell.textContent = dayData.day;
-            row.appendChild(dayCell);
+            const dateCell = document.createElement("td");
+            const formattedDate = new Date(dayData.date).toLocaleDateString(); // Format the date as needed
+            dateCell.textContent = formattedDate;
+            row.appendChild(dateCell);
 
             const revenueDayCell = document.createElement("td");
             revenueDayCell.textContent = `₱${dayData.totalRevenue.toFixed(2)}`;
             row.appendChild(revenueDayCell);
 
-            const monthlyRevenueCell = document.createElement("td");
-            monthlyRevenueCell.textContent =
-              index < monthlyRevenue.length
-                ? `₱${monthlyRevenue[index].totalRevenue.toFixed(2)} (${
-                    monthlyRevenue[index].month
-                  })`
-                : "-";
-            row.appendChild(monthlyRevenueCell);
+            const actionCell = document.createElement("td");
+            actionCell.innerHTML = `
+        <button class="btn btn-sm btn-info" onclick="downloadRowCSV('daily', '${formattedDate}', '${dayData.totalRevenue.toFixed(
+              2
+            )}')">CSV</button>
+        <button class="btn btn-sm btn-danger" onclick="downloadRowPDF('daily', '${formattedDate}', '${dayData.totalRevenue.toFixed(
+              2
+            )}')">PDF</button>
+    `;
+            row.appendChild(actionCell);
 
-            const yearlyRevenueCell = document.createElement("td");
-            yearlyRevenueCell.textContent =
-              index < yearlyRevenue.length
-                ? `$${yearlyRevenue[index].totalRevenue.toFixed(2)} (${
-                    yearlyRevenue[index].year
-                  })`
-                : "-";
-            row.appendChild(yearlyRevenueCell);
+            dailyTableBody.appendChild(row);
+          });
 
-            const topItemsCell = document.createElement("td");
-            topItemsCell.textContent =
-              index < topSellingItems.length
-                ? `${topSellingItems[index].name}: ₱${topSellingItems[
-                    index
-                  ].totalSales.toFixed(2)}`
-                : "-";
-            row.appendChild(topItemsCell);
+          // Populate the Monthly Revenue Table
+          monthlyRevenue.forEach((monthData) => {
+            const row = document.createElement("tr");
 
-            tableBody.appendChild(row);
+            const monthCell = document.createElement("td");
+            monthCell.textContent = monthData.month;
+            row.appendChild(monthCell);
+
+            const revenueMonthCell = document.createElement("td");
+            revenueMonthCell.textContent = `₱${monthData.totalRevenue.toFixed(
+              2
+            )}`;
+            row.appendChild(revenueMonthCell);
+
+            const actionCell = document.createElement("td");
+            actionCell.innerHTML = `
+              <button class="btn btn-sm btn-info" onclick="downloadRowCSV('monthly', '${
+                monthData.month
+              }', '${monthData.totalRevenue.toFixed(2)}')">CSV</button>
+              <button class="btn btn-sm btn-danger" onclick="downloadRowPDF('monthly', '${
+                monthData.month
+              }', '${monthData.totalRevenue.toFixed(2)}')">PDF</button>
+            `;
+            row.appendChild(actionCell);
+
+            monthlyTableBody.appendChild(row);
+          });
+
+          // Populate the Yearly Revenue Table
+          yearlyRevenue.forEach((yearData) => {
+            const row = document.createElement("tr");
+
+            const yearCell = document.createElement("td");
+            yearCell.textContent = yearData.year;
+            row.appendChild(yearCell);
+
+            const revenueYearCell = document.createElement("td");
+            revenueYearCell.textContent = `₱${yearData.totalRevenue.toFixed(
+              2
+            )}`;
+            row.appendChild(revenueYearCell);
+
+            const actionCell = document.createElement("td");
+            actionCell.innerHTML = `
+              <button class="btn btn-sm btn-info" onclick="downloadRowCSV('yearly', '${
+                yearData.year
+              }', '${yearData.totalRevenue.toFixed(2)}')">CSV</button>
+              <button class="btn btn-sm btn-danger" onclick="downloadRowPDF('yearly', '${
+                yearData.year
+              }', '${yearData.totalRevenue.toFixed(2)}')">PDF</button>
+            `;
+            row.appendChild(actionCell);
+
+            yearlyTableBody.appendChild(row);
+          });
+
+          // Populate the Top-Selling Items Table
+          topSellingItems.forEach((itemData) => {
+            const row = document.createElement("tr");
+
+            const itemNameCell = document.createElement("td");
+            itemNameCell.textContent = itemData.name;
+            row.appendChild(itemNameCell);
+
+            const totalSalesCell = document.createElement("td");
+            totalSalesCell.textContent = itemData.totalSales;
+            row.appendChild(totalSalesCell);
+
+            const actionCell = document.createElement("td");
+            actionCell.innerHTML = `
+              <button class="btn btn-sm btn-info" onclick="downloadRowCSV('topSelling', '${itemData.name}', '${itemData.totalSales}')">CSV</button>
+              <button class="btn btn-sm btn-danger" onclick="downloadRowPDF('topSelling', '${itemData.name}', '${itemData.totalSales}')">PDF</button>
+            `;
+            row.appendChild(actionCell);
+
+            topItemsTableBody.appendChild(row);
           });
         } catch (error) {
           console.error("Error loading dashboard data:", error);
         }
       }
 
-      loadDashboardData();
+      // Download table as CSV
+      function downloadTable(tableId) {
+        const table = document.getElementById(tableId);
+        let csvContent = "data:text/csv;charset=utf-8,";
+        const rows = table.querySelectorAll("tr");
+
+        rows.forEach((row) => {
+          const cols = row.querySelectorAll("td, th");
+          const rowData = Array.from(cols)
+            .map((col) => col.textContent.trim())
+            .join(",");
+          csvContent += rowData + "\r\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${tableId}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      // Download specific row as CSV
+      function downloadRowCSV(type, label, value) {
+        let csvContent = "data:text/csv;charset=utf-8,";
+
+        if (type === "daily") {
+          csvContent += "Date,Revenue\n";
+          csvContent += `${label},₱${value}\n`;
+        } else if (type === "monthly") {
+          csvContent += "Month,Revenue\n";
+          csvContent += `${label},₱${value}\n`;
+        } else if (type === "yearly") {
+          csvContent += "Year,Revenue\n";
+          csvContent += `${label},₱${value}\n`;
+        } else if (type === "topSelling") {
+          csvContent += "Item Name,Total Sales\n";
+          csvContent += `${label},${value}\n`;
+        }
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `${type}-${label}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      // Function to convert an image to Base64 and use it in PDF
+      function getBase64Image(url, callback) {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL("image/png");
+          callback(dataURL);
+        };
+        img.src = url;
+      }
+
+      function downloadRowPDF(type, label, value, trend) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+        // Function to add image with better quality
+        function addImageToPDF() {
+          const img = new Image();
+          img.src = "images/maya.png"; // Ensure this path is correct and image is high resolution
+          img.onload = function () {
+            const imgWidth = 40; // Width in mm
+            const imgHeight = 30; // Height in mm
+
+            // Calculate position to center the image
+            const pdfWidth = doc.internal.pageSize.getWidth();
+            const pdfHeight = doc.internal.pageSize.getHeight();
+            const xPosition = (pdfWidth - imgWidth) / 2;
+            const yPosition = 10; // Adjust if needed for better placement
+
+            doc.addImage(img, "PNG", xPosition, yPosition, imgWidth, imgHeight); // Position and size
+            addContent();
+          };
+        }
+
+        // Function to add content after image
+        function addContent() {
+          // Add Title and Introduction
+          doc.setFontSize(16);
+          doc.text("Revenue Report", 10, 50);
+          doc.setFontSize(12);
+          doc.text(
+            "This report provides details on the revenue for the selected item.",
+            10,
+            60
+          );
+          doc.text(
+            "--------------------------------------------------",
+            10,
+            65
+          );
+
+          // Add Details Based on Type
+          doc.setFontSize(14);
+          if (type === "daily") {
+            doc.text("Daily Revenue Report", 10, 75);
+            doc.setFontSize(12);
+            doc.text(`Date: ${label}`, 10, 85);
+            doc.text(`Revenue: ₱${value}`, 10, 95);
+          } else if (type === "monthly") {
+            doc.text("Monthly Revenue Report", 10, 75);
+            doc.setFontSize(12);
+            doc.text(`Month: ${label}`, 10, 85);
+            doc.text(`Revenue: ₱${value}`, 10, 95);
+          } else if (type === "yearly") {
+            doc.text("Yearly Revenue Report", 10, 75);
+            doc.setFontSize(12);
+            doc.text(`Year: ${label}`, 10, 85);
+            doc.text(`Revenue: ₱${value}`, 10, 95);
+          } else if (type === "topSelling") {
+            doc.text("Top-Selling Item Report", 10, 75);
+            doc.setFontSize(12);
+            doc.text(`Item Name: ${label}`, 10, 85);
+            doc.text(`Total Sales: ₱${value}`, 10, 95);
+          }
+
+          // Add Trend Analysis
+          doc.setFontSize(12);
+          doc.text("Trend Analysis:", 10, 105);
+          const trendText =
+            trend > 0
+              ? `The data is increasing compared to the previous period.`
+              : trend < 1
+              ? `The data is decreasing compared to the previous period.`
+              : `The data remains stable compared to the previous period.`;
+          doc.text(trendText, 10, 115);
+
+          // Add Footer
+          doc.setFontSize(10);
+          doc.text("Generated by [Your Company Name]", 10, 250);
+          doc.text("Date: " + new Date().toLocaleDateString(), 10, 255);
+
+          // Save the PDF
+          doc.save(`${type}-${label}.pdf`);
+        }
+
+        // Add the image and then the rest of the content
+        addImageToPDF();
+      }
+
+      document.addEventListener("DOMContentLoaded", loadDashboardData);
     </script>
   </body>
 </html>
