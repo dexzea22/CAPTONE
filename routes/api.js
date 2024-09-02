@@ -147,39 +147,42 @@ router.get('/daily-orders-trend', async (req, res) => {
 });
 
 
-// Endpoint to get revenue by day of the week
+// Endpoint to get revenue by day
 router.get('/revenue-by-day', async (req, res) => {
-    try {
-      // Fetch all orders with their amounts and createdAt dates
-      const orders = await prismaClient.order.findMany({
-        select: {
-          createdAt: true,
-          amount: true,
-        }
-      });
-  
-      // Group by day of the week manually
-      const revenueByDay = orders.reduce((acc, order) => {
-        const dayOfWeek = new Date(order.createdAt).toLocaleDateString('en-US', { weekday: 'long' });
-        if (!acc[dayOfWeek]) {
-          acc[dayOfWeek] = 0;
-        }
-        acc[dayOfWeek] += order.amount;
-        return acc;
-      }, {});
-  
-      // Convert to array format
-      const result = Object.entries(revenueByDay).map(([day, totalRevenue]) => ({
-        day,
-        totalRevenue
-      }));
-  
-      res.json(result);
-    } catch (error) {
-      console.error('Error fetching revenue by day of the week:', error);
-      res.status(500).json({ error: 'Error fetching data' });
-    }
-  });
+  try {
+    // Fetch all orders with their amounts and createdAt dates
+    const orders = await prismaClient.order.findMany({
+      select: {
+        createdAt: true,
+        amount: true,
+      }
+    });
+
+    // Group by the exact date instead of just the day of the week
+    const revenueByDate = orders.reduce((acc, order) => {
+      // Extract date in 'YYYY-MM-DD' format
+      const date = new Date(order.createdAt).toISOString().split('T')[0];
+      
+      if (!acc[date]) {
+        acc[date] = 0;
+      }
+      acc[date] += order.amount;
+      return acc;
+    }, {});
+
+    // Convert to array format
+    const result = Object.entries(revenueByDate).map(([day, totalRevenue]) => ({
+      day,
+      totalRevenue
+    }));
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error fetching revenue by day:', error);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
 
   // Endpoint to get yearly revenue
 router.get('/yearly-revenue', async (req, res) => {
