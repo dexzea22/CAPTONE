@@ -4,6 +4,9 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
 
+// The base URL for your deployed Render app
+const baseURL = 'https://captone-tz20.onrender.com';
+
 router.get('/generateChartsReport', async (req, res) => {
   let browser;
   try {
@@ -17,12 +20,12 @@ router.get('/generateChartsReport', async (req, res) => {
     // Determine the URL based on the 'type' query parameter
     const type = req.query.type;
     const urlMap = {
-      'daily-revenue': 'http://localhost:8000/charts#dailyRevenue',
-      'monthly-revenue': 'http://localhost:8000/charts#monthlyRevenue',
-      'yearly-revenue': 'http://localhost:8000/charts#yearlyRevenue',
-      'top-selling-items': 'http://localhost:8000/charts#topSellingItems',
+      'daily-revenue': `${baseURL}/charts#dailyRevenue`,
+      'monthly-revenue': `${baseURL}/charts#monthlyRevenue`,
+      'yearly-revenue': `${baseURL}/charts#yearlyRevenue`,
+      'top-selling-items': `${baseURL}/charts#topSellingItems`,
     };
-    const url = urlMap[type] || 'http://localhost:8000/charts';
+    const url = urlMap[type] || `${baseURL}/charts`;
 
     console.log('Navigating to:', url); // Log the URL to the console
 
