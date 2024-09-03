@@ -1012,6 +1012,27 @@ app.get('/api/all-dietary-restrictions', async (req, res) => {
   }
 });
 
+// Retrieve all dietary preferences
+app.get('/admin/dietary-preferences', async (req, res) => {
+  try {
+    // Fetch all dietary preferences from the database
+    const preferences = await prisma.dietaryPreference.findMany();
+    
+    // Extract preferences into a single object
+    const allPreferences = preferences.reduce((acc, pref) => {
+      Object.keys(pref.preferences || {}).forEach(key => {
+        acc[key] = true;
+      });
+      return acc;
+    }, {});
+
+    res.json({ preferences: allPreferences });
+  } catch (error) {
+    console.error('Failed to fetch dietary preferences:', error);
+    res.status(500).json({ error: 'Failed to fetch dietary preferences' });
+  }
+});
+
 // Middleware to load cart items into the session if not already loaded
 async function loadCartItemsToSession(req, res, next) {
   try {

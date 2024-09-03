@@ -17,7 +17,32 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
 
     <link rel="stylesheet" href="stylesheets/solo.css">
-  
+
+    <style>
+  #dietaryPreferencesModalLabel {
+    font-size: 1.75rem; /* Larger font size for the modal title */
+  }
+  #dietaryForm label {
+    font-size: 1rem; /* Font size for form labels */
+    display: flex;
+    align-items: center; /* Align checkboxes and text vertically */
+    margin-bottom: 1rem; /* Add space between checkbox-label pairs */
+  }
+  #dietaryForm input[type="checkbox"] {
+    width: 1rem; /* Adjust the width of the checkbox */
+    height: 1rem; /* Adjust the height of the checkbox */
+    margin-right: 0.5rem; /* Spacing between checkbox and label */
+    vertical-align: middle; /* Ensure the checkbox is vertically aligned with text */
+  }
+  #dietaryForm button {
+    font-size: 1rem; /* Larger font size for the button */
+  }
+
+  /* Move the modal down on the screen */
+  .modal-dialog {
+    margin-top: 2rem; /* Adjust this value to move the modal down */
+  }
+  </style>
 
   </head>
   <body style="background-image: url('images/standard-bg.png'); background-size: cover;background-repeat: no-repeat;"></body>
@@ -48,8 +73,8 @@
       <a class="nav" style="margin: 0.8% 0 0 0; font-size: 19px; cursor: pointer; color: #976b35; float: right;" onclick="openCartPage()">
       <i class="fas fa-shopping-cart fa-2x"></i>
       <span id="cart-counter">0</span>
-      <!-- </a>
-        <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a> -->
+      </a>
+        <a class="nav" href="#" id="dietaryPreferencesNav" onclick="openDietaryModal()">Dietary Preferences</a>
         <!-- <a class="nav" href="/recommendations">Recommended</a> -->
         <a class="nav" href="/userOrder">Orders</a>
         <a class="nav" href="/contact">Contact Us</a>
@@ -73,53 +98,33 @@
       <a href="/logout">Logout</a>
     </div>
   </div>
-  <div class="dashboard">
-    <!-- Dietary Preferences Modal -->
-  <div id="dietaryPreferencesModal" class="modal">
-    <div class="mod-content">
-      <span class="close-button" onclick="closeDietaryModal()">&times;</span>
-      <h2>Dietary Preferences</h2>
-
-      <!-- Start of the Dietary Preferences Form -->
-      <div class="container">
-        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST"
-          onsubmit="return handleSubmit(event);">
-          <!-- Diet Type -->
-          <div>
-            <input type="checkbox" id="vegetarian" name="vegetarian" value="true" style="margin: 0%;" />
-            <label class="lbld" for="vegetarian">Vegetarian</label>
-
-          
-
-
-            <input type="checkbox" id="omnivore" name="omnivore" value="true" />
-            <label class="lbld" for="omnivore">Omnivore</label>
-
-
-            <input type="checkbox" id="glutenFree" name="glutenFree" value="true" />
-            <label class="lbld" for="glutenFree">Gluten-Free</label>
-
-          </div>
-
-          <!-- Allergies -->
-          <div>
-            <label class="lbld">Allergies:</label>
-           
-
-
-            <input type="checkbox" id="nutAllergy" name="nutAllergy" value="true" />
-            <label class="lbld" for="nutAllergy">Nut Allergy</label>
-
-          </div>
-
-          <input type="submit" value="Submit" />
-        </form>
-        <!-- Removed the confirmationMessage div -->
-        <!-- Add this div to display errors -->
-        <div id="errorDisplay" style="color: red; display: none"></div>
+<!-- Dietary Preferences Modal -->
+<div class="modal fade" id="dietaryPreferencesModal" tabindex="-1" role="dialog" aria-labelledby="dietaryPreferencesModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dietaryPreferencesModalLabel">Dietary Preferences</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <!-- End of the Dietary Preferences Form -->
+      <div class="modal-body">
+        <!-- Dynamic Dietary Preferences Form -->
+        <form id="dietaryForm" action="/submit-dietary-preferences" method="POST" onsubmit="return handleSubmit(event);">
+          <div id="dynamicDietaryFields" class="mb-3">
+            <!-- Admin added dietary preferences checkboxes will be rendered here -->
+            <label class="form-check-label">
+              <input class="form-check-input" type="checkbox" value="">
+              Example Preference
+            </label>
+          </div>
+          <div id="errorDisplay" class="text-danger" style="display: none;"></div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
     </div>
+  </div>
+</div>
   </div>
   </div>
   <div class="dashboard-banner">
@@ -302,6 +307,110 @@
       </footer>
       </div>
       <script>
+        document.addEventListener('DOMContentLoaded', function() {
+      const modal = $('#dietaryPreferencesModal');
+
+      window.openDietaryModal = function() {
+        modal.modal('show');
+        fetchDietaryPreferencesFields(); // Fetch preferences when opening the modal
+      }
+
+      window.closeDietaryModal = function() {
+        modal.modal('hide');
+      }
+
+      async function fetchDietaryPreferencesFields() {
+        try {
+          const response = await fetch('/admin/dietary-preferences');
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          renderDietaryPreferencesFields(data.preferences);
+        } catch (error) {
+          console.error("Error fetching dietary preferences fields:", error);
+          const errorDisplay = document.getElementById("errorDisplay");
+          errorDisplay.textContent = `Error: ${error.message}`;
+          errorDisplay.style.display = "block";
+        }
+      }
+
+      function renderDietaryPreferencesFields(preferences) {
+        const dynamicFieldsContainer = document.getElementById('dynamicDietaryFields');
+        dynamicFieldsContainer.innerHTML = '';
+
+        if (!preferences || Object.keys(preferences).length === 0) {
+          dynamicFieldsContainer.innerHTML = '<p>No dietary preferences available.</p>';
+          return;
+        }
+
+        Object.keys(preferences).forEach(preference => {
+          const fieldHtml = `
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="${preference}" name="${preference}" />
+              <label class="form-check-label" for="${preference}">${preference}</label>
+            </div>
+          `;
+          dynamicFieldsContainer.insertAdjacentHTML('beforeend', fieldHtml);
+        });
+      }
+    });
+
+    async function handleSubmit(event) {
+  event.preventDefault();
+  const errorDisplay = document.getElementById("errorDisplay");
+  errorDisplay.style.display = "none";
+  errorDisplay.textContent = "";
+
+  const form = document.getElementById("dietaryForm");
+  const formData = new FormData(form);
+  const dietaryPreferences = Object.fromEntries(formData.entries());
+
+  // Convert form data into a proper boolean object
+  for (let key in dietaryPreferences) {
+    dietaryPreferences[key] = dietaryPreferences[key] === "on";
+  }
+
+  // Check if at least one dietary choice is selected
+  const isAnyChoiceSelected = Object.values(dietaryPreferences).some(choice => choice);
+  if (!isAnyChoiceSelected) {
+    errorDisplay.textContent = "Please select at least one dietary preference.";
+    errorDisplay.style.display = "block";
+    return;
+  }
+
+  try {
+    const response = await fetch("/submit-dietary-preferences", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dietaryPreferences),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: data.message,
+          showConfirmButton: true,
+        }).then(() => {
+          // Redirect to the foodMenu page with an anchor to "Menu Recommendations"
+          window.location.href = "/foodMenu#menu-recommendations";
+        });
+      } else {
+        throw new Error(data.message || "An error occurred.");
+      }
+    } else {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    errorDisplay.textContent = error.message;
+    errorDisplay.style.display = "block";
+  }
+}
+
         // Function to open the lightbox and display the clicked image
       function openLightbox(imageSrc) {
           const lightbox = document.getElementById('lightbox');
