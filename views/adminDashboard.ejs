@@ -42,6 +42,35 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.paypal.com/sdk/js?client-id=AVu3WborcTvCGiCezIWmlpoZl8aV3sREwYVeBrZAWl8Dej6WlLIY9mnfD527IwI4a6UbEIvWhlV4p8_o"></script>
     <style>
+
+#sidebar {
+    min-height: 100vh; /* Ensures the sidebar extends full height */
+    position: fixed; /* Keeps the sidebar fixed on the screen */
+    top: 0;
+    left: 0;
+    width: 250px; /* Sidebar width */
+    background-color: #343a40; /* Dark background color */
+}
+
+.d-flex.h-100 {
+    min-height: 100vh; /* Ensure the container extends to full height */
+    margin-left: 250px; /* Add margin to account for fixed sidebar */
+}
+
+.container-fluid {
+    margin-left: 250px; /* Ensure content is not hidden behind the sidebar */
+}
+
+.d-md-none {
+    margin-left: 0; /* Reset margin for mobile view */
+}
+
+/* Ensure that the mobile navbar covers the full width on small screens */
+.navbar-collapse {
+    flex-grow: 1;
+    justify-content: flex-start;
+}
+
       .container {
         background-color: #ffffff; /* White background for the container */
         padding: 20px;
