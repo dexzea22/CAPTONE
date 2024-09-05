@@ -149,9 +149,17 @@ router.get('/daily-orders-trend', async (req, res) => {
 
 // Endpoint to get revenue by day
 router.get('/revenue-by-day', async (req, res) => {
+  const { startDate, endDate } = req.query;
+
   try {
-    // Fetch all orders with their amounts and createdAt dates
+    // Fetch all orders within the specified date range
     const orders = await prismaClient.order.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(startDate),
+          lte: new Date(new Date(endDate).setHours(23, 59, 59))
+        }
+      },
       select: {
         createdAt: true,
         amount: true,
@@ -160,7 +168,6 @@ router.get('/revenue-by-day', async (req, res) => {
 
     // Group by the exact date instead of just the day of the week
     const revenueByDate = orders.reduce((acc, order) => {
-      // Extract date in 'YYYY-MM-DD' format
       const date = new Date(order.createdAt).toISOString().split('T')[0];
       
       if (!acc[date]) {
@@ -182,6 +189,7 @@ router.get('/revenue-by-day', async (req, res) => {
     res.status(500).json({ error: 'Error fetching data' });
   }
 });
+
 
 
   // Endpoint to get yearly revenue
